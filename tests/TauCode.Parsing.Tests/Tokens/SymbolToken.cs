@@ -2,7 +2,7 @@
 {
     public class SymbolToken : IToken
     {
-        public SymbolToken(SymbolTokenValue value)
+        public SymbolToken(SymbolValue value)
         {
             this.Value = value;
         }
@@ -13,6 +13,6 @@
 
         }
 
-        public SymbolTokenValue Value { get; }
+        public SymbolValue Value { get; }
     }
 }
