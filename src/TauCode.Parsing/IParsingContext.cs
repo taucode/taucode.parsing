@@ -2,5 +2,6 @@
 {
     public interface IParsingContext
     {
+        void Push(string objectName, dynamic properties);
     }
 }

@@ -16,10 +16,10 @@ namespace TauCode.Parsing.Tests
                 new WordToken("CREATE"),
                 new WordToken("TABLE"),
                 new WordToken("my_tab"), 
-                SymbolToken.FromChar('('), 
+                new SymbolToken('('), 
                 new WordToken("id"),
                 new WordToken("integer"),
-                SymbolToken.FromChar(')'),
+                new SymbolToken(')'),
             };
 
             IParser parser = new Parser();

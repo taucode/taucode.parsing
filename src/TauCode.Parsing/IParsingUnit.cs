@@ -4,7 +4,7 @@ namespace TauCode.Parsing
 {
     public interface IParsingUnit
     {
-        ParseResult Process();
+        ParseResult Process(ITokenStream stream, IParsingContext context);
         IReadOnlyList<IParsingUnit> GetNextUnits();
     }
 }
