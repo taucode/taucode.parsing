@@ -4,11 +4,11 @@ namespace TauCode.Parsing
 {
     public class ParsingContext : IParsingContext
     {
-        private readonly Dictionary<string, DynamicResult> _results;
+        private readonly Dictionary<string, dynamic> _results;
 
         public ParsingContext()
         {
-            _results = new Dictionary<string, DynamicResult>();
+            _results = new Dictionary<string, dynamic>();
         }
 
         public void Add(string objectName, dynamic properties)

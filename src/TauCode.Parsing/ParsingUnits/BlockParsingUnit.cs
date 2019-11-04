@@ -67,13 +67,13 @@ namespace TauCode.Parsing.ParsingUnits
         public IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context)
         {
             List<IParsingUnit> challengers = new List<IParsingUnit>(new[] { this.Head });
-            //IParsingUnit current = this.Head;
             var oldPosition = stream.Position;
 
             while (true)
             {
                 if (challengers.Count == 0)
                 {
+                    stream.Position = oldPosition;
                     return null;
                 }
 
@@ -147,75 +147,7 @@ namespace TauCode.Parsing.ParsingUnits
                         }
                     }
                 }
-
-                //var result = current.Process(stream, context);
-
-                //if (result == null)
-                //{
-                //    stream.Position = oldPosition;
-                //    ret-urn null;
-                //}
-
-                //if (result.Count == 0)
-                //{
-                //    throw new NotImplementedException();
-                //}
-                //else if (result.Count == 1)
-                //{
-                //    current = result.Single();
-
-                //    if (this.IsEnlisted(current))
-                //    {
-                //        continue;
-                //    }
-                //    else
-                //    {
-                //        ret-urn new List<IParsingUnit>(new[] { current });
-                //    }
-                //}
-                //else
-                //{
-                //    var enlisted = result.Where(this.IsEnlisted).ToList();
-                //    var notEnlisted = result.Where(x => !this.IsEnlisted(x)).ToList(); // todo: optimize
-
-                //    if (enlisted.Count > 0)
-                //    {
-                //        throw new NotImplementedException();
-                //    }
-                //    else
-                //    {
-                //        ret-urn notEnlisted;
-                //    }
-                //}
-
-                //throw new NotImplementedException();
-                //if (result == ParseResult.Success)
-                //{
-                //    var nextUnits = current.GetNextUnits();
-                //    if (nextUnits.Count == 1)
-                //    {
-                //        current = nextUnits.Single();
-                //        continue;
-                //    }
-                //    else
-                //    {
-
-
-                //        throw new NotImplementedException();
-                //    }
-                //}
-                //else
-                //{
-                //    throw new NotImplementedException();
-                //}
-
-                //throw new NotImplementedException();
             }
         }
-
-        //public IReadOnlyList<IParsingUnit> GetNextUnits()
-        //{
-        //    throw new NotImplementedException();
-        //}
     }
 }
