@@ -22,7 +22,21 @@ namespace TauCode.Parsing.Tests.Units
 
         public override ParseResult Process(ITokenStream stream, IParsingContext context)
         {
-            throw new System.NotImplementedException();
+            var token = stream.GetCurrentToken();
+
+            var parseResult = ParseResult.Fail;
+
+            if (
+                token is SymbolToken symbolToken &&
+                this.Value == symbolToken.Value)
+            {
+                this.Processor(token, context);
+
+                parseResult = ParseResult.Success;
+                stream.AdvanceStreamPosition();
+            }
+
+            return parseResult;
         }
     }
 }

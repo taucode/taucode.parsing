@@ -4,15 +4,12 @@ using TauCode.Parsing.Tests.Tokens;
 
 namespace TauCode.Parsing.Tests.Units
 {
-    public class WordNodeParsingUnit : NodeParsingUnit
+    public class IdentifierNodeParsingUnit : NodeParsingUnit
     {
-        public WordNodeParsingUnit(string word, Action<IToken, IParsingContext> processor)
+        public IdentifierNodeParsingUnit(Action<IToken, IParsingContext> processor)
             : base(processor)
         {
-            this.Word = word ?? throw new ArgumentNullException(nameof(word));
         }
-
-        public string Word { get; }
 
         public override ParseResult Process(ITokenStream stream, IParsingContext context)
         {
@@ -20,9 +17,7 @@ namespace TauCode.Parsing.Tests.Units
 
             var parseResult = ParseResult.Fail;
 
-            if (
-                token is WordToken wordToken &&
-                wordToken.Word.Equals(this.Word, StringComparison.InvariantCultureIgnoreCase))
+            if (token is WordToken)
             {
                 this.Processor(token, context);
 
@@ -31,6 +26,8 @@ namespace TauCode.Parsing.Tests.Units
             }
 
             return parseResult;
+
         }
     }
 }
+ 

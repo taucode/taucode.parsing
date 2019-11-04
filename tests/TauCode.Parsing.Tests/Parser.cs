@@ -21,9 +21,12 @@ namespace TauCode.Parsing.Tests
             var nodeCreate = new WordNodeParsingUnit("CREATE", ParsingHelper.IdleTokenProcessor);
             var createTableBlock = new BlockParsingUnit(nodeCreate);
             var nodeTable = new WordNodeParsingUnit("TABLE", ParsingHelper.IdleTokenProcessor);
-            var nodeLeftParen = new SymbolNodeParsingUnit('(', (token, context) => context.Push("table", new { Name = ((WordToken)token).Word }));
+            var nodeTableName = new IdentifierNodeParsingUnit((token, context) => context.Push("table", new { Name = ((WordToken)token).Word }));
+            var nodeLeftParen = new SymbolNodeParsingUnit('(', ParsingHelper.IdleTokenProcessor);
+
             nodeCreate.AddNextNode(nodeTable);
-            nodeTable.AddNextNode(nodeLeftParen);
+            nodeTable.AddNextNode(nodeTableName);
+            nodeTableName.AddNextNode(nodeLeftParen);
 
             return createTableBlock;
         }
