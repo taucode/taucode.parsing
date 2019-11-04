@@ -1,0 +1,50 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29424.173
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6C7B821D-9D49-47FD-AD07-9B8A7A81F241}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{EA6273A9-3C2B-47AD-AEFF-C4ADF3EED4F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{A304C22C-EB6E-4BC6-ABD1-1CFCA1D3FDAE}"
+	ProjectSection(SolutionItems) = preProject
+		misc\changelog.txt = misc\changelog.txt
+		misc\todo.txt = misc\todo.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{104E58A9-2C08-4588-92E2-D406FD36AD28}"
+	ProjectSection(SolutionItems) = preProject
+		nuget\TauCode.Parsing.nuspec = nuget\TauCode.Parsing.nuspec
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Parsing", "src\TauCode.Parsing\TauCode.Parsing.csproj", "{F45FDF86-44A9-452A-91D6-649720B36CB3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Parsing.Tests", "tests\TauCode.Parsing.Tests\TauCode.Parsing.Tests.csproj", "{8EA23BD2-68D8-41D4-800E-A4C04BAC0A35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F45FDF86-44A9-452A-91D6-649720B36CB3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F45FDF86-44A9-452A-91D6-649720B36CB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F45FDF86-44A9-452A-91D6-649720B36CB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F45FDF86-44A9-452A-91D6-649720B36CB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EA23BD2-68D8-41D4-800E-A4C04BAC0A35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EA23BD2-68D8-41D4-800E-A4C04BAC0A35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EA23BD2-68D8-41D4-800E-A4C04BAC0A35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EA23BD2-68D8-41D4-800E-A4C04BAC0A35}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F45FDF86-44A9-452A-91D6-649720B36CB3} = {6C7B821D-9D49-47FD-AD07-9B8A7A81F241}
+		{8EA23BD2-68D8-41D4-800E-A4C04BAC0A35} = {EA6273A9-3C2B-47AD-AEFF-C4ADF3EED4F7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D05FF35E-F455-4502-B560-D25313D00BD8}
+	EndGlobalSection
+EndGlobal
