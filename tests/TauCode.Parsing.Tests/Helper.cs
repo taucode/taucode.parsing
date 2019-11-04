@@ -15,6 +15,9 @@ namespace TauCode.Parsing.Tests
                 case ')':
                     return SymbolTokenValue.RightParenthesis;
 
+                case ',':
+                    return SymbolTokenValue.Comma;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(c));
             }

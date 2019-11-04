@@ -11,7 +11,7 @@ namespace TauCode.Parsing
             _results = new Dictionary<string, DynamicResult>();
         }
 
-        public void Push(string objectName, dynamic properties)
+        public void Add(string objectName, dynamic properties)
         {
             var newObject = new DynamicResult();
             var dynamicProperties = new DynamicResult(properties);
@@ -22,6 +22,26 @@ namespace TauCode.Parsing
             }
 
             _results.Add(objectName, newObject);
+        }
+
+        public void Update(string objectName, dynamic properties)
+        {
+            var existingObject = _results[objectName];
+            var dynamicProperties = new DynamicResult(properties);
+            foreach (var propertyName in dynamicProperties.GetNames())
+            {
+                existingObject.SetValue(propertyName, dynamicProperties.GetValue(propertyName));
+            }
+        }
+
+        public dynamic Get(string objectName)
+        {
+            return _results[objectName];
+        }
+
+        public void Remove(string objectName)
+        {
+            _results.Remove(objectName);
         }
     }
 }

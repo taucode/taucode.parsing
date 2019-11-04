@@ -19,6 +19,9 @@ namespace TauCode.Parsing.Tests
                 new SymbolToken('('), 
                 new WordToken("id"),
                 new WordToken("integer"),
+                new SymbolToken(','),
+                new WordToken("name"),
+                new WordToken("text"),
                 new SymbolToken(')'),
             };
 

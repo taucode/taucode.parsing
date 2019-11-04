@@ -7,7 +7,7 @@ namespace TauCode.Parsing.ParsingUnits
     {
         #region Fields
 
-        private readonly List<NodeParsingUnit> _nextNodes;
+        private readonly List<IParsingUnit> _nextUnits;
 
         #endregion
 
@@ -15,7 +15,7 @@ namespace TauCode.Parsing.ParsingUnits
 
         protected NodeParsingUnit(Action<IToken, IParsingContext> processor)
         {
-            _nextNodes = new List<NodeParsingUnit>();
+            _nextUnits = new List<IParsingUnit>();
             this.Processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
@@ -25,25 +25,42 @@ namespace TauCode.Parsing.ParsingUnits
 
         protected Action<IToken, IParsingContext> Processor { get; }
 
+        protected IReadOnlyList<IParsingUnit> NextUnits => Checked(_nextUnits);
+
+        private IReadOnlyList<IParsingUnit> Checked(List<IParsingUnit> units)
+        {
+            if (units == null)
+            {
+                throw new NotImplementedException();
+            }
+
+            if (units.Count == 0)
+            {
+                throw new NotImplementedException();
+            }
+
+            return units;
+        }
+
         #endregion
 
         #region Public
 
-        public void AddNextNode(NodeParsingUnit nextNode)
+        public void AddNextUnit(IParsingUnit nextUnit)
         {
-            _nextNodes.Add(nextNode ?? throw new ArgumentNullException(nameof(nextNode)));
+            _nextUnits.Add(nextUnit ?? throw new ArgumentNullException(nameof(nextUnit)));
         }
 
         #endregion
 
         #region IParsingUnit Members
 
-        public abstract ParseResult Process(ITokenStream stream, IParsingContext context);
+        public abstract IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context);
 
-        public IReadOnlyList<IParsingUnit> GetNextUnits()
-        {
-            return _nextNodes;
-        }
+        //public IReadOnlyList<IParsingUnit> GetNextUnits()
+        //{
+        //    ret-urn _nextUnits;
+        //}
 
         #endregion
     }

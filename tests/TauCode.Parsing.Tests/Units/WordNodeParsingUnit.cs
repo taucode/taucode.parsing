@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using TauCode.Parsing.ParsingUnits;
 using TauCode.Parsing.Tests.Tokens;
 
@@ -14,11 +15,9 @@ namespace TauCode.Parsing.Tests.Units
 
         public string Word { get; }
 
-        public override ParseResult Process(ITokenStream stream, IParsingContext context)
+        public override IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context)
         {
             var token = stream.GetCurrentToken();
-
-            var parseResult = ParseResult.Fail;
 
             if (
                 token is WordToken wordToken &&
@@ -26,11 +25,11 @@ namespace TauCode.Parsing.Tests.Units
             {
                 this.Processor(token, context);
 
-                parseResult = ParseResult.Success;
                 stream.AdvanceStreamPosition();
+                return this.NextUnits;
             }
 
-            return parseResult;
+            return null;
         }
     }
 }
