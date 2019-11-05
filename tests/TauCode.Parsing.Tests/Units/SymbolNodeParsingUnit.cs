@@ -7,7 +7,7 @@ namespace TauCode.Parsing.Tests.Units
 {
     public class SymbolNodeParsingUnit : NodeParsingUnit
     {
-        public SymbolNodeParsingUnit(SymbolTokenValue value, Action<IToken, IParsingContext> processor)
+        public SymbolNodeParsingUnit(SymbolValue value, Action<IToken, IParsingContext> processor)
             : base(processor)
         {
             this.Value = value;
@@ -19,7 +19,7 @@ namespace TauCode.Parsing.Tests.Units
 
         }
 
-        public SymbolTokenValue Value { get; }
+        public SymbolValue Value { get; }
 
         public override IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context)
         {

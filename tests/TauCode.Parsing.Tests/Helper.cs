@@ -5,18 +5,18 @@ namespace TauCode.Parsing.Tests
 {
     public static class Helper
     {
-        public static SymbolTokenValue SymbolTokenFromChar(char c)
+        public static SymbolValue SymbolTokenFromChar(char c)
         {
             switch (c)
             {
                 case '(':
-                    return SymbolTokenValue.LeftParenthesis;
+                    return SymbolValue.LeftParenthesis;
 
                 case ')':
-                    return SymbolTokenValue.RightParenthesis;
+                    return SymbolValue.RightParenthesis;
 
                 case ',':
-                    return SymbolTokenValue.Comma;
+                    return SymbolValue.Comma;
 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(c));

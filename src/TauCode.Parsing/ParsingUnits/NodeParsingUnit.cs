@@ -57,11 +57,6 @@ namespace TauCode.Parsing.ParsingUnits
 
         public abstract IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context);
 
-        //public IReadOnlyList<IParsingUnit> GetNextUnits()
-        //{
-        //    ret-urn _nextUnits;
-        //}
-
         #endregion
     }
 }

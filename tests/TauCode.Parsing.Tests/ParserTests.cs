@@ -8,7 +8,7 @@ namespace TauCode.Parsing.Tests
     public class ParserTests
     {
         [Test]
-        public void TestWat()
+        public void TestWatTodo()
         {
             // Arrange
             var tokens = new IToken[]
