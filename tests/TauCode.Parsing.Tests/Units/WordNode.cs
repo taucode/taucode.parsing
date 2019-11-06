@@ -4,33 +4,27 @@ using TauCode.Parsing.Tests.Tokens;
 
 namespace TauCode.Parsing.Tests.Units
 {
-    public class SymbolNodeParsingUnit : ParsingNode
+    public class WordNode : ParsingNode
     {
-        public SymbolNodeParsingUnit(SymbolValue value, Action<IToken, IParsingContext> processor)
+        public WordNode(string word, Action<IToken, IParsingContext> processor)
             : base(processor)
         {
-            this.Value = value;
+            this.Word = word ?? throw new ArgumentNullException(nameof(word));
         }
 
-        public SymbolNodeParsingUnit(char c, Action<IToken, IParsingContext> processor)
-            : this(Helper.SymbolTokenFromChar(c), processor)
-        {
-
-        }
-
-        public SymbolValue Value { get; }
+        public string Word { get; }
 
         //public override IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context)
         //{
         //    var token = stream.GetCurrentToken();
 
         //    if (
-        //        token is SymbolToken symbolToken &&
-        //        this.Value == symbolToken.Value)
+        //        token is WordToken wordToken &&
+        //        wordToken.Word.Equals(this.Word, StringComparison.InvariantCultureIgnoreCase))
         //    {
         //        this.Processor(token, context);
-        //        stream.AdvanceStreamPosition();
 
+        //        stream.AdvanceStreamPosition();
         //        return this.NextUnits;
         //    }
 
@@ -40,9 +34,8 @@ namespace TauCode.Parsing.Tests.Units
         protected override bool IsAcceptableToken(IToken token)
         {
             return
-                token is SymbolToken symbolToken &&
-                this.Value == symbolToken.Value;
+                token is WordToken wordToken &&
+                wordToken.Word.Equals(this.Word, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }
-

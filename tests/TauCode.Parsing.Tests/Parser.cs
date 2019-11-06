@@ -19,17 +19,17 @@ namespace TauCode.Parsing.Tests
         private IParsingUnit BuildTree()
         {
             // CREATE TABLE (
-            var nodeCreate = new WordNodeParsingUnit("CREATE", ParsingHelper.IdleTokenProcessor);
+            var nodeCreate = new WordNode("CREATE", ParsingHelper.IdleTokenProcessor);
             var createTableBlock = new ParsingBlock(nodeCreate);
-            var nodeTable = new WordNodeParsingUnit("TABLE", ParsingHelper.IdleTokenProcessor);
-            var nodeTableName = new IdentifierNodeParsingUnit((token, context) => context.Add(
+            var nodeTable = new WordNode("TABLE", ParsingHelper.IdleTokenProcessor);
+            var nodeTableName = new IdentifierNode((token, context) => context.Add(
                 "table",
                 new
                 {
                     Name = ((WordToken)token).Word,
                     Columns = new List<dynamic>(),
                 }));
-            var nodeLeftParen = new SymbolNodeParsingUnit('(', ParsingHelper.IdleTokenProcessor);
+            var nodeLeftParen = new SymbolNode('(', ParsingHelper.IdleTokenProcessor);
 
             nodeCreate.AddLink(nodeTable);
             nodeTable.AddLink(nodeTableName);
@@ -38,9 +38,9 @@ namespace TauCode.Parsing.Tests
             createTableBlock.Add(nodeTable, nodeTableName, nodeLeftParen);
 
             // <column_definition>
-            var columnName = new IdentifierNodeParsingUnit((token, context) => context.Add("column", new { Name = ((WordToken)token).Word }));
+            var columnName = new IdentifierNode((token, context) => context.Add("column", new { Name = ((WordToken)token).Word }));
 
-            var columnType = new IdentifierNodeParsingUnit((token, context) => context.Update("column", new { Type = ((WordToken)token).Word }));
+            var columnType = new IdentifierNode((token, context) => context.Update("column", new { Type = ((WordToken)token).Word }));
             columnName.AddLink(columnType);
 
             var columnDefinition = new ParsingBlock(columnName);
@@ -49,7 +49,7 @@ namespace TauCode.Parsing.Tests
             nodeLeftParen.AddLink(columnDefinition);
 
             // ',' and ')'
-            var columnComma = new SymbolNodeParsingUnit(',', (token, context) =>
+            var columnComma = new SymbolNode(',', (token, context) =>
             {
                 var column = context.Get("column");
                 var table = context.Get("table");
@@ -60,7 +60,7 @@ namespace TauCode.Parsing.Tests
 
             columnType.AddLink(columnComma);
 
-            var rightParen = new SymbolNodeParsingUnit(')', (token, context) =>
+            var rightParen = new SymbolNode(')', (token, context) =>
             {
                 var column = context.Get("column");
                 var table = context.Get("table");

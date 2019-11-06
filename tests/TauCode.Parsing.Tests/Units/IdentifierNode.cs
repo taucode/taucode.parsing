@@ -4,9 +4,9 @@ using TauCode.Parsing.Tests.Tokens;
 
 namespace TauCode.Parsing.Tests.Units
 {
-    public class IdentifierNodeParsingUnit : ParsingNode
+    public class IdentifierNode : ParsingNode
     {
-        public IdentifierNodeParsingUnit(Action<IToken, IParsingContext> processor)
+        public IdentifierNode(Action<IToken, IParsingContext> processor)
             : base(processor)
         {
         }
