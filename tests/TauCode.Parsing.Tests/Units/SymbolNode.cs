@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using TauCode.Parsing.ParsingUnits.Impl;
 using TauCode.Parsing.Tests.Tokens;
 
 namespace TauCode.Parsing.Tests.Units
 {
+    [DebuggerDisplay("{" + nameof(Value) + "}")]
     public class SymbolNode : ParsingNode
     {
         public SymbolNode(SymbolValue value, Action<IToken, IParsingContext> processor)

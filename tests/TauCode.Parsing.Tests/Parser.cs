@@ -74,8 +74,9 @@ namespace TauCode.Parsing.Tests
 
             // super-block.
             var superBlock = new ParsingBlock(createTableBlock);
-            superBlock.Add(createTableBlock, columnDefinition, columnComma, rightParen);
+            superBlock.Add(columnDefinition, columnComma, rightParen);
 
+            superBlock.FinalizeUnit();
 
             return superBlock;
         }

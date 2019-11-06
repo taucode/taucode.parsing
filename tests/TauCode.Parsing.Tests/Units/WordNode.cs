@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using TauCode.Parsing.ParsingUnits.Impl;
 using TauCode.Parsing.Tests.Tokens;
 
 namespace TauCode.Parsing.Tests.Units
 {
+    [DebuggerDisplay("{" + nameof(Word) + "}")]
     public class WordNode : ParsingNode
     {
         public WordNode(string word, Action<IToken, IParsingContext> processor)

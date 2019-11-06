@@ -6,6 +6,7 @@ namespace TauCode.Parsing.ParsingUnits
     {
         IParsingUnit Head { get; }
         void Add(params IParsingUnit[] units);
+        bool Owns(IParsingUnit unit);
         IReadOnlyList<IParsingUnit> Owned { get; }
     }
 }

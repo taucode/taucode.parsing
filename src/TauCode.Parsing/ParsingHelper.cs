@@ -53,5 +53,46 @@ namespace TauCode.Parsing
         {
             throw new NotImplementedException();
         }
+
+        public static bool IsNestedInto(this IParsingUnit unit, IParsingBlock possibleSuperOwner)
+        {
+            if (unit == null)
+            {
+                throw new ArgumentNullException(nameof(unit));
+            }
+
+            if (possibleSuperOwner == null)
+            {
+                throw new ArgumentNullException(nameof(possibleSuperOwner));
+            }
+
+            var currentOwner = unit.Owner;
+
+            while (true)
+            {
+                if (currentOwner == null)
+                {
+                    return false;
+                }
+
+                if (currentOwner == possibleSuperOwner)
+                {
+                    return true;
+                }
+
+                currentOwner = currentOwner.Owner;
+            }
+        }
+
+        public static bool IsBlockHeadNode(this IParsingNode node)
+        {
+            var owner = node.Owner;
+            if (owner == null)
+            {
+                return false;
+            }
+
+            return owner.Head == node;
+        }
     }
 }
