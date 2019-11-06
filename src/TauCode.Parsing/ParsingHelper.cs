@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.ParsingUnits;
+using TauCode.Parsing.ParsingUnits.Impl;
 
 namespace TauCode.Parsing
 {
@@ -44,8 +45,13 @@ namespace TauCode.Parsing
         public static bool IsEndResult(IReadOnlyList<IParsingUnit> result)
         {
             // todo: check args
-            var res = result.Count == 1 && result[0] == EndNodeParsingUnit.Instance;
+            var res = result.Count == 1 && result[0] == EndParsingNode.Instance;
             return res;
+        }
+
+        public static IParsingBlock GetTopOwner(this IParsingUnit unit)
+        {
+            throw new NotImplementedException();
         }
     }
 }

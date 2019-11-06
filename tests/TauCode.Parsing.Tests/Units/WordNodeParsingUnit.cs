@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using TauCode.Parsing.ParsingUnits;
+using TauCode.Parsing.ParsingUnits.Impl;
 using TauCode.Parsing.Tests.Tokens;
 
 namespace TauCode.Parsing.Tests.Units
 {
-    public class WordNodeParsingUnit : NodeParsingUnit
+    public class WordNodeParsingUnit : ParsingNode
     {
         public WordNodeParsingUnit(string word, Action<IToken, IParsingContext> processor)
             : base(processor)
@@ -15,21 +14,28 @@ namespace TauCode.Parsing.Tests.Units
 
         public string Word { get; }
 
-        public override IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context)
+        //public override IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context)
+        //{
+        //    var token = stream.GetCurrentToken();
+
+        //    if (
+        //        token is WordToken wordToken &&
+        //        wordToken.Word.Equals(this.Word, StringComparison.InvariantCultureIgnoreCase))
+        //    {
+        //        this.Processor(token, context);
+
+        //        stream.AdvanceStreamPosition();
+        //        return this.NextUnits;
+        //    }
+
+        //    return null;
+        //}
+
+        protected override bool IsAcceptableToken(IToken token)
         {
-            var token = stream.GetCurrentToken();
-
-            if (
+            return
                 token is WordToken wordToken &&
-                wordToken.Word.Equals(this.Word, StringComparison.InvariantCultureIgnoreCase))
-            {
-                this.Processor(token, context);
-
-                stream.AdvanceStreamPosition();
-                return this.NextUnits;
-            }
-
-            return null;
+                wordToken.Word.Equals(this.Word, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.ParsingUnits;
+using TauCode.Parsing.ParsingUnits.Impl;
 using TauCode.Parsing.Tests.Tokens;
 using TauCode.Parsing.Tests.Units;
 
@@ -19,10 +20,10 @@ namespace TauCode.Parsing.Tests
         {
             // CREATE TABLE (
             var nodeCreate = new WordNodeParsingUnit("CREATE", ParsingHelper.IdleTokenProcessor);
-            var createTableBlock = new BlockParsingUnit(nodeCreate);
+            var createTableBlock = new ParsingBlock(nodeCreate);
             var nodeTable = new WordNodeParsingUnit("TABLE", ParsingHelper.IdleTokenProcessor);
             var nodeTableName = new IdentifierNodeParsingUnit((token, context) => context.Add(
-                "table", 
+                "table",
                 new
                 {
                     Name = ((WordToken)token).Word,
@@ -30,22 +31,22 @@ namespace TauCode.Parsing.Tests
                 }));
             var nodeLeftParen = new SymbolNodeParsingUnit('(', ParsingHelper.IdleTokenProcessor);
 
-            nodeCreate.AddNextUnit(nodeTable);
-            nodeTable.AddNextUnit(nodeTableName);
-            nodeTableName.AddNextUnit(nodeLeftParen);
+            nodeCreate.AddLink(nodeTable);
+            nodeTable.AddLink(nodeTableName);
+            nodeTableName.AddLink(nodeLeftParen);
 
-            createTableBlock.Enlist(nodeTable, nodeTableName, nodeLeftParen);
+            createTableBlock.Add(nodeTable, nodeTableName, nodeLeftParen);
 
             // <column_definition>
             var columnName = new IdentifierNodeParsingUnit((token, context) => context.Add("column", new { Name = ((WordToken)token).Word }));
 
             var columnType = new IdentifierNodeParsingUnit((token, context) => context.Update("column", new { Type = ((WordToken)token).Word }));
-            columnName.AddNextUnit(columnType);
+            columnName.AddLink(columnType);
 
-            var columnDefinition = new BlockParsingUnit(columnName);
-            columnDefinition.Enlist(columnType);
+            var columnDefinition = new ParsingBlock(columnName);
+            columnDefinition.Add(columnType);
 
-            nodeLeftParen.AddNextUnit(columnDefinition);
+            nodeLeftParen.AddLink(columnDefinition);
 
             // ',' and ')'
             var columnComma = new SymbolNodeParsingUnit(',', (token, context) =>
@@ -55,9 +56,9 @@ namespace TauCode.Parsing.Tests
                 table.Columns.Add(column);
                 context.Remove("column");
             });
-            columnComma.AddNextUnit(columnDefinition);
+            columnComma.AddLink(columnDefinition);
 
-            columnType.AddNextUnit(columnComma);
+            columnType.AddLink(columnComma);
 
             var rightParen = new SymbolNodeParsingUnit(')', (token, context) =>
             {
@@ -66,14 +67,14 @@ namespace TauCode.Parsing.Tests
                 table.Columns.Add(column);
                 context.Remove("column");
             });
-            columnType.AddNextUnit(rightParen);
+            columnType.AddLink(rightParen);
 
             // end
-            rightParen.AddNextUnit(EndNodeParsingUnit.Instance);
+            rightParen.AddLink(EndParsingNode.Instance);
 
             // super-block.
-            var superBlock = new BlockParsingUnit(createTableBlock);
-            superBlock.Enlist(createTableBlock, columnDefinition, columnComma, rightParen);
+            var superBlock = new ParsingBlock(createTableBlock);
+            superBlock.Add(createTableBlock, columnDefinition, columnComma, rightParen);
 
 
             return superBlock;
