@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Tests.Tokens
+﻿namespace TauCode.Parsing.Tokens
 {
     public class SymbolToken : IToken
     {
@@ -8,7 +8,7 @@
         }
 
         public SymbolToken(char c)
-            : this(Helper.SymbolTokenFromChar(c))
+            : this(LexerHelper.SymbolTokenFromChar(c))
         {
 
         }

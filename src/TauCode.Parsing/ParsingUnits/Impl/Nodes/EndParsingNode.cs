@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TauCode.Parsing.ParsingUnits.Impl
+namespace TauCode.Parsing.ParsingUnits.Impl.Nodes
 {
     public class EndParsingNode : ParsingNode
     {

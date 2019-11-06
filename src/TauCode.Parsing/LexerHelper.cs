@@ -1,9 +1,9 @@
 ﻿using System;
-using TauCode.Parsing.Tests.Tokens;
+using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tests
+namespace TauCode.Parsing
 {
-    public static class Helper
+    public static class LexerHelper
     {
         public static SymbolValue SymbolTokenFromChar(char c)
         {

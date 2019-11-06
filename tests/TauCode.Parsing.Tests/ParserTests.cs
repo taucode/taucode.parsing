@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Collections.Generic;
-using TauCode.Parsing.Tests.Tokens;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests
 {

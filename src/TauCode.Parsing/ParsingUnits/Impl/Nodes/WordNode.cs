@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using TauCode.Parsing.ParsingUnits.Impl;
-using TauCode.Parsing.Tests.Tokens;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Units
 {

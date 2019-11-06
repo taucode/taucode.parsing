@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Tests.Tokens
+﻿namespace TauCode.Parsing.Tokens
 {
     public class IdentifierToken : IToken
     {

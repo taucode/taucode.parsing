@@ -1,6 +1,6 @@
-﻿namespace TauCode.Parsing.Aide
+﻿namespace TauCode.Parsing.Tokens
 {
-    public enum AideSymbolValue
+    public enum SymbolValue
     {
         Comma,
         LeftParenthesis,

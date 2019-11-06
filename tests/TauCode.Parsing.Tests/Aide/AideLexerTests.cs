@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using TauCode.Parsing.Aide;
 using TauCode.Parsing.Aide.Tokens;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Aide
 {
@@ -50,7 +51,7 @@ CREATE TABLE <table_name>\Identifier \(
             token = tokens[3];
             Assert.That(token, Is.TypeOf<SymbolAideToken>());
             var symbolToken = (SymbolAideToken)token;
-            Assert.That(symbolToken.Value, Is.EqualTo(AideSymbolValue.LeftParenthesis));
+            Assert.That(symbolToken.Value, Is.EqualTo(SymbolValue.LeftParenthesis));
             Assert.That(symbolToken.Name, Is.Null);
 
             // column definition
@@ -63,7 +64,7 @@ CREATE TABLE <table_name>\Identifier \(
             token = tokens[5];
             Assert.That(token, Is.TypeOf<SymbolAideToken>());
             symbolToken = (SymbolAideToken)token;
-            Assert.That(symbolToken.Value, Is.EqualTo(AideSymbolValue.Comma));
+            Assert.That(symbolToken.Value, Is.EqualTo(SymbolValue.Comma));
             Assert.That(symbolToken.Name, Is.EqualTo("comma"));
 
             // constraint definitions
@@ -76,7 +77,7 @@ CREATE TABLE <table_name>\Identifier \(
             token = tokens[7];
             Assert.That(token, Is.TypeOf<SymbolAideToken>());
             symbolToken = (SymbolAideToken)token;
-            Assert.That(symbolToken.Value, Is.EqualTo(AideSymbolValue.RightParenthesis));
+            Assert.That(symbolToken.Value, Is.EqualTo(SymbolValue.RightParenthesis));
             Assert.That(symbolToken.Name, Is.EqualTo("table_closing"));
 
             // end

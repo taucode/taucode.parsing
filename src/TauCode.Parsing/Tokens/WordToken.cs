@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TauCode.Parsing.Tests.Tokens
+namespace TauCode.Parsing.Tokens
 {
     public class WordToken : IToken
     {

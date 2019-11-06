@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.ParsingUnits;
-using TauCode.Parsing.ParsingUnits.Impl;
+using TauCode.Parsing.ParsingUnits.Impl.Nodes;
 
 namespace TauCode.Parsing
 {
@@ -47,11 +47,6 @@ namespace TauCode.Parsing
             // todo: check args
             var res = result.Count == 1 && result[0] == EndParsingNode.Instance;
             return res;
-        }
-
-        public static IParsingBlock GetTopOwner(this IParsingUnit unit)
-        {
-            throw new NotImplementedException();
         }
 
         public static bool IsNestedInto(this IParsingUnit unit, IParsingBlock possibleSuperOwner)

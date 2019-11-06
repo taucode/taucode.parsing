@@ -121,7 +121,6 @@ namespace TauCode.Parsing.ParsingUnits.Impl
                             if (this.Owns(nextUnit))
                             {
                                 nextChallengers = result;
-                                break;
                             }
                             else
                             {
@@ -135,6 +134,8 @@ namespace TauCode.Parsing.ParsingUnits.Impl
                                 .OrderBy(x => x, _comparer)
                                 .ToList();
                         }
+
+                        break;
                     }
                 }
 
