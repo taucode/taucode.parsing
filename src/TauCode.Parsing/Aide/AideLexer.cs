@@ -34,6 +34,16 @@ namespace TauCode.Parsing.Aide
             return _input[_pos];
         }
 
+        private char? TryGetNextChar()
+        {
+            if (this.IsEnd())
+            {
+                return null;
+            }
+
+            return _input[_pos + 1];
+        }
+
         private int GetCurrentPosition() => _pos;
 
         private bool IsEnd() => _pos == _input.Length;
@@ -120,7 +130,20 @@ namespace TauCode.Parsing.Aide
 
         private AideToken ReadSpecialToken(string tokenName)
         {
+            if (this.IsEnd())
+            {
+                throw new NotImplementedException(); // error
+            }
+
             var start = this.GetCurrentPosition();
+
+            var c = this.GetCurrentChar();
+
+            if (this.IsSymbolChar(c))
+            {
+                this.Advance();
+                return new SymbolAideToken(c, tokenName);
+            }
 
             while (true)
             {
@@ -129,43 +152,52 @@ namespace TauCode.Parsing.Aide
                     break;
                 }
 
-                var c = this.GetCurrentChar();
+                c = this.GetCurrentChar();
 
-                if (this.IsSymbolChar(c))
+                if (this.IsWhiteSpaceChar(c))
                 {
-                    var delta = this.GetCurrentPosition() - start;
-                    if (delta == 0)
-                    {
-                        this.Advance();
-                        return new SymbolAideToken(c, tokenName);
-                    }
-                    else
-                    {
-                        throw new NotImplementedException(); // error
-                    }
+                    break;
                 }
-                else if (this.IsAliasedTokenChar(c))
+                if (this.IsAliasedTokenChar(c))
                 {
                     this.Advance();
                     continue;
                 }
-                else if (this.IsWhiteSpaceChar(c))
+                else if (this.IsSymbolChar(c))
                 {
                     break;
                 }
                 else
                 {
-                    throw new NotImplementedException(); // error
+                    throw new NotImplementedException();
                 }
             }
 
             var end = this.GetCurrentPosition();
             var length = end - start;
+
+            if (length == 0)
+            {
+                throw new NotImplementedException(); // error
+            }
+
             var alias = _input.Substring(start, length);
             AideToken aliasedToken;
 
             switch (alias)
             {
+                case "BeginBlock":
+                    aliasedToken = new BeginBlockAideToken(tokenName);
+                    break;
+
+                case "EndBlock":
+                    aliasedToken = new EndBlockAideToken(tokenName);
+                    break;
+
+                case "CloneBlock":
+                    aliasedToken = new CloneBlockAideToken(tokenName);
+                    break;
+
                 case "Identifier":
                     aliasedToken = new IdentifierAideToken(tokenName);
                     break;
@@ -176,6 +208,18 @@ namespace TauCode.Parsing.Aide
 
                 case "End":
                     aliasedToken = new EndAideToken(tokenName);
+                    break;
+
+                case "Link":
+                    aliasedToken = new LinkAideToken(tokenName);
+                    break;
+
+                case "Idle":
+                    aliasedToken = new IdleAideToken(tokenName);
+                    break;
+
+                case "WrongWay":
+                    aliasedToken = new WrongWayAideToken(tokenName);
                     break;
 
                 default:
@@ -221,14 +265,87 @@ namespace TauCode.Parsing.Aide
             return tokenName;
         }
 
-        private void Advance()
+        private NameReferenceAideToken ReadTokenNameReference()
+        {
+            var start = this.GetCurrentPosition();
+
+            while (true)
+            {
+                if (this.IsEnd())
+                {
+                    break;
+                }
+
+                var c = this.GetCurrentChar();
+
+                if (this.IsTokenNameChar(c))
+                {
+                    this.Advance();
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            var end = this.GetCurrentPosition();
+            var length = end - start - 1;
+            var referencedTokenName = _input.Substring(start, length);
+
+            // todo: check length.
+            return new NameReferenceAideToken(referencedTokenName);
+
+        }
+
+        private void SkipComment()
+        {
+            // comment must start with '/*'
+            if (this.GetCurrentChar() != '/')
+            {
+                throw new NotImplementedException(); // todo
+            }
+
+            this.Advance();
+            if (this.GetCurrentChar() != '*')
+            {
+                throw new NotImplementedException(); // todo
+            }
+
+            this.Advance();
+
+            while (true)
+            {
+                if (this.IsEnd())
+                {
+                    throw new NotImplementedException(); // not closed comment
+                }
+
+                var c = this.GetCurrentChar();
+
+                if (c == '*')
+                {
+                    var next = this.TryGetNextChar();
+                    if (next == '/')
+                    {
+                        // comment is closed
+                        this.Advance(2);
+                        return;
+                    }
+                }
+
+                this.Advance();
+            }
+        }
+
+        private void Advance(int step = 1)
         {
             if (this.IsEnd())
             {
                 throw new NotImplementedException();
             }
 
-            _pos++;
+            _pos += step;
         }
 
         public List<IToken> Lexize(string input)
@@ -281,6 +398,121 @@ namespace TauCode.Parsing.Aide
 
                     this.Advance();
                     upcomingTokenName = this.ReadTokenName();
+                }
+                else if (c == '/')
+                {
+                    if (this.TryGetNextChar() == '*')
+                    {
+                        if (upcomingTokenName != null)
+                        {
+                            throw new NotImplementedException(); // error
+                        }
+
+                        this.SkipComment();
+                    }
+                    else
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+                }
+                else if (c == '(')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = new BeginArgumentListAideToken();
+                    list.Add(token);
+                }
+                else if (c == ')')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = new EndArgumentListAideToken();
+                    list.Add(token);
+                }
+                else if (c == ':')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = this.ReadTokenNameReference();
+                    list.Add(token);
+                }
+                else if (c == '[')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = new LeftBracketAideToken();
+                    list.Add(token);
+                }
+                else if (c == ']')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = new RightBracketAideToken();
+                    list.Add(token);
+                }
+                else if (c == '{')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = new LeftCurlyBracketAideToken();
+                    list.Add(token);
+                }
+                else if (c == '}')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = new RightCurlyBracketAideToken();
+                    list.Add(token);
+                }
+                else if (c == '|')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = new VerticalBarAideToken();
+                    list.Add(token);
+                }
+                else if (c == ',')
+                {
+                    if (upcomingTokenName != null)
+                    {
+                        throw new NotImplementedException(); // error
+                    }
+
+                    this.Advance();
+                    var token = new CommaAideToken();
+                    list.Add(token);
                 }
                 else
                 {

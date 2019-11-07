@@ -1,4 +1,6 @@
 ﻿using NUnit.Framework;
+using System;
+using TauCode.Parsing.Aide;
 
 namespace TauCode.Parsing.Tests.Aide
 {
@@ -9,7 +11,7 @@ namespace TauCode.Parsing.Tests.Aide
         public void TodoFoo()
         {
             // Arrange
-            var createTableBlockText =
+            var input =
 @"
 /****** Create table ******/
 
@@ -34,7 +36,7 @@ CREATE TABLE <table_name>\Identifier \(
 
 \BeginBlock(:constraint_definitions)
 
-<begin>CONSTRAINT { <primary_key>\Block | <foreign_key>\Block } \Link(:create_table, :table_closing) [<comma>\,] \Link(:begin) \WrongWay
+<begin>CONSTRAINT { <primary_key>\Block | <foreign_key>\Block } { \Link(:create_table, :table_closing) | <comma>\, \Link(:begin) }
 
 \EndBlock
 
@@ -43,37 +45,50 @@ CREATE TABLE <table_name>\Identifier \(
 
 \BeginBlock(:primary_key)
 
-PRIMARY KEY <pk_name>\Identifier \( <pk_columns>\Block \)
+PRIMARY KEY <pk_name>\Identifier <pk_columns>\Block
 
 \EndBlock
 
-\BeginBlock(pk_columns)
 
-<pk_column_name>\Identifier [{<asc>ASC | <desc>DESC}]
+/****** Primary Key Columns ******/
+
+\BeginBlock(:pk_columns)
+
+\( <pk_column_name>\Identifier [ { <asc>ASC | <desc>DESC } ] { \, \Link(:pk_column_name) | \) }
 
 \EndBlock
 
-\BeginBlock(foreign_key)
+
+/****** Foreign Key ******/
+
+\BeginBlock(:foreign_key)
 
 FOREIGN KEY <fk_name>\Identifier <fk_columns>\Block REFERENCES <fk_referenced_columns>\Block
 
 \EndBlock
 
-\BeginBlock(fk_columns)
 
-\( <fk_column_name>\Identifier [<comma>\,] \)
+/****** Foreign Key Columns ******/
 
-\BeginLinks
-comma -> fk_column_name
-\EndLinks
+\BeginBlock(:fk_columns)
+
+\( <fk_column_name>\Identifier { \, \Link(:fk_column_name) | \) }
+
 \EndBlock
 
-\CloneBlock(fk_referenced_columns, fk_columns)
+
+/****** Foreign Key Referenced Columns ******/
+
+\CloneBlock(:fk_referenced_columns, :fk_columns)
 ";
 
+            var lexer = new AideLexer();
+
             // Act
+            var tokens = lexer.Lexize(input);
 
             // Assert
+            throw new NotImplementedException();
         }
     }
 }
