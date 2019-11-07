@@ -43,9 +43,10 @@ CREATE TABLE <table_name>\Identifier \(
 
             // table name
             token = tokens[2];
-            Assert.That(token, Is.TypeOf<IdentifierAideToken>());
-            var identifierToken = (IdentifierAideToken)token;
-            Assert.That(identifierToken.Name, Is.EqualTo("table_name"));
+            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
+            var syntaxElementToken = (SyntaxElementAideToken)token;
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.Identifier));
+            Assert.That(syntaxElementToken.Name, Is.EqualTo("table_name"));
 
             // (
             token = tokens[3];
@@ -56,9 +57,10 @@ CREATE TABLE <table_name>\Identifier \(
 
             // column definition
             token = tokens[4];
-            Assert.That(token, Is.TypeOf<BlockAideToken>());
-            var blockToken = (BlockAideToken)token;
-            Assert.That(blockToken.Name, Is.EqualTo("column_definition"));
+            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
+            syntaxElementToken = (SyntaxElementAideToken)token;
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.Block));
+            Assert.That(syntaxElementToken.Name, Is.EqualTo("column_definition"));
 
             // ,
             token = tokens[5];
@@ -69,9 +71,10 @@ CREATE TABLE <table_name>\Identifier \(
 
             // constraint definitions
             token = tokens[6];
-            Assert.That(token, Is.TypeOf<BlockAideToken>());
-            blockToken = (BlockAideToken)token;
-            Assert.That(blockToken.Name, Is.EqualTo("constraint_definitions"));
+            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
+            syntaxElementToken = (SyntaxElementAideToken)token;
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.Block));
+            Assert.That(syntaxElementToken.Name, Is.EqualTo("constraint_definitions"));
 
             // )
             token = tokens[7];
@@ -82,7 +85,10 @@ CREATE TABLE <table_name>\Identifier \(
 
             // end
             token = tokens[8];
-            Assert.That(token, Is.TypeOf<EndAideToken>());
+            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
+            syntaxElementToken = (SyntaxElementAideToken)token;
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.End));
+            Assert.That(syntaxElementToken.Name, Is.Null);
         }
     }
 }

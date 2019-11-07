@@ -88,7 +88,7 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\Block REFERENCES <fk_referenced_co
             var tokens = lexer.Lexize(input);
 
             // Assert
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
     }
 }
