@@ -11,32 +11,37 @@ namespace TauCode.Parsing.Tests.Aide
             // Arrange
             var createTableBlockText =
 @"
-\BeginBlock(create_table)
+/****** Create table ******/
+
+\BeginBlock(:create_table)
 
 CREATE TABLE <table_name>\Identifier \(
-    <column_definition>\Block <comma>\,
+    <column_definition>\Block \Link(:table_closing) <comma>\, \Link(:column_definition)
     <constraint_definitions>\Block
 <table_closing>\)
 
-\BeginLinks
-comma -> column_definition
-column_definition -> table_closing
-\EndLinks
 \EndBlock
 
-\BeginBlock(column_definition)
 
-<column_name>\Identifier <type_name>\Identifier [{ <null>NULL | NOT <not_null>NULL }] \Idle
+/****** Column Definition ******/
+
+\BeginBlock(:column_definition)
+
+<column_name>\Identifier <type_name>\Identifier \Link(:idle) [{ <null>NULL | NOT <not_null>NULL }] <idle>\Idle
+
+
+/****** Constraint Definitions ******/
+
+\BeginBlock(:constraint_definitions)
+
+<begin>CONSTRAINT { <primary_key>\Block | <foreign_key>\Block } \Link(:create_table, :table_closing) [<comma>\,] \Link(:begin) \WrongWay
 
 \EndBlock
 
-\BeginBlock(constraint_definitions)
 
-CONSTRAINT { <primary_key>\Block | <foreign_key>\Block } <comma>\,
+/****** Primary Key ******/
 
-\EndBlock
-
-\BeginBlock(primary_key)
+\BeginBlock(:primary_key)
 
 PRIMARY KEY <pk_name>\Identifier \( <pk_columns>\Block \)
 
