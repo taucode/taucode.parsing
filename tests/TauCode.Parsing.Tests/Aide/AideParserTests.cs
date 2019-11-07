@@ -5,7 +5,7 @@ using TauCode.Parsing.Aide;
 namespace TauCode.Parsing.Tests.Aide
 {
     [TestFixture]
-    public class AideTodoTests
+    public class AideParserTests
     {
         [Test]
         public void TodoFoo()
@@ -83,12 +83,14 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\Block REFERENCES <fk_referenced_co
 ";
 
             var lexer = new AideLexer();
-
-            // Act
             var tokens = lexer.Lexize(input);
 
+            // Act
+            IParser parser = new AideParser();
+            var context = parser.Parse(tokens);
+
             // Assert
-            //throw new NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
