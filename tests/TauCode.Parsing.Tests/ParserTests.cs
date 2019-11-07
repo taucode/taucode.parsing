@@ -31,7 +31,7 @@ namespace TauCode.Parsing.Tests
             var result = parser.Parse(tokens);
 
             // Assert
-            var table = result.Get("table");
+            var table = result.GetLastResult<dynamic>();
 
             var name = (string)table.Name;
             var columns = (List<dynamic>)table.Columns;

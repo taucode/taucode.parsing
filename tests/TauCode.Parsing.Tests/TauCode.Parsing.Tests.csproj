@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -14,11 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TauCode.Parsing\TauCode.Parsing.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Tokens\" />
-    <Folder Include="Units\" />
   </ItemGroup>
 
 </Project>

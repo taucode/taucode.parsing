@@ -23,13 +23,14 @@ namespace TauCode.Parsing.Tests
             var nodeCreate = new WordNode("CREATE", ParsingHelper.IdleTokenProcessor);
             var createTableBlock = new ParsingBlock(nodeCreate);
             var nodeTable = new WordNode("TABLE", ParsingHelper.IdleTokenProcessor);
-            var nodeTableName = new IdentifierNode((token, context) => context.Add(
-                "table",
+            var nodeTableName = new IdentifierNode((token, context) => context.AddResult(
+                //"table",
+                new DynamicResult(
                 new
                 {
                     Name = ((WordToken)token).Word,
                     Columns = new List<dynamic>(),
-                }));
+                })));
             var nodeLeftParen = new SymbolNode('(', ParsingHelper.IdleTokenProcessor);
 
             nodeCreate.AddLink(nodeTable);
@@ -39,10 +40,24 @@ namespace TauCode.Parsing.Tests
             createTableBlock.Add(nodeTable, nodeTableName, nodeLeftParen);
 
             // <column_definition>
-            var columnName = new IdentifierNode((token, context) => context.Add("column", new { Name = ((WordToken)token).Word }));
+            var columnName = new IdentifierNode((token, context) =>
+                context.GetLastResult<dynamic>().Columns.Add(new DynamicResult(new { Name = ((WordToken)token).Word })));
 
-            var columnType = new IdentifierNode((token, context) => context.Update("column", new { Type = ((WordToken)token).Word }));
+
+
+            var columnType = new IdentifierNode((token, context) =>
+            {
+                var table = context.GetLastResult<dynamic>();
+                var columns = table.Columns;
+                var columnCount = columns.Count;
+                var column = columns[columnCount - 1];
+                var type = ((WordToken)token).Word;
+                column.Type = type;
+            });
+            //context.GetLastResult<dynamic>().Columns Update("column", new { Type = ((WordToken)token).Word }));
             columnName.AddLink(columnType);
+
+
 
             var columnDefinition = new ParsingBlock(columnName);
             columnDefinition.Add(columnType);
@@ -52,21 +67,30 @@ namespace TauCode.Parsing.Tests
             // ',' and ')'
             var columnComma = new SymbolNode(',', (token, context) =>
             {
-                var column = context.Get("column");
-                var table = context.Get("table");
-                table.Columns.Add(column);
-                context.Remove("column");
+                //var table = context.GetLastResult<dynamic>();
+                //var columns = table.Columns;
+                //var columnCount = columns.Count;
+                //var column = columns[columnCount - 1];
+                //var type = ((WordToken)token).Word;
+
+                //throw new NotImplementedException();
+                //var column = context.Get("column");
+                //var table = context.Get("table");
+                //table.Columns.Add(column);
+                //context.Remove("column");
             });
             columnComma.AddLink(columnDefinition);
+
 
             columnType.AddLink(columnComma);
 
             var rightParen = new SymbolNode(')', (token, context) =>
             {
-                var column = context.Get("column");
-                var table = context.Get("table");
-                table.Columns.Add(column);
-                context.Remove("column");
+                //throw new NotImplementedException();
+                //var column = context.Get("column");
+                //var table = context.Get("table");
+                //table.Columns.Add(column);
+                //context.Remove("column");
             });
             columnType.AddLink(rightParen);
 
