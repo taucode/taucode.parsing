@@ -15,24 +15,6 @@ namespace TauCode.Parsing.Units.Impl.Nodes
 
         public string Word { get; }
 
-        // todo: remove comments
-        //public override IReadOnlyList<IPa-rsingUnit> Process(ITokenStream stream, IPars-ingContext context)
-        //{
-        //    var token = stream.GetCurrentToken();
-
-        //    if (
-        //        token is WordToken wordToken &&
-        //        wordToken.Word.Equals(this.Word, StringComparison.InvariantCultureIgnoreCase))
-        //    {
-        //        this.Processor(token, context);
-
-        //        stream.AdvanceStreamPosition();
-        //        return this.NextUnits;
-        //    }
-
-        //    return null;
-        //}
-
         protected override bool IsAcceptableToken(IToken token)
         {
             return

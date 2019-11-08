@@ -26,8 +26,15 @@ namespace TauCode.Parsing.Units.Impl
             return null;
         }
 
+        protected override void OnBeforeFinalize()
+        {
+            // todo: must be <count_of_ways> >= 2
+        }
+
         public void AddWay(IUnit way)
         {
+            this.CheckNotFinalized();
+
             // todo checks
             _ways.Add(way);
         }

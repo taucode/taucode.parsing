@@ -6,10 +6,12 @@ namespace TauCode.Parsing
     public class Context : IContext
     {
         private readonly List<object> _results;
+        private int _version;
 
         public Context()
         {
             _results = new List<object>();
+            _version = 1;
         }
 
         // todo remove comments
@@ -55,6 +57,7 @@ namespace TauCode.Parsing
 
         public void AddResult(object result)
         {
+            this.Modify();
             _results.Add(result);
         }
 
@@ -66,6 +69,13 @@ namespace TauCode.Parsing
         public object[] ToArray()
         {
             return _results.ToArray();
+        }
+
+        public int Version => _version;
+
+        public void Modify()
+        {
+            _version++;
         }
     }
 }

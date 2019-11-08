@@ -2,11 +2,11 @@
 
 namespace TauCode.Parsing.Aide.Parsing
 {
-    public class BlockResult
+    public class BlockDefinitionResult
     {
         private readonly List<UnitResult> _unitResults;
 
-        public BlockResult()
+        public BlockDefinitionResult()
         {
             this.Name = new NameReferenceCollector();
             _unitResults = new List<UnitResult>();

@@ -93,13 +93,22 @@ namespace TauCode.Parsing.Units.Impl
             IReadOnlyList<IUnit> challengers = new List<IUnit>(new[] { this.Head });
             IReadOnlyList<IUnit> emptyChallengers = new List<IUnit>();
             var oldPosition = stream.Position;
+            var oldVersion = context.Version;
 
             while (true)
             {
                 if (challengers.Count == 0)
                 {
-                    stream.Position = oldPosition;
-                    return null;
+                    if (context.Version == oldVersion)
+                    {
+                        stream.Position = oldPosition;
+                        return null;
+                    }
+                    else
+                    {
+                        var debug = stream.GetCurrentToken();
+                        throw new NotImplementedException(); // todo: context modified, but failed to end parsing => something bad happened.
+                    }
                 }
 
                 IReadOnlyList<IUnit> nextChallengers = emptyChallengers;
