@@ -45,8 +45,8 @@ namespace TauCode.Parsing.Aide
 
             var nameDefsBlock = this.CreateNameDefinitionsBlock((context, name) =>
             {
-                var blockParsingResult = context.GetLastResult<BlockDefinitionResult>();
-                blockParsingResult.Name.Add(name);
+                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                blockDefinitionResult.Arguments.Add(name);
                 context.Modify();
             });
             nameDefsBlock.Name = "NameDefsBlock";
@@ -59,9 +59,9 @@ namespace TauCode.Parsing.Aide
             // word node
             var wordNode = new WordAideNode((token, context) =>
             {
-                var blockResult = context.GetLastResult<BlockDefinitionResult>();
+                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
                 var wordToken = (WordAideToken)token;
-                blockResult.AddUnitResult(new WordNodeResult(wordToken.Word));
+                blockDefinitionResult.AddUnitResult(new WordNodeResult(wordToken.Word));
                 context.Modify();
             })
             {
@@ -73,8 +73,8 @@ namespace TauCode.Parsing.Aide
                 SyntaxElement.Identifier,
                 (token, context) =>
                 {
-                    var blockResult = context.GetLastResult<BlockDefinitionResult>();
-                    blockResult.AddUnitResult(new IdentifierNodeResult());
+                    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                    blockDefinitionResult.AddUnitResult(new IdentifierNodeResult());
                     context.Modify();
                 })
             {
@@ -84,19 +84,34 @@ namespace TauCode.Parsing.Aide
             // symbol node
             var symbolNode = new SymbolAideNode((token, context) =>
             {
-                var blockResult = context.GetLastResult<BlockDefinitionResult>();
+                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
                 var symbolToken = (SymbolAideToken)token;
-                blockResult.AddUnitResult(new SymbolNodeResult(symbolToken.Value));
+                blockDefinitionResult.AddUnitResult(new SymbolNodeResult(symbolToken.Value));
                 context.Modify();
             })
             {
                 Name = "Symbol",
             };
 
+            // block node
+            var blockNode = new SyntaxElementAideNode(
+                SyntaxElement.Block, 
+                (token, context) =>
+            {
+                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                //var symbolToken = (SymbolAideToken)token;
+                blockDefinitionResult.AddUnitResult(new BlockResult(((AideToken)token).Name));
+                context.Modify();
+            })
+            {
+                Name = "Block"
+            };
+
             // adding nodes to content splitter
             contentSplitter.AddWay(wordNode);
             contentSplitter.AddWay(identifierNode);
             contentSplitter.AddWay(symbolNode);
+            contentSplitter.AddWay(blockNode);
 
             // beforeEndBlockSplitter
             var beforeEndBlockSplitter = new Splitter();
@@ -104,6 +119,7 @@ namespace TauCode.Parsing.Aide
             wordNode.AddLink(beforeEndBlockSplitter);
             identifierNode.AddLink(beforeEndBlockSplitter);
             symbolNode.AddLink(beforeEndBlockSplitter);
+            blockNode.AddLink(beforeEndBlockSplitter);
 
             // endBlock
             var endBlock = new SyntaxElementAideNode(SyntaxElement.EndBlock, (token, context) => throw new NotImplementedException());
@@ -119,6 +135,7 @@ namespace TauCode.Parsing.Aide
                 wordNode,
                 identifierNode,
                 symbolNode,
+                blockNode,
 
                 beforeEndBlockSplitter,
                 endBlock);

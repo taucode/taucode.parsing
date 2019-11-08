@@ -8,11 +8,11 @@ namespace TauCode.Parsing.Aide.Parsing
 
         public BlockDefinitionResult()
         {
-            this.Name = new NameReferenceCollector();
+            this.Arguments = new NameReferenceCollector();
             _unitResults = new List<UnitResult>();
         }
 
-        public NameReferenceCollector Name { get; }
+        public NameReferenceCollector Arguments { get; } // actually, must contain exactly one name.
 
         public void AddUnitResult(UnitResult result)
         {
