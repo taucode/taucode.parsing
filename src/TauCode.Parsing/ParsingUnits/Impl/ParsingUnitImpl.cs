@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace TauCode.Parsing.ParsingUnits.Impl
 {
+    [DebuggerDisplay("Name = '{" + nameof(Name) + "}'")]
     public abstract class ParsingUnitImpl : IParsingUnit
     {
         #region Fields

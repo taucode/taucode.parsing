@@ -4,12 +4,12 @@ namespace TauCode.Parsing.Aide.Tokens
 {
     public class NameReferenceAideToken : AideToken
     {
-        public NameReferenceAideToken(string referencedTokenName)
+        public NameReferenceAideToken(string referencedName)
             : base(null)
         {
-            this.ReferencedTokenName = referencedTokenName ?? throw new ArgumentNullException(nameof(referencedTokenName));
+            this.ReferencedName = referencedName ?? throw new ArgumentNullException(nameof(referencedName));
         }
 
-        public string ReferencedTokenName { get; }
+        public string ReferencedName { get; }
     }
 }

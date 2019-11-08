@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TauCode.Parsing.ParsingUnits;
+using TauCode.Parsing.ParsingUnits.Impl.Nodes;
 
 namespace TauCode.Parsing
 {
@@ -52,7 +54,20 @@ namespace TauCode.Parsing
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    if (result.Count == 2 && result.Contains(EndParsingNode.Instance))
+                    {
+                        result = result.Where(x => x != EndParsingNode.Instance).ToList();
+                        if (result.Count != 1)
+                        {
+                            throw new NotImplementedException();
+                        }
+
+                        continue;
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
 
                 throw new NotImplementedException();

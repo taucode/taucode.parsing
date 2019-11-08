@@ -17,7 +17,7 @@ namespace TauCode.Parsing.Tests.Aide
 CREATE TABLE <table_name>\Identifier \(
     <column_definition>\Block <comma>\,
     <constraint_definitions>\Block
-<table_closing>\) \End
+<table_closing>\)
 ";
             var lexer = new AideLexer();
 
@@ -82,13 +82,6 @@ CREATE TABLE <table_name>\Identifier \(
             symbolToken = (SymbolAideToken)token;
             Assert.That(symbolToken.Value, Is.EqualTo(SymbolValue.RightParenthesis));
             Assert.That(symbolToken.Name, Is.EqualTo("table_closing"));
-
-            // end
-            token = tokens[8];
-            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
-            syntaxElementToken = (SyntaxElementAideToken)token;
-            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.End));
-            Assert.That(syntaxElementToken.Name, Is.Null);
         }
     }
 }

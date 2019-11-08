@@ -206,9 +206,10 @@ namespace TauCode.Parsing.Aide
                     aliasedToken = new SyntaxElementAideToken(SyntaxElement.Block, tokenName);
                     break;
 
-                case "End":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.End, tokenName);
-                    break;
+                // todo
+                //case "End":
+                //    aliasedToken = new SyntaxElementAideToken(SyntaxElement.End, tokenName);
+                //    break;
 
                 case "Link":
                     aliasedToken = new SyntaxElementAideToken(SyntaxElement.Link, tokenName);
@@ -265,7 +266,7 @@ namespace TauCode.Parsing.Aide
             return tokenName;
         }
 
-        private NameReferenceAideToken ReadTokenNameReference()
+        private NameReferenceAideToken ReadNameReference()
         {
             var start = this.GetCurrentPosition();
 
@@ -290,11 +291,11 @@ namespace TauCode.Parsing.Aide
             }
 
             var end = this.GetCurrentPosition();
-            var length = end - start - 1;
-            var referencedTokenName = _input.Substring(start, length);
+            var length = end - start;
+            var referencedName = _input.Substring(start, length);
 
             // todo: check length.
-            return new NameReferenceAideToken(referencedTokenName);
+            return new NameReferenceAideToken(referencedName);
 
         }
 
@@ -445,7 +446,7 @@ namespace TauCode.Parsing.Aide
                     }
 
                     this.Advance();
-                    var token = this.ReadTokenNameReference();
+                    var token = this.ReadNameReference();
                     list.Add(token);
                 }
                 else if (c == '[')

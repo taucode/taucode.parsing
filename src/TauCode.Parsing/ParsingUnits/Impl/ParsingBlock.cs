@@ -32,7 +32,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
                 throw new ArgumentNullException(nameof(head));
             }
 
-            this.Add(head);
+            this.Capture(head);
             this.Head = head;
         }
 
@@ -191,7 +191,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             }
         }
 
-        public void Add(params IParsingUnit[] units)
+        public void Capture(params IParsingUnit[] units)
         {
             this.CheckNotFinalized();
 
@@ -212,6 +212,11 @@ namespace TauCode.Parsing.ParsingUnits.Impl
         }
 
         public IReadOnlyList<IParsingUnit> Owned => _cachedOwned ?? _owned.ToList();
+
+        public IParsingNode GetSingleExitNode()
+        {
+            return _owned.Where(x => x is ParsingNode).Cast<ParsingNode>().Single(x => x.Links.Count == 0);
+        }
 
         #endregion
     }

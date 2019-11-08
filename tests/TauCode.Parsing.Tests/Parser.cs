@@ -37,7 +37,7 @@ namespace TauCode.Parsing.Tests
             nodeTable.AddLink(nodeTableName);
             nodeTableName.AddLink(nodeLeftParen);
 
-            createTableBlock.Add(nodeTable, nodeTableName, nodeLeftParen);
+            createTableBlock.Capture(nodeTable, nodeTableName, nodeLeftParen);
 
             // <column_definition>
             var columnName = new IdentifierNode((token, context) =>
@@ -55,7 +55,7 @@ namespace TauCode.Parsing.Tests
             columnName.AddLink(columnType);
 
             var columnDefinition = new ParsingBlock(columnName);
-            columnDefinition.Add(columnType);
+            columnDefinition.Capture(columnType);
 
             nodeLeftParen.AddLink(columnDefinition);
 
@@ -74,7 +74,7 @@ namespace TauCode.Parsing.Tests
 
             // super-block.
             var superBlock = new ParsingBlock(createTableBlock);
-            superBlock.Add(columnDefinition, columnComma, rightParen);
+            superBlock.Capture(columnDefinition, columnComma, rightParen);
 
             superBlock.FinalizeUnit();
 

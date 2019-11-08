@@ -68,7 +68,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #region IParsingNode Members
 
-        public void AddLink(IParsingUnit linked)
+        public virtual void AddLink(IParsingUnit linked)
         {
             this.CheckNotFinalized();
 
