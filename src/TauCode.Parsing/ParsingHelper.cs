@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.ParsingUnits;
-using TauCode.Parsing.ParsingUnits.Impl.Nodes;
+using TauCode.Parsing.Units;
+using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing
 {
@@ -38,18 +38,18 @@ namespace TauCode.Parsing
             tokenStream.Position++;
         }
 
-        public static void IdleTokenProcessor(IToken token, IParsingContext context)
+        public static void IdleTokenProcessor(IToken token, IContext context)
         {
         }
 
-        public static bool IsEndResult(IReadOnlyList<IParsingUnit> result)
+        public static bool IsEndResult(IReadOnlyList<IUnit> result)
         {
             // todo: check args
-            var res = result.Count == 1 && result[0] == EndParsingNode.Instance;
+            var res = result.Count == 1 && result[0] == EndNode.Instance;
             return res;
         }
 
-        public static bool IsNestedInto(this IParsingUnit unit, IParsingBlock possibleSuperOwner)
+        public static bool IsNestedInto(this IUnit unit, IBlock possibleSuperOwner)
         {
             if (unit == null)
             {
@@ -79,7 +79,7 @@ namespace TauCode.Parsing
             }
         }
 
-        public static bool IsBlockHeadNode(this IParsingNode node)
+        public static bool IsBlockHeadNode(this INode node)
         {
             var owner = node.Owner;
             if (owner == null)

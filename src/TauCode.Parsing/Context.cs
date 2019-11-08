@@ -3,15 +3,16 @@ using System.Linq;
 
 namespace TauCode.Parsing
 {
-    public class ParsingContext : IParsingContext
+    public class Context : IContext
     {
         private readonly List<object> _results;
 
-        public ParsingContext()
+        public Context()
         {
             _results = new List<object>();
         }
 
+        // todo remove comments
         //private readonly Dictionary<string, dynamic> _results;
 
         //public ParsingContext()

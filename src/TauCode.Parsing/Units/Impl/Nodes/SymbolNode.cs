@@ -2,18 +2,18 @@
 using System.Diagnostics;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.ParsingUnits.Impl.Nodes
+namespace TauCode.Parsing.Units.Impl.Nodes
 {
     [DebuggerDisplay("{" + nameof(Value) + "}")]
-    public class SymbolNode : ParsingNode
+    public class SymbolNode : Node
     {
-        public SymbolNode(SymbolValue value, Action<IToken, IParsingContext> processor)
+        public SymbolNode(SymbolValue value, Action<IToken, IContext> processor)
             : base(processor)
         {
             this.Value = value;
         }
 
-        public SymbolNode(char c, Action<IToken, IParsingContext> processor)
+        public SymbolNode(char c, Action<IToken, IContext> processor)
             : this(LexerHelper.SymbolTokenFromChar(c), processor)
         {
 

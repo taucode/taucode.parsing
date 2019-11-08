@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Parsing
 {
-    public interface IParsingContext
+    public interface IContext
     {
         void AddResult(object result);
         T GetLastResult<T>();

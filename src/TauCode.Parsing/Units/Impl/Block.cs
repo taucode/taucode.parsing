@@ -2,29 +2,29 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TauCode.Parsing.ParsingUnits.Impl
+namespace TauCode.Parsing.Units.Impl
 {
-    public class ParsingBlock : ParsingUnitImpl, IParsingBlock
+    public class Block : UnitImpl, IBlock
     {
         #region Fields
 
-        private IParsingUnit _head;
-        private readonly HashSet<IParsingUnit> _owned;
-        private List<IParsingUnit> _cachedOwned;
+        private IUnit _head;
+        private readonly HashSet<IUnit> _owned;
+        private List<IUnit> _cachedOwned;
 
-        private readonly Comparer<IParsingUnit> _comparer;
+        private readonly Comparer<IUnit> _comparer;
 
         #endregion
 
         #region Constructors
 
-        public ParsingBlock()
+        public Block()
         {
-            _owned = new HashSet<IParsingUnit>();
-            _comparer = Comparer<IParsingUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
+            _owned = new HashSet<IUnit>();
+            _comparer = Comparer<IUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
         }
 
-        public ParsingBlock(IParsingUnit head)
+        public Block(IUnit head)
             : this()
         {
             if (head == null)
@@ -40,14 +40,14 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #region Private
 
-        private void AddSingleUnit(IParsingUnit unit)
+        private void AddSingleUnit(IUnit unit)
         {
             if (unit == null)
             {
                 throw new ArgumentNullException(nameof(unit));
             }
 
-            if (!(unit is ParsingUnitImpl parsingUnitImpl))
+            if (!(unit is UnitImpl unitImpl))
             {
                 throw new NotImplementedException(); // todo
             }
@@ -67,7 +67,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
                 throw new NotImplementedException(); // todo
             }
 
-            if (unit is IParsingBlock parsingBlock)
+            if (unit is IBlock parsingBlock)
             {
                 if (this.IsNestedInto(parsingBlock))
                 {
@@ -76,10 +76,10 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             }
 
             _owned.Add(unit);
-            parsingUnitImpl.Owner = this;
+            unitImpl.Owner = this;
         }
 
-        private int Owning(IParsingUnit unit)
+        private int Owning(IUnit unit)
         {
             return this.Owns(unit) ? 1 : 0;
         }
@@ -88,10 +88,10 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #region Overridden
 
-        protected override IReadOnlyList<IParsingUnit> ProcessImpl(ITokenStream stream, IParsingContext context)
+        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
-            IReadOnlyList<IParsingUnit> challengers = new List<IParsingUnit>(new[] { this.Head });
-            IReadOnlyList<IParsingUnit> emptyChallengers = new List<IParsingUnit>();
+            IReadOnlyList<IUnit> challengers = new List<IUnit>(new[] { this.Head });
+            IReadOnlyList<IUnit> emptyChallengers = new List<IUnit>();
             var oldPosition = stream.Position;
 
             while (true)
@@ -102,7 +102,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
                     return null;
                 }
 
-                IReadOnlyList<IParsingUnit> nextChallengers = emptyChallengers;
+                IReadOnlyList<IUnit> nextChallengers = emptyChallengers;
 
                 foreach (var challenger in challengers)
                 {
@@ -163,9 +163,9 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #endregion
 
-        #region IParsingBlock Members
+        #region IBlock Members
 
-        public IParsingUnit Head
+        public IUnit Head
         {
             get => _head;
             set
@@ -191,7 +191,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             }
         }
 
-        public void Capture(params IParsingUnit[] units)
+        public void Capture(params IUnit[] units)
         {
             this.CheckNotFinalized();
 
@@ -201,7 +201,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             }
         }
 
-        public bool Owns(IParsingUnit unit)
+        public bool Owns(IUnit unit)
         {
             if (unit == null)
             {
@@ -211,11 +211,11 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             return _owned.Contains(unit);
         }
 
-        public IReadOnlyList<IParsingUnit> Owned => _cachedOwned ?? _owned.ToList();
+        public IReadOnlyList<IUnit> Owned => _cachedOwned ?? _owned.ToList();
 
-        public IParsingNode GetSingleExitNode()
+        public INode GetSingleExitNode()
         {
-            return _owned.Where(x => x is ParsingNode).Cast<ParsingNode>().Single(x => x.Links.Count == 0);
+            return _owned.Where(x => x is Node).Cast<Node>().Single(x => x.Links.Count == 0);
         }
 
         #endregion

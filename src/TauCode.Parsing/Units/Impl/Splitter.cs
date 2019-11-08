@@ -1,22 +1,22 @@
 ﻿using System.Collections.Generic;
 
-namespace TauCode.Parsing.ParsingUnits.Impl
+namespace TauCode.Parsing.Units.Impl
 {
-    public class ParsingSplitter : ParsingUnitImpl, IParsingSplitter
+    public class Splitter : UnitImpl, ISplitter
     {
-        private readonly List<IParsingUnit> _ways;
+        private readonly List<IUnit> _ways;
 
-        public ParsingSplitter()
+        public Splitter()
         {
-            _ways = new List<IParsingUnit>();
+            _ways = new List<IUnit>();
         }
 
-        protected override IReadOnlyList<IParsingUnit> ProcessImpl(ITokenStream stream, IParsingContext context)
+        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
             // todo: sort _ways, so nodes like 'End' and (hypothetical) 'BlockEnd' go last; use a ctor sorting method for that.
             foreach (var way in _ways)
             {
-                IReadOnlyList<IParsingUnit> result = way.Process(stream, context);
+                IReadOnlyList<IUnit> result = way.Process(stream, context);
                 if (result != null)
                 {
                     return result;
@@ -26,7 +26,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             return null;
         }
 
-        public void AddWay(IParsingUnit way)
+        public void AddWay(IUnit way)
         {
             // todo checks
             _ways.Add(way);

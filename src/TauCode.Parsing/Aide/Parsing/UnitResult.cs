@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Parsing.Aide.Parsing
 {
-    public abstract class ParsingUnitResult
+    public abstract class UnitResult
     {
     }
 }

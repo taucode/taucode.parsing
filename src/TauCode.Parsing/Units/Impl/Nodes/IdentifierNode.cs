@@ -2,12 +2,12 @@
 using System.Diagnostics;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.ParsingUnits.Impl.Nodes
+namespace TauCode.Parsing.Units.Impl.Nodes
 {
     [DebuggerDisplay("<Identifier>")]
-    public class IdentifierNode : ParsingNode
+    public class IdentifierNode : Node
     {
-        public IdentifierNode(Action<IToken, IParsingContext> processor)
+        public IdentifierNode(Action<IToken, IContext> processor)
             : base(processor)
         {
         }

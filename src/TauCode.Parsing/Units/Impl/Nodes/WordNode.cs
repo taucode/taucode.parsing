@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
-using TauCode.Parsing.ParsingUnits.Impl;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tests.Units
+namespace TauCode.Parsing.Units.Impl.Nodes
 {
     [DebuggerDisplay("{" + nameof(Word) + "}")]
-    public class WordNode : ParsingNode
+    public class WordNode : Node
     {
-        public WordNode(string word, Action<IToken, IParsingContext> processor)
+        public WordNode(string word, Action<IToken, IContext> processor)
             : base(processor)
         {
             this.Word = word ?? throw new ArgumentNullException(nameof(word));
@@ -16,7 +15,8 @@ namespace TauCode.Parsing.Tests.Units
 
         public string Word { get; }
 
-        //public override IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context)
+        // todo: remove comments
+        //public override IReadOnlyList<IPa-rsingUnit> Process(ITokenStream stream, IPars-ingContext context)
         //{
         //    var token = stream.GetCurrentToken();
 

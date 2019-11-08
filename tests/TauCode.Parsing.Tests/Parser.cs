@@ -1,27 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.ParsingUnits;
-using TauCode.Parsing.ParsingUnits.Impl;
-using TauCode.Parsing.ParsingUnits.Impl.Nodes;
-using TauCode.Parsing.Tests.Units;
 using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Units;
+using TauCode.Parsing.Units.Impl;
+using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing.Tests
 {
     public class Parser : IParser
     {
-        private readonly IParsingUnit _head;
+        private readonly IUnit _head;
 
         public Parser()
         {
             _head = this.BuildTree();
         }
 
-        private IParsingUnit BuildTree()
+        private IUnit BuildTree()
         {
             // CREATE TABLE (
             var nodeCreate = new WordNode("CREATE", ParsingHelper.IdleTokenProcessor);
-            var createTableBlock = new ParsingBlock(nodeCreate);
+            var createTableBlock = new Block(nodeCreate);
             var nodeTable = new WordNode("TABLE", ParsingHelper.IdleTokenProcessor);
             var nodeTableName = new IdentifierNode((token, context) => context.AddResult(
                 //"table",
@@ -54,7 +53,7 @@ namespace TauCode.Parsing.Tests
             });
             columnName.AddLink(columnType);
 
-            var columnDefinition = new ParsingBlock(columnName);
+            var columnDefinition = new Block(columnName);
             columnDefinition.Capture(columnType);
 
             nodeLeftParen.AddLink(columnDefinition);
@@ -70,10 +69,10 @@ namespace TauCode.Parsing.Tests
             columnType.AddLink(rightParen);
 
             // end
-            rightParen.AddLink(EndParsingNode.Instance);
+            rightParen.AddLink(EndNode.Instance);
 
             // super-block.
-            var superBlock = new ParsingBlock(createTableBlock);
+            var superBlock = new Block(createTableBlock);
             superBlock.Capture(columnDefinition, columnComma, rightParen);
 
             superBlock.FinalizeUnit();
@@ -81,9 +80,9 @@ namespace TauCode.Parsing.Tests
             return superBlock;
         }
 
-        public IParsingContext Parse(IEnumerable<IToken> tokens)
+        public IContext Parse(IEnumerable<IToken> tokens)
         {
-            var context = new ParsingContext();
+            var context = new Context();
             var stream = new TokenStream(tokens);
             var current = _head;
 

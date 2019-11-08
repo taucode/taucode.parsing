@@ -1,12 +1,12 @@
 ﻿using System;
 using TauCode.Parsing.Aide.Tokens;
-using TauCode.Parsing.ParsingUnits.Impl;
+using TauCode.Parsing.Units.Impl;
 
 namespace TauCode.Parsing.Aide.Nodes
 {
-    public class WordAideNode : ParsingNode
+    public class WordAideNode : Node
     {
-        public WordAideNode(Action<IToken, IParsingContext> processor)
+        public WordAideNode(Action<IToken, IContext> processor)
             : base(processor)
         {
         }

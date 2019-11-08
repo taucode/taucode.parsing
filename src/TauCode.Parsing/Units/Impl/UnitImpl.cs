@@ -2,21 +2,21 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace TauCode.Parsing.ParsingUnits.Impl
+namespace TauCode.Parsing.Units.Impl
 {
     [DebuggerDisplay("Name = '{" + nameof(Name) + "}'")]
-    public abstract class ParsingUnitImpl : IParsingUnit
+    public abstract class UnitImpl : IUnit
     {
         #region Fields
 
         private string _name;
-        private IParsingBlock _owner;
+        private IBlock _owner;
 
         #endregion
 
         #region Constructor
 
-        internal ParsingUnitImpl()
+        internal UnitImpl()
         {
         }
 
@@ -44,7 +44,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #region Polymorph
 
-        protected abstract IReadOnlyList<IParsingUnit> ProcessImpl(ITokenStream stream, IParsingContext context);
+        protected abstract IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context);
 
         protected virtual void OnBeforeFinalize()
         {
@@ -58,7 +58,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #endregion
 
-        #region IParsingUnit Members
+        #region IUnit Members
 
         public string Name
         {
@@ -70,7 +70,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             }
         }
 
-        public IParsingBlock Owner
+        public IBlock Owner
         {
             get => _owner;
             internal set
@@ -112,7 +112,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             IsFinalized = true;
         }
 
-        public IReadOnlyList<IParsingUnit> Process(ITokenStream stream, IParsingContext context)
+        public IReadOnlyList<IUnit> Process(ITokenStream stream, IContext context)
         {
             this.CheckFinalized();
 

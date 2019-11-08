@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.ParsingUnits;
-using TauCode.Parsing.ParsingUnits.Impl.Nodes;
+using TauCode.Parsing.Units;
+using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing
 {
@@ -10,21 +10,21 @@ namespace TauCode.Parsing
     {
         #region Protected
 
-        protected IParsingUnit Head { get; private set; }
+        protected IUnit Head { get; private set; }
 
         #endregion
 
         #region Abstract
 
-        protected abstract IParsingUnit BuildTree();
+        protected abstract IUnit BuildTree();
 
         #endregion
 
         #region IParser Members
 
-        public IParsingContext Parse(IEnumerable<IToken> tokens)
+        public IContext Parse(IEnumerable<IToken> tokens)
         {
-            var context = new ParsingContext();
+            var context = new Context();
             var stream = new TokenStream(tokens);
 
             if (this.Head == null)
@@ -54,9 +54,9 @@ namespace TauCode.Parsing
                 }
                 else
                 {
-                    if (result.Count == 2 && result.Contains(EndParsingNode.Instance))
+                    if (result.Count == 2 && result.Contains(EndNode.Instance))
                     {
-                        result = result.Where(x => x != EndParsingNode.Instance).ToList();
+                        result = result.Where(x => x != EndNode.Instance).ToList();
                         if (result.Count != 1)
                         {
                             throw new NotImplementedException();

@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TauCode.Parsing.ParsingUnits.Impl.Nodes
+namespace TauCode.Parsing.Units.Impl.Nodes
 {
-    public class EndParsingNode : ParsingNode
+    public class EndNode : Node
     {
-        public static EndParsingNode Instance = new EndParsingNode();
+        public static EndNode Instance = new EndNode();
 
-        private EndParsingNode()
+        private EndNode()
             : base(ParsingHelper.IdleTokenProcessor)
         {
             this.Name = "End";
         }
 
-        protected override IReadOnlyList<IParsingUnit> ProcessImpl(ITokenStream stream, IParsingContext context)
+        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
             throw new NotImplementedException(); // todo should never be called
         }
@@ -23,7 +23,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl.Nodes
             throw new NotImplementedException(); // todo should never be called
         }
 
-        public override void AddLink(IParsingUnit linked)
+        public override void AddLink(IUnit linked)
         {
             throw new NotImplementedException(); // todo: cannot add links to end node
         }

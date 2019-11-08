@@ -2,17 +2,17 @@
 using TauCode.Parsing.Aide.Nodes;
 using TauCode.Parsing.Aide.Parsing;
 using TauCode.Parsing.Aide.Tokens;
-using TauCode.Parsing.ParsingUnits;
-using TauCode.Parsing.ParsingUnits.Impl;
-using TauCode.Parsing.ParsingUnits.Impl.Nodes;
+using TauCode.Parsing.Units;
+using TauCode.Parsing.Units.Impl;
+using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing.Aide
 {
     public class AideParser : ParserBase
     {
-        protected override IParsingUnit BuildTree()
+        protected override IUnit BuildTree()
         {
-            var end = EndParsingNode.Instance;
+            var end = EndNode.Instance;
             var blockDefinitionBlock = this.CreateBlockDefinitionBlock(end);
 
             //beginBlock.Add(nameDefsBlock);
@@ -21,8 +21,8 @@ namespace TauCode.Parsing.Aide
 
             //nameDefsBlock.GetSingleExitNode().AddLink(end);
 
-            IParsingSplitter root;
-            var superBlock = new ParsingBlock(root = new ParsingSplitter
+            ISplitter root;
+            var superBlock = new Block(root = new Splitter
             {
                 Name = "root",
             })
@@ -39,13 +39,13 @@ namespace TauCode.Parsing.Aide
             return superBlock;
         }
 
-        private IParsingBlock CreateBlockDefinitionBlock(EndParsingNode endNode)
+        private IBlock CreateBlockDefinitionBlock(EndNode endNode)
         {
-            IParsingNode head;
-            var blockDefinitionBlock = new ParsingBlock(head = new SyntaxElementAideNode(
+            INode head;
+            var blockDefinitionBlock = new Block(head = new SyntaxElementAideNode(
                 SyntaxElement.BeginBlock, (token, context) =>
                 {
-                    var blockParsingResult = new BlockParsingResult();
+                    var blockParsingResult = new BlockResult();
                     context.AddResult(blockParsingResult);
                 })
             {
@@ -57,20 +57,20 @@ namespace TauCode.Parsing.Aide
 
             var nameDefsBlock = this.CreateNameDefinitionsBlock((context, name) =>
             {
-                var blockParsingResult = context.GetLastResult<BlockParsingResult>();
+                var blockParsingResult = context.GetLastResult<BlockResult>();
                 blockParsingResult.Name.Add(name);
             });
             nameDefsBlock.Name = "NameDefsBlock";
 
             head.AddLink(nameDefsBlock);
 
-            var contentSplitter = new ParsingSplitter();
+            var contentSplitter = new Splitter();
             nameDefsBlock.GetSingleExitNode().AddLink(contentSplitter);
 
             // word node
             var wordNode = new WordAideNode((token, context) =>
             {
-                var blockResult = context.GetLastResult<BlockParsingResult>();
+                var blockResult = context.GetLastResult<BlockResult>();
                 var wordToken = (WordAideToken)token;
                 blockResult.AddUnitResult(new WordNodeResult(wordToken.Word));
                 throw new NotImplementedException();
@@ -80,7 +80,7 @@ namespace TauCode.Parsing.Aide
             contentSplitter.AddWay(wordNode);
 
             // beforeEndBlockSplitter
-            var beforeEndBlockSplitter = new ParsingSplitter();
+            var beforeEndBlockSplitter = new Splitter();
 
 
             wordNode.AddLink(beforeEndBlockSplitter);
@@ -104,7 +104,7 @@ namespace TauCode.Parsing.Aide
             return blockDefinitionBlock;
         }
 
-        private IParsingBlock CreateNameDefinitionsBlock(Action<IParsingContext, string> nameAdder)
+        private IBlock CreateNameDefinitionsBlock(Action<IContext, string> nameAdder)
         {
             var leftParen = new SyntaxElementAideNode(
                 SyntaxElement.LeftParenthesis,
@@ -140,7 +140,7 @@ namespace TauCode.Parsing.Aide
             nameRef.AddLink(rightParen);
             comma.AddLink(nameRef);
 
-            var block = new ParsingBlock(leftParen);
+            var block = new Block(leftParen);
             block.Capture(nameRef, comma, rightParen);
 
             return block;

@@ -1,21 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TauCode.Parsing.ParsingUnits.Impl
+namespace TauCode.Parsing.Units.Impl
 {
-    public abstract class ParsingNode : ParsingUnitImpl, IParsingNode
+    public abstract class Node : UnitImpl, INode
     {
         #region Fields
 
-        private readonly List<IParsingUnit> _links;
+        private readonly List<IUnit> _links;
 
         #endregion
 
         #region Constructor
 
-        protected ParsingNode(Action<IToken, IParsingContext> processor)
+        protected Node(Action<IToken, IContext> processor)
         {
-            _links = new List<IParsingUnit>();
+            _links = new List<IUnit>();
             this.Processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
@@ -23,7 +23,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #region Protected
 
-        protected Action<IToken, IParsingContext> Processor { get; }
+        protected Action<IToken, IContext> Processor { get; }
 
         #endregion
 
@@ -35,7 +35,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #region Overridden
 
-        protected override IReadOnlyList<IParsingUnit> ProcessImpl(ITokenStream stream, IParsingContext context)
+        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
             var token = stream.GetCurrentToken();
             if (this.IsAcceptableToken(token))
@@ -57,7 +57,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
             foreach (var link in _links)
             {
-                if (link is IParsingNode node && node.IsBlockHeadNode())
+                if (link is INode node && node.IsBlockHeadNode())
                 {
                     throw new NotImplementedException(); // todo: cannot link to block's head node; link to block instead.
                 }
@@ -66,9 +66,9 @@ namespace TauCode.Parsing.ParsingUnits.Impl
 
         #endregion
 
-        #region IParsingNode Members
+        #region INode Members
 
-        public virtual void AddLink(IParsingUnit linked)
+        public virtual void AddLink(IUnit linked)
         {
             this.CheckNotFinalized();
 
@@ -82,7 +82,7 @@ namespace TauCode.Parsing.ParsingUnits.Impl
             _links.Add(linked);
         }
 
-        public IReadOnlyList<IParsingUnit> Links => _links;
+        public IReadOnlyList<IUnit> Links => _links;
 
         #endregion
     }
