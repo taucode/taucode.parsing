@@ -2,12 +2,12 @@
 {
     public enum SyntaxElement
     {
-        BeginBlock = 1,
-        EndBlock,
+        BeginBlockDefinition = 1,
+        EndBlockDefinition,
         Link,
         CloneBlock,
         Identifier,
-        Block,
+        BlockReference,
         Idle,
         WrongWay,
         Comma,
@@ -18,5 +18,6 @@
         RightCurlyBracket,
         LeftBracket,
         RightBracket,
+        NotExisting,
     }
 }

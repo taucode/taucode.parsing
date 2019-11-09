@@ -59,7 +59,7 @@ CREATE TABLE <table_name>\Identifier \(
             token = tokens[4];
             Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
             syntaxElementToken = (SyntaxElementAideToken)token;
-            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.Block));
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.BlockReference));
             Assert.That(syntaxElementToken.Name, Is.EqualTo("column_definition"));
 
             // ,
@@ -73,7 +73,7 @@ CREATE TABLE <table_name>\Identifier \(
             token = tokens[6];
             Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
             syntaxElementToken = (SyntaxElementAideToken)token;
-            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.Block));
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.BlockReference));
             Assert.That(syntaxElementToken.Name, Is.EqualTo("constraint_definitions"));
 
             // )

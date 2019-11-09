@@ -186,12 +186,12 @@ namespace TauCode.Parsing.Aide
 
             switch (alias)
             {
-                case "BeginBlock":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.BeginBlock, tokenName);
+                case "BeginBlockDefinition":
+                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.BeginBlockDefinition, tokenName);
                     break;
 
-                case "EndBlock":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.EndBlock, tokenName);
+                case "EndBlockDefinition":
+                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.EndBlockDefinition, tokenName);
                     break;
 
                 case "CloneBlock":
@@ -202,8 +202,8 @@ namespace TauCode.Parsing.Aide
                     aliasedToken = new SyntaxElementAideToken(SyntaxElement.Identifier, tokenName);
                     break;
 
-                case "Block":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.Block, tokenName);
+                case "BlockReference":
+                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.BlockReference, tokenName);
                     break;
 
                 case "Link":

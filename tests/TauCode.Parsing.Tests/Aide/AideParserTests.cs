@@ -15,66 +15,66 @@ namespace TauCode.Parsing.Tests.Aide
 @"
 /****** Create table ******/
 
-\BeginBlock(:create_table)
+\BeginBlockDefinition(:create_table, :top)
 
 CREATE TABLE <table_name>\Identifier \(
-    <column_definition>\Block \Link(:table_closing) <comma>\, \Link(:column_definition)
-    <constraint_definitions>\Block
+    <column_definition>\BlockReference \Link(:table_closing) <comma>\, \Link(:column_definition)
+    <constraint_definitions>\BlockReference
 <table_closing>\)
 
-\EndBlock
+\EndBlockDefinition
 
 
 /****** Column Definition ******/
 
-\BeginBlock(:column_definition)
+\BeginBlockDefinition(:column_definition)
 
-<column_name>\Identifier <type_name>\Identifier \Link(:idle) <optional_nullability>[{ <null>NULL | NOT <not_null>NULL }] <idle>\Idle
+<column_name>\Identifier <type_name>\Identifier \Link(:idle) <optional_nullability>[ NULL /*{ <null>NULL | NOT <not_null>NULL }*/] <idle>\Idle
 
 
 /****** Constraint Definitions ******/
 
-\BeginBlock(:constraint_definitions)
+\BeginBlockDefinition(:constraint_definitions)
 
-<begin>CONSTRAINT { <primary_key>\Block | <foreign_key>\Block } { \Link(:create_table, :table_closing) | <comma>\, \Link(:begin) }
+<begin>CONSTRAINT { <primary_key>\BlockReference | <foreign_key>\BlockReference } { \Link(:create_table, :table_closing) | <comma>\, \Link(:begin) }
 
-\EndBlock
+\EndBlockDefinition
 
 
 /****** Primary Key ******/
 
-\BeginBlock(:primary_key)
+\BeginBlockDefinition(:primary_key)
 
-PRIMARY KEY <pk_name>\Identifier <pk_columns>\Block
+PRIMARY KEY <pk_name>\Identifier <pk_columns>\BlockReference
 
-\EndBlock
+\EndBlockDefinition
 
 
 /****** Primary Key Columns ******/
 
-\BeginBlock(:pk_columns)
+\BeginBlockDefinition(:pk_columns)
 
 \( <pk_column_name>\Identifier [ { <asc>ASC | <desc>DESC } ] { \, \Link(:pk_column_name) | \) }
 
-\EndBlock
+\EndBlockDefinition
 
 
 /****** Foreign Key ******/
 
-\BeginBlock(:foreign_key)
+\BeginBlockDefinition(:foreign_key)
 
-FOREIGN KEY <fk_name>\Identifier <fk_columns>\Block REFERENCES <fk_referenced_columns>\Block
+FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_referenced_columns>\BlockReference
 
-\EndBlock
+\EndBlockDefinition
 
 
 /****** Foreign Key Columns ******/
 
-\BeginBlock(:fk_columns)
+\BeginBlockDefinition(:fk_columns)
 
 \( <fk_column_name>\Identifier { \, \Link(:fk_column_name) | \) }
 
-\EndBlock
+\EndBlockDefinition
 
 
 /****** Foreign Key Referenced Columns ******/
