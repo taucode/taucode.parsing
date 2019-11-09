@@ -6,6 +6,7 @@
         T GetLastResult<T>();
         object[] ToArray();
         int Version { get; }
+        int ResultCount { get; }
         void Modify();
     }
 }

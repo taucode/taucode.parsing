@@ -3,12 +3,12 @@ using System.Linq;
 
 namespace TauCode.Parsing.Aide.Parsing
 {
-    public class BlockDefinitionResult : UnitResult
+    public class BlockContentResult : UnitResult
     {
         private readonly List<UnitResult> _unitResults;
 
-        public BlockDefinitionResult()
-            :base("todo")
+        public BlockContentResult()
+            : base("todo")
         {
             this.Arguments = new NameReferenceCollector();
             _unitResults = new List<UnitResult>();

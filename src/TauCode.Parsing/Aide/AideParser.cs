@@ -33,7 +33,7 @@ namespace TauCode.Parsing.Aide
             var blockDefinitionBlock = new Block(head = new SyntaxElementAideNode(
                 SyntaxElement.BeginBlockDefinition, (token, context) =>
                 {
-                    var blockParsingResult = new BlockDefinitionResult();
+                    var blockParsingResult = new BlockContentResult();
                     context.AddResult(blockParsingResult);
                 })
             {
@@ -45,7 +45,7 @@ namespace TauCode.Parsing.Aide
 
             var nameRefsBlock = this.CreateNameReferencesInParenthesesBlock((context, name) =>
             {
-                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
                 blockDefinitionResult.Arguments.Add(name);
                 context.Modify();
             });
@@ -180,7 +180,7 @@ namespace TauCode.Parsing.Aide
             // word node
             var wordNode = new WordAideNode((token, context) =>
             {
-                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
                 var wordToken = (WordAideToken)token;
                 blockDefinitionResult.AddUnitResult(new WordNodeResult(wordToken.Word, wordToken.Name));
                 context.Modify();
@@ -194,7 +194,7 @@ namespace TauCode.Parsing.Aide
                 SyntaxElement.Identifier,
                 (token, context) =>
                 {
-                    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                    var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
                     blockDefinitionResult.AddUnitResult(new IdentifierNodeResult(null));
                     context.Modify();
                 })
@@ -205,7 +205,7 @@ namespace TauCode.Parsing.Aide
             // symbol node
             var symbolNode = new SymbolAideNode((token, context) =>
             {
-                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
                 var symbolToken = (SymbolAideToken)token;
                 blockDefinitionResult.AddUnitResult(new SymbolNodeResult(symbolToken.Value, null));
                 context.Modify();
@@ -219,7 +219,7 @@ namespace TauCode.Parsing.Aide
                 SyntaxElement.BlockReference,
                 (token, context) =>
                 {
-                    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                    var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
                     var syntaxElementAideToken = (SyntaxElementAideToken)token;
                     blockDefinitionResult.AddUnitResult(new BlockReferenceResult(syntaxElementAideToken.Name));
                     context.Modify();
@@ -274,7 +274,7 @@ namespace TauCode.Parsing.Aide
                 SyntaxElement.Link,
                 (token, context) =>
                 {
-                    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                    var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
                     var syntaxElementAideToken = (SyntaxElementAideToken)token;
                     blockDefinitionResult.AddUnitResult(new LinkResult(null)); // todo
                     context.Modify();
@@ -282,7 +282,7 @@ namespace TauCode.Parsing.Aide
 
             var nameRefs = this.CreateNameReferencesInParenthesesBlock((context, s) =>
             {
-                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
                 var linkResult = (LinkResult)blockDefinitionResult.GetLastUnitResult<LinkResult>();
                 linkResult.AddArgument(s);
                 context.Modify();
