@@ -4,7 +4,8 @@ namespace TauCode.Parsing.Aide.Parsing
 {
     public class SymbolNodeResult : NodeResult
     {
-        public SymbolNodeResult(SymbolValue value)
+        public SymbolNodeResult(SymbolValue value, string tag)
+            : base(tag)
         {
             this.Value = value;
         }

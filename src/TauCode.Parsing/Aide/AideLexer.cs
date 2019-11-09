@@ -206,11 +206,6 @@ namespace TauCode.Parsing.Aide
                     aliasedToken = new SyntaxElementAideToken(SyntaxElement.Block, tokenName);
                     break;
 
-                // todo
-                //case "End":
-                //    aliasedToken = new SyntaxElementAideToken(SyntaxElement.End, tokenName);
-                //    break;
-
                 case "Link":
                     aliasedToken = new SyntaxElementAideToken(SyntaxElement.Link, tokenName);
                     break;
@@ -451,13 +446,10 @@ namespace TauCode.Parsing.Aide
                 }
                 else if (c == '[')
                 {
-                    if (upcomingTokenName != null)
-                    {
-                        throw new NotImplementedException(); // error
-                    }
-
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.LeftBracket, null);
+                    var token = new SyntaxElementAideToken(SyntaxElement.LeftBracket, upcomingTokenName);
+                    upcomingTokenName = null;
+
                     list.Add(token);
                 }
                 else if (c == ']')

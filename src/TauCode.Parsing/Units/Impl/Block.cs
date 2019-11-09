@@ -106,9 +106,14 @@ namespace TauCode.Parsing.Units.Impl
                     }
                     else
                     {
-                        var debug = stream.GetCurrentToken();
+                        var debug = stream.GetCurrentToken(); // todo
                         throw new NotImplementedException(); // todo: context modified, but failed to end parsing => something bad happened.
                     }
+                }
+
+                if (ParsingHelper.IsEndResult(challengers))
+                {
+                    return challengers;
                 }
 
                 IReadOnlyList<IUnit> nextChallengers = emptyChallengers;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace TauCode.Parsing.Aide.Parsing
 {
@@ -17,6 +18,11 @@ namespace TauCode.Parsing.Aide.Parsing
         public void AddUnitResult(UnitResult result)
         {
             _unitResults.Add(result);
+        }
+
+        public T GetLastUnitResult<T>() where T : UnitResult
+        {
+            return (T)_unitResults.Last(); // todo: optimize
         }
     }
 }

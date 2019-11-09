@@ -8,7 +8,6 @@
         CloneBlock,
         Identifier,
         Block,
-        //End,
         Idle,
         WrongWay,
         Comma,

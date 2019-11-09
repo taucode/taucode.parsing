@@ -2,7 +2,8 @@
 {
     public class WordNodeResult : NodeResult
     {
-        public WordNodeResult(string word)
+        public WordNodeResult(string word, string tag)
+            : base(tag)
         {
             this.Word = word;
         }

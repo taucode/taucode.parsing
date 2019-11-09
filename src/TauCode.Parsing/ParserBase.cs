@@ -32,47 +32,55 @@ namespace TauCode.Parsing
                 this.Head = this.BuildTree();
             }
 
-            var current = this.Head;
-
-            do
+            while (true)
             {
-                var result = current.Process(stream, context);
-                if (result == null)
+                if (stream.IsEndOfStream())
                 {
-                    throw new NotImplementedException();
+                    return context;
                 }
-                else if (result.Count == 1)
+
+                var current = this.Head;
+
+                while (true)
                 {
-                    if (ParsingHelper.IsEndResult(result))
-                    {
-                        return context;
-                    }
-                    else
+                    var result = current.Process(stream, context);
+                    if (result == null)
                     {
                         throw new NotImplementedException();
                     }
-                }
-                else
-                {
-                    if (result.Count == 2 && result.Contains(EndNode.Instance))
+                    else if (result.Count == 1)
                     {
-                        result = result.Where(x => x != EndNode.Instance).ToList();
-                        if (result.Count != 1)
+                        if (ParsingHelper.IsEndResult(result))
+                        {
+                            // start again
+                            break;
+                        }
+                        else
                         {
                             throw new NotImplementedException();
                         }
-
-                        continue;
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        if (result.Count == 2 && result.Contains(EndNode.Instance))
+                        {
+                            result = result.Where(x => x != EndNode.Instance).ToList();
+                            if (result.Count != 1)
+                            {
+                                throw new NotImplementedException();
+                            }
+
+                            continue;
+                        }
+                        else
+                        {
+                            throw new NotImplementedException();
+                        }
                     }
+
+                    throw new NotImplementedException();
                 }
-
-                throw new NotImplementedException();
-
-            } while (true);
+            }
         }
 
         #endregion

@@ -29,7 +29,7 @@ CREATE TABLE <table_name>\Identifier \(
 
 \BeginBlock(:column_definition)
 
-<column_name>\Identifier <type_name>\Identifier \Link(:idle) [{ <null>NULL | NOT <not_null>NULL }] <idle>\Idle
+<column_name>\Identifier <type_name>\Identifier \Link(:idle) <optional_nullability>[{ <null>NULL | NOT <not_null>NULL }] <idle>\Idle
 
 
 /****** Constraint Definitions ******/

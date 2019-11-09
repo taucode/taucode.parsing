@@ -1,8 +1,8 @@
 ﻿namespace TauCode.Parsing.Aide.Parsing
 {
-    public class IdentifierNodeResult : NodeResult
+    public class BlockResult : UnitResult
     {
-        public IdentifierNodeResult(string tag)
+        public BlockResult(string tag)
             : base(tag)
         {
         }
