@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Units.Impl
 {
+    // todo: clean up
     public abstract class Node : UnitImpl, INode
     {
         #region Fields
@@ -13,40 +14,47 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructor
 
-        protected Node(Action<IToken, IContext> processor)
+        private Node(/*Action<IToken, IContext> processor*/)
+            : base(null)
         {
             _links = new List<IUnit>();
-            this.Processor = processor ?? throw new ArgumentNullException(nameof(processor));
+            //this.Processor = processor ?? throw new ArgumentNullException(nameof(processor));
+        }
+
+        protected Node(string name)
+            : this()
+        {
+            this.Name = name;
         }
 
         #endregion
 
         #region Protected
 
-        protected Action<IToken, IContext> Processor { get; }
+        //protected Action<IToken, IContext> Processor { get; }
 
         #endregion
 
         #region Abstract
 
-        protected abstract bool IsAcceptableToken(IToken token);
+        //protected abstract bool IsAcceptableToken(IToken token);
 
         #endregion
 
         #region Overridden
 
-        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
-        {
-            var token = stream.GetCurrentToken();
-            if (this.IsAcceptableToken(token))
-            {
-                this.Processor(token, context);
-                stream.AdvanceStreamPosition();
-                return this.Links;
-            }
+        //protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
+        //{
+        //    var token = stream.GetCurrentToken();
+        //    if (this.IsAcceptableToken(token))
+        //    {
+        //        this.Processor(token, context);
+        //        stream.AdvanceStreamPosition();
+        //        return this.Links;
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
         protected override void OnBeforeFinalize()
         {
@@ -57,9 +65,9 @@ namespace TauCode.Parsing.Units.Impl
 
             foreach (var link in _links)
             {
-                if (link is INode node && node.IsBlockHeadNode())
+                if (link is INode node && node.IsBlockHeadNode() && link.Owner != this.Owner)
                 {
-                    throw new NotImplementedException(); // todo: cannot link to block's head node; link to block instead.
+                    throw new NotImplementedException(); // todo: cannot link to other block's head node; link to block instead.
                 }
             }
         }

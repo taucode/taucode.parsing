@@ -5,18 +5,29 @@ using TauCode.Parsing.Tokens;
 namespace TauCode.Parsing.Units.Impl.Nodes
 {
     [DebuggerDisplay("{" + nameof(Value) + "}")]
-    public class SymbolNode : Node
+    public class SymbolNode : ProcessingNode
     {
-        public SymbolNode(SymbolValue value, Action<IToken, IContext> processor)
-            : base(processor)
+        private SymbolNode(SymbolValue value, Action<IToken, IContext> processor)
+            : base(processor, null)
         {
             this.Value = value;
         }
 
-        public SymbolNode(char c, Action<IToken, IContext> processor)
+        public SymbolNode(SymbolValue value, Action<IToken, IContext> processor, string name)
+            : base(processor, name)
+        {
+            this.Value = value;
+        }
+
+        private SymbolNode(char c, Action<IToken, IContext> processor)
             : this(LexerHelper.SymbolTokenFromChar(c), processor)
         {
+        }
 
+        public SymbolNode(char c, Action<IToken, IContext> processor, string name)
+            : this(LexerHelper.SymbolTokenFromChar(c), processor)
+        {
+            this.Name = name;
         }
 
         public SymbolValue Value { get; }

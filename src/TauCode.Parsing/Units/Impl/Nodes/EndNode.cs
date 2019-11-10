@@ -8,17 +8,11 @@ namespace TauCode.Parsing.Units.Impl.Nodes
         public static EndNode Instance = new EndNode();
 
         private EndNode()
-            : base(ParsingHelper.IdleTokenProcessor)
+            : base("End")
         {
-            this.Name = "End";
         }
 
         protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
-        {
-            throw new NotImplementedException(); // todo should never be called
-        }
-
-        protected override bool IsAcceptableToken(IToken token)
         {
             throw new NotImplementedException(); // todo should never be called
         }

@@ -1,13 +1,18 @@
 ﻿using System;
 using TauCode.Parsing.Aide.Tokens;
-using TauCode.Parsing.Units.Impl;
+using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing.Aide.Nodes
 {
-    public class SymbolAideNode : Node
+    public class SymbolAideNode : ProcessingNode
     {
-        public SymbolAideNode(Action<IToken, IContext> processor)
-            : base(processor)
+        private SymbolAideNode(Action<IToken, IContext> processor)
+            : base(processor, null)
+        {
+        }
+
+        public SymbolAideNode(Action<IToken, IContext> processor, string name)
+            : base(processor, name)
         {
         }
 

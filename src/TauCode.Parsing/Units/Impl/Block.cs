@@ -18,13 +18,20 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructors
 
-        public Block()
+        private Block()
+            : base(null)
         {
             _owned = new HashSet<IUnit>();
             _comparer = Comparer<IUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
         }
 
-        public Block(IUnit head)
+        public Block(string name)
+            : this()
+        {
+            this.Name = name;
+        }
+
+        private Block(IUnit head)
             : this()
         {
             if (head == null)
@@ -34,6 +41,12 @@ namespace TauCode.Parsing.Units.Impl
 
             this.Capture(head);
             this.Head = head;
+        }
+
+        public Block(IUnit head, string name)
+            : this(head)
+        {
+            this.Name = name;
         }
 
         #endregion

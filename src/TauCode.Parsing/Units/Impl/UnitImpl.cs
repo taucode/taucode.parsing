@@ -16,8 +16,14 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructor
 
-        internal UnitImpl()
+        // todo: temp. just to force all names.
+        private UnitImpl()
         {
+        }
+
+        protected UnitImpl(string name)
+        {
+            this.Name = name;
         }
 
         #endregion

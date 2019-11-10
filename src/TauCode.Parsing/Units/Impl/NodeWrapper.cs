@@ -14,7 +14,8 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructor
 
-        public NodeWrapper()
+        public NodeWrapper(string name)
+            : base(name)
         {
             _deferredLinks = new List<IUnit>();
         }

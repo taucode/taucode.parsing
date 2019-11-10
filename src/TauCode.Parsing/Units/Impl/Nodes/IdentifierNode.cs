@@ -5,10 +5,15 @@ using TauCode.Parsing.Tokens;
 namespace TauCode.Parsing.Units.Impl.Nodes
 {
     [DebuggerDisplay("<Identifier>")]
-    public class IdentifierNode : Node
+    public class IdentifierNode : ProcessingNode
     {
-        public IdentifierNode(Action<IToken, IContext> processor)
-            : base(processor)
+        private IdentifierNode(Action<IToken, IContext> processor)
+            : base(processor, null)
+        {
+        }
+
+        public IdentifierNode(Action<IToken, IContext> processor, string name)
+            : base(processor, name)
         {
         }
 

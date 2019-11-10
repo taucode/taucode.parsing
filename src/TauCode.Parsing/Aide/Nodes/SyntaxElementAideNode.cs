@@ -1,13 +1,20 @@
 ﻿using System;
 using TauCode.Parsing.Aide.Tokens;
-using TauCode.Parsing.Units.Impl;
+using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing.Aide.Nodes
 {
-    public class SyntaxElementAideNode : Node
+    public class SyntaxElementAideNode : ProcessingNode
     {
-        public SyntaxElementAideNode(SyntaxElement syntaxElement, Action<IToken, IContext> processor)
-            : base(processor)
+        // todo: get rid of private ctors, here & anywhere.
+        private SyntaxElementAideNode(SyntaxElement syntaxElement, Action<IToken, IContext> processor)
+            : base(processor, null)
+        {
+            this.SyntaxElement = syntaxElement;
+        }
+
+        public SyntaxElementAideNode(SyntaxElement syntaxElement, Action<IToken, IContext> processor, string name)
+            : base(processor, name)
         {
             this.SyntaxElement = syntaxElement;
         }
