@@ -66,6 +66,8 @@ namespace TauCode.Parsing
             return (T)_results.Last();
         }
 
+        public int ResultCount => _results.Count;
+
         public object[] ToArray()
         {
             return _results.ToArray();
