@@ -78,7 +78,8 @@ namespace TauCode.Parsing.Units.Impl
 
         public virtual void AddLink(IUnit linked)
         {
-            this.CheckNotFinalized();
+            // todo: get it back asap!
+            //this.CheckNotFinalized();
 
             if (linked == null)
             {

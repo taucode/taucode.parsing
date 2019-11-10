@@ -36,7 +36,7 @@ namespace TauCode.Parsing.Units.Impl
                 throw new NotImplementedException();
             }
 
-            if (_deferredLinks.Count == 0)
+            if (_deferredLinks.Count == 0 && _internalNode.Links.Count == 0)
             {
                 throw new NotImplementedException();
             }
