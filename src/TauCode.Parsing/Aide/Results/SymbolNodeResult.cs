@@ -1,6 +1,6 @@
 ﻿using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Aide.Parsing
+namespace TauCode.Parsing.Aide.Results
 {
     public class SymbolNodeResult : NodeResult
     {

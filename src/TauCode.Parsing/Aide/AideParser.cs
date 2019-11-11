@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using TauCode.Parsing.Aide.Nodes;
-using TauCode.Parsing.Aide.Parsing;
+using TauCode.Parsing.Aide.Results;
 using TauCode.Parsing.Aide.Tokens;
 using TauCode.Parsing.Units;
 using TauCode.Parsing.Units.Impl;
@@ -9,18 +9,23 @@ using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing.Aide
 {
-    // todo: cleanup
     public class AideParser : ParserBase
     {
         protected override IUnit BuildTree()
         {
+            var head = new SplittingNode("Node: super splitter");
             var end = EndNode.Instance;
             var blockDefinitionBlock = this.CreateBlockDefinitionBlock(end);
+            var cloneBlockBlock = this.CreateCloneBlockBlock(end);
 
-            var superBlock = new Block("superBlock");
+            var superBlock = new Block(head, "superBlock");
+            head.AddLink(blockDefinitionBlock);
+            head.AddLink(cloneBlockBlock);
 
-            superBlock.Capture(blockDefinitionBlock, end);
-            superBlock.Head = blockDefinitionBlock;
+            superBlock.Capture(
+                blockDefinitionBlock,
+                cloneBlockBlock,
+                end);
 
             superBlock.FinalizeUnit();
             return superBlock;
@@ -34,15 +39,15 @@ namespace TauCode.Parsing.Aide
                     SyntaxElement.BeginBlockDefinition,
                     (token, context) =>
                     {
-                        var blockParsingResult = new BlockContentResult();
-                        context.AddResult(blockParsingResult);
+                        var blockDefinitionResult = new BlockDefinitionResult();
+                        context.AddResult(blockDefinitionResult);
                     },
                     "Node: BlockDefinition"),
                 "Block: BlockDefinition Block");
 
             var nameRefsBlock = this.CreateNameReferencesInParenthesesBlock((context, name) =>
             {
-                var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
+                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
                 blockDefinitionResult.Arguments.Add(name);
                 context.Modify();
             });
@@ -53,33 +58,35 @@ namespace TauCode.Parsing.Aide
             var blockContentBlock = this.CreateBlockContentBlock(
                 out var outputSplitter,
                 out var optionalInputWrapper,
-                out var optionalOutputWrapper);
+                out var optionalOutputWrapper,
+                out var alternativesInputWrapper,
+                out var alternativesOutputWrapper);
 
-            var optionalBlock = this.CreateOptionalBlock(out var blockInputNodeWrapper, out var blockOutputNodeWrapper);
+            nameRefsBlock.GetSingleExitNode().AddLink(blockContentBlock);
+
+            // deal with optional
+            var optionalBlock = this.CreateOptionalBlock(
+                out var blockInputNodeWrapperForOptional,
+                out var blockOutputNodeWrapperForOptional);
 
             optionalInputWrapper.InternalNode = (INode)optionalBlock.Head;
             optionalOutputWrapper.InternalNode = optionalBlock.GetSingleExitNode();
 
-            blockInputNodeWrapper.InternalNode = (INode)blockContentBlock.Head;
-            blockOutputNodeWrapper.InternalNode =
+            blockInputNodeWrapperForOptional.InternalNode = (INode)blockContentBlock.Head;
+            blockOutputNodeWrapperForOptional.InternalNode =
                 (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
 
-            nameRefsBlock.GetSingleExitNode().AddLink(blockContentBlock);
+            // deal with alternatives
+            var alternativesBlock = this.CreateAlternativesBlock(
+                out var blockInputNodeWrapperForAlternatives,
+                out var blockOutputNodeWrapperForAlternatives);
 
-            //var dummyNode1 = new SyntaxElementAideNode(
-            //    SyntaxElement.NotExisting, 
-            //    (token, context) => throw new NotImplementedException(),
-            //    "Node: dummyNode1");
+            alternativesInputWrapper.InternalNode = (INode)alternativesBlock.Head;
+            alternativesOutputWrapper.InternalNode = alternativesBlock.GetSingleExitNode();
 
-            //var dummyNode2 = new SyntaxElementAideNode(
-            //    SyntaxElement.NotExisting, 
-            //    (token, context) => throw new NotImplementedException(),
-            //    "Node: dummyNode2");
-
-            //optionalInputWrapper.InternalNode = dummyNode1;
-            //optionalOutputWrapper.InternalNode = dummyNode2;
-
-            //optionalInputWrapper.AddDeferredLink(optionalOutputWrapper);
+            blockInputNodeWrapperForAlternatives.InternalNode = (INode)blockContentBlock.Head;
+            blockOutputNodeWrapperForAlternatives.InternalNode =
+                (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
 
             // endBlockDefinitionNode
             var endBlockNode = new SyntaxElementAideNode(
@@ -93,9 +100,8 @@ namespace TauCode.Parsing.Aide
             blockDefinitionBlock.Capture(
                 nameRefsBlock,
                 blockContentBlock,
-                //dummyNode1,
-                //dummyNode2,
                 optionalBlock,
+                alternativesBlock,
                 endBlockNode);
 
             endBlockNode.AddLink(endNode);
@@ -103,10 +109,43 @@ namespace TauCode.Parsing.Aide
             return blockDefinitionBlock;
         }
 
+        private IBlock CreateCloneBlockBlock(EndNode endNode)
+        {
+            INode head;
+            var block = new Block(
+                head = new SyntaxElementAideNode(
+                    SyntaxElement.CloneBlock,
+                    (token, context) =>
+                    {
+                        var cloneResult = new CloneBlockResult();
+                        context.AddResult(cloneResult);
+                    },
+                    "Node: CloneBlock"),
+                "Block: CloneBlock Block");
+
+            var nameRefsBlock = this.CreateNameReferencesInParenthesesBlock((context, name) =>
+            {
+                var cloneBlockResult = context.GetLastResult<CloneBlockResult>();
+                cloneBlockResult.Arguments.Add(name);
+                context.Modify();
+            });
+            nameRefsBlock.Name = "Block: Name Refs for Clone Block block";
+
+            head.AddLink(nameRefsBlock);
+            nameRefsBlock.GetSingleExitNode().AddLink(endNode);
+
+            // adding owned nodes to block
+            block.Capture(nameRefsBlock);
+
+            return block;
+        }
+
         private IBlock CreateBlockContentBlock(
             out SplittingNode outputSplitter,
             out INodeWrapper optionalInputWrapper,
-            out INodeWrapper optionalOutputWrapper)
+            out INodeWrapper optionalOutputWrapper,
+            out INodeWrapper alternativesInputWrapper,
+            out INodeWrapper alternativesOutputWrapper)
         {
             var inputSplitter = new SplittingNode("Node: starting splitter of block content");
             var block = new Block(inputSplitter, "Block: Block content");
@@ -115,9 +154,9 @@ namespace TauCode.Parsing.Aide
             var wordNode = new WordAideNode(
                 (token, context) =>
                 {
-                    var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
+                    var content = context.GetCurrentContent();
                     var wordToken = (WordAideToken)token;
-                    blockDefinitionResult.AddUnitResult(new WordNodeResult(wordToken.Word, wordToken.Name));
+                    content.AddUnitResult(new WordNodeResult(wordToken.Word, wordToken.Name));
                     context.Modify();
                 },
                 "Node: Word within block");
@@ -127,8 +166,8 @@ namespace TauCode.Parsing.Aide
                 SyntaxElement.Identifier,
                 (token, context) =>
                 {
-                    var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
-                    blockDefinitionResult.AddUnitResult(new IdentifierNodeResult(null));
+                    var content = context.GetCurrentContent();
+                    content.AddUnitResult(new IdentifierNodeResult(null));
                     context.Modify();
                 },
                 "Node: Identifier within block");
@@ -137,9 +176,9 @@ namespace TauCode.Parsing.Aide
             var symbolNode = new SymbolAideNode(
                 (token, context) =>
                 {
-                    var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
+                    var content = context.GetCurrentContent();
                     var symbolToken = (SymbolAideToken)token;
-                    blockDefinitionResult.AddUnitResult(new SymbolNodeResult(symbolToken.Value, null));
+                    content.AddUnitResult(new SymbolNodeResult(symbolToken.Value, null));
                     context.Modify();
                 },
                 "Node: Symbol within block");
@@ -149,9 +188,9 @@ namespace TauCode.Parsing.Aide
                 SyntaxElement.BlockReference,
                 (token, context) =>
                 {
-                    var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
+                    var content = context.GetCurrentContent();
                     var syntaxElementAideToken = (SyntaxElementAideToken)token;
-                    blockDefinitionResult.AddUnitResult(new BlockReferenceResult(syntaxElementAideToken.Name));
+                    content.AddUnitResult(new BlockReferenceResult(syntaxElementAideToken.Name));
                     context.Modify();
                 },
                 "Node: Block Reference");
@@ -159,9 +198,13 @@ namespace TauCode.Parsing.Aide
             // link node
             var linkBlock = this.CreateLinkBlock(out var linkOutNode);
 
-            // optional wrapper
+            // optional wrappers
             optionalInputWrapper = new NodeWrapper("Node Wrapper: optional Input Wrapper");
             optionalOutputWrapper = new NodeWrapper("Node Wrapper: optional Output Wrapper");
+
+            // alternatives wrappers
+            alternativesInputWrapper = new NodeWrapper("Node Wrapper: alternatives Input Wrapper");
+            alternativesOutputWrapper = new NodeWrapper("Node Wrapper: alternatives Output Wrapper");
 
             // adding nodes to content splitter
             inputSplitter.AddLink(wordNode);
@@ -170,6 +213,7 @@ namespace TauCode.Parsing.Aide
             inputSplitter.AddLink(blockNode);
             inputSplitter.AddLink(linkBlock);
             inputSplitter.AddLink(optionalInputWrapper);
+            inputSplitter.AddLink(alternativesInputWrapper);
 
             // beforeEndBlockSplitter
             outputSplitter = new SplittingNode("Node: output splitter of block content");
@@ -180,6 +224,7 @@ namespace TauCode.Parsing.Aide
             blockNode.AddLink(outputSplitter);
             linkOutNode.AddLink(outputSplitter);
             optionalOutputWrapper.AddDeferredLink(outputSplitter);
+            alternativesOutputWrapper.AddDeferredLink(outputSplitter);
 
             outputSplitter.AddLink(inputSplitter);
 
@@ -191,6 +236,8 @@ namespace TauCode.Parsing.Aide
                 linkBlock,
                 optionalInputWrapper,
                 optionalOutputWrapper,
+                alternativesInputWrapper,
+                alternativesOutputWrapper,
                 outputSplitter);
 
             return block;
@@ -202,17 +249,16 @@ namespace TauCode.Parsing.Aide
                 SyntaxElement.Link,
                 (token, context) =>
                 {
-                    var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
-                    var syntaxElementAideToken = (SyntaxElementAideToken)token;
-                    blockDefinitionResult.AddUnitResult(new LinkResult(null)); // todo
+                    var content = context.GetCurrentContent();
+                    content.AddUnitResult(new LinkResult(null)); // todo
                     context.Modify();
                 },
                 "Node: Link (head of 'Link' block)");
 
             var nameRefs = this.CreateNameReferencesInParenthesesBlock((context, s) =>
             {
-                var blockDefinitionResult = context.GetLastResult<BlockContentResult>();
-                var linkResult = (LinkResult)blockDefinitionResult.GetLastUnitResult<LinkResult>();
+                var content = context.GetCurrentContent();
+                var linkResult = (LinkResult)content.GetLastUnitResult();
                 linkResult.AddArgument(s);
                 context.Modify();
             });
@@ -232,7 +278,13 @@ namespace TauCode.Parsing.Aide
         {
             var head = new SyntaxElementAideNode(
                 SyntaxElement.LeftBracket,
-                (token, context) => throw new NotImplementedException(),
+                (token, context) =>
+                {
+                    var content = context.GetCurrentContent();
+                    var optionalResult = new OptionalResult(null); // todo: decide what to do with them tags!
+                    content.AddUnitResult(optionalResult);
+                    context.Modify();
+                },
                 "Node: [ of optional");
 
             var block = new Block(head, "Block: optional");
@@ -241,7 +293,7 @@ namespace TauCode.Parsing.Aide
 
             var closer = new SyntaxElementAideNode(
                 SyntaxElement.RightBracket,
-                (token, context) => throw new NotImplementedException(),
+                ParsingHelper.IdleTokenProcessor,
                 "Node: ] of optional");
 
             head.AddLink(blockInputNodeWrapper);
@@ -250,6 +302,56 @@ namespace TauCode.Parsing.Aide
             block.Capture(
                 blockInputNodeWrapper,
                 blockOutputNodeWrapper,
+                closer);
+
+            return block;
+        }
+
+        private IBlock CreateAlternativesBlock(
+            out INodeWrapper blockInputNodeWrapper,
+            out INodeWrapper blockOutputNodeWrapper)
+        {
+            var head = new SyntaxElementAideNode(
+                SyntaxElement.LeftCurlyBracket,
+                (token, context) =>
+                {
+                    var content = context.GetCurrentContent();
+                    var alternativesResult = new AlternativesResult(null);
+                    content.AddUnitResult(alternativesResult);
+                    context.Modify();
+                },
+                "Node: { of alternatives");
+
+            var block = new Block(head, "Block: alternatives");
+
+            blockInputNodeWrapper = new NodeWrapper("Node Wrapper: block input of alternatives");
+            blockOutputNodeWrapper = new NodeWrapper("Node Wrapper: block output of alternatives");
+
+            var verticalBar = new SyntaxElementAideNode(
+                SyntaxElement.VerticalBar,
+                (token, context) =>
+                {
+                    var content = context.GetCurrentContent();
+                    var alternativesResult = (AlternativesResult)content.Owner;
+                    alternativesResult.AddAlternative();
+                    context.Modify();
+                },
+                "Node: | of alternatives");
+
+            var closer = new SyntaxElementAideNode(
+                SyntaxElement.RightCurlyBracket,
+                ParsingHelper.IdleTokenProcessor,
+                "Node: } of optional");
+
+            head.AddLink(blockInputNodeWrapper);
+            blockOutputNodeWrapper.AddDeferredLink(verticalBar);
+            verticalBar.AddLink(blockInputNodeWrapper);
+            blockOutputNodeWrapper.AddDeferredLink(closer);
+
+            block.Capture(
+                blockInputNodeWrapper,
+                blockOutputNodeWrapper,
+                verticalBar,
                 closer);
 
             return block;

@@ -145,7 +145,7 @@ namespace TauCode.Parsing.Units.Impl
                         else if (result.Count == 1)
                         {
                             var nextUnit = result[0];
-                            if (this.Owns(nextUnit))
+                            if (/*this.Owns(nextUnit)*/ nextUnit.IsNestedInto(this))
                             {
                                 nextChallengers = result;
                             }

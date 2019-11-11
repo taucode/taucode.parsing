@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TauCode.Parsing.Aide.Parsing
+namespace TauCode.Parsing.Aide.Results
 {
     public class LinkResult : UnitResult
     {

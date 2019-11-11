@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Aide.Parsing
+﻿namespace TauCode.Parsing.Aide.Results
 {
     public abstract class NodeResult : UnitResult
     {

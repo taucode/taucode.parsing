@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using TauCode.Parsing.Aide;
+using TauCode.Parsing.Aide.Results;
 
 namespace TauCode.Parsing.Tests.Aide
 {
@@ -29,8 +30,9 @@ CREATE TABLE <table_name>\Identifier \(
 
 \BeginBlockDefinition(:column_definition)
 
-<column_name>\Identifier <type_name>\Identifier \Link(:idle) <optional_nullability>[ NULL /*{ <null>NULL | NOT <not_null>NULL }*/] <idle>\Idle
+<column_name>\Identifier <type_name>\Identifier \Link(:idle) <optional_nullability>[{ <null>NULL | NOT <not_null>NULL }]
 
+\EndBlockDefinition
 
 /****** Constraint Definitions ******/
 
@@ -90,6 +92,13 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
             var context = parser.Parse(tokens);
 
             // Assert
+            var results = context.ToArray();
+
+            // Block Definition: Create Table
+            var result = results[0];
+            Assert.That(result, Is.TypeOf<BlockDefinitionResult>());
+            var blockDefinitionResult = (BlockDefinitionResult)result;
+
             throw new NotImplementedException();
         }
     }
