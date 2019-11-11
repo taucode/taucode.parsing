@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Units.Impl.Nodes
 {
-    public class EndNode : Node
+    public sealed class EndNode : Node
     {
         public static EndNode Instance = new EndNode();
 

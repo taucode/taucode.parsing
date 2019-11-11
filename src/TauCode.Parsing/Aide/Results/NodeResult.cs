@@ -2,8 +2,8 @@
 {
     public abstract class NodeResult : UnitResult
     {
-        protected NodeResult(string tag) 
-            : base(tag)
+        protected NodeResult(string sourceNodeName) 
+            : base(sourceNodeName)
         {
         }
     }

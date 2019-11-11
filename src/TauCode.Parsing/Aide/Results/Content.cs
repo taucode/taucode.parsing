@@ -18,7 +18,11 @@ namespace TauCode.Parsing.Aide.Results
 
         public void AddUnitResult(UnitResult unitResult)
         {
-            // todo: check args
+            if (unitResult == null)
+            {
+                throw new ArgumentNullException(nameof(unitResult));
+            }
+
             _unitResults.Add(unitResult);
         }
 
@@ -26,6 +30,8 @@ namespace TauCode.Parsing.Aide.Results
         {
             return _unitResults.Last(); // todo: optimize, use concrete index.
         }
+
+        public IList<UnitResult> GetAllResults() => _unitResults;
 
         public int UnitResultCount => _unitResults.Count;
     }

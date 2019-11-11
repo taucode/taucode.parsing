@@ -2,8 +2,8 @@
 {
     public class OptionalResult : UnitResult, IContentOwner
     {
-        public OptionalResult(string tag)
-            : base(tag)
+        public OptionalResult(string sourceNodeName)
+            : base(sourceNodeName)
         {
             this.OptionalContent = new Content(this);
         }

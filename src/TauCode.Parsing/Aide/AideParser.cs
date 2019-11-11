@@ -167,7 +167,7 @@ namespace TauCode.Parsing.Aide
                 (token, context) =>
                 {
                     var content = context.GetCurrentContent();
-                    content.AddUnitResult(new IdentifierNodeResult(null));
+                    content.AddUnitResult(new IdentifierNodeResult(token.GetAideTokenName()));
                     context.Modify();
                 },
                 "Node: Identifier within block");
@@ -178,7 +178,7 @@ namespace TauCode.Parsing.Aide
                 {
                     var content = context.GetCurrentContent();
                     var symbolToken = (SymbolAideToken)token;
-                    content.AddUnitResult(new SymbolNodeResult(symbolToken.Value, null));
+                    content.AddUnitResult(new SymbolNodeResult(symbolToken.Value, token.GetAideTokenName()));
                     context.Modify();
                 },
                 "Node: Symbol within block");
@@ -189,8 +189,7 @@ namespace TauCode.Parsing.Aide
                 (token, context) =>
                 {
                     var content = context.GetCurrentContent();
-                    var syntaxElementAideToken = (SyntaxElementAideToken)token;
-                    content.AddUnitResult(new BlockReferenceResult(syntaxElementAideToken.Name));
+                    content.AddUnitResult(new BlockReferenceResult(token.GetAideTokenName()));
                     context.Modify();
                 },
                 "Node: Block Reference");
@@ -250,7 +249,7 @@ namespace TauCode.Parsing.Aide
                 (token, context) =>
                 {
                     var content = context.GetCurrentContent();
-                    content.AddUnitResult(new LinkResult(null)); // todo
+                    content.AddUnitResult(new LinkResult(token.GetAideTokenName()));
                     context.Modify();
                 },
                 "Node: Link (head of 'Link' block)");
@@ -259,7 +258,7 @@ namespace TauCode.Parsing.Aide
             {
                 var content = context.GetCurrentContent();
                 var linkResult = (LinkResult)content.GetLastUnitResult();
-                linkResult.AddArgument(s);
+                linkResult.Arguments.Add(s);
                 context.Modify();
             });
 
@@ -281,7 +280,7 @@ namespace TauCode.Parsing.Aide
                 (token, context) =>
                 {
                     var content = context.GetCurrentContent();
-                    var optionalResult = new OptionalResult(null); // todo: decide what to do with them tags!
+                    var optionalResult = new OptionalResult(token.GetAideTokenName());
                     content.AddUnitResult(optionalResult);
                     context.Modify();
                 },
@@ -316,7 +315,7 @@ namespace TauCode.Parsing.Aide
                 (token, context) =>
                 {
                     var content = context.GetCurrentContent();
-                    var alternativesResult = new AlternativesResult(null);
+                    var alternativesResult = new AlternativesResult(token.GetAideTokenName());
                     content.AddUnitResult(alternativesResult);
                     context.Modify();
                 },

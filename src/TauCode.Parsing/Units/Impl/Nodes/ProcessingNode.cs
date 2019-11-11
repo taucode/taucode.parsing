@@ -12,7 +12,7 @@ namespace TauCode.Parsing.Units.Impl.Nodes
         }
 
         protected ProcessingNode(Action<IToken, IContext> processor, string name)
-            :this(processor)
+            : this(processor)
         {
             this.Name = name;
         }

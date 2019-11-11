@@ -2,8 +2,8 @@
 {
     public class IdentifierNodeResult : NodeResult
     {
-        public IdentifierNodeResult(string tag)
-            : base(tag)
+        public IdentifierNodeResult(string sourceNodeName)
+            : base(sourceNodeName)
         {
         }
     }

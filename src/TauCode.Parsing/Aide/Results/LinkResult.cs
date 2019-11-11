@@ -1,20 +1,13 @@
-﻿using System.Collections.Generic;
-
-namespace TauCode.Parsing.Aide.Results
+﻿namespace TauCode.Parsing.Aide.Results
 {
     public class LinkResult : UnitResult
     {
-        private readonly List<string> _arguments;
-
-        public LinkResult(string tag) 
-            : base(tag)
+        public LinkResult(string sourceNodeName)
+            : base(sourceNodeName)
         {
-            _arguments = new List<string>();
+            this.Arguments = new NameReferenceCollector();
         }
 
-        public void AddArgument(string argument)
-        {
-            _arguments.Add(argument);
-        }
+        public NameReferenceCollector Arguments { get; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Aide.Results;
+﻿using System;
+using TauCode.Parsing.Aide.Results;
 
 namespace TauCode.Parsing.Aide
 {
@@ -33,6 +34,21 @@ namespace TauCode.Parsing.Aide
                     return content;
                 }
             }
+        }
+
+        public static string GetAideTokenName(this IToken token)
+        {
+            if (token == null)
+            {
+                throw new ArgumentNullException(nameof(token));
+            }
+
+            if (token is AideToken aideToken)
+            {
+                return aideToken.Name;
+            }
+
+            throw new ArgumentException("Token is not Aide token.", nameof(token));
         }
     }
 }

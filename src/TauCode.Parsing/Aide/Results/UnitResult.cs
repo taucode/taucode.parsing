@@ -2,11 +2,11 @@
 {
     public abstract class UnitResult
     {
-        protected UnitResult(string tag)
+        protected UnitResult(string sourceNodeName)
         {
-            this.Tag = tag;
+            this.SourceNodeName = sourceNodeName;
         }
 
-        public string Tag { get; }
+        public string SourceNodeName { get; }
     }
 }

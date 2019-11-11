@@ -2,8 +2,8 @@
 {
     public class BlockReferenceResult : UnitResult
     {
-        public BlockReferenceResult(string tag)
-            : base(tag)
+        public BlockReferenceResult(string sourceNodeName)
+            : base(sourceNodeName)
         {
         }
     }

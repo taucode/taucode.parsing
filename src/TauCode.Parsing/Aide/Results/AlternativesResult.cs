@@ -7,8 +7,8 @@ namespace TauCode.Parsing.Aide.Results
     {
         private readonly List<Content> _alternatives;
 
-        public AlternativesResult(string tag)
-            : base(tag)
+        public AlternativesResult(string sourceNodeName)
+            : base(sourceNodeName)
         {
             _alternatives = new List<Content>();
             this.AddAlternative();
@@ -23,5 +23,7 @@ namespace TauCode.Parsing.Aide.Results
         {
             return _alternatives.Last(); // todo: exact index (optimize)
         }
+
+        public IList<Content> GetAllAlternatives() => _alternatives;
     }
 }

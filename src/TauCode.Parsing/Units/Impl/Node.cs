@@ -14,11 +14,10 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructor
 
-        private Node(/*Action<IToken, IContext> processor*/)
+        private Node()
             : base(null)
         {
             _links = new List<IUnit>();
-            //this.Processor = processor ?? throw new ArgumentNullException(nameof(processor));
         }
 
         protected Node(string name)
@@ -29,32 +28,7 @@ namespace TauCode.Parsing.Units.Impl
 
         #endregion
 
-        #region Protected
-
-        //protected Action<IToken, IContext> Processor { get; }
-
-        #endregion
-
-        #region Abstract
-
-        //protected abstract bool IsAcceptableToken(IToken token);
-
-        #endregion
-
         #region Overridden
-
-        //protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
-        //{
-        //    var token = stream.GetCurrentToken();
-        //    if (this.IsAcceptableToken(token))
-        //    {
-        //        this.Processor(token, context);
-        //        stream.AdvanceStreamPosition();
-        //        return this.Links;
-        //    }
-
-        //    return null;
-        //}
 
         protected override void OnBeforeFinalize()
         {
