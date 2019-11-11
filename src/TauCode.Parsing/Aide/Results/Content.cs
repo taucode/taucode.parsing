@@ -7,6 +7,7 @@ namespace TauCode.Parsing.Aide.Results
     public class Content
     {
         private readonly List<UnitResult> _unitResults;
+        private bool _isSealed;
 
         public Content(IContentOwner owner)
         {
@@ -16,8 +17,25 @@ namespace TauCode.Parsing.Aide.Results
 
         public IContentOwner Owner { get; }
 
+        public bool IsSealed => _isSealed;
+
+        public void Seal()
+        {
+            if (_isSealed)
+            {
+                throw new NotImplementedException();
+            }
+
+            _isSealed = true;
+        }
+
         public void AddUnitResult(UnitResult unitResult)
         {
+            if (_isSealed)
+            {
+                throw new NotImplementedException();
+            }
+
             if (unitResult == null)
             {
                 throw new ArgumentNullException(nameof(unitResult));

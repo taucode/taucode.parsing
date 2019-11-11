@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Parsing.Aide.Results
 {
-    public class BlockDefinitionResult : IContentOwner
+    public class BlockDefinitionResult : IContentOwner, IAideResult
     {
         public BlockDefinitionResult()
         {

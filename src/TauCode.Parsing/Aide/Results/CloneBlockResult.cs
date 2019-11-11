@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Parsing.Aide.Results
 {
-    public class CloneBlockResult
+    public class CloneBlockResult : IAideResult
     {
         public CloneBlockResult()
         {

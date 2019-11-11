@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Parsing.Aide.Results
 {
-    public abstract class UnitResult
+    public abstract class UnitResult : IAideResult
     {
         protected UnitResult(string sourceNodeName)
         {

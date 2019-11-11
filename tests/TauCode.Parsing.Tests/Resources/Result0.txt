@@ -1,0 +1,3 @@
+﻿\BeginBlockDefinition(:create_table, :top)
+CREATE TABLE <table_name>\Identifier \( <column_definition>\BlockReference \Link(:table_closing) <comma>\, \Link(:column_definition) <constraint_definitions>\BlockReference <table_closing>\)
+\EndBlockDefinition
