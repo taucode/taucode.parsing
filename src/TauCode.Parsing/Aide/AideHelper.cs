@@ -50,5 +50,37 @@ namespace TauCode.Parsing.Aide
 
             throw new ArgumentException("Token is not Aide token.", nameof(token));
         }
+
+        public static string FormatUnitResult(this UnitResult unitResult)
+        {
+            string result;
+
+            if (unitResult is IdentifierNodeResult)
+            {
+                result = $@"{unitResult.SourceNodeName.ToUnitResultName()}\Identifier";
+            }
+            else if (unitResult is WordNodeResult wordNodeResult)
+            {
+                result = $@"{unitResult.SourceNodeName.ToUnitResultName()}{wordNodeResult.Word}";
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            return result;
+        }
+
+        private static string ToUnitResultName(this string name)
+        {
+            if (name == null)
+            {
+                return string.Empty;
+            }
+            else
+            {
+                return $"<{name}>";
+            }
+        }
     }
 }

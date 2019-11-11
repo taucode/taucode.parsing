@@ -114,23 +114,18 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
 
             // CREATE
             var unitResult = unitResults[0];
-            Assert.That(unitResult, Is.TypeOf<WordNodeResult>());
-            var wordNodeResult = (WordNodeResult)unitResult;
-            Assert.That(wordNodeResult.Word, Is.EqualTo("CREATE"));
-            Assert.That(wordNodeResult.SourceNodeName, Is.Null);
+            var unitResultFormatting = unitResult.FormatUnitResult();
+            Assert.That(unitResultFormatting, Is.EqualTo(@"CREATE"));
 
             // TABLE
             unitResult = unitResults[1];
-            Assert.That(unitResult, Is.TypeOf<WordNodeResult>());
-            wordNodeResult = (WordNodeResult)unitResult;
-            Assert.That(wordNodeResult.Word, Is.EqualTo("TABLE"));
-            Assert.That(wordNodeResult.SourceNodeName, Is.Null);
+            unitResultFormatting = unitResult.FormatUnitResult();
+            Assert.That(unitResultFormatting, Is.EqualTo(@"TABLE"));
 
             // <table_name>\Identifier
             unitResult = unitResults[2];
-            Assert.That(unitResult, Is.TypeOf<IdentifierNodeResult>());
-            var identifierNodeResult = (IdentifierNodeResult)unitResult;
-            Assert.That(identifierNodeResult.SourceNodeName, Is.EqualTo("table_name"));
+            unitResultFormatting = unitResult.FormatUnitResult();
+            Assert.That(unitResultFormatting, Is.EqualTo(@"<table_name>\Identifier"));
 
             // \(
             unitResult = unitResults[3];
@@ -204,14 +199,17 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
 
             // <column_name>\Identifier
             unitResult = unitResults[0];
-            Assert.That(unitResult, Is.TypeOf<IdentifierNodeResult>());
-            identifierNodeResult = (IdentifierNodeResult)unitResult;
-            Assert.That(identifierNodeResult.SourceNodeName, Is.EqualTo("column_name"));
+            unitResultFormatting = unitResult.FormatUnitResult();
+            Assert.That(unitResultFormatting, Is.EqualTo(@"<column_name>\Identifier"));
+
+            //Assert.That(unitResult, Is.TypeOf<IdentifierNodeResult>());
+            //identifierNodeResult = (IdentifierNodeResult)unitResult;
+            //Assert.That(identifierNodeResult.SourceNodeName, Is.EqualTo("column_name"));
 
             // <type_name>\Identifier
             unitResult = unitResults[1];
             Assert.That(unitResult, Is.TypeOf<IdentifierNodeResult>());
-            identifierNodeResult = (IdentifierNodeResult)unitResult;
+            var identifierNodeResult = (IdentifierNodeResult)unitResult;
             Assert.That(identifierNodeResult.SourceNodeName, Is.EqualTo("type_name"));
 
             // \Link(:idle)
@@ -243,7 +241,7 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
             var content3 = alternatives[0];
             unitResult = content3.GetAllResults().Single();
             Assert.That(unitResult, Is.TypeOf<WordNodeResult>());
-            wordNodeResult = (WordNodeResult)unitResult;
+            var wordNodeResult = (WordNodeResult)unitResult;
             Assert.That(wordNodeResult.Word, Is.EqualTo("NULL"));
             Assert.That(wordNodeResult.SourceNodeName, Is.EqualTo("null"));
 
