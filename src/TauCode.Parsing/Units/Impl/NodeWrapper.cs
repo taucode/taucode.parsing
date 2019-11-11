@@ -33,7 +33,7 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (_internalNode == null)
             {
-                throw new NotImplementedException();
+                throw new ParsingException("Cannot finalize node wrapper. Internal node is null.");
             }
 
             if (_deferredLinks.Count == 0 && _internalNode.Links.Count == 0)
@@ -69,7 +69,11 @@ namespace TauCode.Parsing.Units.Impl
 
         public void AddDeferredLink(IUnit unit)
         {
-            // todo: checks
+            if (unit == null)
+            {
+                throw new ArgumentNullException(nameof(unit));
+            }
+
             _deferredLinks.Add(unit);
         }
 

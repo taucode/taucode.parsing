@@ -44,7 +44,11 @@ namespace TauCode.Parsing
 
         public static bool IsEndResult(IReadOnlyList<IUnit> result)
         {
-            // todo: check args
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
             var res = result.Count == 1 && result[0] == EndNode.Instance;
             return res;
         }

@@ -55,7 +55,6 @@ namespace TauCode.Parsing.Aide
 
         private bool IsWordStartingChar(char c)
         {
-            // todo
             return
                 c == '_' ||
                 (c >= 'a' && c <= 'z') ||
@@ -65,7 +64,6 @@ namespace TauCode.Parsing.Aide
 
         private bool IsWordContinuingChar(char c)
         {
-            // todo
             return
                 this.IsWordStartingChar(c) ||
                 (c >= '0' && c <= '9') ||
@@ -74,7 +72,6 @@ namespace TauCode.Parsing.Aide
 
         private bool IsTokenNameChar(char c)
         {
-            // todo
             return
                 c == '_' ||
                 (c >= 'a' && c <= 'z') ||
@@ -85,7 +82,6 @@ namespace TauCode.Parsing.Aide
 
         private bool IsAliasedTokenChar(char c)
         {
-            // todo
             return
                 (c >= 'a' && c <= 'z') ||
                 (c >= 'A' && c <= 'Z') ||
@@ -124,7 +120,11 @@ namespace TauCode.Parsing.Aide
             var len = end - start;
             var word = _input.Substring(start, len);
 
-            // todo: check length
+            if (word.Length == 0)
+            {
+                throw new InvalidOperationException("Word length is zero.");
+            }
+
             return new WordAideToken(word, tokenName);
         }
 
@@ -132,7 +132,7 @@ namespace TauCode.Parsing.Aide
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException(); // error
+                throw new InvalidOperationException("End of input encountered."); // todo: aide exception; unify
             }
 
             var start = this.GetCurrentPosition();
@@ -169,7 +169,7 @@ namespace TauCode.Parsing.Aide
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new AideException($"Unexpected char: '{c}'.");
                 }
             }
 
@@ -178,7 +178,7 @@ namespace TauCode.Parsing.Aide
 
             if (length == 0)
             {
-                throw new NotImplementedException(); // error
+                throw new AideException($"Special token length is zero."); // todo: unify
             }
 
             var alias = _input.Substring(start, length);
@@ -219,7 +219,7 @@ namespace TauCode.Parsing.Aide
                     break;
 
                 default:
-                    throw new NotImplementedException(); // error
+                    throw new AideException($"Unknown alias: '{alias}'.");
             }
 
             return aliasedToken;
@@ -233,7 +233,7 @@ namespace TauCode.Parsing.Aide
             {
                 if (this.IsEnd())
                 {
-                    throw new NotImplementedException(); // error
+                    throw new InvalidOperationException("End of input encountered."); // todo: aide exception; unify
                 }
 
                 var c = this.GetCurrentChar();
@@ -249,15 +249,19 @@ namespace TauCode.Parsing.Aide
                 }
                 else
                 {
-                    throw new NotImplementedException(); // error
+                    throw new InvalidOperationException("bad char."); // todo: aide exception; unify
                 }
             }
 
             var end = this.GetCurrentPosition();
             var length = end - start - 1;
-            var tokenName = _input.Substring(start, length);
 
-            // todo: check length.
+            if (length == 0)
+            {
+                throw new AideException($"Special token length is zero."); // todo: unify
+            }
+
+            var tokenName = _input.Substring(start, length);
             return tokenName;
         }
 
@@ -287,11 +291,14 @@ namespace TauCode.Parsing.Aide
 
             var end = this.GetCurrentPosition();
             var length = end - start;
+
+            if (length == 0)
+            {
+                throw new AideException($"Special token length is zero."); // todo: unify
+            }
+
             var referencedName = _input.Substring(start, length);
-
-            // todo: check length.
             return new NameReferenceAideToken(referencedName);
-
         }
 
         private void SkipComment()

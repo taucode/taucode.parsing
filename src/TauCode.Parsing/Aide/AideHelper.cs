@@ -10,9 +10,12 @@ namespace TauCode.Parsing.Aide
     {
         public static Content GetCurrentContent(this IContext context)
         {
-            // todo null check
-            var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
+            var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
             var content = blockDefinitionResult.Content;
 
             while (true)

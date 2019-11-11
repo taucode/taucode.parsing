@@ -34,7 +34,7 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (_links.Count == 0)
             {
-                throw new NotImplementedException(); // todo: cannot finalize this.
+                throw new InvalidOperationException($"Cannot finalize node since it doesn't have links. Node type: '{this.GetType().FullName}', node name: '{this.Name}'.");
             }
 
             foreach (var link in _links)

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace TauCode.Parsing.Aide.Results
 {
@@ -21,7 +20,7 @@ namespace TauCode.Parsing.Aide.Results
 
         public Content GetLastAlternative()
         {
-            return _alternatives.Last(); // todo: exact index (optimize)
+            return _alternatives[_alternatives.Count - 1]; // never empty.
         }
 
         public IList<Content> GetAllAlternatives() => _alternatives;

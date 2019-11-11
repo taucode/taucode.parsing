@@ -34,7 +34,7 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (IsFinalized)
             {
-                throw new NotImplementedException(); // todo: finalized.
+                throw new ParsingException("Unit is finalized.");
             }
         }
 
