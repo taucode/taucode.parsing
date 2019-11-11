@@ -4,6 +4,6 @@ namespace TauCode.Parsing
 {
     public interface IParser
     {
-        IParsingContext Parse(IEnumerable<IToken> tokens);
+        IContext Parse(IEnumerable<IToken> tokens);
     }
 }

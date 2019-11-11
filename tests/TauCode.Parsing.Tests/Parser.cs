@@ -1,87 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.ParsingUnits;
-using TauCode.Parsing.Tests.Tokens;
-using TauCode.Parsing.Tests.Units;
+using TauCode.Parsing.Units;
 
 namespace TauCode.Parsing.Tests
 {
+    // todo: make work
     public class Parser : IParser
     {
-        private readonly IParsingUnit _head;
+        private readonly IUnit _head;
 
         public Parser()
         {
             _head = this.BuildTree();
         }
 
-        private IParsingUnit BuildTree()
+        private IUnit BuildTree()
         {
-            // CREATE TABLE (
-            var nodeCreate = new WordNodeParsingUnit("CREATE", ParsingHelper.IdleTokenProcessor);
-            var createTableBlock = new BlockParsingUnit(nodeCreate);
-            var nodeTable = new WordNodeParsingUnit("TABLE", ParsingHelper.IdleTokenProcessor);
-            var nodeTableName = new IdentifierNodeParsingUnit((token, context) => context.Add(
-                "table", 
-                new
-                {
-                    Name = ((WordToken)token).Word,
-                    Columns = new List<dynamic>(),
-                }));
-            var nodeLeftParen = new SymbolNodeParsingUnit('(', ParsingHelper.IdleTokenProcessor);
+            throw new NotImplementedException();
+            //// CREATE TABLE (
+            //var nodeCreate = new WordNode("CREATE", ParsingHelper.IdleTokenProcessor);
+            //var createTableBlock = new Block(nodeCreate);
+            //var nodeTable = new WordNode("TABLE", ParsingHelper.IdleTokenProcessor);
+            //var nodeTableName = new IdentifierNode((token, context) => context.AddResult(
+            //    //"table",
+            //    new DynamicResult(
+            //    new
+            //    {
+            //        Name = ((WordToken)token).Word,
+            //        Columns = new List<dynamic>(),
+            //    })));
+            //var nodeLeftParen = new SymbolNode('(', ParsingHelper.IdleTokenProcessor);
 
-            nodeCreate.AddNextUnit(nodeTable);
-            nodeTable.AddNextUnit(nodeTableName);
-            nodeTableName.AddNextUnit(nodeLeftParen);
+            //nodeCreate.AddLink(nodeTable);
+            //nodeTable.AddLink(nodeTableName);
+            //nodeTableName.AddLink(nodeLeftParen);
 
-            createTableBlock.Enlist(nodeTable, nodeTableName, nodeLeftParen);
+            //createTableBlock.Capture(nodeTable, nodeTableName, nodeLeftParen);
 
-            // <column_definition>
-            var columnName = new IdentifierNodeParsingUnit((token, context) => context.Add("column", new { Name = ((WordToken)token).Word }));
+            //// <column_definition>
+            //var columnName = new IdentifierNode((token, context) =>
+            //    context.GetLastResult<dynamic>().Columns.Add(new DynamicResult(new { Name = ((WordToken)token).Word })));
 
-            var columnType = new IdentifierNodeParsingUnit((token, context) => context.Update("column", new { Type = ((WordToken)token).Word }));
-            columnName.AddNextUnit(columnType);
+            //var columnType = new IdentifierNode((token, context) =>
+            //{
+            //    var table = context.GetLastResult<dynamic>();
+            //    var columns = table.Columns;
+            //    var columnCount = columns.Count;
+            //    var column = columns[columnCount - 1];
+            //    var type = ((WordToken)token).Word;
+            //    column.Type = type;
+            //});
+            //columnName.AddLink(columnType);
 
-            var columnDefinition = new BlockParsingUnit(columnName);
-            columnDefinition.Enlist(columnType);
+            //var columnDefinition = new Block(columnName);
+            //columnDefinition.Capture(columnType);
 
-            nodeLeftParen.AddNextUnit(columnDefinition);
+            //nodeLeftParen.AddLink(columnDefinition);
 
-            // ',' and ')'
-            var columnComma = new SymbolNodeParsingUnit(',', (token, context) =>
-            {
-                var column = context.Get("column");
-                var table = context.Get("table");
-                table.Columns.Add(column);
-                context.Remove("column");
-            });
-            columnComma.AddNextUnit(columnDefinition);
-
-            columnType.AddNextUnit(columnComma);
-
-            var rightParen = new SymbolNodeParsingUnit(')', (token, context) =>
-            {
-                var column = context.Get("column");
-                var table = context.Get("table");
-                table.Columns.Add(column);
-                context.Remove("column");
-            });
-            columnType.AddNextUnit(rightParen);
-
-            // end
-            rightParen.AddNextUnit(EndNodeParsingUnit.Instance);
-
-            // super-block.
-            var superBlock = new BlockParsingUnit(createTableBlock);
-            superBlock.Enlist(createTableBlock, columnDefinition, columnComma, rightParen);
+            //// ',' and ')'
+            //var columnComma = new SymbolNode(',', ParsingHelper.IdleTokenProcessor);
+            //columnComma.AddLink(columnDefinition);
 
 
-            return superBlock;
+            //columnType.AddLink(columnComma);
+
+            //var rightParen = new SymbolNode(')', ParsingHelper.IdleTokenProcessor);
+            //columnType.AddLink(rightParen);
+
+            //// end
+            //rightParen.AddLink(EndNode.Instance);
+
+            //// super-block.
+            //var superBlock = new Block(createTableBlock);
+            //superBlock.Capture(columnDefinition, columnComma, rightParen);
+
+            //superBlock.FinalizeUnit();
+
+            //return superBlock;
         }
 
-        public IParsingContext Parse(IEnumerable<IToken> tokens)
+        public IContext Parse(IEnumerable<IToken> tokens)
         {
-            var context = new ParsingContext();
+            var context = new Context();
             var stream = new TokenStream(tokens);
             var current = _head;
 

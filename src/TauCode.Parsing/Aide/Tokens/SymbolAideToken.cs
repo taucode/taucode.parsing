@@ -1,18 +1,20 @@
-﻿namespace TauCode.Parsing.Aide.Tokens
+﻿using TauCode.Parsing.Tokens;
+
+namespace TauCode.Parsing.Aide.Tokens
 {
     public class SymbolAideToken : AideToken
     {
-        public SymbolAideToken(AideSymbolValue value, string name)
+        public SymbolAideToken(SymbolValue value, string name)
             : base(name)
         {
             this.Value = value;
         }
 
         public SymbolAideToken(char c, string name)
-            : this(AideHelper.SymbolTokenFromChar(c), name)
+            : this(LexerHelper.SymbolTokenFromChar(c), name)
         {
         }
 
-        public AideSymbolValue Value { get; }
+        public SymbolValue Value { get; }
     }
 }

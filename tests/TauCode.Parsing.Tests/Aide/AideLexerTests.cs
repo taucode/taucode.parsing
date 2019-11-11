@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using TauCode.Parsing.Aide;
 using TauCode.Parsing.Aide.Tokens;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Aide
 {
@@ -16,7 +17,7 @@ namespace TauCode.Parsing.Tests.Aide
 CREATE TABLE <table_name>\Identifier \(
     <column_definition>\Block <comma>\,
     <constraint_definitions>\Block
-<table_closing>\) \End
+<table_closing>\)
 ";
             var lexer = new AideLexer();
 
@@ -42,46 +43,45 @@ CREATE TABLE <table_name>\Identifier \(
 
             // table name
             token = tokens[2];
-            Assert.That(token, Is.TypeOf<IdentifierAideToken>());
-            var identifierToken = (IdentifierAideToken)token;
-            Assert.That(identifierToken.Name, Is.EqualTo("table_name"));
+            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
+            var syntaxElementToken = (SyntaxElementAideToken)token;
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.Identifier));
+            Assert.That(syntaxElementToken.Name, Is.EqualTo("table_name"));
 
             // (
             token = tokens[3];
             Assert.That(token, Is.TypeOf<SymbolAideToken>());
             var symbolToken = (SymbolAideToken)token;
-            Assert.That(symbolToken.Value, Is.EqualTo(AideSymbolValue.LeftParenthesis));
+            Assert.That(symbolToken.Value, Is.EqualTo(SymbolValue.LeftParenthesis));
             Assert.That(symbolToken.Name, Is.Null);
 
             // column definition
             token = tokens[4];
-            Assert.That(token, Is.TypeOf<BlockAideToken>());
-            var blockToken = (BlockAideToken)token;
-            Assert.That(blockToken.Name, Is.EqualTo("column_definition"));
+            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
+            syntaxElementToken = (SyntaxElementAideToken)token;
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.BlockReference));
+            Assert.That(syntaxElementToken.Name, Is.EqualTo("column_definition"));
 
             // ,
             token = tokens[5];
             Assert.That(token, Is.TypeOf<SymbolAideToken>());
             symbolToken = (SymbolAideToken)token;
-            Assert.That(symbolToken.Value, Is.EqualTo(AideSymbolValue.Comma));
+            Assert.That(symbolToken.Value, Is.EqualTo(SymbolValue.Comma));
             Assert.That(symbolToken.Name, Is.EqualTo("comma"));
 
             // constraint definitions
             token = tokens[6];
-            Assert.That(token, Is.TypeOf<BlockAideToken>());
-            blockToken = (BlockAideToken)token;
-            Assert.That(blockToken.Name, Is.EqualTo("constraint_definitions"));
+            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
+            syntaxElementToken = (SyntaxElementAideToken)token;
+            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.BlockReference));
+            Assert.That(syntaxElementToken.Name, Is.EqualTo("constraint_definitions"));
 
             // )
             token = tokens[7];
             Assert.That(token, Is.TypeOf<SymbolAideToken>());
             symbolToken = (SymbolAideToken)token;
-            Assert.That(symbolToken.Value, Is.EqualTo(AideSymbolValue.RightParenthesis));
+            Assert.That(symbolToken.Value, Is.EqualTo(SymbolValue.RightParenthesis));
             Assert.That(symbolToken.Name, Is.EqualTo("table_closing"));
-
-            // end
-            token = tokens[8];
-            Assert.That(token, Is.TypeOf<EndAideToken>());
         }
     }
 }

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -7,9 +7,34 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\AllBlocks.txt" />
+    <None Remove="Resources\Result0.txt" />
+    <None Remove="Resources\Result1.txt" />
+    <None Remove="Resources\Result2.txt" />
+    <None Remove="Resources\Result3.txt" />
+    <None Remove="Resources\Result4.txt" />
+    <None Remove="Resources\Result5.txt" />
+    <None Remove="Resources\Result6.txt" />
+    <None Remove="Resources\Result7.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Result2.txt" />
+    <EmbeddedResource Include="Resources\Result3.txt" />
+    <EmbeddedResource Include="Resources\Result4.txt" />
+    <EmbeddedResource Include="Resources\Result5.txt" />
+    <EmbeddedResource Include="Resources\Result6.txt" />
+    <EmbeddedResource Include="Resources\Result7.txt" />
+    <EmbeddedResource Include="Resources\Result1.txt" />
+    <EmbeddedResource Include="Resources\Result0.txt" />
+    <EmbeddedResource Include="Resources\AllBlocks.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="nunit" Version="3.12.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.13.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+    <PackageReference Include="TauCode.Utils" Version="3.0.0" />
   </ItemGroup>
 
   <ItemGroup>

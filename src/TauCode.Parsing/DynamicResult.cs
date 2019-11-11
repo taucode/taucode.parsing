@@ -54,39 +54,10 @@ namespace TauCode.Parsing
             return _values[name];
         }
 
-        public bool IsEquivalentTo(object other)
+        public object this[string propertyName]
         {
-            if (other == null)
-            {
-                return false; // no object is equiv. to null
-            }
-
-            var otherDynamic = new DynamicResult(other);
-
-            if (_values.Count != otherDynamic._values.Count)
-            {
-                return false;
-            }
-
-            foreach (var pair in _values)
-            {
-                var key = pair.Key;
-                var value = pair.Value;
-
-                var otherHas = otherDynamic._values.TryGetValue(key, out var otherValue);
-                if (!otherHas)
-                {
-                    return false;
-                }
-
-                var otherEq = Equals(value, otherValue);
-                if (!otherEq)
-                {
-                    return false;
-                }
-            }
-
-            return true;
+            get => this.GetValue(propertyName);
+            set => this.SetValue(propertyName, value);
         }
     }
 }
