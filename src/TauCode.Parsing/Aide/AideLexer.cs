@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.Aide.Tokens;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Aide
@@ -266,7 +265,7 @@ namespace TauCode.Parsing.Aide
             return tokenName;
         }
 
-        private NameReferenceAideToken ReadNameReference()
+        private SpecialStringToken<AideSpecialString> ReadNameReference()
         {
             var start = this.GetCurrentPosition();
 
@@ -299,7 +298,7 @@ namespace TauCode.Parsing.Aide
             }
 
             var referencedName = _input.Substring(start, length);
-            return new NameReferenceAideToken(referencedName);
+            return new SpecialStringToken<AideSpecialString>(AideSpecialString.NameReference, referencedName);
         }
 
         private void SkipComment()

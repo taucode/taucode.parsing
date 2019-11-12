@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-using TauCode.Parsing.Aide.Nodes;
 using TauCode.Parsing.Aide.Results;
-using TauCode.Parsing.Aide.Tokens;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Units;
 using TauCode.Parsing.Units.Impl;
@@ -375,11 +373,12 @@ namespace TauCode.Parsing.Aide
                 SyntaxElement.LeftParenthesis,
                 ParsingHelper.IdleTokenProcessor,
                 "Node: ( of name references");
-            var nameRef = new NameReferenceAideNode(
+            var nameRef = new SpecialStringNode<AideSpecialString>(
+                AideSpecialString.NameReference,
                 (token, context) =>
                 {
-                    var nameReferenceToken = (NameReferenceAideToken)token;
-                    var name = nameReferenceToken.ReferencedName;
+                    var nameReferenceToken = (SpecialStringToken<AideSpecialString>)token;
+                    var name = nameReferenceToken.Value;
                     nameAdder(context, name);
                 },
                 "Node: name reference");
