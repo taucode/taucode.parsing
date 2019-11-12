@@ -43,9 +43,9 @@ CREATE TABLE <table_name>\Identifier \(
 
             // table name
             token = tokens[2];
-            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
-            var syntaxElementToken = (SyntaxElementAideToken)token;
-            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.Identifier));
+            Assert.That(token, Is.TypeOf<EnumToken<SyntaxElement>>());
+            var syntaxElementToken = (EnumToken<SyntaxElement>)token;
+            Assert.That(syntaxElementToken.Value, Is.EqualTo(SyntaxElement.Identifier));
             Assert.That(syntaxElementToken.Name, Is.EqualTo("table_name"));
 
             // (
@@ -57,9 +57,9 @@ CREATE TABLE <table_name>\Identifier \(
 
             // column definition
             token = tokens[4];
-            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
-            syntaxElementToken = (SyntaxElementAideToken)token;
-            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.BlockReference));
+            Assert.That(token, Is.TypeOf<EnumToken<SyntaxElement>>());
+            syntaxElementToken = (EnumToken<SyntaxElement>)token;
+            Assert.That(syntaxElementToken.Value, Is.EqualTo(SyntaxElement.BlockReference));
             Assert.That(syntaxElementToken.Name, Is.EqualTo("column_definition"));
 
             // ,
@@ -71,9 +71,9 @@ CREATE TABLE <table_name>\Identifier \(
 
             // constraint definitions
             token = tokens[6];
-            Assert.That(token, Is.TypeOf<SyntaxElementAideToken>());
-            syntaxElementToken = (SyntaxElementAideToken)token;
-            Assert.That(syntaxElementToken.SyntaxElement, Is.EqualTo(SyntaxElement.BlockReference));
+            Assert.That(token, Is.TypeOf<EnumToken<SyntaxElement>>());
+            syntaxElementToken = (EnumToken<SyntaxElement>)token;
+            Assert.That(syntaxElementToken.Value, Is.EqualTo(SyntaxElement.BlockReference));
             Assert.That(syntaxElementToken.Name, Is.EqualTo("constraint_definitions"));
 
             // )

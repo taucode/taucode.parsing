@@ -36,7 +36,7 @@ namespace TauCode.Parsing.Aide
         {
             INode head;
             var blockDefinitionBlock = new Block(
-                head = new SyntaxElementAideNode(
+                head = new ExactEnumNode<SyntaxElement>(
                     SyntaxElement.BeginBlockDefinition,
                     (token, context) =>
                     {
@@ -90,7 +90,7 @@ namespace TauCode.Parsing.Aide
                 (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
 
             // endBlockDefinitionNode
-            var endBlockNode = new SyntaxElementAideNode(
+            var endBlockNode = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.EndBlockDefinition,
                 (token, context) =>
                 {
@@ -118,7 +118,7 @@ namespace TauCode.Parsing.Aide
         {
             INode head;
             var block = new Block(
-                head = new SyntaxElementAideNode(
+                head = new ExactEnumNode<SyntaxElement>(
                     SyntaxElement.CloneBlock,
                     (token, context) =>
                     {
@@ -167,7 +167,7 @@ namespace TauCode.Parsing.Aide
                 "Node: Word within block");
 
             // identifier node
-            var identifierNode = new SyntaxElementAideNode(
+            var identifierNode = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.Identifier,
                 (token, context) =>
                 {
@@ -189,7 +189,7 @@ namespace TauCode.Parsing.Aide
                 "Node: Symbol within block");
 
             // block node
-            var blockNode = new SyntaxElementAideNode(
+            var blockNode = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.BlockReference,
                 (token, context) =>
                 {
@@ -249,7 +249,7 @@ namespace TauCode.Parsing.Aide
 
         private IBlock CreateLinkBlock(out INode outNode)
         {
-            var linkNode = new SyntaxElementAideNode(
+            var linkNode = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.Link,
                 (token, context) =>
                 {
@@ -280,7 +280,7 @@ namespace TauCode.Parsing.Aide
             out INodeWrapper blockInputNodeWrapper,
             out INodeWrapper blockOutputNodeWrapper)
         {
-            var head = new SyntaxElementAideNode(
+            var head = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.LeftBracket,
                 (token, context) =>
                 {
@@ -295,7 +295,7 @@ namespace TauCode.Parsing.Aide
             blockInputNodeWrapper = new NodeWrapper("Node Wrapper: block input of optional");
             blockOutputNodeWrapper = new NodeWrapper("Node Wrapper: block output of optional");
 
-            var closer = new SyntaxElementAideNode(
+            var closer = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.RightBracket,
                 (token, context) =>
                 {
@@ -319,7 +319,7 @@ namespace TauCode.Parsing.Aide
             out INodeWrapper blockInputNodeWrapper,
             out INodeWrapper blockOutputNodeWrapper)
         {
-            var head = new SyntaxElementAideNode(
+            var head = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.LeftCurlyBracket,
                 (token, context) =>
                 {
@@ -335,7 +335,7 @@ namespace TauCode.Parsing.Aide
             blockInputNodeWrapper = new NodeWrapper("Node Wrapper: block input of alternatives");
             blockOutputNodeWrapper = new NodeWrapper("Node Wrapper: block output of alternatives");
 
-            var verticalBar = new SyntaxElementAideNode(
+            var verticalBar = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.VerticalBar,
                 (token, context) =>
                 {
@@ -346,7 +346,7 @@ namespace TauCode.Parsing.Aide
                 },
                 "Node: | of alternatives");
 
-            var closer = new SyntaxElementAideNode(
+            var closer = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.RightCurlyBracket,
                 (token, context) =>
                 {
@@ -371,7 +371,7 @@ namespace TauCode.Parsing.Aide
 
         private IBlock CreateNameReferencesInParenthesesBlock(Action<IContext, string> nameAdder)
         {
-            var leftParen = new SyntaxElementAideNode(
+            var leftParen = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.LeftParenthesis,
                 ParsingHelper.IdleTokenProcessor,
                 "Node: ( of name references");
@@ -383,11 +383,11 @@ namespace TauCode.Parsing.Aide
                     nameAdder(context, name);
                 },
                 "Node: name reference");
-            var comma = new SyntaxElementAideNode(
+            var comma = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.Comma,
                 ParsingHelper.IdleTokenProcessor,
                 "Node: comma of name references");
-            var rightParen = new SyntaxElementAideNode(
+            var rightParen = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.RightParenthesis,
                 ParsingHelper.IdleTokenProcessor,
                 "Node: ) of name references");
