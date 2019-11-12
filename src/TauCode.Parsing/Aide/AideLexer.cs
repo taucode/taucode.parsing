@@ -178,7 +178,7 @@ namespace TauCode.Parsing.Aide
 
             if (length == 0)
             {
-                throw new AideException($"Special token length is zero."); // todo: unify
+                throw LexerHelper.CreateEmptyTokenException();
             }
 
             var alias = _input.Substring(start, length);
@@ -304,15 +304,17 @@ namespace TauCode.Parsing.Aide
         private void SkipComment()
         {
             // comment must start with '/*'
-            if (this.GetCurrentChar() != '/')
+            var c = this.GetCurrentChar();
+            if (c != '/')
             {
-                throw new NotImplementedException(); // todo
+                throw LexerHelper.CreateUnexpectedCharException(c);
             }
 
             this.Advance();
+            c = this.GetCurrentChar();
             if (this.GetCurrentChar() != '*')
             {
-                throw new NotImplementedException(); // todo
+                throw LexerHelper.CreateUnexpectedCharException(c);
             }
 
             this.Advance();
@@ -324,7 +326,7 @@ namespace TauCode.Parsing.Aide
                     throw LexerHelper.CreateUnexpectedEndOfInputException();
                 }
 
-                var c = this.GetCurrentChar();
+                c = this.GetCurrentChar();
 
                 if (c == '*')
                 {

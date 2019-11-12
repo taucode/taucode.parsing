@@ -6,11 +6,6 @@ namespace TauCode.Parsing.Aide.Nodes
 {
     public class SymbolAideNode : ProcessingNode
     {
-        private SymbolAideNode(Action<IToken, IContext> processor)
-            : base(processor, null)
-        {
-        }
-
         public SymbolAideNode(Action<IToken, IContext> processor, string name)
             : base(processor, name)
         {

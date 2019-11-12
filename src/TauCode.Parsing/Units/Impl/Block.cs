@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl
 {
@@ -53,7 +54,7 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Private
 
-        private void AddSingleUnit(IUnit unit)
+        private void CaptureSingleUnit(IUnit unit)
         {
             if (unit == null)
             {
@@ -62,29 +63,29 @@ namespace TauCode.Parsing.Units.Impl
 
             if (!(unit is UnitImpl unitImpl))
             {
-                throw new NotImplementedException(); // todo
+                throw new ArgumentException($"Implementation can only capture descendants of {typeof(UnitImpl).FullName}. {this.ToUnitDiagnosticsString()}", nameof(unit));
             }
 
             if (unit == this)
             {
-                throw new NotImplementedException(); // todo
+                throw new ArgumentException($"Cannot capture self. {this.ToUnitDiagnosticsString()}", nameof(unit));
             }
 
             if (_owned.Contains(unit))
             {
-                throw new NotImplementedException(); // todo
+                throw new ArgumentException($"Already owns unit with name '{unit.Name}'. {this.ToUnitDiagnosticsString()}", nameof(unit));
             }
 
             if (unit.Owner != null)
             {
-                throw new NotImplementedException(); // todo
+                throw new ArgumentException($"Owner of '{unit.Name}' is already set. {this.ToUnitDiagnosticsString()}", nameof(unit));
             }
 
             if (unit is IBlock parsingBlock)
             {
                 if (this.IsNestedInto(parsingBlock))
                 {
-                    throw new NotImplementedException(); // todo
+                    throw new ArgumentException($"Capturing will lead to circular nesting. {this.ToUnitDiagnosticsString()}", nameof(unit));
                 }
             }
 
@@ -119,8 +120,7 @@ namespace TauCode.Parsing.Units.Impl
                     }
                     else
                     {
-                        var debug = stream.GetCurrentToken(); // todo
-                        throw new NotImplementedException(); // todo: context modified, but failed to end parsing => something bad happened.
+                        throw new ParserException($"Syntax error. {this.ToUnitDiagnosticsString()}");
                     }
                 }
 
@@ -140,12 +140,12 @@ namespace TauCode.Parsing.Units.Impl
                         // processed; let's dispatch to other challengers.
                         if (result.Count == 0)
                         {
-                            throw new NotImplementedException(); // todo: internal error
+                            throw new ParserException($"Parsing logic error. Result of 'Process' is not null, but empty. {this.ToUnitDiagnosticsString()}");
                         }
                         else if (result.Count == 1)
                         {
                             var nextUnit = result[0];
-                            if (/*this.Owns(nextUnit)*/ nextUnit.IsNestedInto(this))
+                            if (nextUnit.IsNestedInto(this))
                             {
                                 nextChallengers = result;
                             }
@@ -174,7 +174,7 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (_head == null)
             {
-                throw new NotImplementedException(); // todo
+                throw new ParserException($"Head of block is null. {this.ToUnitDiagnosticsString()}");
             }
         }
 
@@ -201,17 +201,17 @@ namespace TauCode.Parsing.Units.Impl
 
                 if (value == null)
                 {
-                    throw new NotImplementedException(); // todo
+                    throw new ParserException($"Cannot set block's head to null. {this.ToUnitDiagnosticsString()}");
                 }
 
                 if (_head != null)
                 {
-                    throw new NotImplementedException(); // todo
+                    throw new ParserException($"Block's head is already set. {this.ToUnitDiagnosticsString()}");
                 }
 
                 if (!_owned.Contains(value))
                 {
-                    throw new NotImplementedException(); // todo
+                    throw new ParserException($"Block doesn't own this unit. {this.ToUnitDiagnosticsString()}");
                 }
 
                 _head = value;
@@ -224,7 +224,7 @@ namespace TauCode.Parsing.Units.Impl
 
             foreach (var unit in units)
             {
-                this.AddSingleUnit(unit);
+                this.CaptureSingleUnit(unit);
             }
         }
 

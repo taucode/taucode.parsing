@@ -40,7 +40,7 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (!this.IsFinalized)
             {
-                throw new NotImplementedException(); // todo: finalized.
+                throw new ParserException($"Unit is already finalized. {this.ToUnitDiagnosticsString()}");
             }
         }
 

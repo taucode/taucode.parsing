@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl.Nodes
 {
@@ -14,12 +14,12 @@ namespace TauCode.Parsing.Units.Impl.Nodes
 
         protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
-            throw new NotImplementedException(); // todo should never be called
+            throw new ParserException($"The method '{typeof(EndNode).FullName}.{nameof(ProcessImpl)}' should never be called.");
         }
 
         public override void AddLink(IUnit linked)
         {
-            throw new NotImplementedException(); // todo: cannot add links to end node
+            throw new ParserException($"The method '{typeof(EndNode).FullName}.{nameof(AddLink)}' should never be called.");
         }
 
         protected override void OnBeforeFinalize()
