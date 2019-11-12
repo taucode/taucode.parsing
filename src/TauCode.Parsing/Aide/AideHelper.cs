@@ -2,17 +2,30 @@
 using System.Linq;
 using System.Text;
 using TauCode.Parsing.Aide.Results;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Aide
 {
     public static class AideHelper
     {
+        #region Exceptions
+
+        internal static LexerException CreateTokenNameCannotPrecedeChar(char c)
+        {
+            return new LexerException($"Token name cannot precede char '{c}'.");
+        }
+
+        #endregion
+
         public static Content GetCurrentContent(this IContext context)
         {
-            // todo null check
-            var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
 
+            var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
             var content = blockDefinitionResult.Content;
 
             while (true)
@@ -138,7 +151,7 @@ namespace TauCode.Parsing.Aide
             }
             else
             {
-                throw new NotImplementedException();
+                throw new AideException($"Not supported result type: {aideResult.GetType().FullName}.");
             }
 
             return result;
@@ -212,7 +225,7 @@ namespace TauCode.Parsing.Aide
                     return ";";
 
                 default:
-                    throw new NotImplementedException();
+                    throw new ArgumentOutOfRangeException(nameof(symbol));
             }
         }
 

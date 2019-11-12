@@ -1,10 +1,30 @@
 ﻿using System;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing
 {
     public static class LexerHelper
     {
+        #region Exceptions
+
+        internal static LexerException CreateUnexpectedEndOfInputException()
+        {
+            return new LexerException("Unexpected end of input.");
+        }
+
+        internal static LexerException CreateUnexpectedCharException(char c)
+        {
+            return new LexerException($"Unexpected char: '{c}'.");
+        }
+
+        internal static LexerException CreateEmptyTokenException()
+        {
+            return new LexerException("Empty token.");
+        }
+        
+        #endregion
+
         public static SymbolValue SymbolTokenFromChar(char c)
         {
             switch (c)

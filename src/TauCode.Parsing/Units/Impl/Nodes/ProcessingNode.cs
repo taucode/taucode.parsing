@@ -5,16 +5,10 @@ namespace TauCode.Parsing.Units.Impl.Nodes
 {
     public abstract class ProcessingNode : Node
     {
-        private ProcessingNode(Action<IToken, IContext> processor)
-            : base(null)
+        protected ProcessingNode(Action<IToken, IContext> processor, string name)
+            : base(name)
         {
             this.Processor = processor ?? throw new ArgumentNullException(nameof(processor));
-        }
-
-        protected ProcessingNode(Action<IToken, IContext> processor, string name)
-            : this(processor)
-        {
-            this.Name = name;
         }
 
         protected Action<IToken, IContext> Processor { get; }

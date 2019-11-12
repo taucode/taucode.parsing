@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl
 {
@@ -7,7 +8,7 @@ namespace TauCode.Parsing.Units.Impl
     {
         #region Fields
 
-        private INode _internalNode;
+        private Node _internalNode;
         private readonly List<IUnit> _deferredLinks;
 
         #endregion
@@ -33,17 +34,17 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (_internalNode == null)
             {
-                throw new NotImplementedException();
+                throw new ParserException($"Cannot finalize node wrapper. Internal node is null. {this.ToUnitDiagnosticsString()}");
             }
 
             if (_deferredLinks.Count == 0 && _internalNode.Links.Count == 0)
             {
-                throw new NotImplementedException();
+                throw new ParserException($"Cannot finalize node wrapper: no links established. {this.ToUnitDiagnosticsString()}");
             }
 
             foreach (var deferredLink in _deferredLinks)
             {
-                _internalNode.AddLink(deferredLink);
+                _internalNode.ForceAddLink(deferredLink);
             }
         }
 
@@ -63,13 +64,24 @@ namespace TauCode.Parsing.Units.Impl
                     throw new ArgumentNullException(nameof(value));
                 }
 
-                _internalNode = value;
+                if (value is Node node)
+                {
+                    _internalNode = node;
+                }
+                else
+                {
+                    throw new ArgumentException($"'{nameof(value)}' must be of type '{typeof(Node).FullName}'");
+                }
             }
         }
 
         public void AddDeferredLink(IUnit unit)
         {
-            // todo: checks
+            if (unit == null)
+            {
+                throw new ArgumentNullException(nameof(unit));
+            }
+
             _deferredLinks.Add(unit);
         }
 

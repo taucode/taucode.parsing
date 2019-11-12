@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Units;
 using TauCode.Parsing.Units.Impl.Nodes;
 
@@ -21,7 +22,7 @@ namespace TauCode.Parsing
         {
             if (tokenStream.IsEndOfStream())
             {
-                throw new NotImplementedException();
+                throw new ParserException("Unexpected end of token stream.");
             }
 
             var token = tokenStream.Tokens[tokenStream.Position];
@@ -44,7 +45,11 @@ namespace TauCode.Parsing
 
         public static bool IsEndResult(IReadOnlyList<IUnit> result)
         {
-            // todo: check args
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
             var res = result.Count == 1 && result[0] == EndNode.Instance;
             return res;
         }
@@ -88,6 +93,12 @@ namespace TauCode.Parsing
             }
 
             return owner.Head == node;
+        }
+
+        internal static string ToUnitDiagnosticsString(this IUnit unit)
+        {
+            var diag = $"Unit: type is {unit.GetType().FullName}, name is '{unit.Name}'.";
+            return diag;
         }
     }
 }

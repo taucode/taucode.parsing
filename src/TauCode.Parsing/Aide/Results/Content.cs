@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace TauCode.Parsing.Aide.Results
 {
@@ -23,7 +22,7 @@ namespace TauCode.Parsing.Aide.Results
         {
             if (_isSealed)
             {
-                throw new NotImplementedException();
+                throw this.CreateContentIsSealedException();
             }
 
             _isSealed = true;
@@ -33,7 +32,7 @@ namespace TauCode.Parsing.Aide.Results
         {
             if (_isSealed)
             {
-                throw new NotImplementedException();
+                throw this.CreateContentIsSealedException();
             }
 
             if (unitResult == null)
@@ -44,9 +43,19 @@ namespace TauCode.Parsing.Aide.Results
             _unitResults.Add(unitResult);
         }
 
+        private AideException CreateContentIsSealedException()
+        {
+            return new AideException("Content is sealed.");
+        }
+
         public UnitResult GetLastUnitResult()
         {
-            return _unitResults.Last(); // todo: optimize, use concrete index.
+            if (_unitResults.Count == 0)
+            {
+                throw new AideException("Content is empty.");
+            }
+
+            return _unitResults[_unitResults.Count - 1];
         }
 
         public IList<UnitResult> GetAllResults() => _unitResults;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl
 {
@@ -16,13 +17,10 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructor
 
-        // todo: temp. just to force all names.
-        private UnitImpl()
-        {
-        }
-
         protected UnitImpl(string name)
         {
+            // Name can be null, but you got to say it explicitly. Unnamed units are evil.
+
             this.Name = name;
         }
 
@@ -34,7 +32,7 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (IsFinalized)
             {
-                throw new NotImplementedException(); // todo: finalized.
+                throw new ParserException("Unit is finalized.");
             }
         }
 
@@ -42,7 +40,7 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (!this.IsFinalized)
             {
-                throw new NotImplementedException(); // todo: finalized.
+                throw new ParserException($"Unit is already finalized. {this.ToUnitDiagnosticsString()}");
             }
         }
 
@@ -82,17 +80,18 @@ namespace TauCode.Parsing.Units.Impl
             internal set
             {
                 this.CheckNotFinalized();
+
                 if (_owner == null)
                 {
                     if (value == null)
                     {
-                        throw new NotImplementedException(); // suspicious: owner is already null
+                        throw new ParserException($"Suspicious operation: Owner is null until not initialized. {this.ToUnitDiagnosticsString()}");
                     }
                     else
                     {
                         if (value == this)
                         {
-                            throw new NotImplementedException(); // cannot be owner of self.
+                            throw new ParserException($"Unit cannot be owner of self. {this.ToUnitDiagnosticsString()}");
                         }
 
                         _owner = value;
@@ -100,9 +99,8 @@ namespace TauCode.Parsing.Units.Impl
                 }
                 else
                 {
-                    throw new NotImplementedException(); // owner already set.
+                    throw new ParserException($"Owner already set. {this.ToUnitDiagnosticsString()}");
                 }
-
             }
         }
 

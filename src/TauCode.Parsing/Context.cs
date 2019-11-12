@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing
 {
@@ -22,7 +22,12 @@ namespace TauCode.Parsing
 
         public T GetLastResult<T>()
         {
-            return (T)_results.Last(); // todo: optimize, use index
+            if (_results.Count == 0)
+            {
+                throw new ParserException("Content is empty.");
+            }
+
+            return (T)_results[_results.Count - 1];
         }
 
         public int ResultCount => _results.Count;

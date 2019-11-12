@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Aide
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException();
+                throw LexerHelper.CreateUnexpectedEndOfInputException();
             }
 
             return _input[_pos];
@@ -55,7 +55,6 @@ namespace TauCode.Parsing.Aide
 
         private bool IsWordStartingChar(char c)
         {
-            // todo
             return
                 c == '_' ||
                 (c >= 'a' && c <= 'z') ||
@@ -65,7 +64,6 @@ namespace TauCode.Parsing.Aide
 
         private bool IsWordContinuingChar(char c)
         {
-            // todo
             return
                 this.IsWordStartingChar(c) ||
                 (c >= '0' && c <= '9') ||
@@ -74,7 +72,6 @@ namespace TauCode.Parsing.Aide
 
         private bool IsTokenNameChar(char c)
         {
-            // todo
             return
                 c == '_' ||
                 (c >= 'a' && c <= 'z') ||
@@ -85,7 +82,6 @@ namespace TauCode.Parsing.Aide
 
         private bool IsAliasedTokenChar(char c)
         {
-            // todo
             return
                 (c >= 'a' && c <= 'z') ||
                 (c >= 'A' && c <= 'Z') ||
@@ -124,7 +120,11 @@ namespace TauCode.Parsing.Aide
             var len = end - start;
             var word = _input.Substring(start, len);
 
-            // todo: check length
+            if (word.Length == 0)
+            {
+                throw LexerHelper.CreateEmptyTokenException();
+            }
+
             return new WordAideToken(word, tokenName);
         }
 
@@ -132,7 +132,7 @@ namespace TauCode.Parsing.Aide
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException(); // error
+                throw LexerHelper.CreateUnexpectedEndOfInputException();
             }
 
             var start = this.GetCurrentPosition();
@@ -169,7 +169,7 @@ namespace TauCode.Parsing.Aide
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new AideException($"Unexpected char: '{c}'.");
                 }
             }
 
@@ -178,7 +178,7 @@ namespace TauCode.Parsing.Aide
 
             if (length == 0)
             {
-                throw new NotImplementedException(); // error
+                throw LexerHelper.CreateEmptyTokenException();
             }
 
             var alias = _input.Substring(start, length);
@@ -219,7 +219,7 @@ namespace TauCode.Parsing.Aide
                     break;
 
                 default:
-                    throw new NotImplementedException(); // error
+                    throw new AideException($"Unknown alias: '{alias}'.");
             }
 
             return aliasedToken;
@@ -233,7 +233,7 @@ namespace TauCode.Parsing.Aide
             {
                 if (this.IsEnd())
                 {
-                    throw new NotImplementedException(); // error
+                    throw LexerHelper.CreateUnexpectedEndOfInputException();
                 }
 
                 var c = this.GetCurrentChar();
@@ -249,15 +249,19 @@ namespace TauCode.Parsing.Aide
                 }
                 else
                 {
-                    throw new NotImplementedException(); // error
+                    throw LexerHelper.CreateUnexpectedCharException(c);
                 }
             }
 
             var end = this.GetCurrentPosition();
             var length = end - start - 1;
-            var tokenName = _input.Substring(start, length);
 
-            // todo: check length.
+            if (length == 0)
+            {
+                throw LexerHelper.CreateEmptyTokenException();
+            }
+
+            var tokenName = _input.Substring(start, length);
             return tokenName;
         }
 
@@ -287,25 +291,30 @@ namespace TauCode.Parsing.Aide
 
             var end = this.GetCurrentPosition();
             var length = end - start;
+
+            if (length == 0)
+            {
+                throw LexerHelper.CreateEmptyTokenException();
+            }
+
             var referencedName = _input.Substring(start, length);
-
-            // todo: check length.
             return new NameReferenceAideToken(referencedName);
-
         }
 
         private void SkipComment()
         {
             // comment must start with '/*'
-            if (this.GetCurrentChar() != '/')
+            var c = this.GetCurrentChar();
+            if (c != '/')
             {
-                throw new NotImplementedException(); // todo
+                throw LexerHelper.CreateUnexpectedCharException(c);
             }
 
             this.Advance();
+            c = this.GetCurrentChar();
             if (this.GetCurrentChar() != '*')
             {
-                throw new NotImplementedException(); // todo
+                throw LexerHelper.CreateUnexpectedCharException(c);
             }
 
             this.Advance();
@@ -314,10 +323,10 @@ namespace TauCode.Parsing.Aide
             {
                 if (this.IsEnd())
                 {
-                    throw new NotImplementedException(); // not closed comment
+                    throw LexerHelper.CreateUnexpectedEndOfInputException();
                 }
 
-                var c = this.GetCurrentChar();
+                c = this.GetCurrentChar();
 
                 if (c == '*')
                 {
@@ -338,7 +347,7 @@ namespace TauCode.Parsing.Aide
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException();
+                throw LexerHelper.CreateUnexpectedEndOfInputException();
             }
 
             _pos += step;
@@ -364,7 +373,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -389,7 +398,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -397,25 +406,34 @@ namespace TauCode.Parsing.Aide
                 }
                 else if (c == '/')
                 {
-                    if (this.TryGetNextChar() == '*')
+                    var nextChar = this.TryGetNextChar();
+                    if (nextChar.HasValue)
                     {
-                        if (upcomingTokenName != null)
+                        var nextCharValue = nextChar.Value;
+                        if (nextCharValue == '*')
                         {
-                            throw new NotImplementedException(); // error
-                        }
+                            if (upcomingTokenName != null)
+                            {
+                                throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
+                            }
 
-                        this.SkipComment();
+                            this.SkipComment();
+                        }
+                        else
+                        {
+                            throw LexerHelper.CreateUnexpectedCharException(nextCharValue);
+                        }
                     }
                     else
                     {
-                        throw new NotImplementedException(); // error
+                        throw LexerHelper.CreateUnexpectedEndOfInputException();
                     }
                 }
                 else if (c == '(')
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -426,7 +444,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -437,7 +455,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -456,7 +474,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -467,7 +485,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -478,7 +496,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -489,7 +507,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -500,7 +518,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -509,7 +527,7 @@ namespace TauCode.Parsing.Aide
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw LexerHelper.CreateUnexpectedCharException(c);
                 }
             }
         }
