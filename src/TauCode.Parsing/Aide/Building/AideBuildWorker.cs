@@ -2,7 +2,7 @@
 using TauCode.Parsing.Aide.Results;
 using TauCode.Parsing.Units;
 
-namespace TauCode.Parsing.Aide
+namespace TauCode.Parsing.Aide.Building
 {
     public class AideBuildWorker
     {

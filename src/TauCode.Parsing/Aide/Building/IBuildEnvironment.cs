@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Aide
+﻿namespace TauCode.Parsing.Aide.Building
 {
     public interface IBuildEnvironment
     {
