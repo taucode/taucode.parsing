@@ -17,6 +17,10 @@ namespace TauCode.Parsing.Aide.Results
             _names.Add(name);
         }
 
+        public int Count => _names.Count;
+
+        public string this[int index] => _names[index];
+
         public IEnumerator<string> GetEnumerator() => _names.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => _names.GetEnumerator();

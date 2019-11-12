@@ -3,7 +3,7 @@ using TauCode.Parsing.Units;
 
 namespace TauCode.Parsing.Aide.Building
 {
-    public interface IAideBuilder
+    public interface IBuilder
     {
         IBlock BuildMainBlock(IAideResult[] structure, IBuildEnvironment buildEnvironment);
     }
