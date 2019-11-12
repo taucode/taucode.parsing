@@ -19,9 +19,9 @@ namespace TauCode.Parsing.Tests
         private IUnit BuildTree()
         {
             // CREATE TABLE (
-            var nodeCreate = new WordNode("CREATE", ParsingHelper.IdleTokenProcessor, "Node: CREATE");
+            var nodeCreate = new ExactWordNode("CREATE", ParsingHelper.IdleTokenProcessor, "Node: CREATE");
             var createTableBlock = new Block(nodeCreate, "Block: CREATE TABLE");
-            var nodeTable = new WordNode("TABLE", ParsingHelper.IdleTokenProcessor, "Node: TABLE");
+            var nodeTable = new ExactWordNode("TABLE", ParsingHelper.IdleTokenProcessor, "Node: TABLE");
             var nodeTableName = new IdentifierNode(
                 (token, context) => context.AddResult(
                     new DynamicResult(
@@ -32,7 +32,7 @@ namespace TauCode.Parsing.Tests
 
                         })),
                 "Node: table name");
-            var nodeLeftParen = new SymbolNode('(', ParsingHelper.IdleTokenProcessor, "Node: table (");
+            var nodeLeftParen = new ExactSymbolNode('(', ParsingHelper.IdleTokenProcessor, "Node: table (");
 
             nodeCreate.AddLink(nodeTable);
             nodeTable.AddLink(nodeTableName);
@@ -65,13 +65,13 @@ namespace TauCode.Parsing.Tests
             nodeLeftParen.AddLink(columnDefinition);
 
             // ',' and ')'
-            var columnComma = new SymbolNode(',', ParsingHelper.IdleTokenProcessor, "Node: ,");
+            var columnComma = new ExactSymbolNode(',', ParsingHelper.IdleTokenProcessor, "Node: ,");
             columnComma.AddLink(columnDefinition);
 
 
             columnType.AddLink(columnComma);
 
-            var rightParen = new SymbolNode(')', ParsingHelper.IdleTokenProcessor, "Node: )");
+            var rightParen = new ExactSymbolNode(')', ParsingHelper.IdleTokenProcessor, "Node: )");
             columnType.AddLink(rightParen);
 
             // end

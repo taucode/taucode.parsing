@@ -18,6 +18,5 @@
         RightCurlyBracket,
         LeftBracket,
         RightBracket,
-        NotExisting,
     }
 }

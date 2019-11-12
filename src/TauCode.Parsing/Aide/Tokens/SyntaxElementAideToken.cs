@@ -1,9 +1,11 @@
-﻿namespace TauCode.Parsing.Aide.Tokens
+﻿using TauCode.Parsing.Tokens;
+
+namespace TauCode.Parsing.Aide.Tokens
 {
-    public class SyntaxElementAideToken : AideToken
+    public class SyntaxElementAideToken : EnumToken<SyntaxElement>
     {
         public SyntaxElementAideToken(SyntaxElement syntaxElement, string name)
-            : base(name)
+            : base(syntaxElement, name)
         {
             this.SyntaxElement = syntaxElement;
         }

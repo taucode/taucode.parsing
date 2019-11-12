@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.Aide.Tokens;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Aide
 {
@@ -93,7 +94,7 @@ namespace TauCode.Parsing.Aide
             return SymbolChars.Contains(c);
         }
 
-        private WordAideToken ReadWordToken(string tokenName)
+        private WordToken ReadWordToken(string tokenName)
         {
             var start = this.GetCurrentPosition();
 
@@ -125,10 +126,10 @@ namespace TauCode.Parsing.Aide
                 throw LexerHelper.CreateEmptyTokenException();
             }
 
-            return new WordAideToken(word, tokenName);
+            return new WordToken(word, tokenName);
         }
 
-        private AideToken ReadSpecialToken(string tokenName)
+        private TokenBase ReadSpecialToken(string tokenName)
         {
             if (this.IsEnd())
             {
@@ -142,7 +143,7 @@ namespace TauCode.Parsing.Aide
             if (this.IsSymbolChar(c))
             {
                 this.Advance();
-                return new SymbolAideToken(c, tokenName);
+                return new SymbolToken(c, tokenName);
             }
 
             while (true)
@@ -182,7 +183,7 @@ namespace TauCode.Parsing.Aide
             }
 
             var alias = _input.Substring(start, length);
-            AideToken aliasedToken;
+            TokenBase aliasedToken;
 
             switch (alias)
             {

@@ -68,21 +68,6 @@ namespace TauCode.Parsing.Aide
             }
         }
 
-        public static string GetAideTokenName(this IToken token)
-        {
-            if (token == null)
-            {
-                throw new ArgumentNullException(nameof(token));
-            }
-
-            if (token is AideToken aideToken)
-            {
-                return aideToken.Name;
-            }
-
-            throw new ArgumentException("Token is not Aide token.", nameof(token));
-        }
-
         public static string ToAideResultFormat(this IAideResult aideResult)
         {
             string result;
@@ -173,11 +158,6 @@ namespace TauCode.Parsing.Aide
             }
 
             return sb.ToString();
-
-            //foreach (var result in results)
-            //{
-            //    sb.Append(result.FormatUnitResult());
-            //}
         }
 
         private static string FormatArguments(this NameReferenceCollector arguments)

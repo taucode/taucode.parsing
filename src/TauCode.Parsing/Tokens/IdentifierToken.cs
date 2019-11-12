@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Parsing.Tokens
 {
-    public class IdentifierToken : IToken
+    public class IdentifierToken : TokenBase
     {
         public IdentifierToken(string identifier)
         {
