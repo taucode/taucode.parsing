@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Aide
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException();
+                throw LexerHelper.CreateUnexpectedEndOfInputException();
             }
 
             return _input[_pos];
@@ -373,7 +373,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();
@@ -398,7 +398,7 @@ namespace TauCode.Parsing.Aide
                 {
                     if (upcomingTokenName != null)
                     {
-                        throw new NotImplementedException(); // error
+                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
                     }
 
                     this.Advance();

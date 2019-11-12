@@ -80,17 +80,18 @@ namespace TauCode.Parsing.Units.Impl
             internal set
             {
                 this.CheckNotFinalized();
+
                 if (_owner == null)
                 {
                     if (value == null)
                     {
-                        throw new NotImplementedException(); // suspicious: owner is already null
+                        throw new ParserException($"Suspicious operation: Owner is null until not initialized. {this.ToUnitDiagnosticsString()}");
                     }
                     else
                     {
                         if (value == this)
                         {
-                            throw new NotImplementedException(); // cannot be owner of self.
+                            throw new ParserException($"Unit cannot be owner of self. {this.ToUnitDiagnosticsString()}");
                         }
 
                         _owner = value;
@@ -98,9 +99,8 @@ namespace TauCode.Parsing.Units.Impl
                 }
                 else
                 {
-                    throw new NotImplementedException(); // owner already set.
+                    throw new ParserException($"Owner already set. {this.ToUnitDiagnosticsString()}");
                 }
-
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Units;
 using TauCode.Parsing.Units.Impl.Nodes;
 
@@ -21,7 +22,7 @@ namespace TauCode.Parsing
         {
             if (tokenStream.IsEndOfStream())
             {
-                throw new NotImplementedException();
+                throw new ParserException("Unexpected end of token stream.");
             }
 
             var token = tokenStream.Tokens[tokenStream.Position];

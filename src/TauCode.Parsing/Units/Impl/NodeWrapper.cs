@@ -34,12 +34,12 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (_internalNode == null)
             {
-                throw new ParserException("Cannot finalize node wrapper. Internal node is null.");
+                throw new ParserException($"Cannot finalize node wrapper. Internal node is null. {this.ToUnitDiagnosticsString()}");
             }
 
             if (_deferredLinks.Count == 0 && _internalNode.Links.Count == 0)
             {
-                throw new NotImplementedException();
+                throw new ParserException($"Cannot finalize node wrapper: no links established. {this.ToUnitDiagnosticsString()}");
             }
 
             foreach (var deferredLink in _deferredLinks)

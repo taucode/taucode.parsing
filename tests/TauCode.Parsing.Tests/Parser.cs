@@ -97,7 +97,7 @@ namespace TauCode.Parsing.Tests
                 var result = current.Process(stream, context);
                 if (result == null)
                 {
-                    throw new NotImplementedException();
+                    throw new Exception();
                 }
                 else if (result.Count == 1)
                 {
@@ -107,15 +107,13 @@ namespace TauCode.Parsing.Tests
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        throw new Exception();
                     }
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new Exception();
                 }
-
-                throw new NotImplementedException();
 
             } while (true);
         }

@@ -151,7 +151,7 @@ namespace TauCode.Parsing.Aide
             }
             else
             {
-                throw new NotImplementedException();
+                throw new AideException($"Not supported result type: {aideResult.GetType().FullName}.");
             }
 
             return result;
@@ -225,7 +225,7 @@ namespace TauCode.Parsing.Aide
                     return ";";
 
                 default:
-                    throw new NotImplementedException();
+                    throw new ArgumentOutOfRangeException(nameof(symbol));
             }
         }
 
