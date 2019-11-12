@@ -17,13 +17,10 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructor
 
-        // todo: temp. just to force all names.
-        private UnitImpl()
-        {
-        }
-
         protected UnitImpl(string name)
         {
+            // Name can be null, but you got to say it explicitly. Unnamed units are evil.
+
             this.Name = name;
         }
 

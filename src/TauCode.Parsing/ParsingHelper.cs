@@ -93,5 +93,11 @@ namespace TauCode.Parsing
 
             return owner.Head == node;
         }
+
+        internal static string ToUnitDiagnosticsString(this IUnit unit)
+        {
+            var diag = $"Unit: type is {unit.GetType().FullName}, name is '{unit.Name}'.";
+            return diag;
+        }
     }
 }
