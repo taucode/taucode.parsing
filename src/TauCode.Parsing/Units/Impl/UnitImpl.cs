@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl
 {
@@ -34,7 +35,7 @@ namespace TauCode.Parsing.Units.Impl
         {
             if (IsFinalized)
             {
-                throw new ParsingException("Unit is finalized.");
+                throw new ParserException("Unit is finalized.");
             }
         }
 

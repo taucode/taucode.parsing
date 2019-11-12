@@ -9,14 +9,14 @@ namespace TauCode.Parsing.Tests.Aide
     public class AideLexerTests
     {
         [Test]
-        public void Todo()
+        public void Lexize_ValidInput_Lexizes()
         {
             // Arrange
             var input =
 @"
 CREATE TABLE <table_name>\Identifier \(
-    <column_definition>\Block <comma>\,
-    <constraint_definitions>\Block
+    <column_definition>\BlockReference <comma>\,
+    <constraint_definitions>\BlockReference
 <table_closing>\)
 ";
             var lexer = new AideLexer();
@@ -25,7 +25,7 @@ CREATE TABLE <table_name>\Identifier \(
             var tokens = lexer.Lexize(input);
 
             // Assert
-            Assert.That(tokens, Has.Count.EqualTo(9));
+            Assert.That(tokens, Has.Count.EqualTo(8));
 
             // CREATE
             var token = tokens[0];

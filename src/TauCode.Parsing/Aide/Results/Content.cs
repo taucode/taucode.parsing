@@ -43,16 +43,16 @@ namespace TauCode.Parsing.Aide.Results
             _unitResults.Add(unitResult);
         }
 
-        private InvalidOperationException CreateContentIsSealedException()
+        private AideException CreateContentIsSealedException()
         {
-            return new InvalidOperationException("Content is sealed");
+            return new AideException("Content is sealed.");
         }
 
         public UnitResult GetLastUnitResult()
         {
             if (_unitResults.Count == 0)
             {
-                throw new InvalidOperationException("Content is empty.");
+                throw new AideException("Content is empty.");
             }
 
             return _unitResults[_unitResults.Count - 1];

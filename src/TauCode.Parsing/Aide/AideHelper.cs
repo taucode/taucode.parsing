@@ -2,12 +2,22 @@
 using System.Linq;
 using System.Text;
 using TauCode.Parsing.Aide.Results;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Aide
 {
     public static class AideHelper
     {
+        #region Exceptions
+
+        internal static LexerException CreateTokenNameCannotPrecedeChar(char c)
+        {
+            return new LexerException($"Token name cannot precede char '{c}'.");
+        }
+
+        #endregion
+
         public static Content GetCurrentContent(this IContext context)
         {
             if (context is null)

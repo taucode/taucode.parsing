@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing
 {
@@ -24,7 +24,7 @@ namespace TauCode.Parsing
         {
             if (_results.Count == 0)
             {
-                throw new InvalidOperationException("Content is empty.");
+                throw new ParserException("Content is empty.");
             }
 
             return (T)_results[_results.Count - 1];

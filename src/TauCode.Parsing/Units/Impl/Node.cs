@@ -48,13 +48,11 @@ namespace TauCode.Parsing.Units.Impl
 
         #endregion
 
-        #region INode Members
+        #region Internal
 
-        public virtual void AddLink(IUnit linked)
+        internal void ForceAddLink(IUnit linked)
         {
-            // todo: get it back asap!
-            //this.CheckNotFinalized();
-
+            // adds a link regardless the fact the node is finalized
             if (linked == null)
             {
                 throw new ArgumentNullException(nameof(linked));
@@ -63,6 +61,16 @@ namespace TauCode.Parsing.Units.Impl
             // NB: can add self, no problem with that.
 
             _links.Add(linked);
+        }
+
+        #endregion
+
+        #region INode Members
+
+        public virtual void AddLink(IUnit linked)
+        {
+            this.CheckNotFinalized();
+            this.ForceAddLink(linked);
         }
 
         public IReadOnlyList<IUnit> Links => _links;
