@@ -26,5 +26,11 @@ namespace TauCode.Parsing.Units.Impl.Nodes
         {
             // idle
         }
+
+        public override IBlock Owner
+        {
+            get => null;
+            internal set => throw new ParserException("Cannot set Owner of the EndNode.");
+        }
     }
 }

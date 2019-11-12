@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Algorithms.Graphs;
 using TauCode.Parsing.Aide.Results;
 using TauCode.Parsing.Units;
 
@@ -43,6 +44,28 @@ namespace TauCode.Parsing.Aide.Building
                 dictionary.Add(name, blockDefinitionResult);
             }
 
+            var graph = new Graph<BlockDefinitionResult>();
+
+            foreach (var blockDefinitionResult in dictionary.Values)
+            {
+                graph.AddNode(blockDefinitionResult);
+            }
+
+            foreach (var node in graph.Nodes)
+            {
+                var block = node.Value;
+                var referencedBlockNames = block.GetReferencedBlockNames();
+
+                foreach (var referencedBlockName in referencedBlockNames)
+                {
+                    var referencedNode =
+                        graph.Nodes.Single(x => x.Value.GetBlockDefinitionResultName() == referencedBlockName); // todo: single-or-default
+
+                    node.DrawEdgeTo(referencedNode);
+                }
+            }
+
+            // todo: slice & go on.
             throw new NotImplementedException();
 
             //var graph = new Graph<BlockDefinitionResult>();

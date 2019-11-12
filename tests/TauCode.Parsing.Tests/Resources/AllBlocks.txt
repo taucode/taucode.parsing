@@ -65,5 +65,6 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
 
 /****** Foreign Key Referenced Columns ******/
 
-\CloneBlock(:fk_referenced_columns, :fk_columns)
-
+\BeginBlockDefinition(:fk_referenced_columns, /* clone */ :fk_columns)
+\Clone
+\EndBlockDefinition

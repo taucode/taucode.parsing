@@ -74,7 +74,7 @@ namespace TauCode.Parsing.Units.Impl
             }
         }
 
-        public IBlock Owner
+        public virtual IBlock Owner
         {
             get => _owner;
             internal set

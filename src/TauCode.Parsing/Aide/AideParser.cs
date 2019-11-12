@@ -15,16 +15,11 @@ namespace TauCode.Parsing.Aide
             var head = new SplittingNode("Node: super splitter");
             var end = EndNode.Instance;
             var blockDefinitionBlock = this.CreateBlockDefinitionBlock(end);
-            var cloneBlockBlock = this.CreateCloneBlockBlock(end);
 
             var superBlock = new Block(head, "superBlock");
             head.AddLink(blockDefinitionBlock);
-            head.AddLink(cloneBlockBlock);
 
-            superBlock.Capture(
-                blockDefinitionBlock,
-                cloneBlockBlock,
-                end);
+            superBlock.Capture(blockDefinitionBlock);
 
             superBlock.FinalizeUnit();
             return superBlock;
@@ -61,8 +56,22 @@ namespace TauCode.Parsing.Aide
                 out var alternativesInputWrapper,
                 out var alternativesOutputWrapper);
 
-            nameRefsBlock.GetSingleExitNode().AddLink(blockContentBlock);
+            var nameRefsBlockExitNode = nameRefsBlock.GetSingleExitNode();
 
+            nameRefsBlockExitNode.AddLink(blockContentBlock);
+
+            // deal with clone
+            var cloneNode = new ExactEnumNode<SyntaxElement>(
+                SyntaxElement.Clone,
+                (token, context) =>
+                {
+                    var content = context.GetCurrentContent();
+                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Clone, null));
+                    context.Modify();
+                },
+                "clone");
+            nameRefsBlockExitNode.AddLink(cloneNode);
+            
             // deal with optional
             var optionalBlock = this.CreateOptionalBlock(
                 out var blockInputNodeWrapperForOptional,
@@ -97,11 +106,15 @@ namespace TauCode.Parsing.Aide
                 },
                 "Node: end block definition");
 
+
+            cloneNode.AddLink(endBlockNode);
+
             outputSplitter.AddLink(endBlockNode);
 
             // adding owned nodes to block
             blockDefinitionBlock.Capture(
                 nameRefsBlock,
+                cloneNode,
                 blockContentBlock,
                 optionalBlock,
                 alternativesBlock,
@@ -110,37 +123,6 @@ namespace TauCode.Parsing.Aide
             endBlockNode.AddLink(endNode);
 
             return blockDefinitionBlock;
-        }
-
-        private IBlock CreateCloneBlockBlock(EndNode endNode)
-        {
-            INode head;
-            var block = new Block(
-                head = new ExactEnumNode<SyntaxElement>(
-                    SyntaxElement.CloneBlock,
-                    (token, context) =>
-                    {
-                        var cloneResult = new CloneBlockResult();
-                        context.AddResult(cloneResult);
-                    },
-                    "Node: CloneBlock"),
-                "Block: CloneBlock Block");
-
-            var nameRefsBlock = this.CreateNameReferencesInParenthesesBlock((context, name) =>
-            {
-                var cloneBlockResult = context.GetLastResult<CloneBlockResult>();
-                cloneBlockResult.Arguments.Add(name);
-                context.Modify();
-            });
-            nameRefsBlock.Name = "Block: Name Refs for Clone Block block";
-
-            head.AddLink(nameRefsBlock);
-            nameRefsBlock.GetSingleExitNode().AddLink(endNode);
-
-            // adding owned nodes to block
-            block.Capture(nameRefsBlock);
-
-            return block;
         }
 
         private IBlock CreateBlockContentBlock(

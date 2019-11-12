@@ -61,5 +61,7 @@ namespace TauCode.Parsing.Aide.Results
         public IList<UnitResult> GetAllResults() => _unitResults;
 
         public int UnitResultCount => _unitResults.Count;
+
+        public UnitResult this[int index] => _unitResults[index];
     }
 }

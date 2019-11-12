@@ -194,10 +194,6 @@ namespace TauCode.Parsing.Aide
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.EndBlockDefinition, tokenName);
                     break;
 
-                case "CloneBlock":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.CloneBlock, tokenName);
-                    break;
-
                 case "Identifier":
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Identifier, tokenName);
                     break;
@@ -216,6 +212,10 @@ namespace TauCode.Parsing.Aide
 
                 case "WrongWay":
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.WrongWay, tokenName);
+                    break;
+
+                case "Clone":
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Clone, tokenName);
                     break;
 
                 default:

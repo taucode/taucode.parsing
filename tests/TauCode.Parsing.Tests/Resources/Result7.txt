@@ -1,1 +1,3 @@
-﻿\CloneBlock(:fk_referenced_columns, :fk_columns)
+﻿\BeginBlockDefinition(:fk_referenced_columns, :fk_columns)
+\Clone
+\EndBlockDefinition

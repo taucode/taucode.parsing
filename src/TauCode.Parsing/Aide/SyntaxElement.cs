@@ -5,7 +5,6 @@
         BeginBlockDefinition = 1,
         EndBlockDefinition,
         Link,
-        CloneBlock,
         Identifier,
         BlockReference,
         Idle,
@@ -18,5 +17,6 @@
         RightCurlyBracket,
         LeftBracket,
         RightBracket,
+        Clone,
     }
 }
