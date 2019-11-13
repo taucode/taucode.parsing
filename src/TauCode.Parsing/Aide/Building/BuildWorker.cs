@@ -4,34 +4,48 @@ using System.Linq;
 using TauCode.Algorithms.Graphs;
 using TauCode.Parsing.Aide.Results;
 using TauCode.Parsing.Units;
+using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing.Aide.Building
 {
     // todo: make internal
     public class BuildWorker
     {
+        private class BlockRecord
+        {
+            private IBlock _block;
+
+            public BlockRecord(BlockDefinitionResult mold)
+            {
+                this.Mold = mold;
+            }
+
+            public BlockDefinitionResult Mold { get; }
+
+            public IBlock Block
+            {
+                get => _block;
+                set
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            public bool BlockIsEmbedded { get; }
+        }
+
         private readonly IAideResult[] _results;
         private readonly IBuildEnvironment _buildEnvironment;
-        private readonly List<BlockDefinitionResult> _blockDefinitionResults;
-        private readonly List<CloneBlockResult> _cloneBlockResults;
-
-        //private List<>
+        private readonly Dictionary<string, BlockRecord> _records;
+        private readonly List<string> _sortedNames;
 
         public BuildWorker(IAideResult[] results, IBuildEnvironment buildEnvironment)
         {
             _results = results;
             _buildEnvironment = buildEnvironment;
 
-            _blockDefinitionResults = this.ExtractBlockDefinitionResults();
-            _cloneBlockResults = this.ExtractCloneBlockResults();
-
-            if (_blockDefinitionResults.Count + _cloneBlockResults.Count != _results.Length)
-            {
-                throw new NotImplementedException();
-            }
-
+            var blockDefinitionResults = this.ExtractBlockDefinitionResults();
             var dictionary = new Dictionary<string, BlockDefinitionResult>();
-            foreach (var blockDefinitionResult in _blockDefinitionResults)
+            foreach (var blockDefinitionResult in blockDefinitionResults)
             {
                 blockDefinitionResult.CheckBlockDefinitionResultIsCorrect();
 
@@ -65,20 +79,25 @@ namespace TauCode.Parsing.Aide.Building
                 }
             }
 
-            // todo: slice & go on.
-            throw new NotImplementedException();
+            var algorithm = new GraphSlicingAlgorithm<BlockDefinitionResult>(graph);
+            var slices = algorithm
+                .Slice();
 
-            //var graph = new Graph<BlockDefinitionResult>();
-            //var algorithm = new GraphSlicingAlgorithm<BlockDefinitionResult>(graph);
-            //var kaka = algorithm.Slice();
-        }
+            var firstSlice = slices.First();
 
-        private List<CloneBlockResult> ExtractCloneBlockResults()
-        {
-            return _results
-                .Where(x => x is CloneBlockResult)
-                .Cast<CloneBlockResult>()
+            foreach (var node in firstSlice.Nodes)
+            {
+                if (node.OutgoingEdges.Any() || node.IncomingEdges.Any())
+                {
+                    throw new NotImplementedException(); // still circular refs
+                }
+            }
+
+            _sortedNames = slices
+                .SelectMany(x => x.Nodes.Select(y => y.Value.GetBlockDefinitionResultName()))
                 .ToList();
+
+            _records = dictionary.ToDictionary(x => x.Key, x => new BlockRecord(x.Value));
         }
 
         private List<BlockDefinitionResult> ExtractBlockDefinitionResults()
@@ -91,7 +110,62 @@ namespace TauCode.Parsing.Aide.Building
 
         public IBlock BuildMainBlock()
         {
+            foreach (var name in _sortedNames)
+            {
+                var record = _records[name];
+                var block = this.BuildBlock(record.Mold);
+                record.Block = block;
+            }
+
             throw new NotImplementedException();
+        }
+
+        private IBlock BuildBlock(BlockDefinitionResult mold)
+        {
+            var content = mold.Content;
+            var contentTransformation = this.BuildContent(content);
+
+            throw new NotImplementedException();
+        }
+
+        private List<IUnit> BuildContent(Content content)
+        {
+            var list = new List<IUnit>();
+
+            for (var i = 0; i < content.UnitResultCount; i++)
+            {
+                var unitResult = content[i];
+                var unit = this.BuildUnit(unitResult);
+                list.Add(unit);
+
+                if (i > 0 && list[i - 1] is INode previousNode)
+                {
+                    previousNode.AddLink(unit);
+                }
+            }
+
+            return list;
+        }
+
+        private IUnit BuildUnit(UnitResult unitResult)
+        {
+            IUnit unit;
+            if (unitResult is SyntaxElementResult syntaxElementResult)
+            {
+                switch (syntaxElementResult.SyntaxElement)
+                {
+                    case SyntaxElement.Identifier:
+                        unit = new IdentifierNode(ParsingHelper.IdleTokenProcessor, syntaxElementResult.SourceNodeName);
+                        return unit;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

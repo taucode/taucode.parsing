@@ -83,11 +83,6 @@ namespace TauCode.Parsing.Aide
 
                 result = sb.ToString();
             }
-            else if (aideResult is CloneBlockResult cloneBlockResult)
-            {
-                var namesString = cloneBlockResult.Arguments.FormatArguments();
-                result = $@"\CloneBlock{namesString}";
-            }
             else if (aideResult is WordNodeResult wordNodeResult)
             {
                 result = $@"{wordNodeResult.SourceNodeName.ToUnitResultName()}{wordNodeResult.Word}";

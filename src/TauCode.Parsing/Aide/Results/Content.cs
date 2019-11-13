@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class Content
+    public class Content : IEnumerable<UnitResult>
     {
         private readonly List<UnitResult> _unitResults;
         private bool _isSealed;
@@ -63,5 +64,9 @@ namespace TauCode.Parsing.Aide.Results
         public int UnitResultCount => _unitResults.Count;
 
         public UnitResult this[int index] => _unitResults[index];
+
+        public IEnumerator<UnitResult> GetEnumerator() => _unitResults.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _unitResults.GetEnumerator();
     }
 }
