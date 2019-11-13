@@ -4,39 +4,39 @@ using System.Linq;
 using TauCode.Algorithms.Graphs;
 using TauCode.Parsing.Aide.Results;
 using TauCode.Parsing.Units;
-using TauCode.Parsing.Units.Impl.Nodes;
 
 namespace TauCode.Parsing.Aide.Building
 {
     // todo: make internal
     public class BuildWorker
     {
-        private class BlockRecord
-        {
-            private IBlock _block;
+        //private class BlockRecord
+        //{
+        //    private IBlock _block;
 
-            public BlockRecord(BlockDefinitionResult mold)
-            {
-                this.Mold = mold;
-            }
+        //    public BlockRecord(BlockDefinitionResult mold)
+        //    {
+        //        this.Mold = mold;
+        //    }
 
-            public BlockDefinitionResult Mold { get; }
+        //    public BlockDefinitionResult Mold { get; }
 
-            public IBlock Block
-            {
-                get => _block;
-                set
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            public bool BlockIsEmbedded { get; }
-        }
+        //    public IBlock Block
+        //    {
+        //        get => _block;
+        //        set
+        //        {
+        //            throw new NotImplementedException();
+        //        }
+        //    }
+        //    public bool BlockIsEmbedded { get; }
+        //}
 
         private readonly IAideResult[] _results;
         private readonly IBuildEnvironment _buildEnvironment;
-        private readonly Dictionary<string, BlockRecord> _records;
+        //private readonly Dictionary<string, BlockRecord> _records;
         private readonly List<string> _sortedNames;
+        private readonly Dictionary<string, BlockBuildingContext> _family;
 
         public BuildWorker(IAideResult[] results, IBuildEnvironment buildEnvironment)
         {
@@ -97,7 +97,14 @@ namespace TauCode.Parsing.Aide.Building
                 .SelectMany(x => x.Nodes.Select(y => y.Value.GetBlockDefinitionResultName()))
                 .ToList();
 
-            _records = dictionary.ToDictionary(x => x.Key, x => new BlockRecord(x.Value));
+            //_records = dictionary.ToDictionary(x => x.Key, x => new BlockRecord(x.Value));
+
+            _family = new Dictionary<string, BlockBuildingContext>();
+            foreach (var result in dictionary.Values)
+            {
+                var context = new BlockBuildingContext(result, _family);
+                _family.Add(result.GetBlockDefinitionResultName(), context);
+            }
         }
 
         private List<BlockDefinitionResult> ExtractBlockDefinitionResults()
@@ -112,60 +119,67 @@ namespace TauCode.Parsing.Aide.Building
         {
             foreach (var name in _sortedNames)
             {
-                var record = _records[name];
-                var block = this.BuildBlock(record.Mold);
-                record.Block = block;
+                var context = _family[name];
+                var builder = new BlockBuilder(context);
+                builder.Build();
+                //var record = _records[name];
+                //var block = this.BuildBlock(context);
+                //record.Block = block;
             }
 
             throw new NotImplementedException();
         }
 
-        private IBlock BuildBlock(BlockDefinitionResult mold)
-        {
-            var content = mold.Content;
-            var contentTransformation = this.BuildContent(content);
+        //private IBlock BuildBlock(BlockBuildingContext context)
+        //{
+        //    var content = context.Mold.Content;
+        //    var contentTransformation = this.BuildContent(content);
 
-            throw new NotImplementedException();
-        }
+        //    throw new NotImplementedException();
+        //}
 
-        private List<IUnit> BuildContent(Content content)
-        {
-            var list = new List<IUnit>();
+        //private List<IUnit> BuildContent(Content content)
+        //{
+        //    var list = new List<IUnit>();
 
-            for (var i = 0; i < content.UnitResultCount; i++)
-            {
-                var unitResult = content[i];
-                var unit = this.BuildUnit(unitResult);
-                list.Add(unit);
+        //    for (var i = 0; i < content.UnitResultCount; i++)
+        //    {
+        //        var unitResult = content[i];
+        //        var unit = this.BuildUnit(unitResult);
+        //        list.Add(unit);
 
-                if (i > 0 && list[i - 1] is INode previousNode)
-                {
-                    previousNode.AddLink(unit);
-                }
-            }
+        //        if (i > 0 && list[i - 1] is INode previousNode)
+        //        {
+        //            previousNode.AddLink(unit);
+        //        }
+        //    }
 
-            return list;
-        }
+        //    return list;
+        //}
 
-        private IUnit BuildUnit(UnitResult unitResult)
-        {
-            IUnit unit;
-            if (unitResult is SyntaxElementResult syntaxElementResult)
-            {
-                switch (syntaxElementResult.SyntaxElement)
-                {
-                    case SyntaxElement.Identifier:
-                        unit = new IdentifierNode(ParsingHelper.IdleTokenProcessor, syntaxElementResult.SourceNodeName);
-                        return unit;
+        //private IUnit BuildUnit(UnitResult unitResult)
+        //{
+        //    IUnit unit;
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //    if (unitResult is SyntaxElementResult syntaxElementResult)
+        //    {
+        //        switch (syntaxElementResult.SyntaxElement)
+        //        {
+        //            case SyntaxElement.Identifier:
+        //                unit = new IdentifierNode(ParsingHelper.IdleTokenProcessor, syntaxElementResult.SourceNodeName);
+        //                return unit;
+
+        //            case SyntaxElement.Link:
+        //                throw new NotImplementedException();
+
+        //            default:
+        //                throw new ArgumentOutOfRangeException();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+        //}
     }
 }

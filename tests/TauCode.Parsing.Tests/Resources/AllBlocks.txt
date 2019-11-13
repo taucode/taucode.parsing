@@ -1,9 +1,9 @@
 ﻿/****** Create table ******/
 
-\BeginBlockDefinition(:create_table, :top) /* 0 */
+\BeginBlockDefinition(:top, :create_table) /* 0 */
 
 CREATE TABLE <table_name>\Identifier \(
-    <column_definition>\BlockReference \Link(:table_closing) <comma>\, \Link(:column_definition)
+    <column_definition>\BlockReference(:table_closing, :next) <comma>\,(:column_definition, :next)
     <constraint_definitions>\BlockReference
 <table_closing>\)
 
@@ -12,24 +12,24 @@ CREATE TABLE <table_name>\Identifier \(
 
 /****** Column Definition ******/
 
-\BeginBlockDefinition(:column_definition) /* 1 */
+\BeginBlockDefinition(:inner, :column_definition) /* 1 */
 
-<column_name>\Identifier <type_name>\Identifier \Link(:idle) <optional_nullability>[{<null>NULL | NOT <not_null>NULL}]
+<column_name>\Identifier <type_name>\Identifier <nullability>[ { <null>NULL | NOT <not_null>NULL } ] <end>\Idle
 
 \EndBlockDefinition
 
 /****** Constraint Definitions ******/
 
-\BeginBlockDefinition(:constraint_definitions) /* 2 */
+\BeginBlockDefinition(:inner, :constraint_definitions) /* 2 */
 
-<begin>CONSTRAINT { <primary_key>\BlockReference | <foreign_key>\BlockReference } { \Link(:create_table, :table_closing) | <comma>\, \Link(:begin) }
+<begin>CONSTRAINT { <primary_key>\BlockReference | <foreign_key>\BlockReference } { \,(:this, :begin) | \Idle }
 
 \EndBlockDefinition
 
 
 /****** Primary Key ******/
 
-\BeginBlockDefinition(:primary_key) /* 3 */
+\BeginBlockDefinition(:inner, :primary_key) /* 3 */
 
 PRIMARY KEY <pk_name>\Identifier <pk_columns>\BlockReference
 
@@ -38,7 +38,7 @@ PRIMARY KEY <pk_name>\Identifier <pk_columns>\BlockReference
 
 /****** Primary Key Columns ******/
 
-\BeginBlockDefinition(:pk_columns) /* 4 */
+\BeginBlockDefinition(:inner, :pk_columns) /* 4 */
 
 \( <pk_column_name>\Identifier [ { <asc>ASC | <desc>DESC } ] { \, \Link(:pk_column_name) | \) }
 
@@ -47,7 +47,7 @@ PRIMARY KEY <pk_name>\Identifier <pk_columns>\BlockReference
 
 /****** Foreign Key ******/
 
-\BeginBlockDefinition(:foreign_key) /* 5 */
+\BeginBlockDefinition(:inner, :foreign_key) /* 5 */
 
 FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_referenced_columns>\BlockReference
 
@@ -56,7 +56,7 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
 
 /****** Foreign Key Columns ******/
 
-\BeginBlockDefinition(:fk_columns) /* 6 */
+\BeginBlockDefinition(:inner, :fk_columns) /* 6 */
 
 \( <fk_column_name>\Identifier { \, \Link(:fk_column_name) | \) }
 
@@ -65,6 +65,6 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
 
 /****** Foreign Key Referenced Columns ******/
 
-\BeginBlockDefinition(:fk_referenced_columns, /* clone */ :fk_columns)
-\Clone
+\BeginBlockDefinition(:clone :fk_referenced_columns)
+\Clone(:fk_columns)
 \EndBlockDefinition

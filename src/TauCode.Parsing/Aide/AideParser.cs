@@ -168,6 +168,17 @@ namespace TauCode.Parsing.Aide
                 },
                 "Node: Symbol within block");
 
+            // idle node
+            var idleNode = new ExactEnumNode<SyntaxElement>(
+                SyntaxElement.Idle,
+                (token, context) =>
+                {
+                    var content = context.GetCurrentContent();
+                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Idle, token.Name));
+                    context.Modify();
+                },
+                "Node : Idle node");
+
             // block node
             var blockNode = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.BlockReference,
@@ -194,6 +205,7 @@ namespace TauCode.Parsing.Aide
             inputSplitter.AddLink(wordNode);
             inputSplitter.AddLink(identifierNode);
             inputSplitter.AddLink(symbolNode);
+            inputSplitter.AddLink(idleNode);
             inputSplitter.AddLink(blockNode);
             inputSplitter.AddLink(linkBlock);
             inputSplitter.AddLink(optionalInputWrapper);
@@ -205,6 +217,7 @@ namespace TauCode.Parsing.Aide
             wordNode.AddLink(outputSplitter);
             identifierNode.AddLink(outputSplitter);
             symbolNode.AddLink(outputSplitter);
+            idleNode.AddLink(outputSplitter);
             blockNode.AddLink(outputSplitter);
             linkOutNode.AddLink(outputSplitter);
             optionalOutputWrapper.AddDeferredLink(outputSplitter);
@@ -216,6 +229,7 @@ namespace TauCode.Parsing.Aide
                 wordNode,
                 identifierNode,
                 symbolNode,
+                idleNode,
                 blockNode,
                 linkBlock,
                 optionalInputWrapper,

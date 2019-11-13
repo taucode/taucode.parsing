@@ -2,6 +2,7 @@
 
 namespace TauCode.Parsing.Units.Impl.Nodes
 {
+    // todo: rename to idle node?
     public class SplittingNode : Node
     {
         public SplittingNode(string name)
