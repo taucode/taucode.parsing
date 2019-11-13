@@ -5,6 +5,7 @@ using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl
 {
+    // todo: clean up
     public class Block : UnitImpl, IBlock
     {
         #region Fields
@@ -19,21 +20,24 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructors
 
-        private Block()
-            : base(null)
+        //private Block()
+        //    : base(null)
+        //{
+        //    _owned = new HashSet<IUnit>();
+        //    _comparer = Comparer<IUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
+        //}
+
+        public Block(string name)
+            : base(name)
         {
             _owned = new HashSet<IUnit>();
             _comparer = Comparer<IUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
+
+            //this.Name = name;
         }
 
-        public Block(string name)
-            : this()
-        {
-            this.Name = name;
-        }
-
-        private Block(IUnit head)
-            : this()
+        public Block(IUnit head, string name)
+            : this(name)
         {
             if (head == null)
             {
@@ -44,11 +48,23 @@ namespace TauCode.Parsing.Units.Impl
             this.Head = head;
         }
 
-        public Block(IUnit head, string name)
-            : this(head)
-        {
-            this.Name = name;
-        }
+        //private Block(IUnit head)
+        //    : this()
+        //{
+        //    if (head == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(head));
+        //    }
+
+        //    this.Capture(head);
+        //    this.Head = head;
+        //}
+
+        //public Block(IUnit head, string name)
+        //    : this(head)
+        //{
+        //    this.Name = name;
+        //}
 
         #endregion
 

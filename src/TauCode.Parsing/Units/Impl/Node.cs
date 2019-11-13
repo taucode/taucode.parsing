@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl
 {
+    // todo: clean up
     public abstract class Node : UnitImpl, INode
     {
         #region Fields
 
         private readonly List<IUnit> _links;
+        //private readonly List<Link> _links;
 
         #endregion
 
@@ -18,7 +19,8 @@ namespace TauCode.Parsing.Units.Impl
             : base(name)
         {
             _links = new List<IUnit>();
-            this.Name = name;
+            //this.Name = name;
+            //_links = new List<Link>();
         }
 
         #endregion
@@ -27,18 +29,19 @@ namespace TauCode.Parsing.Units.Impl
 
         protected override void OnBeforeFinalize()
         {
-            if (_links.Count == 0)
-            {
-                throw new ParserException($"Cannot finalize node since it doesn't have links. {this.ToUnitDiagnosticsString()}");
-            }
+            throw new NotImplementedException(); // resolve links!
+            //if (_links.Count == 0)
+            //{
+            //    throw new ParserException($"Cannot finalize node since it doesn't have links. {this.ToUnitDiagnosticsString()}");
+            //}
 
-            foreach (var link in _links)
-            {
-                if (link is INode node && node.IsBlockHeadNode() && link.Owner != this.Owner)
-                {
-                    throw new ParserException($"Cannot link to other block's head node; link to block instead. {this.ToUnitDiagnosticsString()}");
-                }
-            }
+            //foreach (var link in _links)
+            //{
+            //    if (link is INode node && node.IsBlockHeadNode() && link.Owner != this.Owner)
+            //    {
+            //        throw new ParserException($"Cannot link to other block's head node; link to block instead. {this.ToUnitDiagnosticsString()}");
+            //    }
+            //}
         }
 
         #endregion
@@ -51,26 +54,41 @@ namespace TauCode.Parsing.Units.Impl
         /// <param name="linked">Unit to add link to.</param>
         internal void ForceAddLink(IUnit linked)
         {
-            if (linked == null)
-            {
-                throw new ArgumentNullException(nameof(linked));
-            }
+            throw new NotImplementedException();
 
-            // NB: can add self, no problem with that.
-            _links.Add(linked);
+            //if (linked == null)
+            //{
+            //    throw new ArgumentNullException(nameof(linked));
+            //}
+
+            //// NB: can add self, no problem with that.
+            //_links.Add(linked);
         }
 
         #endregion
 
         #region INode Members
 
-        public virtual void AddLink(IUnit linked)
+        //public virtual void AddLink(IUnit linked)
+        //{
+        //    this.CheckNotFinalized();
+        //    this.ForceAddLink(linked);
+        //}
+
+        //public IReadOnlyList<IUnit> Links => _links;
+
+        public void AddLink(IUnit unit)
         {
-            this.CheckNotFinalized();
-            this.ForceAddLink(linked);
+            throw new NotImplementedException();
         }
 
-        public IReadOnlyList<IUnit> Links => _links;
+        public void AddLinkAddress(string linkAddress)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IReadOnlyList<IUnit> Links => throw new NotImplementedException();
+
 
         #endregion
     }

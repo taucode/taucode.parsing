@@ -2,9 +2,10 @@
 
 namespace TauCode.Parsing.Units
 {
+    // todo: name cannot be an Aide reserved word!
     public interface IUnit
     {
-        string Name { get; set; }
+        string Name { get; }
         IBlock Owner { get; }
         bool IsFinalized { get; }
         void FinalizeUnit();

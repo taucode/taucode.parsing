@@ -10,7 +10,7 @@ namespace TauCode.Parsing.Units.Impl
     {
         #region Fields
 
-        private string _name;
+        //private string _name;
         private IBlock _owner;
 
         #endregion
@@ -64,15 +64,17 @@ namespace TauCode.Parsing.Units.Impl
 
         #region IUnit Members
 
-        public string Name
-        {
-            get => _name;
-            set
-            {
-                this.CheckNotFinalized();
-                _name = value;
-            }
-        }
+        //public string Name
+        //{
+        //    get => _name;
+        //    set
+        //    {
+        //        this.CheckNotFinalized();
+        //        _name = value;
+        //    }
+        //}
+
+        public string Name { get; }
 
         public virtual IBlock Owner
         {

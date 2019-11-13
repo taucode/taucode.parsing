@@ -39,13 +39,14 @@ namespace TauCode.Parsing.Aide
                     "Node: BlockDefinition"),
                 "Block: BlockDefinition Block");
 
-            var nameRefsBlock = this.CreateNameReferencesInParenthesesBlock((context, name) =>
-            {
-                var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
-                blockDefinitionResult.Arguments.Add(name);
-                context.Modify();
-            });
-            nameRefsBlock.Name = "Block: Name Refs";
+            var nameRefsBlock = this.CreateNameReferencesInParenthesesBlock(
+                (context, name) =>
+                {
+                    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+                    blockDefinitionResult.Arguments.Add(name);
+                    context.Modify();
+                });
+            //nameRefsBlock.Name = "Block: Name Refs";
 
             head.AddLink(nameRefsBlock);
 

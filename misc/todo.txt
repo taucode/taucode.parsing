@@ -1,0 +1,6 @@
+2019-11-13
+==========
+    1. NodeWrapper -> NodeExtender
+    2. Splitter -> IdleNode
+    3. Link address resolution
+    4. Smart (linked) results
