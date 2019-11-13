@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Units;
 using TauCode.Parsing.Units.Impl.Nodes;
@@ -43,14 +44,14 @@ namespace TauCode.Parsing
         {
         }
 
-        public static bool IsEndResult(IReadOnlyList<IUnit> result)
+        public static bool IsEndResult(IReadOnlyCollection<IUnit> result)
         {
             if (result == null)
             {
                 throw new ArgumentNullException(nameof(result));
             }
 
-            var res = result.Count == 1 && result[0] == EndNode.Instance;
+            var res = result.Count == 1 && result.Single() == EndNode.Instance;
             return res;
         }
 

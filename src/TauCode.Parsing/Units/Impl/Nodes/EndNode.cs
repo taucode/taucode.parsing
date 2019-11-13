@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl.Nodes
@@ -12,7 +13,7 @@ namespace TauCode.Parsing.Units.Impl.Nodes
         {
         }
 
-        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
+        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
             throw new ParserException($"The method '{typeof(EndNode).FullName}.{nameof(ProcessImpl)}' should never be called.");
         }
@@ -20,6 +21,11 @@ namespace TauCode.Parsing.Units.Impl.Nodes
         public override void AddLink(IUnit linked)
         {
             throw new ParserException($"The method '{typeof(EndNode).FullName}.{nameof(AddLink)}' should never be called.");
+        }
+
+        public override void AddLinkAddress(string linkAddress)
+        {
+            throw new NotImplementedException();
         }
 
         protected override void OnBeforeFinalize()

@@ -9,6 +9,6 @@ namespace TauCode.Parsing.Units
         IBlock Owner { get; }
         bool IsFinalized { get; }
         void FinalizeUnit();
-        IReadOnlyList<IUnit> Process(ITokenStream stream, IContext context);
+        IReadOnlyCollection<IUnit> Process(ITokenStream stream, IContext context);
     }
 }

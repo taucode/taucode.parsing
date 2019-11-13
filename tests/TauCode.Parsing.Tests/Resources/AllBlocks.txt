@@ -22,7 +22,7 @@ CREATE TABLE <table_name>\Identifier \(
 
 \BeginBlockDefinition(:inner, :constraint_definitions) /* 2 */
 
-<begin>CONSTRAINT { <primary_key>\BlockReference | <foreign_key>\BlockReference } { \,(:this, :begin) | \Idle }
+<begin>CONSTRAINT { <primary_key>\BlockReference | <foreign_key>\BlockReference } { \,(:begin) | \Idle }
 
 \EndBlockDefinition
 
@@ -40,7 +40,7 @@ PRIMARY KEY <pk_name>\Identifier <pk_columns>\BlockReference
 
 \BeginBlockDefinition(:inner, :pk_columns) /* 4 */
 
-\( <pk_column_name>\Identifier [ { <asc>ASC | <desc>DESC } ] { \, \Link(:pk_column_name) | \) }
+\( <pk_column_name>\Identifier [ { <asc>ASC | <desc>DESC } ] { \,(:pk_column_name) | \) }
 
 \EndBlockDefinition
 
@@ -58,7 +58,7 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
 
 \BeginBlockDefinition(:inner, :fk_columns) /* 6 */
 
-\( <fk_column_name>\Identifier { \, \Link(:fk_column_name) | \) }
+\( <fk_column_name>\Identifier { \,(:fk_column_name) | \) }
 
 \EndBlockDefinition
 

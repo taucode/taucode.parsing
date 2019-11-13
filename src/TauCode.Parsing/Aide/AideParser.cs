@@ -78,11 +78,11 @@ namespace TauCode.Parsing.Aide
                 out var blockInputNodeWrapperForOptional,
                 out var blockOutputNodeWrapperForOptional);
 
-            optionalInputWrapper.InternalNode = (INode)optionalBlock.Head;
-            optionalOutputWrapper.InternalNode = optionalBlock.GetSingleExitNode();
+            optionalInputWrapper.TargetNode = (INode)optionalBlock.Head;
+            optionalOutputWrapper.TargetNode = optionalBlock.GetSingleExitNode();
 
-            blockInputNodeWrapperForOptional.InternalNode = (INode)blockContentBlock.Head;
-            blockOutputNodeWrapperForOptional.InternalNode =
+            blockInputNodeWrapperForOptional.TargetNode = (INode)blockContentBlock.Head;
+            blockOutputNodeWrapperForOptional.TargetNode =
                 (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
 
             // deal with alternatives
@@ -90,11 +90,11 @@ namespace TauCode.Parsing.Aide
                 out var blockInputNodeWrapperForAlternatives,
                 out var blockOutputNodeWrapperForAlternatives);
 
-            alternativesInputWrapper.InternalNode = (INode)alternativesBlock.Head;
-            alternativesOutputWrapper.InternalNode = alternativesBlock.GetSingleExitNode();
+            alternativesInputWrapper.TargetNode = (INode)alternativesBlock.Head;
+            alternativesOutputWrapper.TargetNode = alternativesBlock.GetSingleExitNode();
 
-            blockInputNodeWrapperForAlternatives.InternalNode = (INode)blockContentBlock.Head;
-            blockOutputNodeWrapperForAlternatives.InternalNode =
+            blockInputNodeWrapperForAlternatives.TargetNode = (INode)blockContentBlock.Head;
+            blockOutputNodeWrapperForAlternatives.TargetNode =
                 (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
 
             // endBlockDefinitionNode
@@ -128,10 +128,10 @@ namespace TauCode.Parsing.Aide
 
         private IBlock CreateBlockContentBlock(
             out SplittingNode outputSplitter,
-            out INodeWrapper optionalInputWrapper,
-            out INodeWrapper optionalOutputWrapper,
-            out INodeWrapper alternativesInputWrapper,
-            out INodeWrapper alternativesOutputWrapper)
+            out INodeExtender optionalInputWrapper,
+            out INodeExtender optionalOutputWrapper,
+            out INodeExtender alternativesInputWrapper,
+            out INodeExtender alternativesOutputWrapper)
         {
             var inputSplitter = new SplittingNode("Node: starting splitter of block content");
             var block = new Block(inputSplitter, "Block: Block content");
@@ -195,12 +195,12 @@ namespace TauCode.Parsing.Aide
             var linkBlock = this.CreateLinkBlock(out var linkOutNode);
 
             // optional wrappers
-            optionalInputWrapper = new NodeWrapper("Node Wrapper: optional Input Wrapper");
-            optionalOutputWrapper = new NodeWrapper("Node Wrapper: optional Output Wrapper");
+            optionalInputWrapper = new NodeExtender("Node Wrapper: optional Input Wrapper");
+            optionalOutputWrapper = new NodeExtender("Node Wrapper: optional Output Wrapper");
 
             // alternatives wrappers
-            alternativesInputWrapper = new NodeWrapper("Node Wrapper: alternatives Input Wrapper");
-            alternativesOutputWrapper = new NodeWrapper("Node Wrapper: alternatives Output Wrapper");
+            alternativesInputWrapper = new NodeExtender("Node Wrapper: alternatives Input Wrapper");
+            alternativesOutputWrapper = new NodeExtender("Node Wrapper: alternatives Output Wrapper");
 
             // adding nodes to content splitter
             inputSplitter.AddLink(wordNode);
@@ -272,8 +272,8 @@ namespace TauCode.Parsing.Aide
         }
 
         private IBlock CreateOptionalBlock(
-            out INodeWrapper blockInputNodeWrapper,
-            out INodeWrapper blockOutputNodeWrapper)
+            out INodeExtender blockInputNodeWrapper,
+            out INodeExtender blockOutputNodeWrapper)
         {
             var head = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.LeftBracket,
@@ -287,8 +287,8 @@ namespace TauCode.Parsing.Aide
                 "Node: [ of optional");
 
             var block = new Block(head, "Block: optional");
-            blockInputNodeWrapper = new NodeWrapper("Node Wrapper: block input of optional");
-            blockOutputNodeWrapper = new NodeWrapper("Node Wrapper: block output of optional");
+            blockInputNodeWrapper = new NodeExtender("Node Wrapper: block input of optional");
+            blockOutputNodeWrapper = new NodeExtender("Node Wrapper: block output of optional");
 
             var closer = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.RightBracket,
@@ -311,8 +311,8 @@ namespace TauCode.Parsing.Aide
         }
 
         private IBlock CreateAlternativesBlock(
-            out INodeWrapper blockInputNodeWrapper,
-            out INodeWrapper blockOutputNodeWrapper)
+            out INodeExtender blockInputNodeWrapper,
+            out INodeExtender blockOutputNodeWrapper)
         {
             var head = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.LeftCurlyBracket,
@@ -327,8 +327,8 @@ namespace TauCode.Parsing.Aide
 
             var block = new Block(head, "Block: alternatives");
 
-            blockInputNodeWrapper = new NodeWrapper("Node Wrapper: block input of alternatives");
-            blockOutputNodeWrapper = new NodeWrapper("Node Wrapper: block output of alternatives");
+            blockInputNodeWrapper = new NodeExtender("Node Wrapper: block input of alternatives");
+            blockOutputNodeWrapper = new NodeExtender("Node Wrapper: block output of alternatives");
 
             var verticalBar = new ExactEnumNode<SyntaxElement>(
                 SyntaxElement.VerticalBar,

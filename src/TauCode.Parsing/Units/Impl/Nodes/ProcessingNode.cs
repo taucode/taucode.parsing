@@ -15,7 +15,7 @@ namespace TauCode.Parsing.Units.Impl.Nodes
 
         protected abstract bool IsAcceptableToken(IToken token);
 
-        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
+        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
             var token = stream.GetCurrentToken();
             if (this.IsAcceptableToken(token))

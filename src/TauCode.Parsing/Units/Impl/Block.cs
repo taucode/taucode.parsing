@@ -118,10 +118,10 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Overridden
 
-        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
+        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
-            IReadOnlyList<IUnit> challengers = new List<IUnit>(new[] { this.Head });
-            IReadOnlyList<IUnit> emptyChallengers = new List<IUnit>();
+            IReadOnlyCollection<IUnit> challengers = new List<IUnit>(new[] { this.Head });
+            IReadOnlyCollection<IUnit> emptyChallengers = new List<IUnit>();
             var oldPosition = stream.Position;
             var oldVersion = context.Version;
 
@@ -145,7 +145,7 @@ namespace TauCode.Parsing.Units.Impl
                     return challengers;
                 }
 
-                IReadOnlyList<IUnit> nextChallengers = emptyChallengers;
+                IReadOnlyCollection<IUnit> nextChallengers = emptyChallengers;
 
                 foreach (var challenger in challengers)
                 {
@@ -160,7 +160,7 @@ namespace TauCode.Parsing.Units.Impl
                         }
                         else if (result.Count == 1)
                         {
-                            var nextUnit = result[0];
+                            var nextUnit = result.Single();
                             if (nextUnit.IsNestedInto(this))
                             {
                                 nextChallengers = result;

@@ -6,6 +6,7 @@ namespace TauCode.Parsing.Units
     {
         void AddLink(IUnit unit);
         void AddLinkAddress(string linkAddress);
-        IReadOnlyList<IUnit> Links { get; }
+        IReadOnlyCollection<IUnit> Links { get; }
+        IReadOnlyCollection<string> LinkAddresses { get; }
     }
 }

@@ -48,7 +48,7 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Polymorph
 
-        protected abstract IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context);
+        protected abstract IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context);
 
         protected virtual void OnBeforeFinalize()
         {
@@ -118,7 +118,7 @@ namespace TauCode.Parsing.Units.Impl
             IsFinalized = true;
         }
 
-        public IReadOnlyList<IUnit> Process(ITokenStream stream, IContext context)
+        public IReadOnlyCollection<IUnit> Process(ITokenStream stream, IContext context)
         {
             this.CheckFinalized();
 

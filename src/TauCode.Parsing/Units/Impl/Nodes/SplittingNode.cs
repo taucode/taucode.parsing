@@ -11,11 +11,11 @@ namespace TauCode.Parsing.Units.Impl.Nodes
 
         }
 
-        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
+        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
             foreach (var link in this.Links)
             {
-                IReadOnlyList<IUnit> result = link.Process(stream, context);
+                IReadOnlyCollection<IUnit> result = link.Process(stream, context);
                 if (result != null)
                 {
                     return result;

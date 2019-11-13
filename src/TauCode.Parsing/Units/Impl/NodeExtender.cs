@@ -4,7 +4,7 @@ using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Units.Impl
 {
-    public class NodeWrapper : UnitImpl, INodeWrapper
+    public class NodeExtender : UnitImpl, INodeExtender
     {
         #region Fields
 
@@ -15,7 +15,7 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Constructor
 
-        public NodeWrapper(string name)
+        public NodeExtender(string name)
             : base(name)
         {
             _deferredLinks = new List<IUnit>();
@@ -25,7 +25,7 @@ namespace TauCode.Parsing.Units.Impl
 
         #region Overridden
 
-        protected override IReadOnlyList<IUnit> ProcessImpl(ITokenStream stream, IContext context)
+        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
         {
             return _internalNode.Process(stream, context);
         }
@@ -50,9 +50,9 @@ namespace TauCode.Parsing.Units.Impl
 
         #endregion
 
-        #region INodeWrapper Members
+        #region INodeExtender Members
 
-        public INode InternalNode
+        public INode TargetNode
         {
             get => _internalNode;
             set
@@ -73,6 +73,12 @@ namespace TauCode.Parsing.Units.Impl
                     throw new ArgumentException($"'{nameof(value)}' must be of type '{typeof(Node).FullName}'");
                 }
             }
+        }
+
+        public string TargetNodeAddress
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
         }
 
         public void AddDeferredLink(IUnit unit)
