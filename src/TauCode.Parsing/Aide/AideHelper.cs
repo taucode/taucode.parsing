@@ -18,55 +18,55 @@ namespace TauCode.Parsing.Aide
 
         #endregion
 
-        public static Content GetCurrentContent(this IContext context)
-        {
-            if (context is null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+        //public static Content GetCurrentContent(this IContext context)
+        //{
+        //    if (context is null)
+        //    {
+        //        throw new ArgumentNullException(nameof(context));
+        //    }
 
-            var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
-            var content = blockDefinitionResult.Content;
+        //    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+        //    var content = blockDefinitionResult.Content;
 
-            while (true)
-            {
-                if (content.UnitResultCount == 0)
-                {
-                    return content;
-                }
+        //    while (true)
+        //    {
+        //        if (content.UnitResultCount == 0)
+        //        {
+        //            return content;
+        //        }
 
-                var lastUnitResult = content.GetLastUnitResult();
+        //        var lastUnitResult = content.GetLastUnitResult();
 
-                if (lastUnitResult is OptionalResult optionalResult)
-                {
-                    var nextContent = optionalResult.OptionalContent;
-                    if (nextContent.IsSealed)
-                    {
-                        return content;
-                    }
-                    else
-                    {
-                        content = nextContent;
-                    }
-                }
-                else if (lastUnitResult is AlternativesResult alternativesResult)
-                {
-                    var nextContent = alternativesResult.GetLastAlternative();
-                    if (nextContent.IsSealed)
-                    {
-                        return content;
-                    }
-                    else
-                    {
-                        content = nextContent;
-                    }
-                }
-                else
-                {
-                    return content;
-                }
-            }
-        }
+        //        if (lastUnitResult is OptionalResult optionalResult)
+        //        {
+        //            var nextContent = optionalResult.OptionalContent;
+        //            if (nextContent.IsSealed)
+        //            {
+        //                return content;
+        //            }
+        //            else
+        //            {
+        //                content = nextContent;
+        //            }
+        //        }
+        //        else if (lastUnitResult is AlternativesResult alternativesResult)
+        //        {
+        //            var nextContent = alternativesResult.GetLastAlternative();
+        //            if (nextContent.IsSealed)
+        //            {
+        //                return content;
+        //            }
+        //            else
+        //            {
+        //                content = nextContent;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            return content;
+        //        }
+        //    }
+        //}
 
         public static string ToAideResultFormat(this IAideResult aideResult)
         {
@@ -136,7 +136,7 @@ namespace TauCode.Parsing.Aide
 
             return result;
         }
-        
+
         public static string FormatContent(this Content content)
         {
             var results = content.GetAllResults();
@@ -164,10 +164,10 @@ namespace TauCode.Parsing.Aide
             }
 
             var sb = new StringBuilder();
-            
+
 
             sb.Append("(");
-            
+
             for (var i = 0; i < names.Length; i++)
             {
                 sb.Append(":");

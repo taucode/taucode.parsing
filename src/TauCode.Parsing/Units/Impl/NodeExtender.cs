@@ -1,96 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using TauCode.Parsing.Exceptions;
+﻿//using System;
+//using System.Collections.Generic;
+//using TauCode.Parsing.Exceptions;
 
-namespace TauCode.Parsing.Units.Impl
-{
-    public class NodeExtender : UnitImpl, INodeExtender
-    {
-        #region Fields
+//namespace TauCode.Parsing.Units.Impl
+//{
+//    public class NodeExtender : UnitImpl, INodeExtender
+//    {
+//        #region Fields
 
-        private Node _internalNode;
-        private readonly List<IUnit> _deferredLinks;
+//        private Node _internalNode;
+//        private readonly List<IUnit> _deferredLinks;
 
-        #endregion
+//        #endregion
 
-        #region Constructor
+//        #region Constructor
 
-        public NodeExtender(string name)
-            : base(name)
-        {
-            _deferredLinks = new List<IUnit>();
-        }
+//        public NodeExtender(string name)
+//            : base(name)
+//        {
+//            _deferredLinks = new List<IUnit>();
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Overridden
+//        #region Overridden
 
-        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
-        {
-            return _internalNode.Process(stream, context);
-        }
+//        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
+//        {
+//            return _internalNode.Process(stream, context);
+//        }
 
-        protected override void OnBeforeFinalize()
-        {
-            if (_internalNode == null)
-            {
-                throw new ParserException($"Cannot finalize node wrapper. Internal node is null. {this.ToUnitDiagnosticsString()}");
-            }
+//        protected override void OnBeforeFinalize()
+//        {
+//            if (_internalNode == null)
+//            {
+//                throw new ParserException($"Cannot finalize node wrapper. Internal node is null. {this.ToUnitDiagnosticsString()}");
+//            }
 
-            if (_deferredLinks.Count == 0 && _internalNode.Links.Count == 0)
-            {
-                throw new ParserException($"Cannot finalize node wrapper: no links established. {this.ToUnitDiagnosticsString()}");
-            }
+//            if (_deferredLinks.Count == 0 && _internalNode.Links.Count == 0)
+//            {
+//                throw new ParserException($"Cannot finalize node wrapper: no links established. {this.ToUnitDiagnosticsString()}");
+//            }
 
-            foreach (var deferredLink in _deferredLinks)
-            {
-                _internalNode.ForceAddLink(deferredLink);
-            }
-        }
+//            foreach (var deferredLink in _deferredLinks)
+//            {
+//                _internalNode.ForceAddLink(deferredLink);
+//            }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region INodeExtender Members
+//        #region INodeExtender Members
 
-        public INode TargetNode
-        {
-            get => _internalNode;
-            set
-            {
-                this.CheckNotFinalized();
+//        public INode TargetNode
+//        {
+//            get => _internalNode;
+//            set
+//            {
+//                this.CheckNotFinalized();
 
-                if (value == null)
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+//                if (value == null)
+//                {
+//                    throw new ArgumentNullException(nameof(value));
+//                }
 
-                if (value is Node node)
-                {
-                    _internalNode = node;
-                }
-                else
-                {
-                    throw new ArgumentException($"'{nameof(value)}' must be of type '{typeof(Node).FullName}'");
-                }
-            }
-        }
+//                if (value is Node node)
+//                {
+//                    _internalNode = node;
+//                }
+//                else
+//                {
+//                    throw new ArgumentException($"'{nameof(value)}' must be of type '{typeof(Node).FullName}'");
+//                }
+//            }
+//        }
 
-        public string TargetNodeAddress
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+//        public string TargetNodeAddress
+//        {
+//            get => throw new NotImplementedException();
+//            set => throw new NotImplementedException();
+//        }
 
-        public void AddDeferredLink(IUnit unit)
-        {
-            if (unit == null)
-            {
-                throw new ArgumentNullException(nameof(unit));
-            }
+//        public void AddDeferredLink(IUnit unit)
+//        {
+//            if (unit == null)
+//            {
+//                throw new ArgumentNullException(nameof(unit));
+//            }
 
-            _deferredLinks.Add(unit);
-        }
+//            _deferredLinks.Add(unit);
+//        }
 
-        #endregion
-    }
-}
+//        #endregion
+//    }
+//}

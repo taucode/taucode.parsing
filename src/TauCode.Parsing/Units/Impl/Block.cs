@@ -1,266 +1,266 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TauCode.Parsing.Exceptions;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using TauCode.Parsing.Exceptions;
 
-namespace TauCode.Parsing.Units.Impl
-{
-    // todo: clean up
-    public class Block : UnitImpl, IBlock
-    {
-        #region Fields
+//namespace TauCode.Parsing.Units.Impl
+//{
+//    // todo: clean up
+//    public class Block : UnitImpl, IBlock
+//    {
+//        #region Fields
 
-        private IUnit _head;
-        private readonly HashSet<IUnit> _owned;
-        private List<IUnit> _cachedOwned;
+//        private IUnit _head;
+//        private readonly HashSet<IUnit> _owned;
+//        private List<IUnit> _cachedOwned;
 
-        private readonly Comparer<IUnit> _comparer;
+//        private readonly Comparer<IUnit> _comparer;
 
-        #endregion
+//        #endregion
 
-        #region Constructors
+//        #region Constructors
 
-        //private Block()
-        //    : base(null)
-        //{
-        //    _owned = new HashSet<IUnit>();
-        //    _comparer = Comparer<IUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
-        //}
+//        //private Block()
+//        //    : base(null)
+//        //{
+//        //    _owned = new HashSet<IUnit>();
+//        //    _comparer = Comparer<IUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
+//        //}
 
-        public Block(string name)
-            : base(name)
-        {
-            _owned = new HashSet<IUnit>();
-            _comparer = Comparer<IUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
+//        public Block(string name)
+//            : base(name)
+//        {
+//            _owned = new HashSet<IUnit>();
+//            _comparer = Comparer<IUnit>.Create((x, y) => this.Owning(x) - this.Owning(y));
 
-            //this.Name = name;
-        }
+//            //this.Name = name;
+//        }
 
-        public Block(IUnit head, string name)
-            : this(name)
-        {
-            if (head == null)
-            {
-                throw new ArgumentNullException(nameof(head));
-            }
+//        public Block(IUnit head, string name)
+//            : this(name)
+//        {
+//            if (head == null)
+//            {
+//                throw new ArgumentNullException(nameof(head));
+//            }
 
-            this.Capture(head);
-            this.Head = head;
-        }
+//            this.Capture(head);
+//            this.Head = head;
+//        }
 
-        //private Block(IUnit head)
-        //    : this()
-        //{
-        //    if (head == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(head));
-        //    }
+//        //private Block(IUnit head)
+//        //    : this()
+//        //{
+//        //    if (head == null)
+//        //    {
+//        //        throw new ArgumentNullException(nameof(head));
+//        //    }
 
-        //    this.Capture(head);
-        //    this.Head = head;
-        //}
+//        //    this.Capture(head);
+//        //    this.Head = head;
+//        //}
 
-        //public Block(IUnit head, string name)
-        //    : this(head)
-        //{
-        //    this.Name = name;
-        //}
+//        //public Block(IUnit head, string name)
+//        //    : this(head)
+//        //{
+//        //    this.Name = name;
+//        //}
 
-        #endregion
+//        #endregion
 
-        #region Private
+//        #region Private
 
-        private void CaptureSingleUnit(IUnit unit)
-        {
-            if (unit == null)
-            {
-                throw new ArgumentNullException(nameof(unit));
-            }
+//        private void CaptureSingleUnit(IUnit unit)
+//        {
+//            if (unit == null)
+//            {
+//                throw new ArgumentNullException(nameof(unit));
+//            }
 
-            if (!(unit is UnitImpl unitImpl))
-            {
-                throw new ArgumentException($"Implementation can only capture descendants of {typeof(UnitImpl).FullName}. {this.ToUnitDiagnosticsString()}", nameof(unit));
-            }
+//            if (!(unit is UnitImpl unitImpl))
+//            {
+//                throw new ArgumentException($"Implementation can only capture descendants of {typeof(UnitImpl).FullName}. {this.ToUnitDiagnosticsString()}", nameof(unit));
+//            }
 
-            if (unit == this)
-            {
-                throw new ArgumentException($"Cannot capture self. {this.ToUnitDiagnosticsString()}", nameof(unit));
-            }
+//            if (unit == this)
+//            {
+//                throw new ArgumentException($"Cannot capture self. {this.ToUnitDiagnosticsString()}", nameof(unit));
+//            }
 
-            if (_owned.Contains(unit))
-            {
-                throw new ArgumentException($"Already owns unit with name '{unit.Name}'. {this.ToUnitDiagnosticsString()}", nameof(unit));
-            }
+//            if (_owned.Contains(unit))
+//            {
+//                throw new ArgumentException($"Already owns unit with name '{unit.Name}'. {this.ToUnitDiagnosticsString()}", nameof(unit));
+//            }
 
-            if (unit.Owner != null)
-            {
-                throw new ArgumentException($"Owner of '{unit.Name}' is already set. {this.ToUnitDiagnosticsString()}", nameof(unit));
-            }
+//            if (unit.Owner != null)
+//            {
+//                throw new ArgumentException($"Owner of '{unit.Name}' is already set. {this.ToUnitDiagnosticsString()}", nameof(unit));
+//            }
 
-            if (unit is IBlock parsingBlock)
-            {
-                if (this.IsNestedInto(parsingBlock))
-                {
-                    throw new ArgumentException($"Capturing will lead to circular nesting. {this.ToUnitDiagnosticsString()}", nameof(unit));
-                }
-            }
+//            if (unit is IBlock parsingBlock)
+//            {
+//                if (this.IsNestedInto(parsingBlock))
+//                {
+//                    throw new ArgumentException($"Capturing will lead to circular nesting. {this.ToUnitDiagnosticsString()}", nameof(unit));
+//                }
+//            }
 
-            _owned.Add(unit);
-            unitImpl.Owner = this;
-        }
+//            _owned.Add(unit);
+//            unitImpl.Owner = this;
+//        }
 
-        private int Owning(IUnit unit)
-        {
-            return this.Owns(unit) ? 1 : 0;
-        }
+//        private int Owning(IUnit unit)
+//        {
+//            return this.Owns(unit) ? 1 : 0;
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Overridden
+//        #region Overridden
 
-        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
-        {
-            IReadOnlyCollection<IUnit> challengers = new List<IUnit>(new[] { this.Head });
-            IReadOnlyCollection<IUnit> emptyChallengers = new List<IUnit>();
-            var oldPosition = stream.Position;
-            var oldVersion = context.Version;
+//        protected override IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context)
+//        {
+//            IReadOnlyCollection<IUnit> challengers = new List<IUnit>(new[] { this.Head });
+//            IReadOnlyCollection<IUnit> emptyChallengers = new List<IUnit>();
+//            var oldPosition = stream.Position;
+//            var oldVersion = context.Version;
 
-            while (true)
-            {
-                if (challengers.Count == 0)
-                {
-                    if (context.Version == oldVersion)
-                    {
-                        stream.Position = oldPosition;
-                        return null;
-                    }
-                    else
-                    {
-                        throw new ParserException($"Syntax error. {this.ToUnitDiagnosticsString()}");
-                    }
-                }
+//            while (true)
+//            {
+//                if (challengers.Count == 0)
+//                {
+//                    if (context.Version == oldVersion)
+//                    {
+//                        stream.Position = oldPosition;
+//                        return null;
+//                    }
+//                    else
+//                    {
+//                        throw new ParserException($"Syntax error. {this.ToUnitDiagnosticsString()}");
+//                    }
+//                }
 
-                if (ParsingHelper.IsEndResult(challengers))
-                {
-                    return challengers;
-                }
+//                if (ParsingHelper.IsEndResult(challengers))
+//                {
+//                    return challengers;
+//                }
 
-                IReadOnlyCollection<IUnit> nextChallengers = emptyChallengers;
+//                IReadOnlyCollection<IUnit> nextChallengers = emptyChallengers;
 
-                foreach (var challenger in challengers)
-                {
-                    var result = challenger.Process(stream, context);
+//                foreach (var challenger in challengers)
+//                {
+//                    var result = challenger.Process(stream, context);
 
-                    if (result != null)
-                    {
-                        // processed; let's dispatch to other challengers.
-                        if (result.Count == 0)
-                        {
-                            throw new ParserException($"Parsing logic error. Result of 'Process' is not null, but empty. {this.ToUnitDiagnosticsString()}");
-                        }
-                        else if (result.Count == 1)
-                        {
-                            var nextUnit = result.Single();
-                            if (nextUnit.IsNestedInto(this))
-                            {
-                                nextChallengers = result;
-                            }
-                            else
-                            {
-                                return result;
-                            }
-                        }
-                        else
-                        {
-                            // prefer owned before non-owned
-                            nextChallengers = result
-                                .OrderBy(x => x, _comparer)
-                                .ToList();
-                        }
+//                    if (result != null)
+//                    {
+//                        // processed; let's dispatch to other challengers.
+//                        if (result.Count == 0)
+//                        {
+//                            throw new ParserException($"Parsing logic error. Result of 'Process' is not null, but empty. {this.ToUnitDiagnosticsString()}");
+//                        }
+//                        else if (result.Count == 1)
+//                        {
+//                            var nextUnit = result.Single();
+//                            if (nextUnit.IsNestedInto(this))
+//                            {
+//                                nextChallengers = result;
+//                            }
+//                            else
+//                            {
+//                                return result;
+//                            }
+//                        }
+//                        else
+//                        {
+//                            // prefer owned before non-owned
+//                            nextChallengers = result
+//                                .OrderBy(x => x, _comparer)
+//                                .ToList();
+//                        }
 
-                        break;
-                    }
-                }
+//                        break;
+//                    }
+//                }
 
-                challengers = nextChallengers;
-            }
-        }
+//                challengers = nextChallengers;
+//            }
+//        }
 
-        protected override void OnBeforeFinalize()
-        {
-            if (_head == null)
-            {
-                throw new ParserException($"Head of block is null. {this.ToUnitDiagnosticsString()}");
-            }
-        }
+//        protected override void OnBeforeFinalize()
+//        {
+//            if (_head == null)
+//            {
+//                throw new ParserException($"Head of block is null. {this.ToUnitDiagnosticsString()}");
+//            }
+//        }
 
-        protected override void FinalizeUnitImpl()
-        {
-            foreach (var unit in _owned)
-            {
-                unit.FinalizeUnit();
-            }
+//        protected override void FinalizeUnitImpl()
+//        {
+//            foreach (var unit in _owned)
+//            {
+//                unit.FinalizeUnit();
+//            }
 
-            _cachedOwned = _owned.ToList();
-        }
+//            _cachedOwned = _owned.ToList();
+//        }
 
-        #endregion
+//        #endregion
 
-        #region IBlock Members
+//        #region IBlock Members
 
-        public IUnit Head
-        {
-            get => _head;
-            set
-            {
-                this.CheckNotFinalized();
+//        public IUnit Head
+//        {
+//            get => _head;
+//            set
+//            {
+//                this.CheckNotFinalized();
 
-                if (value == null)
-                {
-                    throw new ParserException($"Cannot set block's head to null. {this.ToUnitDiagnosticsString()}");
-                }
+//                if (value == null)
+//                {
+//                    throw new ParserException($"Cannot set block's head to null. {this.ToUnitDiagnosticsString()}");
+//                }
 
-                if (_head != null)
-                {
-                    throw new ParserException($"Block's head is already set. {this.ToUnitDiagnosticsString()}");
-                }
+//                if (_head != null)
+//                {
+//                    throw new ParserException($"Block's head is already set. {this.ToUnitDiagnosticsString()}");
+//                }
 
-                if (!_owned.Contains(value))
-                {
-                    throw new ParserException($"Block doesn't own this unit. {this.ToUnitDiagnosticsString()}");
-                }
+//                if (!_owned.Contains(value))
+//                {
+//                    throw new ParserException($"Block doesn't own this unit. {this.ToUnitDiagnosticsString()}");
+//                }
 
-                _head = value;
-            }
-        }
+//                _head = value;
+//            }
+//        }
 
-        public void Capture(params IUnit[] units)
-        {
-            this.CheckNotFinalized();
+//        public void Capture(params IUnit[] units)
+//        {
+//            this.CheckNotFinalized();
 
-            foreach (var unit in units)
-            {
-                this.CaptureSingleUnit(unit);
-            }
-        }
+//            foreach (var unit in units)
+//            {
+//                this.CaptureSingleUnit(unit);
+//            }
+//        }
 
-        public bool Owns(IUnit unit)
-        {
-            if (unit == null)
-            {
-                throw new ArgumentNullException(nameof(unit));
-            }
+//        public bool Owns(IUnit unit)
+//        {
+//            if (unit == null)
+//            {
+//                throw new ArgumentNullException(nameof(unit));
+//            }
 
-            return _owned.Contains(unit);
-        }
+//            return _owned.Contains(unit);
+//        }
 
-        public IReadOnlyList<IUnit> Owned => _cachedOwned ?? _owned.ToList();
+//        public IReadOnlyList<IUnit> Owned => _cachedOwned ?? _owned.ToList();
 
-        public INode GetSingleExitNode()
-        {
-            return _owned.Where(x => x is Node).Cast<Node>().Single(x => x.Links.Count == 0);
-        }
+//        public INode GetSingleExitNode()
+//        {
+//            return _owned.Where(x => x is Node).Cast<Node>().Single(x => x.Links.Count == 0);
+//        }
 
-        #endregion
-    }
-}
+//        #endregion
+//    }
+//}

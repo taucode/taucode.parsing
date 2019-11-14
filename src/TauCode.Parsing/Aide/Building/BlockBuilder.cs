@@ -1,172 +1,172 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TauCode.Parsing.Aide.Results;
-using TauCode.Parsing.Units;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using TauCode.Parsing.Aide.Results;
+//using TauCode.Parsing.Units;
 
-namespace TauCode.Parsing.Aide.Building
-{
-    public class BlockBuilder
-    {
-        private readonly BlockBuildingContext _context;
+//namespace TauCode.Parsing.Aide.Building
+//{
+//    public class BlockBuilder
+//    {
+//        private readonly BlockBuildingContext _context;
 
-        public BlockBuilder(BlockBuildingContext context)
-        {
-            _context = context;
-        }
+//        public BlockBuilder(BlockBuildingContext context)
+//        {
+//            _context = context;
+//        }
 
-        public void Build()
-        {
-            var block = this.BuildBlockImpl();
-
-
-
-            throw new NotImplementedException();
+//        public void Build()
+//        {
+//            var block = this.BuildBlockImpl();
 
 
-        }
 
-        private IBlock BuildBlockImpl()
-        {
-            var mold = _context.Mold;
-            var content = mold.Content;
-            this.BuildContent(content);
+//            throw new NotImplementedException();
 
-            throw new NotImplementedException();
-        }
 
-        private void BuildContent(Content content)
-        {
-            var list = new List<IUnit>();
-            List<IUnit> previousUnlinkedUnits = null;
+//        }
 
-            for (var i = 0; i < content.UnitResultCount; i++)
-            {
-                var unitResult = content[i];
-                var units = this.BuildUnits(unitResult);
+//        private IBlock BuildBlockImpl()
+//        {
+//            var mold = _context.Mold;
+//            var content = mold.Content;
+//            this.BuildContent(content);
 
-                var head = units[0]; // 0th must be head.
-                if (previousUnlinkedUnits != null)
-                {
-                    foreach (var previousUnlinkedUnit in previousUnlinkedUnits)
-                    {
-                        if (previousUnlinkedUnit is INode node)
-                        {
-                            node.AddLink(head);
-                        }
-                        else if (previousUnlinkedUnit is IBlock block)
-                        {
-                            throw new NotImplementedException();
-                        }
-                        else
-                        {
-                            throw new NotImplementedException();
-                        }
-                    }
-                }
+//            throw new NotImplementedException();
+//        }
 
-                previousUnlinkedUnits = GetUnlinkedUnits(units);
-            }
+//        private void BuildContent(Content content)
+//        {
+//            var list = new List<IUnit>();
+//            List<IUnit> previousUnlinkedUnits = null;
 
-            throw new NotImplementedException();
-        }
+//            for (var i = 0; i < content.UnitResultCount; i++)
+//            {
+//                var unitResult = content[i];
+//                var units = this.BuildUnits(unitResult);
 
-        private List<IUnit> GetUnlinkedUnits(List<IUnit> units)
-        {
-            var list = new List<IUnit>();
+//                var head = units[0]; // 0th must be head.
+//                if (previousUnlinkedUnits != null)
+//                {
+//                    foreach (var previousUnlinkedUnit in previousUnlinkedUnits)
+//                    {
+//                        if (previousUnlinkedUnit is INode node)
+//                        {
+//                            node.AddLink(head);
+//                        }
+//                        else if (previousUnlinkedUnit is IBlock block)
+//                        {
+//                            throw new NotImplementedException();
+//                        }
+//                        else
+//                        {
+//                            throw new NotImplementedException();
+//                        }
+//                    }
+//                }
 
-            foreach (var unit in units)
-            {
-                if (unit is INode node)
-                {
-                    if (node.Links.Count == 0)
-                    {
-                        list.Add(node);
-                    }
-                }
-                else if (unit is IBlock block)
-                {
-                    throw new NotImplementedException();
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-            }
+//                previousUnlinkedUnits = GetUnlinkedUnits(units);
+//            }
 
-            return list;
-        }
+//            throw new NotImplementedException();
+//        }
 
-        private List<IUnit> BuildUnits(UnitResult unitResult)
-        {
-            throw new NotImplementedException();
+//        private List<IUnit> GetUnlinkedUnits(List<IUnit> units)
+//        {
+//            var list = new List<IUnit>();
 
-            //List<IUnit> units = new List<IUnit>();
-            //INode node;
+//            foreach (var unit in units)
+//            {
+//                if (unit is INode node)
+//                {
+//                    if (node.Links.Count == 0)
+//                    {
+//                        list.Add(node);
+//                    }
+//                }
+//                else if (unit is IBlock block)
+//                {
+//                    throw new NotImplementedException();
+//                }
+//                else
+//                {
+//                    throw new NotImplementedException();
+//                }
+//            }
 
-            //if (unitResult is SyntaxElementResult syntaxElementResult)
-            //{
-            //    switch (syntaxElementResult.SyntaxElement)
-            //    {
-            //        case SyntaxElement.Identifier:
-            //            node = new IdentifierNode(ParsingHelper.IdleTokenProcessor, syntaxElementResult.SourceNodeName);
-            //            units.Add(node);
-            //            break;
-            //            //return new List<IUnit>(new[] { unit });
+//            return list;
+//        }
 
-            //        case SyntaxElement.Link:
-            //            node = new SplittingNode(syntaxElementResult.SourceNodeName);
-            //            var holdingBlockName = GetLinkHoldingBlockName(syntaxElementResult);
-            //            var referencedUnitName = GetReferencedUnitName(syntaxElementResult);
-            //            _context.AddUnitReference((Node)node, holdingBlockName, referencedUnitName);
-            //            return new List<IUnit>(new[] { unit });
+//        private List<IUnit> BuildUnits(UnitResult unitResult)
+//        {
+//            throw new NotImplementedException();
 
-            //        default:
-            //            throw new ArgumentOutOfRangeException();
-            //    }
-            //}
-            //else if (unitResult is OptionalResult optionalResult)
-            //{
-            //    var splitter = new SplittingNode(optionalResult.SourceNodeName);
-                
-            //    throw new NotImplementedException();
-            //}
-            //else
-            //{
-            //    throw new NotImplementedException();
-            //}
-        }
+//            //List<IUnit> units = new List<IUnit>();
+//            //INode node;
 
-        private string GetReferencedUnitName(SyntaxElementResult syntaxElementResult)
-        {
-            if (syntaxElementResult.Arguments.Count == 1)
-            {
-                return syntaxElementResult.Arguments.Single();
-            }
-            else if (syntaxElementResult.Arguments.Count == 2)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
+//            //if (unitResult is SyntaxElementResult syntaxElementResult)
+//            //{
+//            //    switch (syntaxElementResult.SyntaxElement)
+//            //    {
+//            //        case SyntaxElement.Identifier:
+//            //            node = new IdentifierNode(ParsingHelper.IdleTokenProcessor, syntaxElementResult.SourceNodeName);
+//            //            units.Add(node);
+//            //            break;
+//            //            //return new List<IUnit>(new[] { unit });
 
-        private string GetLinkHoldingBlockName(SyntaxElementResult syntaxElementResult)
-        {
-            if (syntaxElementResult.Arguments.Count == 1)
-            {
-                return _context.BlockName;
-            }
-            else if (syntaxElementResult.Arguments.Count == 2)
-            {
-                throw new NotImplementedException();
-            }
-            else
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
-}
+//            //        case SyntaxElement.Link:
+//            //            node = new SplittingNode(syntaxElementResult.SourceNodeName);
+//            //            var holdingBlockName = GetLinkHoldingBlockName(syntaxElementResult);
+//            //            var referencedUnitName = GetReferencedUnitName(syntaxElementResult);
+//            //            _context.AddUnitReference((Node)node, holdingBlockName, referencedUnitName);
+//            //            return new List<IUnit>(new[] { unit });
+
+//            //        default:
+//            //            throw new ArgumentOutOfRangeException();
+//            //    }
+//            //}
+//            //else if (unitResult is OptionalResult optionalResult)
+//            //{
+//            //    var splitter = new SplittingNode(optionalResult.SourceNodeName);
+
+//            //    throw new NotImplementedException();
+//            //}
+//            //else
+//            //{
+//            //    throw new NotImplementedException();
+//            //}
+//        }
+
+//        private string GetReferencedUnitName(SyntaxElementResult syntaxElementResult)
+//        {
+//            if (syntaxElementResult.Arguments.Count == 1)
+//            {
+//                return syntaxElementResult.Arguments.Single();
+//            }
+//            else if (syntaxElementResult.Arguments.Count == 2)
+//            {
+//                throw new NotImplementedException();
+//            }
+//            else
+//            {
+//                throw new NotImplementedException();
+//            }
+//        }
+
+//        private string GetLinkHoldingBlockName(SyntaxElementResult syntaxElementResult)
+//        {
+//            if (syntaxElementResult.Arguments.Count == 1)
+//            {
+//                return _context.BlockName;
+//            }
+//            else if (syntaxElementResult.Arguments.Count == 2)
+//            {
+//                throw new NotImplementedException();
+//            }
+//            else
+//            {
+//                throw new NotImplementedException();
+//            }
+//        }
+//    }
+//}

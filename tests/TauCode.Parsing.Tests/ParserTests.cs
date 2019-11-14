@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using System.Collections.Generic;
+using System;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests
@@ -25,28 +25,30 @@ namespace TauCode.Parsing.Tests
                 new SymbolToken(')'),
             };
 
-            IParser parser = new Parser();
+            throw new NotImplementedException();
 
-            // Act
-            var result = parser.Parse(tokens);
+            //IParser parser = new Parser();
 
-            // Assert
-            var table = result.GetLastResult<dynamic>();
+            //// Act
+            //var result = parser.Parse(tokens);
 
-            var name = (string)table.Name;
-            var columns = (List<dynamic>)table.Columns;
+            //// Assert
+            //var table = result.GetLastResult<dynamic>();
 
-            Assert.That(name, Is.EqualTo("my_tab"));
+            //var name = (string)table.Name;
+            //var columns = (List<dynamic>)table.Columns;
 
-            Assert.That(columns, Has.Count.EqualTo(2));
+            //Assert.That(name, Is.EqualTo("my_tab"));
 
-            var column = columns[0];
-            Assert.That(column.Name, Is.EqualTo("id"));
-            Assert.That(column.Type, Is.EqualTo("integer"));
+            //Assert.That(columns, Has.Count.EqualTo(2));
 
-            column = columns[1];
-            Assert.That(column.Name, Is.EqualTo("name"));
-            Assert.That(column.Type, Is.EqualTo("text"));
+            //var column = columns[0];
+            //Assert.That(column.Name, Is.EqualTo("id"));
+            //Assert.That(column.Type, Is.EqualTo("integer"));
+
+            //column = columns[1];
+            //Assert.That(column.Name, Is.EqualTo("name"));
+            //Assert.That(column.Type, Is.EqualTo("text"));
         }
     }
 }

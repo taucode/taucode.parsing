@@ -1,141 +1,141 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using TauCode.Parsing.Exceptions;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Diagnostics;
+//using TauCode.Parsing.Exceptions;
 
-namespace TauCode.Parsing.Units.Impl
-{
-    [DebuggerDisplay("Name = '{" + nameof(Name) + "}'")]
-    public abstract class UnitImpl : IUnit
-    {
-        #region Fields
+//namespace TauCode.Parsing.Units.Impl
+//{
+//    [DebuggerDisplay("Name = '{" + nameof(Name) + "}'")]
+//    public abstract class UnitImpl : IUnit
+//    {
+//        #region Fields
 
-        //private string _name;
-        private IBlock _owner;
+//        //private string _name;
+//        private IBlock _owner;
 
-        #endregion
+//        #endregion
 
-        #region Constructor
+//        #region Constructor
 
-        protected UnitImpl(string name)
-        {
-            // Name can be null, but you got to say it explicitly. Unnamed units are evil.
+//        protected UnitImpl(string name)
+//        {
+//            // Name can be null, but you got to say it explicitly. Unnamed units are evil.
 
-            this.Name = name;
-        }
+//            this.Name = name;
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Protected
+//        #region Protected
 
-        protected void CheckNotFinalized()
-        {
-            if (IsFinalized)
-            {
-                throw new ParserException("Unit is finalized.");
-            }
-        }
+//        protected void CheckNotFinalized()
+//        {
+//            if (IsFinalized)
+//            {
+//                throw new ParserException("Unit is finalized.");
+//            }
+//        }
 
-        protected void CheckFinalized()
-        {
-            if (!this.IsFinalized)
-            {
-                throw new ParserException($"Unit is already finalized. {this.ToUnitDiagnosticsString()}");
-            }
-        }
+//        protected void CheckFinalized()
+//        {
+//            if (!this.IsFinalized)
+//            {
+//                throw new ParserException($"Unit is already finalized. {this.ToUnitDiagnosticsString()}");
+//            }
+//        }
 
-        #endregion
+//        #endregion
 
-        #region Polymorph
+//        #region Polymorph
 
-        protected abstract IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context);
+//        protected abstract IReadOnlyCollection<IUnit> ProcessImpl(ITokenStream stream, IContext context);
 
-        protected virtual void OnBeforeFinalize()
-        {
-            // idle
-        }
+//        protected virtual void OnBeforeFinalize()
+//        {
+//            // idle
+//        }
 
-        protected virtual void FinalizeUnitImpl()
-        {
-            // idle
-        }
+//        protected virtual void FinalizeUnitImpl()
+//        {
+//            // idle
+//        }
 
-        #endregion
+//        #endregion
 
-        #region IUnit Members
+//        #region IUnit Members
 
-        //public string Name
-        //{
-        //    get => _name;
-        //    set
-        //    {
-        //        this.CheckNotFinalized();
-        //        _name = value;
-        //    }
-        //}
+//        //public string Name
+//        //{
+//        //    get => _name;
+//        //    set
+//        //    {
+//        //        this.CheckNotFinalized();
+//        //        _name = value;
+//        //    }
+//        //}
 
-        public string Name { get; }
+//        public string Name { get; }
 
-        public virtual IBlock Owner
-        {
-            get => _owner;
-            internal set
-            {
-                this.CheckNotFinalized();
+//        public virtual IBlock Owner
+//        {
+//            get => _owner;
+//            internal set
+//            {
+//                this.CheckNotFinalized();
 
-                if (_owner == null)
-                {
-                    if (value == null)
-                    {
-                        throw new ParserException($"Suspicious operation: Owner is null until not initialized. {this.ToUnitDiagnosticsString()}");
-                    }
-                    else
-                    {
-                        if (value == this)
-                        {
-                            throw new ParserException($"Unit cannot be owner of self. {this.ToUnitDiagnosticsString()}");
-                        }
+//                if (_owner == null)
+//                {
+//                    if (value == null)
+//                    {
+//                        throw new ParserException($"Suspicious operation: Owner is null until not initialized. {this.ToUnitDiagnosticsString()}");
+//                    }
+//                    else
+//                    {
+//                        if (value == this)
+//                        {
+//                            throw new ParserException($"Unit cannot be owner of self. {this.ToUnitDiagnosticsString()}");
+//                        }
 
-                        _owner = value;
-                    }
-                }
-                else
-                {
-                    throw new ParserException($"Owner already set. {this.ToUnitDiagnosticsString()}");
-                }
-            }
-        }
+//                        _owner = value;
+//                    }
+//                }
+//                else
+//                {
+//                    throw new ParserException($"Owner already set. {this.ToUnitDiagnosticsString()}");
+//                }
+//            }
+//        }
 
-        public bool IsFinalized { get; private set; }
+//        public bool IsFinalized { get; private set; }
 
-        public void FinalizeUnit()
-        {
-            this.CheckNotFinalized();
-            this.OnBeforeFinalize();
+//        public void FinalizeUnit()
+//        {
+//            this.CheckNotFinalized();
+//            this.OnBeforeFinalize();
 
-            this.FinalizeUnitImpl();
-            
-            IsFinalized = true;
-        }
+//            this.FinalizeUnitImpl();
 
-        public IReadOnlyCollection<IUnit> Process(ITokenStream stream, IContext context)
-        {
-            this.CheckFinalized();
+//            IsFinalized = true;
+//        }
 
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
+//        public IReadOnlyCollection<IUnit> Process(ITokenStream stream, IContext context)
+//        {
+//            this.CheckFinalized();
 
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+//            if (stream == null)
+//            {
+//                throw new ArgumentNullException(nameof(stream));
+//            }
 
-            var list = this.ProcessImpl(stream, context);
-            return list;
-        }
-        
-        #endregion
-    }
-}
+//            if (context == null)
+//            {
+//                throw new ArgumentNullException(nameof(context));
+//            }
+
+//            var list = this.ProcessImpl(stream, context);
+//            return list;
+//        }
+
+//        #endregion
+//    }
+//}

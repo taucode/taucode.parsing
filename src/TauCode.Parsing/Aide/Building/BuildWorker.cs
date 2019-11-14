@@ -1,185 +1,185 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TauCode.Algorithms.Graphs;
-using TauCode.Parsing.Aide.Results;
-using TauCode.Parsing.Units;
+﻿//using System;
+//using System.Collections.Generic;
+//using System.Linq;
+//using TauCode.Algorithms.Graphs;
+//using TauCode.Parsing.Aide.Results;
+//using TauCode.Parsing.Units;
 
-namespace TauCode.Parsing.Aide.Building
-{
-    // todo: make internal
-    public class BuildWorker
-    {
-        //private class BlockRecord
-        //{
-        //    private IBlock _block;
+//namespace TauCode.Parsing.Aide.Building
+//{
+//    // todo: make internal
+//    public class BuildWorker
+//    {
+//        //private class BlockRecord
+//        //{
+//        //    private IBlock _block;
 
-        //    public BlockRecord(BlockDefinitionResult mold)
-        //    {
-        //        this.Mold = mold;
-        //    }
+//        //    public BlockRecord(BlockDefinitionResult mold)
+//        //    {
+//        //        this.Mold = mold;
+//        //    }
 
-        //    public BlockDefinitionResult Mold { get; }
+//        //    public BlockDefinitionResult Mold { get; }
 
-        //    public IBlock Block
-        //    {
-        //        get => _block;
-        //        set
-        //        {
-        //            throw new NotImplementedException();
-        //        }
-        //    }
-        //    public bool BlockIsEmbedded { get; }
-        //}
+//        //    public IBlock Block
+//        //    {
+//        //        get => _block;
+//        //        set
+//        //        {
+//        //            throw new NotImplementedException();
+//        //        }
+//        //    }
+//        //    public bool BlockIsEmbedded { get; }
+//        //}
 
-        private readonly IAideResult[] _results;
-        private readonly IBuildEnvironment _buildEnvironment;
-        //private readonly Dictionary<string, BlockRecord> _records;
-        private readonly List<string> _sortedNames;
-        private readonly Dictionary<string, BlockBuildingContext> _family;
+//        private readonly IAideResult[] _results;
+//        private readonly IBuildEnvironment _buildEnvironment;
+//        //private readonly Dictionary<string, BlockRecord> _records;
+//        private readonly List<string> _sortedNames;
+//        private readonly Dictionary<string, BlockBuildingContext> _family;
 
-        public BuildWorker(IAideResult[] results, IBuildEnvironment buildEnvironment)
-        {
-            _results = results;
-            _buildEnvironment = buildEnvironment;
+//        public BuildWorker(IAideResult[] results, IBuildEnvironment buildEnvironment)
+//        {
+//            _results = results;
+//            _buildEnvironment = buildEnvironment;
 
-            var blockDefinitionResults = this.ExtractBlockDefinitionResults();
-            var dictionary = new Dictionary<string, BlockDefinitionResult>();
-            foreach (var blockDefinitionResult in blockDefinitionResults)
-            {
-                blockDefinitionResult.CheckBlockDefinitionResultIsCorrect();
+//            var blockDefinitionResults = this.ExtractBlockDefinitionResults();
+//            var dictionary = new Dictionary<string, BlockDefinitionResult>();
+//            foreach (var blockDefinitionResult in blockDefinitionResults)
+//            {
+//                blockDefinitionResult.CheckBlockDefinitionResultIsCorrect();
 
-                var name = blockDefinitionResult.GetBlockDefinitionResultName();
-                if (dictionary.ContainsKey(name))
-                {
-                    throw new NotImplementedException();
-                }
+//                var name = blockDefinitionResult.GetBlockDefinitionResultName();
+//                if (dictionary.ContainsKey(name))
+//                {
+//                    throw new NotImplementedException();
+//                }
 
-                dictionary.Add(name, blockDefinitionResult);
-            }
+//                dictionary.Add(name, blockDefinitionResult);
+//            }
 
-            var graph = new Graph<BlockDefinitionResult>();
+//            var graph = new Graph<BlockDefinitionResult>();
 
-            foreach (var blockDefinitionResult in dictionary.Values)
-            {
-                graph.AddNode(blockDefinitionResult);
-            }
+//            foreach (var blockDefinitionResult in dictionary.Values)
+//            {
+//                graph.AddNode(blockDefinitionResult);
+//            }
 
-            foreach (var node in graph.Nodes)
-            {
-                var block = node.Value;
-                var referencedBlockNames = block.GetReferencedBlockNames();
+//            foreach (var node in graph.Nodes)
+//            {
+//                var block = node.Value;
+//                var referencedBlockNames = block.GetReferencedBlockNames();
 
-                foreach (var referencedBlockName in referencedBlockNames)
-                {
-                    var referencedNode =
-                        graph.Nodes.Single(x => x.Value.GetBlockDefinitionResultName() == referencedBlockName); // todo: single-or-default
+//                foreach (var referencedBlockName in referencedBlockNames)
+//                {
+//                    var referencedNode =
+//                        graph.Nodes.Single(x => x.Value.GetBlockDefinitionResultName() == referencedBlockName); // todo: single-or-default
 
-                    node.DrawEdgeTo(referencedNode);
-                }
-            }
+//                    node.DrawEdgeTo(referencedNode);
+//                }
+//            }
 
-            var algorithm = new GraphSlicingAlgorithm<BlockDefinitionResult>(graph);
-            var slices = algorithm
-                .Slice();
+//            var algorithm = new GraphSlicingAlgorithm<BlockDefinitionResult>(graph);
+//            var slices = algorithm
+//                .Slice();
 
-            var firstSlice = slices.First();
+//            var firstSlice = slices.First();
 
-            foreach (var node in firstSlice.Nodes)
-            {
-                if (node.OutgoingEdges.Any() || node.IncomingEdges.Any())
-                {
-                    throw new NotImplementedException(); // still circular refs
-                }
-            }
+//            foreach (var node in firstSlice.Nodes)
+//            {
+//                if (node.OutgoingEdges.Any() || node.IncomingEdges.Any())
+//                {
+//                    throw new NotImplementedException(); // still circular refs
+//                }
+//            }
 
-            _sortedNames = slices
-                .SelectMany(x => x.Nodes.Select(y => y.Value.GetBlockDefinitionResultName()))
-                .ToList();
+//            _sortedNames = slices
+//                .SelectMany(x => x.Nodes.Select(y => y.Value.GetBlockDefinitionResultName()))
+//                .ToList();
 
-            //_records = dictionary.ToDictionary(x => x.Key, x => new BlockRecord(x.Value));
+//            //_records = dictionary.ToDictionary(x => x.Key, x => new BlockRecord(x.Value));
 
-            _family = new Dictionary<string, BlockBuildingContext>();
-            foreach (var result in dictionary.Values)
-            {
-                var context = new BlockBuildingContext(result, _family);
-                _family.Add(result.GetBlockDefinitionResultName(), context);
-            }
-        }
+//            _family = new Dictionary<string, BlockBuildingContext>();
+//            foreach (var result in dictionary.Values)
+//            {
+//                var context = new BlockBuildingContext(result, _family);
+//                _family.Add(result.GetBlockDefinitionResultName(), context);
+//            }
+//        }
 
-        private List<BlockDefinitionResult> ExtractBlockDefinitionResults()
-        {
-            return _results
-                .Where(x => x is BlockDefinitionResult)
-                .Cast<BlockDefinitionResult>()
-                .ToList();
-        }
+//        private List<BlockDefinitionResult> ExtractBlockDefinitionResults()
+//        {
+//            return _results
+//                .Where(x => x is BlockDefinitionResult)
+//                .Cast<BlockDefinitionResult>()
+//                .ToList();
+//        }
 
-        public IBlock BuildMainBlock()
-        {
-            foreach (var name in _sortedNames)
-            {
-                var context = _family[name];
-                var builder = new BlockBuilder(context);
-                builder.Build();
-                //var record = _records[name];
-                //var block = this.BuildBlock(context);
-                //record.Block = block;
-            }
+//        public IBlock BuildMainBlock()
+//        {
+//            foreach (var name in _sortedNames)
+//            {
+//                var context = _family[name];
+//                var builder = new BlockBuilder(context);
+//                builder.Build();
+//                //var record = _records[name];
+//                //var block = this.BuildBlock(context);
+//                //record.Block = block;
+//            }
 
-            throw new NotImplementedException();
-        }
+//            throw new NotImplementedException();
+//        }
 
-        //private IBlock BuildBlock(BlockBuildingContext context)
-        //{
-        //    var content = context.Mold.Content;
-        //    var contentTransformation = this.BuildContent(content);
+//        //private IBlock BuildBlock(BlockBuildingContext context)
+//        //{
+//        //    var content = context.Mold.Content;
+//        //    var contentTransformation = this.BuildContent(content);
 
-        //    throw new NotImplementedException();
-        //}
+//        //    throw new NotImplementedException();
+//        //}
 
-        //private List<IUnit> BuildContent(Content content)
-        //{
-        //    var list = new List<IUnit>();
+//        //private List<IUnit> BuildContent(Content content)
+//        //{
+//        //    var list = new List<IUnit>();
 
-        //    for (var i = 0; i < content.UnitResultCount; i++)
-        //    {
-        //        var unitResult = content[i];
-        //        var unit = this.BuildUnit(unitResult);
-        //        list.Add(unit);
+//        //    for (var i = 0; i < content.UnitResultCount; i++)
+//        //    {
+//        //        var unitResult = content[i];
+//        //        var unit = this.BuildUnit(unitResult);
+//        //        list.Add(unit);
 
-        //        if (i > 0 && list[i - 1] is INode previousNode)
-        //        {
-        //            previousNode.AddLink(unit);
-        //        }
-        //    }
+//        //        if (i > 0 && list[i - 1] is INode previousNode)
+//        //        {
+//        //            previousNode.AddLink(unit);
+//        //        }
+//        //    }
 
-        //    return list;
-        //}
+//        //    return list;
+//        //}
 
-        //private IUnit BuildUnit(UnitResult unitResult)
-        //{
-        //    IUnit unit;
+//        //private IUnit BuildUnit(UnitResult unitResult)
+//        //{
+//        //    IUnit unit;
 
-        //    if (unitResult is SyntaxElementResult syntaxElementResult)
-        //    {
-        //        switch (syntaxElementResult.SyntaxElement)
-        //        {
-        //            case SyntaxElement.Identifier:
-        //                unit = new IdentifierNode(ParsingHelper.IdleTokenProcessor, syntaxElementResult.SourceNodeName);
-        //                return unit;
+//        //    if (unitResult is SyntaxElementResult syntaxElementResult)
+//        //    {
+//        //        switch (syntaxElementResult.SyntaxElement)
+//        //        {
+//        //            case SyntaxElement.Identifier:
+//        //                unit = new IdentifierNode(ParsingHelper.IdleTokenProcessor, syntaxElementResult.SourceNodeName);
+//        //                return unit;
 
-        //            case SyntaxElement.Link:
-        //                throw new NotImplementedException();
+//        //            case SyntaxElement.Link:
+//        //                throw new NotImplementedException();
 
-        //            default:
-        //                throw new ArgumentOutOfRangeException();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-        //}
-    }
-}
+//        //            default:
+//        //                throw new ArgumentOutOfRangeException();
+//        //        }
+//        //    }
+//        //    else
+//        //    {
+//        //        throw new NotImplementedException();
+//        //    }
+//        //}
+//    }
+//}

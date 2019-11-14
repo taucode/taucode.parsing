@@ -1,402 +1,402 @@
-﻿using System;
-using System.Linq;
-using TauCode.Parsing.Aide.Results;
-using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Units;
-using TauCode.Parsing.Units.Impl;
-using TauCode.Parsing.Units.Impl.Nodes;
+﻿//using System;
+//using System.Linq;
+//using TauCode.Parsing.Aide.Results;
+//using TauCode.Parsing.Tokens;
+//using TauCode.Parsing.Units;
+//using TauCode.Parsing.Units.Impl;
+//using TauCode.Parsing.Units.Impl.Nodes;
 
-namespace TauCode.Parsing.Aide
-{
-    public class AideParser : ParserBase
-    {
-        protected override IUnit BuildTree()
-        {
-            var head = new SplittingNode("Node: super splitter");
-            var end = EndNode.Instance;
-            var blockDefinitionBlock = this.CreateBlockDefinitionBlock(end);
+//namespace TauCode.Parsing.Aide
+//{
+//    public class AideParser : ParserBase
+//    {
+//        protected override IUnit BuildTree()
+//        {
+//            var head = new SplittingNode("Node: super splitter");
+//            var end = EndNode.Instance;
+//            var blockDefinitionBlock = this.CreateBlockDefinitionBlock(end);
 
-            var superBlock = new Block(head, "superBlock");
-            head.AddLink(blockDefinitionBlock);
+//            var superBlock = new Block(head, "superBlock");
+//            head.AddLink(blockDefinitionBlock);
 
-            superBlock.Capture(blockDefinitionBlock);
+//            superBlock.Capture(blockDefinitionBlock);
 
-            superBlock.FinalizeUnit();
-            return superBlock;
-        }
+//            superBlock.FinalizeUnit();
+//            return superBlock;
+//        }
 
-        private IBlock CreateBlockDefinitionBlock(EndNode endNode)
-        {
-            INode head;
-            var blockDefinitionBlock = new Block(
-                head = new ExactEnumNode<SyntaxElement>(
-                    SyntaxElement.BeginBlockDefinition,
-                    (token, context) =>
-                    {
-                        var blockDefinitionResult = new BlockDefinitionResult();
-                        context.AddResult(blockDefinitionResult);
-                    },
-                    "Node: BlockDefinition"),
-                "Block: BlockDefinition Block");
+//        private IBlock CreateBlockDefinitionBlock(EndNode endNode)
+//        {
+//            INode head;
+//            var blockDefinitionBlock = new Block(
+//                head = new ExactEnumNode<SyntaxElement>(
+//                    SyntaxElement.BeginBlockDefinition,
+//                    (token, context) =>
+//                    {
+//                        var blockDefinitionResult = new BlockDefinitionResult();
+//                        context.AddResult(blockDefinitionResult);
+//                    },
+//                    "Node: BlockDefinition"),
+//                "Block: BlockDefinition Block");
 
-            var nameRefsBlock = this.CreateNameReferencesInParenthesesBlock(
-                (context, name) =>
-                {
-                    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
-                    blockDefinitionResult.Arguments.Add(name);
-                    context.Modify();
-                });
-            //nameRefsBlock.Name = "Block: Name Refs";
+//            var nameRefsBlock = this.CreateNameReferencesInParenthesesBlock(
+//                (context, name) =>
+//                {
+//                    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
+//                    blockDefinitionResult.Arguments.Add(name);
+//                    context.Modify();
+//                });
+//            //nameRefsBlock.Name = "Block: Name Refs";
 
-            head.AddLink(nameRefsBlock);
+//            head.AddLink(nameRefsBlock);
 
-            var blockContentBlock = this.CreateBlockContentBlock(
-                out var outputSplitter,
-                out var optionalInputWrapper,
-                out var optionalOutputWrapper,
-                out var alternativesInputWrapper,
-                out var alternativesOutputWrapper);
+//            var blockContentBlock = this.CreateBlockContentBlock(
+//                out var outputSplitter,
+//                out var optionalInputWrapper,
+//                out var optionalOutputWrapper,
+//                out var alternativesInputWrapper,
+//                out var alternativesOutputWrapper);
 
-            var nameRefsBlockExitNode = nameRefsBlock.GetSingleExitNode();
+//            var nameRefsBlockExitNode = nameRefsBlock.GetSingleExitNode();
 
-            nameRefsBlockExitNode.AddLink(blockContentBlock);
+//            nameRefsBlockExitNode.AddLink(blockContentBlock);
 
-            // deal with clone
-            var cloneNode = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.Clone,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Clone, null));
-                    context.Modify();
-                },
-                "clone");
-            nameRefsBlockExitNode.AddLink(cloneNode);
-            
-            // deal with optional
-            var optionalBlock = this.CreateOptionalBlock(
-                out var blockInputNodeWrapperForOptional,
-                out var blockOutputNodeWrapperForOptional);
+//            // deal with clone
+//            var cloneNode = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.Clone,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Clone, null));
+//                    context.Modify();
+//                },
+//                "clone");
+//            nameRefsBlockExitNode.AddLink(cloneNode);
 
-            optionalInputWrapper.TargetNode = (INode)optionalBlock.Head;
-            optionalOutputWrapper.TargetNode = optionalBlock.GetSingleExitNode();
+//            // deal with optional
+//            var optionalBlock = this.CreateOptionalBlock(
+//                out var blockInputNodeWrapperForOptional,
+//                out var blockOutputNodeWrapperForOptional);
 
-            blockInputNodeWrapperForOptional.TargetNode = (INode)blockContentBlock.Head;
-            blockOutputNodeWrapperForOptional.TargetNode =
-                (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
+//            optionalInputWrapper.TargetNode = (INode)optionalBlock.Head;
+//            optionalOutputWrapper.TargetNode = optionalBlock.GetSingleExitNode();
 
-            // deal with alternatives
-            var alternativesBlock = this.CreateAlternativesBlock(
-                out var blockInputNodeWrapperForAlternatives,
-                out var blockOutputNodeWrapperForAlternatives);
+//            blockInputNodeWrapperForOptional.TargetNode = (INode)blockContentBlock.Head;
+//            blockOutputNodeWrapperForOptional.TargetNode =
+//                (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
 
-            alternativesInputWrapper.TargetNode = (INode)alternativesBlock.Head;
-            alternativesOutputWrapper.TargetNode = alternativesBlock.GetSingleExitNode();
+//            // deal with alternatives
+//            var alternativesBlock = this.CreateAlternativesBlock(
+//                out var blockInputNodeWrapperForAlternatives,
+//                out var blockOutputNodeWrapperForAlternatives);
 
-            blockInputNodeWrapperForAlternatives.TargetNode = (INode)blockContentBlock.Head;
-            blockOutputNodeWrapperForAlternatives.TargetNode =
-                (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
+//            alternativesInputWrapper.TargetNode = (INode)alternativesBlock.Head;
+//            alternativesOutputWrapper.TargetNode = alternativesBlock.GetSingleExitNode();
 
-            // endBlockDefinitionNode
-            var endBlockNode = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.EndBlockDefinition,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    content.Seal();
-                },
-                "Node: end block definition");
+//            blockInputNodeWrapperForAlternatives.TargetNode = (INode)blockContentBlock.Head;
+//            blockOutputNodeWrapperForAlternatives.TargetNode =
+//                (INode)blockContentBlock.Owned.Single(x => x.Name == "Node: output splitter of block content");
+
+//            // endBlockDefinitionNode
+//            var endBlockNode = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.EndBlockDefinition,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    content.Seal();
+//                },
+//                "Node: end block definition");
 
 
-            cloneNode.AddLink(endBlockNode);
+//            cloneNode.AddLink(endBlockNode);
 
-            outputSplitter.AddLink(endBlockNode);
+//            outputSplitter.AddLink(endBlockNode);
 
-            // adding owned nodes to block
-            blockDefinitionBlock.Capture(
-                nameRefsBlock,
-                cloneNode,
-                blockContentBlock,
-                optionalBlock,
-                alternativesBlock,
-                endBlockNode);
+//            // adding owned nodes to block
+//            blockDefinitionBlock.Capture(
+//                nameRefsBlock,
+//                cloneNode,
+//                blockContentBlock,
+//                optionalBlock,
+//                alternativesBlock,
+//                endBlockNode);
 
-            endBlockNode.AddLink(endNode);
+//            endBlockNode.AddLink(endNode);
 
-            return blockDefinitionBlock;
-        }
+//            return blockDefinitionBlock;
+//        }
 
-        private IBlock CreateBlockContentBlock(
-            out SplittingNode outputSplitter,
-            out INodeExtender optionalInputWrapper,
-            out INodeExtender optionalOutputWrapper,
-            out INodeExtender alternativesInputWrapper,
-            out INodeExtender alternativesOutputWrapper)
-        {
-            var inputSplitter = new SplittingNode("Node: starting splitter of block content");
-            var block = new Block(inputSplitter, "Block: Block content");
+//        private IBlock CreateBlockContentBlock(
+//            out SplittingNode outputSplitter,
+//            out INodeExtender optionalInputWrapper,
+//            out INodeExtender optionalOutputWrapper,
+//            out INodeExtender alternativesInputWrapper,
+//            out INodeExtender alternativesOutputWrapper)
+//        {
+//            var inputSplitter = new SplittingNode("Node: starting splitter of block content");
+//            var block = new Block(inputSplitter, "Block: Block content");
 
-            // word node
-            var wordNode = new WordNode(
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    var wordToken = (WordToken)token;
-                    content.AddUnitResult(new WordNodeResult(wordToken.Word, wordToken.Name));
-                    context.Modify();
-                },
-                "Node: Word within block");
+//            // word node
+//            var wordNode = new WordNode(
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    var wordToken = (WordToken)token;
+//                    content.AddUnitResult(new WordNodeResult(wordToken.Word, wordToken.Name));
+//                    context.Modify();
+//                },
+//                "Node: Word within block");
 
-            // identifier node
-            var identifierNode = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.Identifier,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Identifier, token.Name));
-                    context.Modify();
-                },
-                "Node: Identifier within block");
+//            // identifier node
+//            var identifierNode = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.Identifier,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Identifier, token.Name));
+//                    context.Modify();
+//                },
+//                "Node: Identifier within block");
 
-            // symbol node
-            var symbolNode = new SymbolNode(
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    var symbolToken = (SymbolToken)token;
-                    content.AddUnitResult(new SymbolNodeResult(symbolToken.Value, token.Name));
-                    context.Modify();
-                },
-                "Node: Symbol within block");
+//            // symbol node
+//            var symbolNode = new SymbolNode(
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    var symbolToken = (SymbolToken)token;
+//                    content.AddUnitResult(new SymbolNodeResult(symbolToken.Value, token.Name));
+//                    context.Modify();
+//                },
+//                "Node: Symbol within block");
 
-            // idle node
-            var idleNode = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.Idle,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Idle, token.Name));
-                    context.Modify();
-                },
-                "Node : Idle node");
+//            // idle node
+//            var idleNode = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.Idle,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Idle, token.Name));
+//                    context.Modify();
+//                },
+//                "Node : Idle node");
 
-            // block node
-            var blockNode = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.BlockReference,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.BlockReference, token.Name));
-                    context.Modify();
-                },
-                "Node: Block Reference");
+//            // block node
+//            var blockNode = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.BlockReference,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.BlockReference, token.Name));
+//                    context.Modify();
+//                },
+//                "Node: Block Reference");
 
-            // link node
-            var linkBlock = this.CreateLinkBlock(out var linkOutNode);
+//            // link node
+//            var linkBlock = this.CreateLinkBlock(out var linkOutNode);
 
-            // optional wrappers
-            optionalInputWrapper = new NodeExtender("Node Wrapper: optional Input Wrapper");
-            optionalOutputWrapper = new NodeExtender("Node Wrapper: optional Output Wrapper");
+//            // optional wrappers
+//            optionalInputWrapper = new NodeExtender("Node Wrapper: optional Input Wrapper");
+//            optionalOutputWrapper = new NodeExtender("Node Wrapper: optional Output Wrapper");
 
-            // alternatives wrappers
-            alternativesInputWrapper = new NodeExtender("Node Wrapper: alternatives Input Wrapper");
-            alternativesOutputWrapper = new NodeExtender("Node Wrapper: alternatives Output Wrapper");
+//            // alternatives wrappers
+//            alternativesInputWrapper = new NodeExtender("Node Wrapper: alternatives Input Wrapper");
+//            alternativesOutputWrapper = new NodeExtender("Node Wrapper: alternatives Output Wrapper");
 
-            // adding nodes to content splitter
-            inputSplitter.AddLink(wordNode);
-            inputSplitter.AddLink(identifierNode);
-            inputSplitter.AddLink(symbolNode);
-            inputSplitter.AddLink(idleNode);
-            inputSplitter.AddLink(blockNode);
-            inputSplitter.AddLink(linkBlock);
-            inputSplitter.AddLink(optionalInputWrapper);
-            inputSplitter.AddLink(alternativesInputWrapper);
+//            // adding nodes to content splitter
+//            inputSplitter.AddLink(wordNode);
+//            inputSplitter.AddLink(identifierNode);
+//            inputSplitter.AddLink(symbolNode);
+//            inputSplitter.AddLink(idleNode);
+//            inputSplitter.AddLink(blockNode);
+//            inputSplitter.AddLink(linkBlock);
+//            inputSplitter.AddLink(optionalInputWrapper);
+//            inputSplitter.AddLink(alternativesInputWrapper);
 
-            // beforeEndBlockSplitter
-            outputSplitter = new SplittingNode("Node: output splitter of block content");
+//            // beforeEndBlockSplitter
+//            outputSplitter = new SplittingNode("Node: output splitter of block content");
 
-            wordNode.AddLink(outputSplitter);
-            identifierNode.AddLink(outputSplitter);
-            symbolNode.AddLink(outputSplitter);
-            idleNode.AddLink(outputSplitter);
-            blockNode.AddLink(outputSplitter);
-            linkOutNode.AddLink(outputSplitter);
-            optionalOutputWrapper.AddDeferredLink(outputSplitter);
-            alternativesOutputWrapper.AddDeferredLink(outputSplitter);
+//            wordNode.AddLink(outputSplitter);
+//            identifierNode.AddLink(outputSplitter);
+//            symbolNode.AddLink(outputSplitter);
+//            idleNode.AddLink(outputSplitter);
+//            blockNode.AddLink(outputSplitter);
+//            linkOutNode.AddLink(outputSplitter);
+//            optionalOutputWrapper.AddDeferredLink(outputSplitter);
+//            alternativesOutputWrapper.AddDeferredLink(outputSplitter);
 
-            outputSplitter.AddLink(inputSplitter);
+//            outputSplitter.AddLink(inputSplitter);
 
-            block.Capture(
-                wordNode,
-                identifierNode,
-                symbolNode,
-                idleNode,
-                blockNode,
-                linkBlock,
-                optionalInputWrapper,
-                optionalOutputWrapper,
-                alternativesInputWrapper,
-                alternativesOutputWrapper,
-                outputSplitter);
+//            block.Capture(
+//                wordNode,
+//                identifierNode,
+//                symbolNode,
+//                idleNode,
+//                blockNode,
+//                linkBlock,
+//                optionalInputWrapper,
+//                optionalOutputWrapper,
+//                alternativesInputWrapper,
+//                alternativesOutputWrapper,
+//                outputSplitter);
 
-            return block;
-        }
+//            return block;
+//        }
 
-        private IBlock CreateLinkBlock(out INode outNode)
-        {
-            var linkNode = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.Link,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Link, token.Name));
-                    context.Modify();
-                },
-                "Node: Link (head of 'Link' block)");
+//        private IBlock CreateLinkBlock(out INode outNode)
+//        {
+//            var linkNode = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.Link,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    content.AddUnitResult(new SyntaxElementResult(SyntaxElement.Link, token.Name));
+//                    context.Modify();
+//                },
+//                "Node: Link (head of 'Link' block)");
 
-            var nameRefs = this.CreateNameReferencesInParenthesesBlock((context, s) =>
-            {
-                var content = context.GetCurrentContent();
-                var linkResult = (SyntaxElementResult)content.GetLastUnitResult();
-                linkResult.Arguments.Add(s);
-                context.Modify();
-            });
+//            var nameRefs = this.CreateNameReferencesInParenthesesBlock((context, s) =>
+//            {
+//                var content = context.GetCurrentContent();
+//                var linkResult = (SyntaxElementResult)content.GetLastUnitResult();
+//                linkResult.Arguments.Add(s);
+//                context.Modify();
+//            });
 
-            linkNode.AddLink(nameRefs);
+//            linkNode.AddLink(nameRefs);
 
-            var block = new Block(linkNode, "Block: Link");
+//            var block = new Block(linkNode, "Block: Link");
 
-            block.Capture(nameRefs);
-            outNode = nameRefs.GetSingleExitNode();
-            return block;
-        }
+//            block.Capture(nameRefs);
+//            outNode = nameRefs.GetSingleExitNode();
+//            return block;
+//        }
 
-        private IBlock CreateOptionalBlock(
-            out INodeExtender blockInputNodeWrapper,
-            out INodeExtender blockOutputNodeWrapper)
-        {
-            var head = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.LeftBracket,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    var optionalResult = new OptionalResult(token.Name);
-                    content.AddUnitResult(optionalResult);
-                    context.Modify();
-                },
-                "Node: [ of optional");
+//        private IBlock CreateOptionalBlock(
+//            out INodeExtender blockInputNodeWrapper,
+//            out INodeExtender blockOutputNodeWrapper)
+//        {
+//            var head = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.LeftBracket,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    var optionalResult = new OptionalResult(token.Name);
+//                    content.AddUnitResult(optionalResult);
+//                    context.Modify();
+//                },
+//                "Node: [ of optional");
 
-            var block = new Block(head, "Block: optional");
-            blockInputNodeWrapper = new NodeExtender("Node Wrapper: block input of optional");
-            blockOutputNodeWrapper = new NodeExtender("Node Wrapper: block output of optional");
+//            var block = new Block(head, "Block: optional");
+//            blockInputNodeWrapper = new NodeExtender("Node Wrapper: block input of optional");
+//            blockOutputNodeWrapper = new NodeExtender("Node Wrapper: block output of optional");
 
-            var closer = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.RightBracket,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    content.Seal();
-                },
-                "Node: ] of optional");
+//            var closer = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.RightBracket,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    content.Seal();
+//                },
+//                "Node: ] of optional");
 
-            head.AddLink(blockInputNodeWrapper);
-            blockOutputNodeWrapper.AddDeferredLink(closer);
+//            head.AddLink(blockInputNodeWrapper);
+//            blockOutputNodeWrapper.AddDeferredLink(closer);
 
-            block.Capture(
-                blockInputNodeWrapper,
-                blockOutputNodeWrapper,
-                closer);
+//            block.Capture(
+//                blockInputNodeWrapper,
+//                blockOutputNodeWrapper,
+//                closer);
 
-            return block;
-        }
+//            return block;
+//        }
 
-        private IBlock CreateAlternativesBlock(
-            out INodeExtender blockInputNodeWrapper,
-            out INodeExtender blockOutputNodeWrapper)
-        {
-            var head = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.LeftCurlyBracket,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    var alternativesResult = new AlternativesResult(token.Name);
-                    content.AddUnitResult(alternativesResult);
-                    context.Modify();
-                },
-                "Node: { of alternatives");
+//        private IBlock CreateAlternativesBlock(
+//            out INodeExtender blockInputNodeWrapper,
+//            out INodeExtender blockOutputNodeWrapper)
+//        {
+//            var head = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.LeftCurlyBracket,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    var alternativesResult = new AlternativesResult(token.Name);
+//                    content.AddUnitResult(alternativesResult);
+//                    context.Modify();
+//                },
+//                "Node: { of alternatives");
 
-            var block = new Block(head, "Block: alternatives");
+//            var block = new Block(head, "Block: alternatives");
 
-            blockInputNodeWrapper = new NodeExtender("Node Wrapper: block input of alternatives");
-            blockOutputNodeWrapper = new NodeExtender("Node Wrapper: block output of alternatives");
+//            blockInputNodeWrapper = new NodeExtender("Node Wrapper: block input of alternatives");
+//            blockOutputNodeWrapper = new NodeExtender("Node Wrapper: block output of alternatives");
 
-            var verticalBar = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.VerticalBar,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    var alternativesResult = (AlternativesResult)content.Owner;
-                    alternativesResult.AddAlternative();
-                    context.Modify();
-                },
-                "Node: | of alternatives");
+//            var verticalBar = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.VerticalBar,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    var alternativesResult = (AlternativesResult)content.Owner;
+//                    alternativesResult.AddAlternative();
+//                    context.Modify();
+//                },
+//                "Node: | of alternatives");
 
-            var closer = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.RightCurlyBracket,
-                (token, context) =>
-                {
-                    var content = context.GetCurrentContent();
-                    content.Seal();
-                },
-                "Node: } of optional");
+//            var closer = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.RightCurlyBracket,
+//                (token, context) =>
+//                {
+//                    var content = context.GetCurrentContent();
+//                    content.Seal();
+//                },
+//                "Node: } of optional");
 
-            head.AddLink(blockInputNodeWrapper);
-            blockOutputNodeWrapper.AddDeferredLink(verticalBar);
-            verticalBar.AddLink(blockInputNodeWrapper);
-            blockOutputNodeWrapper.AddDeferredLink(closer);
+//            head.AddLink(blockInputNodeWrapper);
+//            blockOutputNodeWrapper.AddDeferredLink(verticalBar);
+//            verticalBar.AddLink(blockInputNodeWrapper);
+//            blockOutputNodeWrapper.AddDeferredLink(closer);
 
-            block.Capture(
-                blockInputNodeWrapper,
-                blockOutputNodeWrapper,
-                verticalBar,
-                closer);
+//            block.Capture(
+//                blockInputNodeWrapper,
+//                blockOutputNodeWrapper,
+//                verticalBar,
+//                closer);
 
-            return block;
-        }
+//            return block;
+//        }
 
-        private IBlock CreateNameReferencesInParenthesesBlock(Action<IContext, string> nameAdder)
-        {
-            var leftParen = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.LeftParenthesis,
-                ParsingHelper.IdleTokenProcessor,
-                "Node: ( of name references");
-            var nameRef = new SpecialStringNode<AideSpecialString>(
-                AideSpecialString.NameReference,
-                (token, context) =>
-                {
-                    var nameReferenceToken = (SpecialStringToken<AideSpecialString>)token;
-                    var name = nameReferenceToken.Value;
-                    nameAdder(context, name);
-                },
-                "Node: name reference");
-            var comma = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.Comma,
-                ParsingHelper.IdleTokenProcessor,
-                "Node: comma of name references");
-            var rightParen = new ExactEnumNode<SyntaxElement>(
-                SyntaxElement.RightParenthesis,
-                ParsingHelper.IdleTokenProcessor,
-                "Node: ) of name references");
+//        private IBlock CreateNameReferencesInParenthesesBlock(Action<IContext, string> nameAdder)
+//        {
+//            var leftParen = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.LeftParenthesis,
+//                ParsingHelper.IdleTokenProcessor,
+//                "Node: ( of name references");
+//            var nameRef = new SpecialStringNode<AideSpecialString>(
+//                AideSpecialString.NameReference,
+//                (token, context) =>
+//                {
+//                    var nameReferenceToken = (SpecialStringToken<AideSpecialString>)token;
+//                    var name = nameReferenceToken.Value;
+//                    nameAdder(context, name);
+//                },
+//                "Node: name reference");
+//            var comma = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.Comma,
+//                ParsingHelper.IdleTokenProcessor,
+//                "Node: comma of name references");
+//            var rightParen = new ExactEnumNode<SyntaxElement>(
+//                SyntaxElement.RightParenthesis,
+//                ParsingHelper.IdleTokenProcessor,
+//                "Node: ) of name references");
 
-            leftParen.AddLink(nameRef);
-            nameRef.AddLink(comma);
-            nameRef.AddLink(rightParen);
-            comma.AddLink(nameRef);
+//            leftParen.AddLink(nameRef);
+//            nameRef.AddLink(comma);
+//            nameRef.AddLink(rightParen);
+//            comma.AddLink(nameRef);
 
-            var block = new Block(leftParen, "Block: name references");
-            block.Capture(nameRef, comma, rightParen);
+//            var block = new Block(leftParen, "Block: name references");
+//            block.Capture(nameRef, comma, rightParen);
 
-            return block;
-        }
-    }
-}
+//            return block;
+//        }
+//    }
+//}
