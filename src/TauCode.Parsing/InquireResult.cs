@@ -4,6 +4,7 @@
     {
         Reject = 1,
         Skip,
-        Consume
+        Act,
+        End,
     }
 }

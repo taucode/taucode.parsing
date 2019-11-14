@@ -1,5 +1,4 @@
 ﻿using System;
-using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing
 {
@@ -15,16 +14,16 @@ namespace TauCode.Parsing
             return tokenStream.Position == tokenStream.Tokens.Count;
         }
 
-        public static IToken GetCurrentToken(this ITokenStream tokenStream)
-        {
-            if (tokenStream.IsEndOfStream())
-            {
-                throw new ParserException("Unexpected end of token stream.");
-            }
+        //public static IToken GetCurrentToken(this ITokenStream tokenStream)
+        //{
+        //    if (tokenStream.IsEndOfStream())
+        //    {
+        //        throw new ParserException("Unexpected end of token stream.");
+        //    }
 
-            var token = tokenStream.Tokens[tokenStream.Position];
-            return token;
-        }
+        //    var token = tokenStream.Tokens[tokenStream.Position];
+        //    return token;
+        //}
 
         public static void AdvanceStreamPosition(this ITokenStream tokenStream)
         {
@@ -96,6 +95,10 @@ namespace TauCode.Parsing
         //{
         //    var diag = $"Unit: type is {unit.GetType().FullName}, name is '{unit.Name}'.";
         //    return diag;
+        //}
+        //public static void IdleAction(IToken token, IResultAccumulator resultAccumulator)
+        //{
+        //    // idle
         //}
     }
 }

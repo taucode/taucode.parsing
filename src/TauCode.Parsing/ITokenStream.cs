@@ -6,5 +6,6 @@ namespace TauCode.Parsing
     {
         IReadOnlyList<IToken> Tokens { get; }
         int Position { get; set; }
+        IToken CurrentToken { get; }
     }
 }
