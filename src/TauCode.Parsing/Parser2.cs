@@ -13,8 +13,9 @@ namespace TauCode.Parsing
 
             var stream = new TokenStream(tokens);
             IContext2 context = new Context2(stream);
+            var initialNodes = ParsingHelper.GetNonIdleNodes(new[] { root });
 
-            context.SetNodes(ParsingHelper.GetNonIdleNodes(new[] { root }));
+            context.SetNodes(initialNodes);
             var winners = new List<INode2>();
 
             while (true)
@@ -29,7 +30,7 @@ namespace TauCode.Parsing
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        throw new NotImplementedException(); // unexpected end of stream.
                     }
                 }
 
@@ -80,7 +81,15 @@ namespace TauCode.Parsing
 
                 if (winners.Count == 0)
                 {
-                    throw new NotImplementedException();
+                    if (gotEnd)
+                    {
+                        // fine, got to end, start over.
+                        context.SetNodes(initialNodes);
+                    }
+                    else
+                    {
+                        throw new NotImplementedException(); // error: unexpected token
+                    }
                 }
                 else
                 {

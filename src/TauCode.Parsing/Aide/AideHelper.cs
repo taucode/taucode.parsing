@@ -371,6 +371,8 @@ namespace TauCode.Parsing.Aide
                 },
                 SyntaxElement.EndBlockDefinition);
 
+            endBlockDef.AddLink(EndNode.Instance);
+
             return root;
         }
 

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace TauCode.Parsing.Nodes2
 {
@@ -28,7 +27,5 @@ namespace TauCode.Parsing.Nodes2
         {
             throw new NotImplementedException();
         }
-
-        public override IReadOnlyCollection<INode2> Links => throw new NotImplementedException(); // you should never check this.
     }
 }
