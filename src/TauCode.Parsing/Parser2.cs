@@ -43,7 +43,7 @@ namespace TauCode.Parsing
 
                 foreach (var node in nodes)
                 {
-                    var inquireResult = node.Inquire(token);
+                    var inquireResult = node.Inquire(token, context.ResultAccumulator);
 
                     switch (inquireResult)
                     {

@@ -6,7 +6,7 @@ namespace TauCode.Parsing
     {
         INodeFamily Family { get; }
         string Name { get; }
-        InquireResult Inquire(IToken token);
+        InquireResult Inquire(IToken token, IResultAccumulator resultAccumulator);
         void Act(IToken token, IResultAccumulator resultAccumulator);
         void AddLink(INode2 node);
         void AddLinkByName(string nodeName);

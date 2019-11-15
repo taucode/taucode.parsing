@@ -11,7 +11,7 @@ namespace TauCode.Parsing.Nodes2
         {
         }
 
-        protected override InquireResult InquireImpl(IToken token) => InquireResult.End;
+        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator) => InquireResult.End;
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
@@ -26,6 +26,12 @@ namespace TauCode.Parsing.Nodes2
         public override void AddLinkByName(string nodeName)
         {
             throw new NotImplementedException();
+        }
+
+        public override Func<IToken, IResultAccumulator, bool> AdditionalChecker
+        {
+            get => null;
+            set => throw new NotImplementedException();
         }
     }
 }

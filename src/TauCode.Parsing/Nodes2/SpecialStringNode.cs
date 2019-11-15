@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Nodes2
 
         public TStringClass Class { get; }
 
-        protected override InquireResult InquireImpl(IToken token)
+        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             if (
                 token is SpecialStringToken<TStringClass> specialStringToken &&

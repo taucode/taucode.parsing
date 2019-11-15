@@ -292,7 +292,7 @@ namespace TauCode.Parsing.Aide
             beginBlockDefArgsExit.AddLinkByName("leftSplitter");
 
             var leftSplitter = new IdleNode(family, "leftSplitter");
-            leftSplitter.AddLinksByNames("word", "identifier", "symbol", "blockReference" /*, "optional", "alternatives" todo*/);
+            leftSplitter.AddLinksByNames("word", "identifier", "symbol", "blockReference", "optional", "alternatives");
 
             var word = new WordNode(
                 family,
@@ -333,15 +333,78 @@ namespace TauCode.Parsing.Aide
                 },
                 SyntaxElement.BlockReference);
 
+            #region optional
+
+
+            var optional = new ExactEnumNode<SyntaxElement>(
+                family,
+                "optional",
+                (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                },
+                SyntaxElement.LeftBracket);
+            var closeOptional = new ExactEnumNode<SyntaxElement>(
+                family,
+                "closeOptional",
+                (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                },
+                SyntaxElement.RightBracket)
+            {
+                AdditionalChecker = (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                }
+            };
+
+            #endregion
+
+            #region alternatives
+
+            var alternatives = new ExactEnumNode<SyntaxElement>(
+                family,
+                "alternatives",
+                (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                },
+                SyntaxElement.LeftCurlyBracket);
+            var addAlternative = new ExactEnumNode<SyntaxElement>(
+                family,
+                "addAlternative",
+                (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                },
+                SyntaxElement.VerticalBar)
+            {
+                AdditionalChecker = (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                }
+            };
+            var closeAlternatives = new ExactEnumNode<SyntaxElement>(
+                family,
+                "closeAlternatives",
+                (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                },
+                SyntaxElement.RightCurlyBracket)
+            {
+                AdditionalChecker = (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                }
+            };
+
+
+            #endregion
+
             var beforeArgsSplitter = new IdleNode(family, "beforeArgsSplitter");
             beforeArgsSplitter.DrawLinkFromNodes(word, identifier, symbol, blockReference);
-
-            //var optional = BuildOptionalRoot("optional");
-            //var alternatives = BuildAlternativesRoot("alternatives");
-
-            //var rightSplitter = new IdleNode(family, "right_splitter");
-            //rightSplitter.DrawLinkFromNodes(word, @enum/*, optional, alternatives todo */);
-
 
             args = BuildArgumentsRoot("content args", family, acc => acc.GetActualContent().Last());
             var contentNodeArgs = args.Item1;
@@ -355,11 +418,11 @@ namespace TauCode.Parsing.Aide
             afterArgsSplitter.AddLink(leftSplitter);
             afterArgsSplitter.AddLinkByName("endBlockDef");
 
+            #region links for optional
 
-            //contentNodeArgs.DrawLinkFromNodes(word, syntaxElement/*, optional, alternatives todo */);
+            
 
-            //contentNodeArgsExit.AddLink(leftSplitter);
-            //contentNodeArgsExit.AddLinkByName("end_block_def");
+            #endregion
 
             var endBlockDef = new ExactEnumNode<SyntaxElement>(
                 family,
@@ -384,10 +447,6 @@ namespace TauCode.Parsing.Aide
                 $"{prefix}: arg",
                 (token, accumulator) =>
                 {
-                    //var result = (IAideResult2)accumulator.Last(); // todo
-                    //result.Arguments.Add(((SpecialStringToken<AideSpecialString>)token).Value);
-                    //var content = accumulator.GetActualContent();
-                    //content.Last().Arguments.Add(((SpecialStringToken<AideSpecialString>)token).Value);
                     var result = resultGetter(accumulator);
                     result.Arguments.Add(((SpecialStringToken<AideSpecialString>)token).Value);
                 },

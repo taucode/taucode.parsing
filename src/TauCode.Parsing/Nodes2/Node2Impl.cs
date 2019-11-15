@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Nodes2
 {
@@ -10,6 +11,7 @@ namespace TauCode.Parsing.Nodes2
 
         private readonly HashSet<INode2> _links;
         private readonly HashSet<string> _linkAddresses;
+        private Func<IToken, IResultAccumulator, bool> _additionalChecker;
 
         #endregion
 
@@ -45,12 +47,22 @@ namespace TauCode.Parsing.Nodes2
         }
 
         #endregion
-
+        
         #region Polymorph
 
-        protected abstract InquireResult InquireImpl(IToken token);
+        protected abstract InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator);
 
         protected abstract void ActImpl(IToken token, IResultAccumulator resultAccumulator);
+
+        #endregion
+
+        #region Public
+
+        public virtual Func<IToken, IResultAccumulator, bool> AdditionalChecker
+        {
+            get => _additionalChecker;
+            set => _additionalChecker = value;
+        }
 
         #endregion
 
@@ -60,14 +72,23 @@ namespace TauCode.Parsing.Nodes2
 
         public string Name { get; }
 
-        public InquireResult Inquire(IToken token)
+        public InquireResult Inquire(IToken token, IResultAccumulator resultAccumulator)
         {
+            // todo checks
             if (token == null)
             {
                 throw new ArgumentNullException(nameof(token));
             }
 
-            return this.InquireImpl(token);
+            var basicInquireResult = this.InquireImpl(token, resultAccumulator);
+
+            if (basicInquireResult.IsIn(InquireResult.Reject, InquireResult.End))
+            {
+                return basicInquireResult;
+            }
+
+            var additionalCheck = this.AdditionalChecker?.Invoke(token, resultAccumulator) ?? true;
+            return additionalCheck ? basicInquireResult : InquireResult.Reject;
         }
 
         public void Act(IToken token, IResultAccumulator resultAccumulator)

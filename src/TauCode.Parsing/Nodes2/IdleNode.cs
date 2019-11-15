@@ -7,7 +7,7 @@
         {
         }
 
-        protected override InquireResult InquireImpl(IToken token)
+        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             throw new System.NotImplementedException();
         }

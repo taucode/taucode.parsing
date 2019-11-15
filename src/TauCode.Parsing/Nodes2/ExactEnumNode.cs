@@ -13,7 +13,7 @@ namespace TauCode.Parsing.Nodes2
 
         public TEnum Value { get; }
 
-        protected override InquireResult InquireImpl(IToken token)
+        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             if (token is EnumToken<TEnum> enumToken && enumToken.Value.Equals(this.Value))
             {

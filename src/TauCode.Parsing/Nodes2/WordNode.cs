@@ -10,7 +10,7 @@ namespace TauCode.Parsing.Nodes2
         {
         }
 
-        protected override InquireResult InquireImpl(IToken token)
+        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             if (token is WordToken)
             {
