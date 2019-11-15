@@ -1,8 +1,7 @@
 ﻿using System;
-using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Nodes2
+namespace TauCode.Parsing.Nodes
 {
     public class SpecialStringNode<TStringClass> : ActionNode where TStringClass : struct
     {
