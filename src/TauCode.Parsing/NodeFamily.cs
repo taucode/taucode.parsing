@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using TauCode.Utils.CommandLine.Parsing;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing
 {
-    // todo: consider rid of 'address' word anywhere
     public class NodeFamily : INodeFamily
     {
+        #region Fields
+
         private readonly Dictionary<string, INode> _nodesByName;
         private readonly HashSet<INode> _nodes;
+
+        #endregion
+
+        #region Constructor
 
         public NodeFamily(string name)
         {
@@ -17,30 +25,40 @@ namespace TauCode.Parsing
             _nodes = new HashSet<INode>();
         }
 
+        #endregion
+
+        #region Internal
+
         internal void RegisterNode(INode node)
         {
-            // todo: checks
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
 
             _nodesByName.Add(node.Name, node);
             _nodes.Add(node);
         }
 
+        #endregion
+
+        #region INodeFamily Members
+
         public string Name { get; }
 
         public INode GetNode(string nodeName)
         {
-            // todo checks
-            return _nodesByName[nodeName];
+            if (nodeName == null)
+            {
+                throw new ArgumentNullException(nameof(nodeName));
+            }
+
+            var node = _nodesByName.GetOrDefault(nodeName) ?? throw new ParsingException($"Node not found: '{nodeName}'.");
+            return node;
         }
 
-        public INode[] GetNodes()
-        {
-            throw new NotImplementedException();
-        }
+        public INode[] GetNodes() => _nodesByName.Values.ToArray();
 
-        public void AddLink(string fromName, string toName)
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
     }
 }

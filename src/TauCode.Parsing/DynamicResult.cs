@@ -7,7 +7,13 @@ namespace TauCode.Parsing
 {
     public class DynamicResult : DynamicObject
     {
+        #region Fields
+
         private readonly IDictionary<string, object> _values;
+
+        #endregion
+
+        #region Constructor
 
         public DynamicResult(object original = null)
         {
@@ -25,7 +31,9 @@ namespace TauCode.Parsing
             _values = values;
         }
 
-        public IDictionary<string, object> ToDictionary() => _values;
+        #endregion
+
+        #region Overridden
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
@@ -41,6 +49,12 @@ namespace TauCode.Parsing
         }
 
         public override IEnumerable<string> GetDynamicMemberNames() => _values.Keys;
+
+        #endregion
+
+        #region Public
+
+        public IDictionary<string, object> ToDictionary() => _values;
 
         public string[] GetNames() => this.GetDynamicMemberNames().ToArray();
 
@@ -59,5 +73,7 @@ namespace TauCode.Parsing
             get => this.GetValue(propertyName);
             set => this.SetValue(propertyName, value);
         }
+        
+        #endregion
     }
 }

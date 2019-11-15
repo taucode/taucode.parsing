@@ -5,6 +5,8 @@ namespace TauCode.Parsing.Nodes
 {
     public class SymbolNode : EnumNode<SymbolValue>
     {
+        #region Constructor
+
         public SymbolNode(
             INodeFamily family,
             string name,
@@ -12,5 +14,8 @@ namespace TauCode.Parsing.Nodes
             : base(family, name, action)
         {
         }
+
+
+        #endregion
     }
 }

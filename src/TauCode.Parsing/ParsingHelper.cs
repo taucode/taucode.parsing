@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Nodes;
+using TauCode.Utils.CommandLine.Parsing;
 
 namespace TauCode.Parsing
 {
-    // todo clean up
     public static class ParsingHelper
     {
         public static bool IsEndOfStream(this ITokenStream tokenStream)
@@ -18,17 +18,6 @@ namespace TauCode.Parsing
             return tokenStream.Position == tokenStream.Tokens.Count;
         }
 
-        //public static IToken GetCurrentToken(this ITokenStream tokenStream)
-        //{
-        //    if (tokenStream.IsEndOfStream())
-        //    {
-        //        throw new ParserException("Unexpected end of token stream.");
-        //    }
-
-        //    var token = tokenStream.Tokens[tokenStream.Position];
-        //    return token;
-        //}
-
         public static void AdvanceStreamPosition(this ITokenStream tokenStream)
         {
             if (tokenStream == null)
@@ -36,77 +25,15 @@ namespace TauCode.Parsing
                 throw new ArgumentNullException(nameof(tokenStream));
             }
 
+            if (tokenStream.IsEndOfStream())
+            {
+                throw new ParsingException($"'{nameof(tokenStream)}' is at the end. Cannot advance.");
+            }
+
             tokenStream.Position++;
         }
 
-        //public static void IdleTokenProcessor(IToken token, IContext context)
-        //{
-        //}
-
-        //public static bool IsEndResult(IReadOnlyCollection<IUnit> result)
-        //{
-        //    if (result == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(result));
-        //    }
-
-        //    var res = result.Count == 1 && result.Single() == EndNode.Instance;
-        //    return res;
-        //}
-
-        //public static bool IsNestedInto(this IUnit unit, IBlock possibleSuperOwner)
-        //{
-        //    if (unit == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(unit));
-        //    }
-
-        //    if (possibleSuperOwner == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(possibleSuperOwner));
-        //    }
-
-        //    var currentOwner = unit.Owner;
-
-        //    while (true)
-        //    {
-        //        if (currentOwner == null)
-        //        {
-        //            return false;
-        //        }
-
-        //        if (currentOwner == possibleSuperOwner)
-        //        {
-        //            return true;
-        //        }
-
-        //        currentOwner = currentOwner.Owner;
-        //    }
-        //}
-
-        //public static bool IsBlockHeadNode(this INode node)
-        //{
-        //    var owner = node.Owner;
-        //    if (owner == null)
-        //    {
-        //        return false;
-        //    }
-
-        //    return owner.Head == node;
-        //}
-
-        //internal static string ToUnitDiagnosticsString(this IUnit unit)
-        //{
-        //    var diag = $"Unit: type is {unit.GetType().FullName}, name is '{unit.Name}'.";
-        //    return diag;
-        //}
-        //public static void IdleAction(IToken token, IResultAccumulator resultAccumulator)
-        //{
-        //    // idle
-        //}
-
-        public static IReadOnlyCollection<INode>
-            GetNonIdleNodes(IReadOnlyCollection<INode> nodes) // todo: optimize. use IEnumerable?
+        public static IReadOnlyCollection<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
         {
             if (nodes.Any(x => x is IdleNode))
             {
@@ -114,6 +41,11 @@ namespace TauCode.Parsing
 
                 foreach (var node in nodes)
                 {
+                    if (node == null)
+                    {
+                        throw new ArgumentException($"'{nameof(nodes)}' must not contain nulls.");
+                    }
+
                     WriteNonIdleNodes(node, list);
                 }
 
@@ -143,42 +75,66 @@ namespace TauCode.Parsing
 
         public static void AddLinksByNames(this INode node, params string[] names)
         {
-            // todo check args
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
             foreach (var name in names)
             {
+                if (name == null)
+                {
+                    throw new ArgumentException($"'{nameof(names)}' must not contain nulls.");
+                }
+
                 node.AddLinkByName(name);
             }
         }
 
         public static void DrawLinkFromNodes(this INode node, params INode[] drawFromNodes)
         {
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
             foreach (var drawFromNode in drawFromNodes)
             {
+                if (drawFromNode == null)
+                {
+                    throw new ArgumentException($"'{nameof(drawFromNode)}' must not contain nulls.");
+                }
+
                 drawFromNode.AddLink(node);
-            }
-        }
-
-        public static void LinkChain(this INode head, params INode[] tail)
-        {
-            // todo check args
-
-            var current = head;
-            if (tail.Any())
-            {
-                current.AddLink(tail[0]);
-            }
-
-            for (var i = 0; i < tail.Length - 1; i++)
-            {
-                tail[i].AddLink(tail[i + 1]);
             }
         }
 
         public static T GetLastResult<T>(this IResultAccumulator accumulator)
         {
-            // todo checks
-            // todo optimize
-            return (T)accumulator.Last();
+            if (accumulator == null)
+            {
+                throw new ArgumentNullException(nameof(accumulator));
+            }
+
+            if (accumulator.Count == 0)
+            {
+                throw new ParsingException("Result accumulator is empty.");
+            }
+
+            var index = accumulator.Count - 1;
+            var result = accumulator[index];
+
+            if (result == null)
+            {
+                throw new ParsingException($"Last result is null.");
+            }
+
+            if (result.GetType() != typeof(T))
+            {
+                throw new ParsingException($"Last result expected to be of type '{typeof(T).FullName}', but is of type '{result.GetType().FullName}'.");
+            }
+
+            return (T)result;
         }
     }
 }

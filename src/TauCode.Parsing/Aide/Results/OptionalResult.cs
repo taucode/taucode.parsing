@@ -6,9 +6,6 @@ namespace TauCode.Parsing.Aide.Results
     {
         #region Constructor
 
-        
-
-        #endregion
         public OptionalResult(string name)
         {
             this.Name = name;
@@ -16,8 +13,20 @@ namespace TauCode.Parsing.Aide.Results
             this.Arguments = new List<string>();
         }
 
+        #endregion
+
+        #region Public
+
         public Content OptionalContent { get; }
+
+        #endregion
+
+        #region IAideResult Members
+
         public string Name { get; }
+
         public IList<string> Arguments { get; }
+
+        #endregion
     }
 }

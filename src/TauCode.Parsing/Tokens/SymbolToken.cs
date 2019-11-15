@@ -2,6 +2,8 @@
 {
     public class SymbolToken : EnumToken<SymbolValue>
     {
+        #region Constructors
+
         public SymbolToken(SymbolValue value)
             : base(value)
         {
@@ -21,5 +23,8 @@
             : this(LexerHelper.SymbolTokenFromChar(c), name)
         {
         }
+
+
+        #endregion
     }
 }

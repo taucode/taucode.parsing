@@ -5,6 +5,8 @@ namespace TauCode.Parsing.Nodes
 {
     public class ExactSymbolNode : ExactEnumNode<SymbolValue>
     {
+        #region Constructors
+
         public ExactSymbolNode(
             INodeFamily family,
             string name,
@@ -22,5 +24,7 @@ namespace TauCode.Parsing.Nodes
             : base(family, name, action, LexerHelper.SymbolTokenFromChar(c))
         {
         }
+
+        #endregion
     }
 }

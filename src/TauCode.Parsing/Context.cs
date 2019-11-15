@@ -5,7 +5,13 @@ namespace TauCode.Parsing
 {
     public class Context : IContext
     {
+        #region Fields
+
         private IReadOnlyCollection<INode> _nodes;
+
+        #endregion
+
+        #region Constructor
 
         public Context(ITokenStream tokenStream)
         {
@@ -13,17 +19,27 @@ namespace TauCode.Parsing
             this.ResultAccumulator = new ResultAccumulator();
         }
 
+        #endregion
+
+        #region Private
+
+
+
+        #endregion
+
+        #region IContext Members
+
         public ITokenStream TokenStream { get; }
 
         public void SetNodes(IReadOnlyCollection<INode> nodes)
         {
-            // todo: checks
-
-            _nodes = nodes;
+            _nodes = nodes ?? throw new ArgumentNullException(nameof(nodes));
         }
 
         public IReadOnlyCollection<INode> GetNodes() => _nodes;
 
         public IResultAccumulator ResultAccumulator { get; }
+
+        #endregion
     }
 }

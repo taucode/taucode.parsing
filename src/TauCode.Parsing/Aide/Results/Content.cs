@@ -17,8 +17,7 @@ namespace TauCode.Parsing.Aide.Results
 
         public Content(IAideResult owner)
         {
-            // todo checks
-            this.Owner = owner;
+            this.Owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _results = new List<IAideResult>();
         }
 
@@ -30,7 +29,7 @@ namespace TauCode.Parsing.Aide.Results
         {
             if (_isSealed)
             {
-                throw new NotImplementedException();
+                throw new AideException("Content is sealed.");
             }
         }
 
@@ -54,7 +53,11 @@ namespace TauCode.Parsing.Aide.Results
 
         public void AddResult(IAideResult result)
         {
-            // todo checks
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
             this.CheckNotSealed();
 
             _results.Add(result);
