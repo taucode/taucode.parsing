@@ -5,6 +5,7 @@ using TauCode.Parsing.Nodes2;
 
 namespace TauCode.Parsing
 {
+    // todo clean up
     public static class ParsingHelper
     {
         public static bool IsEndOfStream(this ITokenStream tokenStream)
@@ -104,7 +105,8 @@ namespace TauCode.Parsing
         //    // idle
         //}
 
-        public static IReadOnlyCollection<INode2> GetNonIdleNodes(IReadOnlyCollection<INode2> nodes) // todo: optimize. use IEnumerable?
+        public static IReadOnlyCollection<INode2>
+            GetNonIdleNodes(IReadOnlyCollection<INode2> nodes) // todo: optimize. use IEnumerable?
         {
             if (nodes.Any(x => x is IdleNode))
             {
@@ -136,6 +138,39 @@ namespace TauCode.Parsing
             else
             {
                 destination.Add(node);
+            }
+        }
+
+        public static void AddLinksByNames(this INode2 node, params string[] names)
+        {
+            // todo check args
+            foreach (var name in names)
+            {
+                node.AddLinkByName(name);
+            }
+        }
+
+        public static void DrawLinkFromNodes(this INode2 node, params INode2[] drawFromNodes)
+        {
+            foreach (var drawFromNode in drawFromNodes)
+            {
+                drawFromNode.AddLink(node);
+            }
+        }
+
+        public static void LinkChain(this INode2 head, params INode2[] tail)
+        {
+            // todo check args
+
+            var current = head;
+            if (tail.Any())
+            {
+                current.AddLink(tail[0]);
+            }
+
+            for (var i = 0; i < tail.Length - 1; i++)
+            {
+                tail[i].AddLink(tail[i + 1]);
             }
         }
     }

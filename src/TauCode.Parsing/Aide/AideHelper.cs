@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using TauCode.Parsing.Aide.Results;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Nodes2;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Aide
@@ -94,7 +95,8 @@ namespace TauCode.Parsing.Aide
             else if (aideResult is SyntaxElementResult syntaxElementResult)
             {
                 var sb = new StringBuilder();
-                sb.Append($@"{syntaxElementResult.SourceNodeName.ToUnitResultName()}\{syntaxElementResult.SyntaxElement}");
+                sb.Append(
+                    $@"{syntaxElementResult.SourceNodeName.ToUnitResultName()}\{syntaxElementResult.SyntaxElement}");
 
                 var args = FormatArguments(syntaxElementResult.Arguments);
                 sb.Append(args);
@@ -214,6 +216,81 @@ namespace TauCode.Parsing.Aide
             {
                 return $"<{name}>";
             }
+        }
+
+        public static INode2 BuildParserRoot()
+        {
+            INodeFamily family = new NodeFamily("Aide");
+            var root = new IdleNode(family, "root");
+            root.AddLinkByName("begin_block_def");
+
+            var beginBlockDef = new ExactEnumNode<SyntaxElement>(
+                family,
+                "begin_block_def",
+                (token, accumulator) =>
+                {
+                    var blockDefinitionResult = new BlockDefinitionResult();
+                    accumulator.AddResult(blockDefinitionResult);
+                },
+                SyntaxElement.BeginBlockDefinition);
+
+            var args = BuildArgumentsRoot("block def begin args", family);
+            var beginBlockDefArgs = args.Item1;
+            var beginBlockDefArgsExit = args.Item2;
+            beginBlockDef.AddLink(beginBlockDefArgs);
+            beginBlockDefArgsExit.AddLinkByName("left_splitter");
+
+            var leftSplitter = new IdleNode(family, "left_splitter");
+            leftSplitter.AddLinksByNames("word", "identifier"/*, "optional", "alternatives" todo*/);
+
+            var word = new WordNode(family, "word", (token, accumulator) => throw new NotImplementedException());
+            var @enum = new EnumNode<SyntaxElement>(family, "enum", (token, accumulator) => throw new NotImplementedException());
+            //var optional = BuildOptionalRoot("optional");
+            //var alternatives = BuildAlternativesRoot("alternatives");
+
+            //var rightSplitter = new IdleNode(family, "right_splitter");
+            //rightSplitter.DrawLinkFromNodes(word, @enum/*, optional, alternatives todo */);
+
+            
+            args = BuildArgumentsRoot("content args", family);
+            var contentNodeArgs = args.Item1;
+            var contentNodeArgsExit = args.Item2;
+
+            contentNodeArgs.DrawLinkFromNodes(word, @enum/*, optional, alternatives todo */);
+            
+            contentNodeArgsExit.AddLink(leftSplitter);
+            contentNodeArgsExit.AddLinkByName("end_block_def");
+
+            var endBlockDefs = new ExactEnumNode<SyntaxElement>(
+                family,
+                "end_block_def",
+                (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                },
+                SyntaxElement.BeginBlockDefinition);
+
+            return root;
+        }
+
+        private static Tuple<INode2, INode2> BuildArgumentsRoot(string prefix, INodeFamily family)
+        {
+            INode2 begin = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: (", null, SyntaxElement.LeftParenthesis);
+            INode2 arg = new SpecialStringNode<AideSpecialString>(
+                family, 
+                $"{prefix}: arg",
+                (token, accumulator) =>
+                {
+                    throw new NotImplementedException();
+                },
+                AideSpecialString.NameReference);
+            INode2 comma = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: ,", null, SyntaxElement.Comma);
+            INode2 end = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: )", null, SyntaxElement.RightParenthesis);
+
+            begin.LinkChain(arg, comma, end);
+            comma.AddLink(arg);
+
+            return Tuple.Create(begin, end);
         }
     }
 }

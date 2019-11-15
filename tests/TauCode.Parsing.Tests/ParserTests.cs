@@ -47,7 +47,7 @@ namespace TauCode.Parsing.Tests
 
         private INode2 BuildRoot()
         {
-            INodeFamily family = new NodeFamily();
+            INodeFamily family = new NodeFamily("parser_demo");
 
             var root = new IdleNode(family, "root");
             var create = new ExactWordNode(family, "Node: CREATE", "CREATE", null);

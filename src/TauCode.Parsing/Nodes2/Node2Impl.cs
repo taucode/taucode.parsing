@@ -18,12 +18,28 @@ namespace TauCode.Parsing.Nodes2
         protected Node2Impl(INodeFamily family, string name)
         {
             // todo: check args
+            var familyImpl = (NodeFamily)family; // todo check
 
             this.Family = family;
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
 
+            familyImpl?.RegisterNode(this);
+
             _links = new HashSet<INode2>();
             _linkAddresses = new HashSet<string>();
+        }
+
+        #endregion
+
+        #region Private
+
+        private void ResolvePendingLinks()
+        {
+            foreach (var linkAddress in _linkAddresses)
+            {
+                var node = this.Family.GetNode(linkAddress);
+                this.AddLink(node);
+            }
         }
 
         #endregion
@@ -84,7 +100,18 @@ namespace TauCode.Parsing.Nodes2
 
         public virtual void AddLinkByName(string nodeName)
         {
-            throw new NotImplementedException();
+            // todo check args
+            if (_links.Select(x => x.Name).Contains(nodeName))
+            {
+                throw new NotImplementedException();
+            }
+
+            if (_linkAddresses.Contains(nodeName))
+            {
+                throw new NotImplementedException();
+            }
+
+            _linkAddresses.Add(nodeName);
         }
 
         public IReadOnlyCollection<INode2> Links
@@ -93,7 +120,7 @@ namespace TauCode.Parsing.Nodes2
             {
                 if (_linkAddresses.Any()) // todo optimize
                 {
-                    throw new NotImplementedException();
+                    this.ResolvePendingLinks();
                 }
 
                 return _links;
