@@ -5,7 +5,7 @@ using TauCode.Parsing.Nodes;
 
 namespace TauCode.Parsing
 {
-    public class Parser2 : IParser2
+    public class Parser : IParser
     {
         public object[] Parse(INode root, IEnumerable<IToken> tokens)
         {

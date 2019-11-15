@@ -29,7 +29,7 @@ namespace TauCode.Parsing.Tests
 
             var root = this.BuildRoot();
 
-            IParser2 parser = new Parser2();
+            IParser parser = new Parser();
             var results = parser.Parse(root, tokens);
 
             var tableInfo = (TableInfo)results[0];

@@ -1,6 +1,6 @@
 ﻿namespace TauCode.Parsing.Nodes
 {
-    public class IdleNode : Node2Impl
+    public class IdleNode : NodeImpl
     {
         public IdleNode(INodeFamily family, string name)
             : base(family, name)

@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Tests.Aide
             var tokens = lexer.Lexize(input);
 
             // Act
-            IParser2 parser = new Parser2();
+            IParser parser = new Parser();
             var aideRoot = AideHelper.BuildParserRoot();
             var results = parser.Parse(aideRoot, tokens);
 

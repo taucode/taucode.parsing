@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing.Nodes
 {
-    public abstract class ActionNode : Node2Impl
+    public abstract class ActionNode : NodeImpl
     {
         protected ActionNode(
             INodeFamily family,

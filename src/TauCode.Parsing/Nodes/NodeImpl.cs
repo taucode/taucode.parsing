@@ -5,7 +5,7 @@ using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Nodes
 {
-    public abstract class Node2Impl : INode
+    public abstract class NodeImpl : INode
     {
         #region Fields
 
@@ -17,7 +17,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Constructor
 
-        protected Node2Impl(INodeFamily family, string name)
+        protected NodeImpl(INodeFamily family, string name)
         {
             // todo: check args
             var familyImpl = (NodeFamily)family; // todo check

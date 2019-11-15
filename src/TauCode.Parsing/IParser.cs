@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing
 {
-    public interface IParser2
+    public interface IParser
     {
         object[] Parse(INode root, IEnumerable<IToken> tokens);
     }

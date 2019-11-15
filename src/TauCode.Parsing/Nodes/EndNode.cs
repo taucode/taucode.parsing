@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing.Nodes
 {
-    public class EndNode : Node2Impl
+    public class EndNode : NodeImpl
     {
         public static EndNode Instance = new EndNode();
 
