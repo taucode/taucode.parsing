@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TauCode.Parsing.Nodes2
 {
@@ -7,7 +8,8 @@ namespace TauCode.Parsing.Nodes2
     {
         #region Fields
 
-        
+        private readonly HashSet<INode2> _links;
+        private readonly HashSet<string> _linkAddresses;
 
         #endregion
 
@@ -17,8 +19,11 @@ namespace TauCode.Parsing.Nodes2
         {
             // todo: check args
 
-            this.Family = family ?? throw new ArgumentNullException(nameof(family));
+            this.Family = family;
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
+
+            _links = new HashSet<INode2>();
+            _linkAddresses = new HashSet<string>();
         }
 
         #endregion
@@ -64,7 +69,17 @@ namespace TauCode.Parsing.Nodes2
 
         public virtual void AddLink(INode2 node)
         {
-            throw new NotImplementedException();
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
+
+            if (_links.Contains(node))
+            {
+                throw new NotImplementedException();
+            }
+
+            _links.Add(node);
         }
 
         public virtual void AddLinkByName(string nodeName)
@@ -72,7 +87,18 @@ namespace TauCode.Parsing.Nodes2
             throw new NotImplementedException();
         }
 
-        public IReadOnlyCollection<INode2> Links => throw new NotImplementedException();
+        public IReadOnlyCollection<INode2> Links
+        {
+            get
+            {
+                if (_linkAddresses.Any()) // todo optimize
+                {
+                    throw new NotImplementedException();
+                }
+
+                return _links;
+            }
+        }
 
         #endregion
     }

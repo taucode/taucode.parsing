@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using TauCode.Parsing.Nodes2;
 
 namespace TauCode.Parsing
 {
@@ -100,5 +103,40 @@ namespace TauCode.Parsing
         //{
         //    // idle
         //}
+
+        public static IReadOnlyCollection<INode2> GetNonIdleNodes(IReadOnlyCollection<INode2> nodes) // todo: optimize. use IEnumerable?
+        {
+            if (nodes.Any(x => x is IdleNode))
+            {
+                var list = new List<INode2>();
+
+                foreach (var node in nodes)
+                {
+                    WriteNonIdleNodes(node, list);
+                }
+
+                return list;
+            }
+            else
+            {
+                return nodes;
+            }
+        }
+
+        private static void WriteNonIdleNodes(INode2 node, List<INode2> destination)
+        {
+            if (node is IdleNode)
+            {
+                var links = node.Links;
+                foreach (var link in links)
+                {
+                    WriteNonIdleNodes(link, destination);
+                }
+            }
+            else
+            {
+                destination.Add(node);
+            }
+        }
     }
 }

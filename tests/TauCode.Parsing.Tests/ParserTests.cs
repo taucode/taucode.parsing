@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using System;
+using System.Linq;
 using TauCode.Parsing.Nodes2;
 using TauCode.Parsing.Tests.Data;
 using TauCode.Parsing.Tokens;
@@ -17,13 +17,13 @@ namespace TauCode.Parsing.Tests
             {
                 new WordToken("CREATE"),
                 new WordToken("TABLE"),
-                new WordToken("my_tab"),
+                new IdentifierToken("my_tab"),
                 new SymbolToken('('),
-                new WordToken("id"),
-                new WordToken("integer"),
+                new IdentifierToken("id"),
+                new IdentifierToken("integer"),
                 new SymbolToken(','),
-                new WordToken("name"),
-                new WordToken("text"),
+                new IdentifierToken("name"),
+                new IdentifierToken("text"),
                 new SymbolToken(')'),
             };
 
@@ -43,29 +43,6 @@ namespace TauCode.Parsing.Tests
             column = tableInfo.Columns[1];
             Assert.That(column.ColumnName, Is.EqualTo("name"));
             Assert.That(column.TypeName, Is.EqualTo("text"));
-
-            //IParser parser = new Parser();
-
-            //// Act
-            //var result = parser.Parse(tokens);
-
-            //// Assert
-            //var table = result.GetLastResult<dynamic>();
-
-            //var name = (string)table.Name;
-            //var columns = (List<dynamic>)table.Columns;
-
-            //Assert.That(name, Is.EqualTo("my_tab"));
-
-            //Assert.That(columns, Has.Count.EqualTo(2));
-
-            //var column = columns[0];
-            //Assert.That(column.Name, Is.EqualTo("id"));
-            //Assert.That(column.Type, Is.EqualTo("integer"));
-
-            //column = columns[1];
-            //Assert.That(column.Name, Is.EqualTo("name"));
-            //Assert.That(column.Type, Is.EqualTo("text"));
         }
 
         private INode2 BuildRoot()
@@ -76,37 +53,32 @@ namespace TauCode.Parsing.Tests
             var create = new ExactWordNode(family, "Node: CREATE", "CREATE", null);
             var table = new ExactWordNode(family, "Node: TABLE", "TABLE", (token, accumulator) =>
             {
-                throw new NotImplementedException();
+                var tableInfo = new TableInfo();
+                accumulator.AddResult(tableInfo);
             });
             var tableName = new IdentifierNode(family, "Node: <table_name>", (token, accumulator) =>
             {
-                throw new NotImplementedException();
+                var tableInfo = (TableInfo)accumulator.Last();
+                tableInfo.Name = ((IdentifierToken)token).Identifier;
             });
             var leftParen = new ExactSymbolNode(family, "Node: (", null, '(');
             var columnName = new IdentifierNode(family, "Node: <column_name>", (token, accumulator) =>
             {
-                throw new NotImplementedException();
+                var tableInfo = (TableInfo)accumulator.Last();
+                var column = new ColumnInfo
+                {
+                    ColumnName = ((IdentifierToken)token).Identifier,
+                };
+                tableInfo.Columns.Add(column);
             });
             var typeName = new IdentifierNode(family, "Node: <type_name>", (token, accumulator) =>
             {
-                throw new NotImplementedException();
+                var tableInfo = (TableInfo)accumulator.Last();
+                var columnInfo = tableInfo.Columns.Last();
+                columnInfo.TypeName = ((IdentifierToken)token).Identifier;
             });
-            var comma = new ExactSymbolNode(
-                family,
-                "Node: ,",
-                (token, accumulator) =>
-                {
-                    throw new NotImplementedException();
-                },
-                ',');
-            var rightParen = new ExactSymbolNode(
-                family,
-                "Node: (",
-                (token, accumulator) =>
-                {
-                    throw new NotImplementedException();
-                },
-                '(');
+            var comma = new ExactSymbolNode(family, "Node: ,", null, ',');
+            var rightParen = new ExactSymbolNode(family, "Node: )", null, ')');
 
             root.AddLink(create);
             create.AddLink(table);
