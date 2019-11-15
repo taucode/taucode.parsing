@@ -4,19 +4,22 @@ using TauCode.Parsing.Aide.Results;
 
 namespace TauCode.Parsing.Aide.Building
 {
-    public class BuildWorker
+    public class Boss
     {
         private readonly List<BlockDefinitionResult> _blockDefinitions;
 
-        public BuildWorker(IEnumerable<IAideResult> results)
+        public Boss(IEnumerable<IAideResult> results)
         {
             // todo: checks.
             _blockDefinitions = results.Cast<BlockDefinitionResult>().ToList();
+            this.Squad = new Squad();
         }
 
         public INode Generate()
         {
             throw new System.NotImplementedException();
         }
+
+        public Squad Squad { get; }
     }
 }

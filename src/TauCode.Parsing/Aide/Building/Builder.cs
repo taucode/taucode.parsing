@@ -7,7 +7,7 @@ namespace TauCode.Parsing.Aide.Building
     {
         public INode Build(IEnumerable<IAideResult> results)
         {
-            var buildWorker = new BuildWorker(results);
+            var buildWorker = new Boss(results);
             var node = buildWorker.Generate();
             return node;
         }
