@@ -173,5 +173,12 @@ namespace TauCode.Parsing
                 tail[i].AddLink(tail[i + 1]);
             }
         }
+
+        public static T GetLastResult<T>(this IResultAccumulator accumulator)
+        {
+            // todo checks
+            // todo optimize
+            return (T)accumulator.Last();
+        }
     }
 }

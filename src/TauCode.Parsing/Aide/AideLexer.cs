@@ -202,17 +202,17 @@ namespace TauCode.Parsing.Aide
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.BlockReference, tokenName);
                     break;
 
-                case "Link":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Link, tokenName);
-                    break;
+                //case "Link":
+                //    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Link, tokenName);
+                //    break;
 
                 case "Idle":
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Idle, tokenName);
                     break;
 
-                case "WrongWay":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.WrongWay, tokenName);
-                    break;
+                //case "WrongWay":
+                //    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.WrongWay, tokenName);
+                //    break;
 
                 case "Clone":
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Clone, tokenName);

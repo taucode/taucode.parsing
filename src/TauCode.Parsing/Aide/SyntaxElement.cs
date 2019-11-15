@@ -4,11 +4,11 @@
     {
         BeginBlockDefinition = 1,
         EndBlockDefinition,
-        Link,
+        //Link,
         Identifier,
         BlockReference,
         Idle,
-        WrongWay,
+        //WrongWay,
         Comma,
         VerticalBar,
         LeftParenthesis,

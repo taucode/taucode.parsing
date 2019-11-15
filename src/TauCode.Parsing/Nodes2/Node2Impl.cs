@@ -40,6 +40,8 @@ namespace TauCode.Parsing.Nodes2
                 var node = this.Family.GetNode(linkAddress);
                 this.AddLink(node);
             }
+
+            _linkAddresses.Clear();
         }
 
         #endregion
@@ -114,7 +116,7 @@ namespace TauCode.Parsing.Nodes2
             _linkAddresses.Add(nodeName);
         }
 
-        public IReadOnlyCollection<INode2> Links
+        public virtual IReadOnlyCollection<INode2> Links
         {
             get
             {

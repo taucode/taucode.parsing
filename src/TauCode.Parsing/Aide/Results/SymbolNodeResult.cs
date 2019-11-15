@@ -1,15 +1,17 @@
-﻿using TauCode.Parsing.Tokens;
+﻿//using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Aide.Results
-{
-    public class SymbolNodeResult : NodeResult
-    {
-        public SymbolNodeResult(SymbolValue value, string sourceNodeName)
-            : base(sourceNodeName)
-        {
-            this.Value = value;
-        }
+//namespace TauCode.Parsing.Aide.Results
+//{
+//    public class SymbolNodeResult : NodeResult
+//    {
+//        public SymbolNodeResult(SymbolValue value, string sourceNodeName)
+//            : base(sourceNodeName)
+//        {
+//            this.Value = value;
+//        }
 
-        public SymbolValue Value { get; }
-    }
-}
+//        public SymbolValue Value { get; }
+//    }
+//}
+
+// todo clean up

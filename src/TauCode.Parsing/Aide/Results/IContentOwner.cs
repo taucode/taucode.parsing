@@ -1,6 +1,8 @@
-﻿namespace TauCode.Parsing.Aide.Results
-{
-    public interface IContentOwner
-    {
-    }
-}
+﻿//namespace TauCode.Parsing.Aide.Results
+//{
+//    public interface IContentOwner
+//    {
+//    }
+//}
+
+// todo clean up
