@@ -5,3 +5,7 @@
 +   3. Link address resolution
 +   4. Smart (linked) results
 +   5. Diagnostics: which node produced error?
+
+2019-11-16
+==========
+    1. Get rid of 'Aide'.
