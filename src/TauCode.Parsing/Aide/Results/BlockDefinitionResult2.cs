@@ -1,17 +1,17 @@
 ﻿using System.Collections.Generic;
 
-namespace TauCode.Parsing.Aide.Results2
+namespace TauCode.Parsing.Aide.Results
 {
-    public class OptionalResult : IAideResult2
+    public class BlockDefinitionResult2 : IAideResult2
     {
-        public OptionalResult(string name)
+        public BlockDefinitionResult2(string name)
         {
             this.Name = name;
-            this.OptionalContent = new Content(this);
+            this.Content = new Content(this);
             this.Arguments = new List<string>();
         }
 
-        public Content OptionalContent { get; }
+        public IContent Content { get; }
         public string Name { get; }
         public IList<string> Arguments { get; }
     }

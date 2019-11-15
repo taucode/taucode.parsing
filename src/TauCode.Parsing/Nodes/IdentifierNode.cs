@@ -1,18 +1,19 @@
 ﻿using System;
+using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes2
 {
-    public class EnumNode<TEnum> : ActionNode where TEnum : struct
+    public class IdentifierNode : ActionNode
     {
-        public EnumNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action)
+        public IdentifierNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action)
             : base(family, name, action)
         {
         }
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is EnumToken<TEnum>)
+            if (token is IdentifierToken)
             {
                 return this.Action == null ? InquireResult.Skip : InquireResult.Act;
             }

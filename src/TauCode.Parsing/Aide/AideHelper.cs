@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TauCode.Parsing.Aide.Results2;
+using TauCode.Parsing.Aide.Results;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Nodes2;
 using TauCode.Parsing.Tokens;
 
@@ -20,56 +21,6 @@ namespace TauCode.Parsing.Aide
         }
 
         #endregion
-
-        //public static Content GetCurrentContent(this IContext context)
-        //{
-        //    if (context is null)
-        //    {
-        //        throw new ArgumentNullException(nameof(context));
-        //    }
-
-        //    var blockDefinitionResult = context.GetLastResult<BlockDefinitionResult>();
-        //    var content = blockDefinitionResult.Content;
-
-        //    while (true)
-        //    {
-        //        if (content.UnitResultCount == 0)
-        //        {
-        //            return content;
-        //        }
-
-        //        var lastUnitResult = content.GetLastUnitResult();
-
-        //        if (lastUnitResult is OptionalResult optionalResult)
-        //        {
-        //            var nextContent = optionalResult.OptionalContent;
-        //            if (nextContent.IsSealed)
-        //            {
-        //                return content;
-        //            }
-        //            else
-        //            {
-        //                content = nextContent;
-        //            }
-        //        }
-        //        else if (lastUnitResult is AlternativesResult alternativesResult)
-        //        {
-        //            var nextContent = alternativesResult.GetLastAlternative();
-        //            if (nextContent.IsSealed)
-        //            {
-        //                return content;
-        //            }
-        //            else
-        //            {
-        //                content = nextContent;
-        //            }
-        //        }
-        //        else
-        //        {
-        //            return content;
-        //        }
-        //    }
-        //}
 
         public static string ToAideResultFormat(this IAideResult2 aideResult)
         {
@@ -91,25 +42,6 @@ namespace TauCode.Parsing.Aide
                 var namesString = aideResult.Arguments.FormatArguments();
                 result = $@"{aideResult.Name.ToAideResultName()}{tokenResult.Token.FormatToken()}{namesString}";
             }
-            //else if (aideResult is WordNodeResult wordNodeResult)
-            //{
-            //    result = $@"{wordNodeResult.SourceNodeName.ToUnitResultName()}{wordNodeResult.Word}";
-            //}
-            //else if (aideResult is SymbolNodeResult symbolNodeResult)
-            //{
-            //    result = $@"{symbolNodeResult.SourceNodeName.ToUnitResultName()}\{symbolNodeResult.Value.ToFormat()}";
-            //}
-            //else if (aideResult is SyntaxElementResult syntaxElementResult)
-            //{
-            //    var sb = new StringBuilder();
-            //    sb.Append(
-            //        $@"{syntaxElementResult.SourceNodeName.ToUnitResultName()}\{syntaxElementResult.SyntaxElement}");
-
-            //    var args = FormatArguments(syntaxElementResult.Arguments);
-            //    sb.Append(args);
-
-            //    result = sb.ToString();
-            //}
             else if (aideResult is OptionalResult optionalResult)
             {
                 var content = optionalResult.OptionalContent;
@@ -522,7 +454,10 @@ namespace TauCode.Parsing.Aide
             return root;
         }
 
-        private static Tuple<INode2, INode2> BuildArgumentsRoot(string prefix, INodeFamily family, Func<IResultAccumulator, IAideResult2> resultGetter)
+        private static Tuple<INode2, INode2> BuildArgumentsRoot(
+            string prefix,
+            INodeFamily family,
+            Func<IResultAccumulator, IAideResult2> resultGetter)
         {
             INode2 begin = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: (", null, SyntaxElement.LeftParenthesis);
             INode2 arg = new SpecialStringNode<AideSpecialString>(

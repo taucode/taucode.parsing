@@ -1,6 +1,7 @@
 ﻿using System;
+using TauCode.Parsing.Nodes2;
 
-namespace TauCode.Parsing.Nodes2
+namespace TauCode.Parsing.Nodes
 {
     public class EndNode : Node2Impl
     {

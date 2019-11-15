@@ -1,21 +1,22 @@
 ﻿using System;
+using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes2
 {
-    public class ExactEnumNode<TEnum> : ActionNode where TEnum : struct
+    public class ExactWordNode : ActionNode
     {
-        public ExactEnumNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action, TEnum value)
+        public ExactWordNode(INodeFamily family, string name, string word, Action<IToken, IResultAccumulator> action)
             : base(family, name, action)
         {
-            this.Value = value;
+            this.Word = word ?? throw new ArgumentNullException(nameof(word));
         }
 
-        public TEnum Value { get; }
+        public string Word { get; }
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is EnumToken<TEnum> enumToken && enumToken.Value.Equals(this.Value))
+            if (token is WordToken wordToken && wordToken.Word == this.Word)
             {
                 return this.Action == null ? InquireResult.Skip : InquireResult.Act;
             }

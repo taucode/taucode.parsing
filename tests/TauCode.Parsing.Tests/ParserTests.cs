@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Linq;
+using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Nodes2;
 using TauCode.Parsing.Tests.Data;
 using TauCode.Parsing.Tokens;

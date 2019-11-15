@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TauCode.Parsing.Aide.Results2
+namespace TauCode.Parsing.Aide.Results
 {
     public interface IAideResult2
     {

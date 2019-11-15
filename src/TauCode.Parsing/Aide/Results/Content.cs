@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace TauCode.Parsing.Aide.Results2
+namespace TauCode.Parsing.Aide.Results
 {
     // todo: regions & nice
     public class Content : IContent

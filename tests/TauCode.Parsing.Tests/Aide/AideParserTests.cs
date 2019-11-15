@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using TauCode.Parsing.Aide;
-using TauCode.Parsing.Aide.Results2;
+using TauCode.Parsing.Aide.Results;
 using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Tests.Aide
