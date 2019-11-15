@@ -2,9 +2,9 @@
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class BlockDefinitionResult2 : IAideResult
+    public class BlockDefinitionResult : IAideResult
     {
-        public BlockDefinitionResult2(string name)
+        public BlockDefinitionResult(string name)
         {
             this.Name = name;
             this.Content = new Content(this);

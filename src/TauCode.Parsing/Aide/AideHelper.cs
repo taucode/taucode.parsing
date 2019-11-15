@@ -25,7 +25,7 @@ namespace TauCode.Parsing.Aide
         {
             string result;
 
-            if (aideResult is BlockDefinitionResult2 blockDefinitionResult)
+            if (aideResult is BlockDefinitionResult blockDefinitionResult)
             {
                 var sb = new StringBuilder();
                 var namesString = blockDefinitionResult.Arguments.FormatArguments();
@@ -187,7 +187,7 @@ namespace TauCode.Parsing.Aide
                 throw new ArgumentNullException(nameof(accumulator));
             }
 
-            var blockDefinitionResult = accumulator.GetLastResult<BlockDefinitionResult2>();
+            var blockDefinitionResult = accumulator.GetLastResult<BlockDefinitionResult>();
             var content = blockDefinitionResult.Content;
 
             while (true)
@@ -241,12 +241,12 @@ namespace TauCode.Parsing.Aide
                 "begin_block_def",
                 (token, accumulator) =>
                 {
-                    var blockDefinitionResult = new BlockDefinitionResult2(token.Name);
+                    var blockDefinitionResult = new BlockDefinitionResult(token.Name);
                     accumulator.AddResult(blockDefinitionResult);
                 },
                 SyntaxElement.BeginBlockDefinition);
 
-            var args = BuildArgumentsRoot("block def begin args", family, acc => acc.GetLastResult<BlockDefinitionResult2>());
+            var args = BuildArgumentsRoot("block def begin args", family, acc => acc.GetLastResult<BlockDefinitionResult>());
             var beginBlockDefArgs = args.Item1;
             var beginBlockDefArgsExit = args.Item2;
             beginBlockDef.AddLink(beginBlockDefArgs);
@@ -443,7 +443,7 @@ namespace TauCode.Parsing.Aide
                 "endBlockDef",
                 (token, accumulator) =>
                 {
-                    var currentBlockDef = accumulator.GetLastResult<BlockDefinitionResult2>();
+                    var currentBlockDef = accumulator.GetLastResult<BlockDefinitionResult>();
                     currentBlockDef.Content.Seal();
                 },
                 SyntaxElement.EndBlockDefinition);

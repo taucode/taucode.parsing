@@ -66,7 +66,7 @@ namespace TauCode.Parsing.Nodes
 
         #endregion
 
-        #region INode2 Members
+        #region INode Members
 
         public INodeFamily Family { get; }
 
