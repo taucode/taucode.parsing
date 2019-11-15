@@ -22,7 +22,7 @@ namespace TauCode.Parsing.Aide
 
         #endregion
 
-        public static string ToAideResultFormat(this IAideResult2 aideResult)
+        public static string ToAideResultFormat(this IAideResult aideResult)
         {
             string result;
 
@@ -457,7 +457,7 @@ namespace TauCode.Parsing.Aide
         private static Tuple<INode2, INode2> BuildArgumentsRoot(
             string prefix,
             INodeFamily family,
-            Func<IResultAccumulator, IAideResult2> resultGetter)
+            Func<IResultAccumulator, IAideResult> resultGetter)
         {
             INode2 begin = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: (", null, SyntaxElement.LeftParenthesis);
             INode2 arg = new SpecialStringNode<AideSpecialString>(

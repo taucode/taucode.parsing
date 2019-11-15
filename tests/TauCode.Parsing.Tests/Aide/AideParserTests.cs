@@ -26,7 +26,7 @@ namespace TauCode.Parsing.Tests.Aide
 
             // Assert
             var aideResults = results
-                .Cast<IAideResult2>()
+                .Cast<IAideResult>()
                 .ToList();
 
             Assert.That(aideResults, Has.Count.EqualTo(8));

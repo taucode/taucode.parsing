@@ -2,10 +2,10 @@
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public interface IContent : IReadOnlyList<IAideResult2>
+    public interface IContent : IReadOnlyList<IAideResult>
     {
-        IAideResult2 Owner { get; }
-        void AddResult(IAideResult2 result);
+        IAideResult Owner { get; }
+        void AddResult(IAideResult result);
         void Seal();
         bool IsSealed { get; }
     }

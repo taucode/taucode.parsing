@@ -7,17 +7,17 @@ namespace TauCode.Parsing.Aide.Results
     // todo: regions & nice
     public class Content : IContent
     {
-        private readonly List<IAideResult2> _results;
+        private readonly List<IAideResult> _results;
         private bool _isSealed;
 
-        public Content(IAideResult2 owner)
+        public Content(IAideResult owner)
         {
             // todo checks
             this.Owner = owner;
-            _results = new List<IAideResult2>();
+            _results = new List<IAideResult>();
         }
 
-        public IEnumerator<IAideResult2> GetEnumerator() => _results.GetEnumerator();
+        public IEnumerator<IAideResult> GetEnumerator() => _results.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => _results.GetEnumerator();
 
@@ -31,10 +31,10 @@ namespace TauCode.Parsing.Aide.Results
 
         public bool IsSealed => _isSealed;
 
-        public IAideResult2 this[int index] => _results[index];
-        public IAideResult2 Owner { get; }
+        public IAideResult this[int index] => _results[index];
+        public IAideResult Owner { get; }
 
-        public void AddResult(IAideResult2 result)
+        public void AddResult(IAideResult result)
         {
             // todo checks
             this.CheckNotSealed();

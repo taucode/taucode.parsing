@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class OptionalResult : IAideResult2
+    public class OptionalResult : IAideResult
     {
         public OptionalResult(string name)
         {

@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class BlockDefinitionResult2 : IAideResult2
+    public class BlockDefinitionResult2 : IAideResult
     {
         public BlockDefinitionResult2(string name)
         {

@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public interface IAideResult2
+    public interface IAideResult
     {
         string Name { get; }
         IList<string> Arguments { get; }

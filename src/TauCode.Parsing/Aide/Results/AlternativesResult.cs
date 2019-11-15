@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class AlternativesResult : IAideResult2
+    public class AlternativesResult : IAideResult
     {
         private readonly List<Content> _alternatives;
 

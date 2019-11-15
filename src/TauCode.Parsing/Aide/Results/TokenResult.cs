@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class TokenResult : IAideResult2
+    public class TokenResult : IAideResult
     {
         public TokenResult(IToken token)
         {
