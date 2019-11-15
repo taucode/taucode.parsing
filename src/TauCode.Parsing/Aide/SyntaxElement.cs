@@ -15,6 +15,5 @@
         RightCurlyBracket,
         LeftBracket,
         RightBracket,
-        Clone,
     }
 }

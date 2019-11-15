@@ -253,7 +253,7 @@ namespace TauCode.Parsing.Aide
             beginBlockDefArgsExit.AddLinkByName("leftSplitter");
 
             var leftSplitter = new IdleNode(family, "leftSplitter");
-            leftSplitter.AddLinksByNames("word", "identifier", "symbol", "blockReference", "idle", "clone", "optional", "alternatives");
+            leftSplitter.AddLinksByNames("word", "identifier", "symbol", "blockReference", "idle", "optional", "alternatives");
 
             var word = new WordNode(
                 family,
@@ -304,17 +304,6 @@ namespace TauCode.Parsing.Aide
                     content.AddResult(result);
                 },
                 SyntaxElement.Idle);
-            var clone = new ExactEnumNode<SyntaxElement>(
-                family,
-                "clone",
-                (token, accumulator) =>
-                {
-                    var content = accumulator.GetActualContent();
-                    var result = new TokenResult(token);
-                    content.AddResult(result);
-                },
-                SyntaxElement.Clone);
-
 
             #region optional
 
@@ -398,7 +387,7 @@ namespace TauCode.Parsing.Aide
             #endregion
 
             var beforeArgsSplitter = new IdleNode(family, "beforeArgsSplitter");
-            beforeArgsSplitter.DrawLinkFromNodes(word, identifier, symbol, blockReference, idle, clone);
+            beforeArgsSplitter.DrawLinkFromNodes(word, identifier, symbol, blockReference, idle);
 
             args = BuildArgumentsRoot("content args", family, acc => acc.GetActualContent().Last());
             var contentNodeArgs = args.Item1;
