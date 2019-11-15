@@ -5,7 +5,13 @@ namespace TauCode.Parsing.Aide.Results
 {
     public class AlternativesResult : IAideResult
     {
+        #region Fields
+
         private readonly List<Content> _alternatives;
+
+        #endregion
+
+        #region Constructor
 
         public AlternativesResult(string name)
         {
@@ -13,6 +19,10 @@ namespace TauCode.Parsing.Aide.Results
             _alternatives = new List<Content>();
             this.AddAlternative();
         }
+
+        #endregion
+
+        #region Public
 
         public void AddAlternative()
         {
@@ -26,7 +36,13 @@ namespace TauCode.Parsing.Aide.Results
 
         public IList<Content> GetAllAlternatives() => _alternatives;
 
+        #endregion
+
+        #region IAideResult Members
+
         public string Name { get; }
         public IList<string> Arguments => throw new NotImplementedException();
+
+        #endregion
     }
 }

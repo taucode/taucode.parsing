@@ -4,6 +4,11 @@ namespace TauCode.Parsing.Aide.Results
 {
     public class OptionalResult : IAideResult
     {
+        #region Constructor
+
+        
+
+        #endregion
         public OptionalResult(string name)
         {
             this.Name = name;

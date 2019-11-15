@@ -4,6 +4,12 @@ namespace TauCode.Parsing.Aide.Results
 {
     public class TokenResult : IAideResult
     {
+        #region Constructor
+
+        
+
+        #endregion
+
         public TokenResult(IToken token)
         {
             // todo checks

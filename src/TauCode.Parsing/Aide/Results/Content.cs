@@ -4,11 +4,16 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
-    // todo: regions & nice
     public class Content : IContent
     {
+        #region Fields
+
         private readonly List<IAideResult> _results;
         private bool _isSealed;
+
+        #endregion
+
+        #region Constructor
 
         public Content(IAideResult owner)
         {
@@ -17,21 +22,34 @@ namespace TauCode.Parsing.Aide.Results
             _results = new List<IAideResult>();
         }
 
+        #endregion
+
+        #region Private
+
+        private void CheckNotSealed()
+        {
+            if (_isSealed)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region IReadOnlyList<IAideResult> Members
+
         public IEnumerator<IAideResult> GetEnumerator() => _results.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => _results.GetEnumerator();
 
         public int Count => _results.Count;
 
-        public void Seal()
-        {
-            this.CheckNotSealed();
-            _isSealed = true;
-        }
-
-        public bool IsSealed => _isSealed;
-
         public IAideResult this[int index] => _results[index];
+
+        #endregion
+
+        #region IContent Members
+
         public IAideResult Owner { get; }
 
         public void AddResult(IAideResult result)
@@ -42,12 +60,14 @@ namespace TauCode.Parsing.Aide.Results
             _results.Add(result);
         }
 
-        private void CheckNotSealed()
+        public void Seal()
         {
-            if (_isSealed)
-            {
-                throw new NotImplementedException();
-            }
+            this.CheckNotSealed();
+            _isSealed = true;
         }
+
+        public bool IsSealed => _isSealed;
+
+        #endregion
     }
 }
