@@ -4,12 +4,22 @@ namespace TauCode.Parsing.Nodes
 {
     public class EndNode : NodeImpl
     {
+        #region Static
+
         public static EndNode Instance = new EndNode();
+
+        #endregion
+
+        #region Constructor
 
         private EndNode()
             : base(null, "end")
         {
         }
+
+        #endregion
+
+        #region Overridden
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator) => InquireResult.End;
 
@@ -33,5 +43,7 @@ namespace TauCode.Parsing.Nodes
             get => null;
             set => throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

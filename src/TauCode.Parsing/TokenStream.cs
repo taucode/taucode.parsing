@@ -6,15 +6,26 @@ namespace TauCode.Parsing
 {
     public class TokenStream : ITokenStream
     {
+        #region Fields
+
         private readonly List<IToken> _tokens;
         private int _position;
+
+        #endregion
+
+        #region Constructor
 
         public TokenStream(IEnumerable<IToken> tokens)
         {
             _tokens = new List<IToken>(tokens);
         }
 
+        #endregion
+
+        #region ITokenStream Members
+
         public IReadOnlyList<IToken> Tokens => _tokens;
+
         public int Position
         {
             get => _position;
@@ -43,5 +54,8 @@ namespace TauCode.Parsing
 
             }
         }
+
+
+        #endregion
     }
 }

@@ -5,10 +5,17 @@ namespace TauCode.Parsing.Nodes
 {
     public class IdentifierNode : ActionNode
     {
+        #region Constructor
+
         public IdentifierNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action)
             : base(family, name, action)
         {
         }
+
+
+        #endregion
+
+        #region Overridden
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
@@ -21,5 +28,7 @@ namespace TauCode.Parsing.Nodes
                 return InquireResult.Reject;
             }
         }
+
+        #endregion
     }
 }

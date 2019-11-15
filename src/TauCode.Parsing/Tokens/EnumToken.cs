@@ -2,6 +2,8 @@
 {
     public class EnumToken<TEnum> : TokenBase where TEnum : struct
     {
+        #region Constructor
+
         public EnumToken(TEnum value)
         {
             this.Value = value;
@@ -13,6 +15,12 @@
             this.Value = value;
         }
 
+        #endregion
+
+        #region Public
+
         public TEnum Value { get; }
+
+        #endregion
     }
 }

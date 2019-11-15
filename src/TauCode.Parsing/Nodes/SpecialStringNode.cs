@@ -5,14 +5,21 @@ namespace TauCode.Parsing.Nodes
 {
     public class SpecialStringNode<TStringClass> : ActionNode where TStringClass : struct
     {
-        public SpecialStringNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action,
+        #region Constructor
+
+        public SpecialStringNode(
+            INodeFamily family,
+            string name,
+            Action<IToken, IResultAccumulator> action,
             TStringClass @class)
             : base(family, name, action)
         {
             this.Class = @class;
         }
 
-        public TStringClass Class { get; }
+        #endregion
+
+        #region Overridden
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
@@ -27,5 +34,13 @@ namespace TauCode.Parsing.Nodes
                 return InquireResult.Reject;
             }
         }
+
+        #endregion
+
+        #region Public
+
+        public TStringClass Class { get; }
+
+        #endregion
     }
 }

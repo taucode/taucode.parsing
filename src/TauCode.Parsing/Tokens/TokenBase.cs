@@ -2,6 +2,8 @@
 {
     public abstract class TokenBase : IToken
     {
+        #region Constructor
+
         protected TokenBase()
         {   
         }
@@ -11,6 +13,12 @@
             this.Name = name;
         }
 
+        #endregion
+
+        #region Public
+
         public string Name { get; set; }
+
+        #endregion
     }
 }

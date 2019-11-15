@@ -4,6 +4,8 @@ namespace TauCode.Parsing.Nodes
 {
     public abstract class ActionNode : NodeImpl
     {
+        #region Constructor
+
         protected ActionNode(
             INodeFamily family,
             string name,
@@ -13,7 +15,10 @@ namespace TauCode.Parsing.Nodes
             this.Action = action; // can be null
         }
 
-        public Action<IToken, IResultAccumulator> Action { get; set; }
+
+        #endregion
+
+        #region Overridden
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
@@ -25,5 +30,13 @@ namespace TauCode.Parsing.Nodes
             this.Action(token, resultAccumulator);
             resultAccumulator.Modify();
         }
+
+        #endregion
+
+        #region Public
+
+        public Action<IToken, IResultAccumulator> Action { get; set; }
+
+        #endregion
     }
 }
