@@ -230,7 +230,7 @@ namespace TauCode.Parsing.Aide
             }
         }
 
-        public static INode2 BuildParserRoot()
+        public static INode BuildParserRoot()
         {
             INodeFamily family = new NodeFamily("Aide");
             var root = new IdleNode(family, "root");
@@ -453,13 +453,13 @@ namespace TauCode.Parsing.Aide
             return root;
         }
 
-        private static Tuple<INode2, INode2> BuildArgumentsRoot(
+        private static Tuple<INode, INode> BuildArgumentsRoot(
             string prefix,
             INodeFamily family,
             Func<IResultAccumulator, IAideResult> resultGetter)
         {
-            INode2 begin = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: (", null, SyntaxElement.LeftParenthesis);
-            INode2 arg = new SpecialStringNode<AideSpecialString>(
+            INode begin = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: (", null, SyntaxElement.LeftParenthesis);
+            INode arg = new SpecialStringNode<AideSpecialString>(
                 family,
                 $"{prefix}: arg",
                 (token, accumulator) =>
@@ -468,8 +468,8 @@ namespace TauCode.Parsing.Aide
                     result.Arguments.Add(((SpecialStringToken<AideSpecialString>)token).Value);
                 },
                 AideSpecialString.NameReference);
-            INode2 comma = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: ,", null, SyntaxElement.Comma);
-            INode2 end = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: )", null, SyntaxElement.RightParenthesis);
+            INode comma = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: ,", null, SyntaxElement.Comma);
+            INode end = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: )", null, SyntaxElement.RightParenthesis);
 
 
             begin.AddLink(arg);

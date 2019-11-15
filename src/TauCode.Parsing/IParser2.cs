@@ -4,6 +4,6 @@ namespace TauCode.Parsing
 {
     public interface IParser2
     {
-        object[] Parse(INode2 root, IEnumerable<IToken> tokens);
+        object[] Parse(INode root, IEnumerable<IToken> tokens);
     }
 }

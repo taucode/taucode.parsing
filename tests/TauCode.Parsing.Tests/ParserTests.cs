@@ -45,7 +45,7 @@ namespace TauCode.Parsing.Tests
             Assert.That(column.TypeName, Is.EqualTo("text"));
         }
 
-        private INode2 BuildRoot()
+        private INode BuildRoot()
         {
             INodeFamily family = new NodeFamily("parser_demo");
 

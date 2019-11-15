@@ -3,8 +3,8 @@
     public interface INodeFamily
     {
         string Name { get; }
-        INode2 GetNode(string linkAddress);
-        INode2[] GetNodes();
+        INode GetNode(string linkAddress);
+        INode[] GetNodes();
         void AddLink(string fromName, string toName);
     }
 }

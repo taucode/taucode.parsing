@@ -18,7 +18,7 @@ namespace TauCode.Parsing.Nodes
             throw new NotImplementedException(); // error
         }
 
-        public override void AddLink(INode2 node)
+        public override void AddLink(INode node)
         {
             throw new NotImplementedException();
         }

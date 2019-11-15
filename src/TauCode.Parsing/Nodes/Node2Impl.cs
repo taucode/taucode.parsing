@@ -5,11 +5,11 @@ using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Nodes
 {
-    public abstract class Node2Impl : INode2
+    public abstract class Node2Impl : INode
     {
         #region Fields
 
-        private readonly HashSet<INode2> _links;
+        private readonly HashSet<INode> _links;
         private readonly HashSet<string> _linkAddresses;
         private Func<IToken, IResultAccumulator, bool> _additionalChecker;
 
@@ -27,7 +27,7 @@ namespace TauCode.Parsing.Nodes
 
             familyImpl?.RegisterNode(this);
 
-            _links = new HashSet<INode2>();
+            _links = new HashSet<INode>();
             _linkAddresses = new HashSet<string>();
         }
 
@@ -106,7 +106,7 @@ namespace TauCode.Parsing.Nodes
             this.ActImpl(token, resultAccumulator);
         }
 
-        public virtual void AddLink(INode2 node)
+        public virtual void AddLink(INode node)
         {
             if (node == null)
             {
@@ -137,7 +137,7 @@ namespace TauCode.Parsing.Nodes
             _linkAddresses.Add(nodeName);
         }
 
-        public virtual IReadOnlyCollection<INode2> Links
+        public virtual IReadOnlyCollection<INode> Links
         {
             get
             {

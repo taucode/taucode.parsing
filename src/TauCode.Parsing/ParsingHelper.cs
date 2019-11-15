@@ -105,12 +105,12 @@ namespace TauCode.Parsing
         //    // idle
         //}
 
-        public static IReadOnlyCollection<INode2>
-            GetNonIdleNodes(IReadOnlyCollection<INode2> nodes) // todo: optimize. use IEnumerable?
+        public static IReadOnlyCollection<INode>
+            GetNonIdleNodes(IReadOnlyCollection<INode> nodes) // todo: optimize. use IEnumerable?
         {
             if (nodes.Any(x => x is IdleNode))
             {
-                var list = new List<INode2>();
+                var list = new List<INode>();
 
                 foreach (var node in nodes)
                 {
@@ -125,7 +125,7 @@ namespace TauCode.Parsing
             }
         }
 
-        private static void WriteNonIdleNodes(INode2 node, List<INode2> destination)
+        private static void WriteNonIdleNodes(INode node, List<INode> destination)
         {
             if (node is IdleNode)
             {
@@ -141,7 +141,7 @@ namespace TauCode.Parsing
             }
         }
 
-        public static void AddLinksByNames(this INode2 node, params string[] names)
+        public static void AddLinksByNames(this INode node, params string[] names)
         {
             // todo check args
             foreach (var name in names)
@@ -150,7 +150,7 @@ namespace TauCode.Parsing
             }
         }
 
-        public static void DrawLinkFromNodes(this INode2 node, params INode2[] drawFromNodes)
+        public static void DrawLinkFromNodes(this INode node, params INode[] drawFromNodes)
         {
             foreach (var drawFromNode in drawFromNodes)
             {
@@ -158,7 +158,7 @@ namespace TauCode.Parsing
             }
         }
 
-        public static void LinkChain(this INode2 head, params INode2[] tail)
+        public static void LinkChain(this INode head, params INode[] tail)
         {
             // todo check args
 

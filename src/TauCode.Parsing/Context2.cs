@@ -5,7 +5,7 @@ namespace TauCode.Parsing
 {
     public class Context2 : IContext2
     {
-        private IReadOnlyCollection<INode2> _nodes;
+        private IReadOnlyCollection<INode> _nodes;
 
         public Context2(ITokenStream tokenStream)
         {
@@ -15,14 +15,14 @@ namespace TauCode.Parsing
 
         public ITokenStream TokenStream { get; }
 
-        public void SetNodes(IReadOnlyCollection<INode2> nodes)
+        public void SetNodes(IReadOnlyCollection<INode> nodes)
         {
             // todo: checks
 
             _nodes = nodes;
         }
 
-        public IReadOnlyCollection<INode2> GetNodes() => _nodes;
+        public IReadOnlyCollection<INode> GetNodes() => _nodes;
 
         public IResultAccumulator ResultAccumulator { get; }
     }

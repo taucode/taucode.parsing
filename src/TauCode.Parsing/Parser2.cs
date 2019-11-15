@@ -7,7 +7,7 @@ namespace TauCode.Parsing
 {
     public class Parser2 : IParser2
     {
-        public object[] Parse(INode2 root, IEnumerable<IToken> tokens)
+        public object[] Parse(INode root, IEnumerable<IToken> tokens)
         {
             // todo check args
 
@@ -16,7 +16,7 @@ namespace TauCode.Parsing
             var initialNodes = ParsingHelper.GetNonIdleNodes(new[] { root });
 
             context.SetNodes(initialNodes);
-            var winners = new List<INode2>();
+            var winners = new List<INode>();
 
             while (true)
             {
