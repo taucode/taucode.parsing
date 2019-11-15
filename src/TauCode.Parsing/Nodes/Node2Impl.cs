@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Utils.Extensions;
 
-namespace TauCode.Parsing.Nodes2
+namespace TauCode.Parsing.Nodes
 {
     public abstract class Node2Impl : INode2
     {
