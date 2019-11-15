@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results2
 {
     public class OptionalResult : IAideResult2
     {
-        public OptionalResult()
+        public OptionalResult(string name)
         {
-            this.OptionalContent = new Content();
+            this.Name = name;
+            this.OptionalContent = new Content(this);
+            this.Arguments = new List<string>();
         }
 
         public Content OptionalContent { get; }
-        public IList<string> Arguments => throw new NotImplementedException();
+        public string Name { get; }
+        public IList<string> Arguments { get; }
     }
 }

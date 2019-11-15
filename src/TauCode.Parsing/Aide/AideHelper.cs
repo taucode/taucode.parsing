@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using TauCode.Parsing.Aide.Results2;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes2;
@@ -70,121 +72,125 @@ namespace TauCode.Parsing.Aide
         //    }
         //}
 
-        //public static string ToAideResultFormat(this IAideResult aideResult)
-        //{
-        //    string result;
+        public static string ToAideResultFormat(this IAideResult2 aideResult)
+        {
+            string result;
 
-        //    if (aideResult is BlockDefinitionResult blockDefinitionResult)
-        //    {
-        //        var sb = new StringBuilder();
-        //        var namesString = blockDefinitionResult.Arguments.FormatArguments();
-        //        sb.Append($@"\BeginBlockDefinition{namesString}");
-        //        sb.AppendLine();
-        //        sb.AppendLine(blockDefinitionResult.Content.FormatContent());
-        //        sb.Append(@"\EndBlockDefinition");
+            if (aideResult is BlockDefinitionResult2 blockDefinitionResult)
+            {
+                var sb = new StringBuilder();
+                var namesString = blockDefinitionResult.Arguments.FormatArguments();
+                sb.Append($@"\BeginBlockDefinition{namesString}");
+                sb.AppendLine();
+                sb.AppendLine(blockDefinitionResult.Content.FormatContent());
+                sb.Append(@"\EndBlockDefinition");
 
-        //        result = sb.ToString();
-        //    }
-        //    else if (aideResult is WordNodeResult wordNodeResult)
-        //    {
-        //        result = $@"{wordNodeResult.SourceNodeName.ToUnitResultName()}{wordNodeResult.Word}";
-        //    }
-        //    else if (aideResult is SymbolNodeResult symbolNodeResult)
-        //    {
-        //        result = $@"{symbolNodeResult.SourceNodeName.ToUnitResultName()}\{symbolNodeResult.Value.ToFormat()}";
-        //    }
-        //    else if (aideResult is SyntaxElementResult syntaxElementResult)
-        //    {
-        //        var sb = new StringBuilder();
-        //        sb.Append(
-        //            $@"{syntaxElementResult.SourceNodeName.ToUnitResultName()}\{syntaxElementResult.SyntaxElement}");
+                result = sb.ToString();
+            }
+            else if (aideResult is TokenResult tokenResult)
+            {
+                result = $@"{aideResult.Name.ToAideResultName()}{tokenResult.Token.FormatToken()}";
+            }
+            //else if (aideResult is WordNodeResult wordNodeResult)
+            //{
+            //    result = $@"{wordNodeResult.SourceNodeName.ToUnitResultName()}{wordNodeResult.Word}";
+            //}
+            //else if (aideResult is SymbolNodeResult symbolNodeResult)
+            //{
+            //    result = $@"{symbolNodeResult.SourceNodeName.ToUnitResultName()}\{symbolNodeResult.Value.ToFormat()}";
+            //}
+            //else if (aideResult is SyntaxElementResult syntaxElementResult)
+            //{
+            //    var sb = new StringBuilder();
+            //    sb.Append(
+            //        $@"{syntaxElementResult.SourceNodeName.ToUnitResultName()}\{syntaxElementResult.SyntaxElement}");
 
-        //        var args = FormatArguments(syntaxElementResult.Arguments);
-        //        sb.Append(args);
+            //    var args = FormatArguments(syntaxElementResult.Arguments);
+            //    sb.Append(args);
 
-        //        result = sb.ToString();
-        //    }
-        //    else if (aideResult is OptionalResult optionalResult)
-        //    {
-        //        var content = optionalResult.OptionalContent;
-        //        var contentString = content.FormatContent();
-        //        result = $@"{optionalResult.SourceNodeName.ToUnitResultName()}[{contentString}]";
-        //    }
-        //    else if (aideResult is AlternativesResult alternativesResult)
-        //    {
-        //        var alternatives = alternativesResult.GetAllAlternatives();
-        //        var sb = new StringBuilder();
-        //        sb.Append("{");
+            //    result = sb.ToString();
+            //}
+            else if (aideResult is OptionalResult optionalResult)
+            {
+                var content = optionalResult.OptionalContent;
+                var contentString = content.FormatContent();
+                result = $@"{optionalResult.Name.ToAideResultName()}[{contentString}]";
+            }
+            else if (aideResult is AlternativesResult alternativesResult)
+            {
+                var alternatives = alternativesResult.GetAllAlternatives();
+                var sb = new StringBuilder();
+                sb.Append("{");
 
-        //        for (var i = 0; i < alternatives.Count; i++)
-        //        {
-        //            var content = alternatives[i];
-        //            var contentString = content.FormatContent();
-        //            sb.Append(contentString);
+                for (var i = 0; i < alternatives.Count; i++)
+                {
+                    var content = alternatives[i];
+                    var contentString = content.FormatContent();
+                    sb.Append(contentString);
 
-        //            if (i < alternatives.Count - 1)
-        //            {
-        //                sb.Append(" | ");
-        //            }
-        //        }
+                    if (i < alternatives.Count - 1)
+                    {
+                        sb.Append(" | ");
+                    }
+                }
 
-        //        sb.Append("}");
+                sb.Append("}");
 
-        //        result = sb.ToString();
-        //    }
-        //    else
-        //    {
-        //        throw new AideException($"Not supported result type: {aideResult.GetType().FullName}.");
-        //    }
+                result = sb.ToString();
+            }
+            else
+            {
+                throw new AideException($"Not supported result type: {aideResult.GetType().FullName}.");
+            }
 
-        //    return result;
-        //}
+            return result;
+        }
 
-        //public static string FormatContent(this Content content)
-        //{
-        //    var results = content.GetAllResults();
-        //    var sb = new StringBuilder();
+        public static string FormatContent(this IContent content)
+        {
+            var results = content.ToList();
+            var sb = new StringBuilder();
 
-        //    for (var i = 0; i < results.Count; i++)
-        //    {
-        //        var result = results[i];
-        //        sb.Append(result.ToAideResultFormat());
-        //        if (i < results.Count - 1)
-        //        {
-        //            sb.Append(" ");
-        //        }
-        //    }
+            for (var i = 0; i < results.Count; i++)
+            {
+                var result = results[i];
+                sb.Append(result.ToAideResultFormat());
+                if (i < results.Count - 1)
+                {
+                    sb.Append(" ");
+                }
+            }
 
-        //    return sb.ToString();
-        //}
+            return sb.ToString();
+        }
 
-        //private static string FormatArguments(this NameReferenceCollector arguments)
-        //{
-        //    var names = arguments.ToArray();
-        //    if (names.Length == 0)
-        //    {
-        //        return "";
-        //    }
+        private static string FormatArguments(this IEnumerable<string> arguments)
+        {
+            var names = arguments.ToArray();
+            if (names.Length == 0)
+            {
+                return "";
+            }
 
-        //    var sb = new StringBuilder();
+            var sb = new StringBuilder();
 
 
-        //    sb.Append("(");
+            sb.Append("(");
 
-        //    for (var i = 0; i < names.Length; i++)
-        //    {
-        //        sb.Append(":");
-        //        sb.Append(names[i]);
-        //        if (i < names.Length - 1)
-        //        {
-        //            sb.Append(", ");
-        //        }
-        //    }
+            for (var i = 0; i < names.Length; i++)
+            {
+                sb.Append(":");
+                sb.Append(names[i]);
+                if (i < names.Length - 1)
+                {
+                    sb.Append(", ");
+                }
+            }
 
-        //    sb.Append(")");
+            sb.Append(")");
 
-        //    return sb.ToString();
-        //}
+            return sb.ToString();
+        }
 
         private static string ToFormat(this SymbolValue symbol)
         {
@@ -207,7 +213,31 @@ namespace TauCode.Parsing.Aide
             }
         }
 
-        private static string ToUnitResultName(this string name)
+        private static string FormatToken(this IToken token)
+        {
+            string result;
+
+            if (token is WordToken wordToken)
+            {
+                result = wordToken.Word;
+            }
+            else if (token is EnumToken<SyntaxElement> syntaxEnumToken)
+            {
+                return syntaxEnumToken.Value.ToString();
+            }
+            else if (token is SymbolToken symbolToken)
+            {
+                return symbolToken.Value.ToString();
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+            return result;
+        }
+
+        private static string ToAideResultName(this string name)
         {
             if (name == null)
             {
@@ -280,7 +310,7 @@ namespace TauCode.Parsing.Aide
                 "begin_block_def",
                 (token, accumulator) =>
                 {
-                    var blockDefinitionResult = new BlockDefinitionResult2();
+                    var blockDefinitionResult = new BlockDefinitionResult2(token.Name);
                     accumulator.AddResult(blockDefinitionResult);
                 },
                 SyntaxElement.BeginBlockDefinition);
@@ -292,13 +322,14 @@ namespace TauCode.Parsing.Aide
             beginBlockDefArgsExit.AddLinkByName("leftSplitter");
 
             var leftSplitter = new IdleNode(family, "leftSplitter");
-            leftSplitter.AddLinksByNames("word", "identifier", "symbol", "blockReference", "optional", "alternatives");
+            leftSplitter.AddLinksByNames("word", "identifier", "symbol", "blockReference", "idle", "clone", "optional", "alternatives");
 
             var word = new WordNode(
                 family,
                 "word",
                 (token, accumulator) =>
                 {
+                    // todo: this lambda is copy-paste
                     var content = accumulator.GetActualContent();
                     var result = new TokenResult(token);
                     content.AddResult(result);
@@ -332,16 +363,38 @@ namespace TauCode.Parsing.Aide
                     content.AddResult(result);
                 },
                 SyntaxElement.BlockReference);
+            var idle = new ExactEnumNode<SyntaxElement>(
+                family,
+                "idle",
+                (token, accumulator) =>
+                {
+                    var content = accumulator.GetActualContent();
+                    var result = new TokenResult(token);
+                    content.AddResult(result);
+                },
+                SyntaxElement.Idle);
+            var clone = new ExactEnumNode<SyntaxElement>(
+                family,
+                "clone",
+                (token, accumulator) =>
+                {
+                    var content = accumulator.GetActualContent();
+                    var result = new TokenResult(token);
+                    content.AddResult(result);
+                },
+                SyntaxElement.Clone);
+
 
             #region optional
-
 
             var optional = new ExactEnumNode<SyntaxElement>(
                 family,
                 "optional",
                 (token, accumulator) =>
                 {
-                    throw new NotImplementedException();
+                    var content = accumulator.GetActualContent();
+                    var optionalResult = new OptionalResult(token.Name);
+                    content.AddResult(optionalResult);
                 },
                 SyntaxElement.LeftBracket);
             var closeOptional = new ExactEnumNode<SyntaxElement>(
@@ -349,13 +402,15 @@ namespace TauCode.Parsing.Aide
                 "closeOptional",
                 (token, accumulator) =>
                 {
-                    throw new NotImplementedException();
+                    var content = accumulator.GetActualContent();
+                    content.Seal();
                 },
                 SyntaxElement.RightBracket)
             {
                 AdditionalChecker = (token, accumulator) =>
                 {
-                    throw new NotImplementedException();
+                    var content = accumulator.GetActualContent();
+                    return content.Owner is OptionalResult;
                 }
             };
 
@@ -368,7 +423,9 @@ namespace TauCode.Parsing.Aide
                 "alternatives",
                 (token, accumulator) =>
                 {
-                    throw new NotImplementedException();
+                    var content = accumulator.GetActualContent();
+                    var alternativesResult = new AlternativesResult(token.Name);
+                    content.AddResult(alternativesResult);
                 },
                 SyntaxElement.LeftCurlyBracket);
             var addAlternative = new ExactEnumNode<SyntaxElement>(
@@ -376,13 +433,17 @@ namespace TauCode.Parsing.Aide
                 "addAlternative",
                 (token, accumulator) =>
                 {
-                    throw new NotImplementedException();
+                    var content = accumulator.GetActualContent();
+                    var contentOwner = (AlternativesResult)content.Owner;
+                    content.Seal();
+                    contentOwner.AddAlternative();
                 },
                 SyntaxElement.VerticalBar)
             {
                 AdditionalChecker = (token, accumulator) =>
                 {
-                    throw new NotImplementedException();
+                    var content = accumulator.GetActualContent();
+                    return content.Owner is AlternativesResult;
                 }
             };
             var closeAlternatives = new ExactEnumNode<SyntaxElement>(
@@ -390,13 +451,15 @@ namespace TauCode.Parsing.Aide
                 "closeAlternatives",
                 (token, accumulator) =>
                 {
-                    throw new NotImplementedException();
+                    var content = accumulator.GetActualContent();
+                    content.Seal();
                 },
                 SyntaxElement.RightCurlyBracket)
             {
                 AdditionalChecker = (token, accumulator) =>
                 {
-                    throw new NotImplementedException();
+                    var content = accumulator.GetActualContent();
+                    return content.Owner is AlternativesResult;
                 }
             };
 
@@ -404,7 +467,7 @@ namespace TauCode.Parsing.Aide
             #endregion
 
             var beforeArgsSplitter = new IdleNode(family, "beforeArgsSplitter");
-            beforeArgsSplitter.DrawLinkFromNodes(word, identifier, symbol, blockReference);
+            beforeArgsSplitter.DrawLinkFromNodes(word, identifier, symbol, blockReference, idle, clone);
 
             args = BuildArgumentsRoot("content args", family, acc => acc.GetActualContent().Last());
             var contentNodeArgs = args.Item1;
@@ -420,7 +483,27 @@ namespace TauCode.Parsing.Aide
 
             #region links for optional
 
-            
+            // opening
+            optional.AddLink(leftSplitter);
+
+            // closing
+            closeOptional.AddLink(beforeArgsSplitter);
+            afterArgsSplitter.AddLink(closeOptional);
+
+            #endregion
+
+            #region links for alternatives
+
+            // opening
+            alternatives.AddLink(leftSplitter);
+
+            // addAlternative
+            addAlternative.AddLink(leftSplitter);
+            afterArgsSplitter.AddLink(addAlternative);
+
+            // closing
+            closeAlternatives.AddLink(beforeArgsSplitter);
+            afterArgsSplitter.AddLink(closeAlternatives);
 
             #endregion
 

@@ -12,7 +12,7 @@ namespace TauCode.Parsing.Aide.Results2
         }
 
         public IToken Token { get; }
-
+        public string Name => Token.Name;
         public IList<string> Arguments { get; }
     }
 }

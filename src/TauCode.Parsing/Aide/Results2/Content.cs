@@ -4,13 +4,16 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results2
 {
+    // todo: regions & nice
     public class Content : IContent
     {
         private readonly List<IAideResult2> _results;
         private bool _isSealed;
 
-        public Content()
+        public Content(IAideResult2 owner)
         {
+            // todo checks
+            this.Owner = owner;
             _results = new List<IAideResult2>();
         }
 
@@ -29,6 +32,8 @@ namespace TauCode.Parsing.Aide.Results2
         public bool IsSealed => _isSealed;
 
         public IAideResult2 this[int index] => _results[index];
+        public IAideResult2 Owner { get; }
+
         public void AddResult(IAideResult2 result)
         {
             // todo checks
