@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.IO;
 using System.Linq;
 using TauCode.Parsing.Aide;
 using TauCode.Parsing.Aide.Results;
@@ -19,23 +20,28 @@ namespace TauCode.Parsing.Tests.Aide
             var tokens = lexer.Lexize(input);
 
             // Act
-            IParser parser = new AideParser();
-            var context = parser.Parse(tokens);
+            IParser parser = new Parser();
+            var aideRoot = AideHelper.BuildParserRoot();
+            var results = parser.Parse(aideRoot, tokens);
 
             // Assert
-            var results = context
-                .ToArray()
+            var aideResults = results
                 .Cast<IAideResult>()
                 .ToList();
 
-            Assert.That(results, Has.Count.EqualTo(8));
+            Assert.That(aideResults, Has.Count.EqualTo(8));
 
-
-            for (var i = 0; i < results.Count; i++)
+            for (var i = 0; i < aideResults.Count; i++)
             {
-                var result = results[i];
-                var resultString = result.ToAideResultFormat();
+                var aideResult = aideResults[i];
+                var resultString = aideResult.ToAideResultFormat();
                 var expectedResultString = this.GetType().Assembly.GetResourceText($"Result{i}.txt", true);
+
+                if (resultString != expectedResultString)
+                {
+                    File.WriteAllText("c:/temp/aza0.txt", resultString);
+                    File.WriteAllText("c:/temp/aza1.txt", expectedResultString);
+                }
 
                 Assert.That(resultString, Is.EqualTo(expectedResultString));
             }

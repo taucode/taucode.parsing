@@ -1,47 +1,29 @@
-﻿using System.Collections.Generic;
-using TauCode.Parsing.Exceptions;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TauCode.Parsing
 {
     public class Context : IContext
     {
-        private readonly List<object> _results;
-        private int _version;
+        private IReadOnlyCollection<INode> _nodes;
 
-        public Context()
+        public Context(ITokenStream tokenStream)
         {
-            _results = new List<object>();
-            _version = 1;
+            this.TokenStream = tokenStream ?? throw new ArgumentNullException(nameof(tokenStream));
+            this.ResultAccumulator = new ResultAccumulator();
         }
 
-        public void AddResult(object result)
+        public ITokenStream TokenStream { get; }
+
+        public void SetNodes(IReadOnlyCollection<INode> nodes)
         {
-            _results.Add(result);
-            this.Modify();
+            // todo: checks
+
+            _nodes = nodes;
         }
 
-        public T GetLastResult<T>()
-        {
-            if (_results.Count == 0)
-            {
-                throw new ParserException("Content is empty.");
-            }
+        public IReadOnlyCollection<INode> GetNodes() => _nodes;
 
-            return (T)_results[_results.Count - 1];
-        }
-
-        public int ResultCount => _results.Count;
-
-        public object[] ToArray()
-        {
-            return _results.ToArray();
-        }
-
-        public int Version => _version;
-
-        public void Modify()
-        {
-            _version++;
-        }
+        public IResultAccumulator ResultAccumulator { get; }
     }
 }

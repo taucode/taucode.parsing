@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Units;
-using TauCode.Parsing.Units.Impl.Nodes;
+using System.Linq;
+using TauCode.Parsing.Nodes;
 
 namespace TauCode.Parsing
 {
+    // todo clean up
     public static class ParsingHelper
     {
         public static bool IsEndOfStream(this ITokenStream tokenStream)
@@ -18,16 +18,16 @@ namespace TauCode.Parsing
             return tokenStream.Position == tokenStream.Tokens.Count;
         }
 
-        public static IToken GetCurrentToken(this ITokenStream tokenStream)
-        {
-            if (tokenStream.IsEndOfStream())
-            {
-                throw new ParserException("Unexpected end of token stream.");
-            }
+        //public static IToken GetCurrentToken(this ITokenStream tokenStream)
+        //{
+        //    if (tokenStream.IsEndOfStream())
+        //    {
+        //        throw new ParserException("Unexpected end of token stream.");
+        //    }
 
-            var token = tokenStream.Tokens[tokenStream.Position];
-            return token;
-        }
+        //    var token = tokenStream.Tokens[tokenStream.Position];
+        //    return token;
+        //}
 
         public static void AdvanceStreamPosition(this ITokenStream tokenStream)
         {
@@ -39,66 +39,146 @@ namespace TauCode.Parsing
             tokenStream.Position++;
         }
 
-        public static void IdleTokenProcessor(IToken token, IContext context)
+        //public static void IdleTokenProcessor(IToken token, IContext context)
+        //{
+        //}
+
+        //public static bool IsEndResult(IReadOnlyCollection<IUnit> result)
+        //{
+        //    if (result == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(result));
+        //    }
+
+        //    var res = result.Count == 1 && result.Single() == EndNode.Instance;
+        //    return res;
+        //}
+
+        //public static bool IsNestedInto(this IUnit unit, IBlock possibleSuperOwner)
+        //{
+        //    if (unit == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(unit));
+        //    }
+
+        //    if (possibleSuperOwner == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(possibleSuperOwner));
+        //    }
+
+        //    var currentOwner = unit.Owner;
+
+        //    while (true)
+        //    {
+        //        if (currentOwner == null)
+        //        {
+        //            return false;
+        //        }
+
+        //        if (currentOwner == possibleSuperOwner)
+        //        {
+        //            return true;
+        //        }
+
+        //        currentOwner = currentOwner.Owner;
+        //    }
+        //}
+
+        //public static bool IsBlockHeadNode(this INode node)
+        //{
+        //    var owner = node.Owner;
+        //    if (owner == null)
+        //    {
+        //        return false;
+        //    }
+
+        //    return owner.Head == node;
+        //}
+
+        //internal static string ToUnitDiagnosticsString(this IUnit unit)
+        //{
+        //    var diag = $"Unit: type is {unit.GetType().FullName}, name is '{unit.Name}'.";
+        //    return diag;
+        //}
+        //public static void IdleAction(IToken token, IResultAccumulator resultAccumulator)
+        //{
+        //    // idle
+        //}
+
+        public static IReadOnlyCollection<INode>
+            GetNonIdleNodes(IReadOnlyCollection<INode> nodes) // todo: optimize. use IEnumerable?
         {
-        }
-
-        public static bool IsEndResult(IReadOnlyList<IUnit> result)
-        {
-            if (result == null)
+            if (nodes.Any(x => x is IdleNode))
             {
-                throw new ArgumentNullException(nameof(result));
-            }
+                var list = new List<INode>();
 
-            var res = result.Count == 1 && result[0] == EndNode.Instance;
-            return res;
-        }
-
-        public static bool IsNestedInto(this IUnit unit, IBlock possibleSuperOwner)
-        {
-            if (unit == null)
-            {
-                throw new ArgumentNullException(nameof(unit));
-            }
-
-            if (possibleSuperOwner == null)
-            {
-                throw new ArgumentNullException(nameof(possibleSuperOwner));
-            }
-
-            var currentOwner = unit.Owner;
-
-            while (true)
-            {
-                if (currentOwner == null)
+                foreach (var node in nodes)
                 {
-                    return false;
+                    WriteNonIdleNodes(node, list);
                 }
 
-                if (currentOwner == possibleSuperOwner)
-                {
-                    return true;
-                }
-
-                currentOwner = currentOwner.Owner;
+                return list;
             }
-        }
-
-        public static bool IsBlockHeadNode(this INode node)
-        {
-            var owner = node.Owner;
-            if (owner == null)
+            else
             {
-                return false;
+                return nodes;
             }
-
-            return owner.Head == node;
         }
 
-        internal static string ToUnitDiagnosticsString(this IUnit unit)
+        private static void WriteNonIdleNodes(INode node, List<INode> destination)
         {
-            var diag = $"Unit: type is {unit.GetType().FullName}, name is '{unit.Name}'.";
-            return diag;
+            if (node is IdleNode)
+            {
+                var links = node.Links;
+                foreach (var link in links)
+                {
+                    WriteNonIdleNodes(link, destination);
+                }
+            }
+            else
+            {
+                destination.Add(node);
+            }
+        }
+
+        public static void AddLinksByNames(this INode node, params string[] names)
+        {
+            // todo check args
+            foreach (var name in names)
+            {
+                node.AddLinkByName(name);
+            }
+        }
+
+        public static void DrawLinkFromNodes(this INode node, params INode[] drawFromNodes)
+        {
+            foreach (var drawFromNode in drawFromNodes)
+            {
+                drawFromNode.AddLink(node);
+            }
+        }
+
+        public static void LinkChain(this INode head, params INode[] tail)
+        {
+            // todo check args
+
+            var current = head;
+            if (tail.Any())
+            {
+                current.AddLink(tail[0]);
+            }
+
+            for (var i = 0; i < tail.Length - 1; i++)
+            {
+                tail[i].AddLink(tail[i + 1]);
+            }
+        }
+
+        public static T GetLastResult<T>(this IResultAccumulator accumulator)
+        {
+            // todo checks
+            // todo optimize
+            return (T)accumulator.Last();
         }
     }
 }

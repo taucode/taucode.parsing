@@ -1,18 +1,25 @@
 ﻿namespace TauCode.Parsing.Tokens
 {
-    public class SymbolToken : IToken
+    public class SymbolToken : EnumToken<SymbolValue>
     {
         public SymbolToken(SymbolValue value)
+            : base(value)
         {
-            this.Value = value;
+        }
+
+        public SymbolToken(SymbolValue value, string name)
+            : base(value, name)
+        {
         }
 
         public SymbolToken(char c)
             : this(LexerHelper.SymbolTokenFromChar(c))
         {
-
         }
 
-        public SymbolValue Value { get; }
+        public SymbolToken(char c, string name)
+            : this(LexerHelper.SymbolTokenFromChar(c), name)
+        {
+        }
     }
 }

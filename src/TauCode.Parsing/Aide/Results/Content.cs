@@ -1,65 +1,73 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class Content
+    public class Content : IContent
     {
-        private readonly List<UnitResult> _unitResults;
+        #region Fields
+
+        private readonly List<IAideResult> _results;
         private bool _isSealed;
 
-        public Content(IContentOwner owner)
+        #endregion
+
+        #region Constructor
+
+        public Content(IAideResult owner)
         {
-            this.Owner = owner ?? throw new ArgumentNullException(nameof(owner));
-            _unitResults = new List<UnitResult>();
+            // todo checks
+            this.Owner = owner;
+            _results = new List<IAideResult>();
         }
 
-        public IContentOwner Owner { get; }
+        #endregion
 
-        public bool IsSealed => _isSealed;
+        #region Private
+
+        private void CheckNotSealed()
+        {
+            if (_isSealed)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region IReadOnlyList<IAideResult> Members
+
+        public IEnumerator<IAideResult> GetEnumerator() => _results.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _results.GetEnumerator();
+
+        public int Count => _results.Count;
+
+        public IAideResult this[int index] => _results[index];
+
+        #endregion
+
+        #region IContent Members
+
+        public IAideResult Owner { get; }
+
+        public void AddResult(IAideResult result)
+        {
+            // todo checks
+            this.CheckNotSealed();
+
+            _results.Add(result);
+        }
 
         public void Seal()
         {
-            if (_isSealed)
-            {
-                throw this.CreateContentIsSealedException();
-            }
-
+            this.CheckNotSealed();
             _isSealed = true;
         }
 
-        public void AddUnitResult(UnitResult unitResult)
-        {
-            if (_isSealed)
-            {
-                throw this.CreateContentIsSealedException();
-            }
+        public bool IsSealed => _isSealed;
 
-            if (unitResult == null)
-            {
-                throw new ArgumentNullException(nameof(unitResult));
-            }
-
-            _unitResults.Add(unitResult);
-        }
-
-        private AideException CreateContentIsSealedException()
-        {
-            return new AideException("Content is sealed.");
-        }
-
-        public UnitResult GetLastUnitResult()
-        {
-            if (_unitResults.Count == 0)
-            {
-                throw new AideException("Content is empty.");
-            }
-
-            return _unitResults[_unitResults.Count - 1];
-        }
-
-        public IList<UnitResult> GetAllResults() => _unitResults;
-
-        public int UnitResultCount => _unitResults.Count;
+        #endregion
     }
 }

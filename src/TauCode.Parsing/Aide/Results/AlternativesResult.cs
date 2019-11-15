@@ -1,17 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class AlternativesResult : UnitResult, IContentOwner
+    public class AlternativesResult : IAideResult
     {
+        #region Fields
+
         private readonly List<Content> _alternatives;
 
-        public AlternativesResult(string sourceNodeName)
-            : base(sourceNodeName)
+        #endregion
+
+        #region Constructor
+
+        public AlternativesResult(string name)
         {
+            this.Name = name;
             _alternatives = new List<Content>();
             this.AddAlternative();
         }
+
+        #endregion
+
+        #region Public
 
         public void AddAlternative()
         {
@@ -24,5 +35,14 @@ namespace TauCode.Parsing.Aide.Results
         }
 
         public IList<Content> GetAllAlternatives() => _alternatives;
+
+        #endregion
+
+        #region IAideResult Members
+
+        public string Name { get; }
+        public IList<string> Arguments => throw new NotImplementedException();
+
+        #endregion
     }
 }

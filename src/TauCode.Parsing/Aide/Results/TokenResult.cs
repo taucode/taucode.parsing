@@ -2,22 +2,23 @@
 
 namespace TauCode.Parsing.Aide.Results
 {
-    public class OptionalResult : IAideResult
+    public class TokenResult : IAideResult
     {
         #region Constructor
 
         
 
         #endregion
-        public OptionalResult(string name)
+
+        public TokenResult(IToken token)
         {
-            this.Name = name;
-            this.OptionalContent = new Content(this);
+            // todo checks
+            this.Token = token;
             this.Arguments = new List<string>();
         }
 
-        public Content OptionalContent { get; }
-        public string Name { get; }
+        public IToken Token { get; }
+        public string Name => Token.Name;
         public IList<string> Arguments { get; }
     }
 }

@@ -4,12 +4,9 @@
     {
         BeginBlockDefinition = 1,
         EndBlockDefinition,
-        Link,
-        CloneBlock,
         Identifier,
         BlockReference,
         Idle,
-        WrongWay,
         Comma,
         VerticalBar,
         LeftParenthesis,
@@ -18,6 +15,6 @@
         RightCurlyBracket,
         LeftBracket,
         RightBracket,
-        NotExisting,
+        Clone,
     }
 }

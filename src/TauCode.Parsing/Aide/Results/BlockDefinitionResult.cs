@@ -1,15 +1,32 @@
-﻿namespace TauCode.Parsing.Aide.Results
+﻿using System.Collections.Generic;
+
+namespace TauCode.Parsing.Aide.Results
 {
-    public class BlockDefinitionResult : IContentOwner, IAideResult
+    public class BlockDefinitionResult : IAideResult
     {
-        public BlockDefinitionResult()
+        #region Construcor
+
+        public BlockDefinitionResult(string name)
         {
+            this.Name = name;
             this.Content = new Content(this);
-            this.Arguments = new NameReferenceCollector();
+            this.Arguments = new List<string>();
         }
 
-        public NameReferenceCollector Arguments { get; }
+        #endregion
 
-        public Content Content { get; }
+        #region Public
+        
+        public IContent Content { get; }
+
+        #endregion
+
+        #region IAideResult Members
+
+        public string Name { get; }
+
+        public IList<string> Arguments { get; }
+
+        #endregion
     }
 }

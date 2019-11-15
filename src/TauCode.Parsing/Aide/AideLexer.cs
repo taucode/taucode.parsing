@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.Aide.Tokens;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Aide
 {
@@ -93,7 +93,7 @@ namespace TauCode.Parsing.Aide
             return SymbolChars.Contains(c);
         }
 
-        private WordAideToken ReadWordToken(string tokenName)
+        private WordToken ReadWordToken(string tokenName)
         {
             var start = this.GetCurrentPosition();
 
@@ -125,10 +125,10 @@ namespace TauCode.Parsing.Aide
                 throw LexerHelper.CreateEmptyTokenException();
             }
 
-            return new WordAideToken(word, tokenName);
+            return new WordToken(word, tokenName);
         }
 
-        private AideToken ReadSpecialToken(string tokenName)
+        private TokenBase ReadSpecialToken(string tokenName)
         {
             if (this.IsEnd())
             {
@@ -142,7 +142,7 @@ namespace TauCode.Parsing.Aide
             if (this.IsSymbolChar(c))
             {
                 this.Advance();
-                return new SymbolAideToken(c, tokenName);
+                return new SymbolToken(c, tokenName);
             }
 
             while (true)
@@ -182,40 +182,40 @@ namespace TauCode.Parsing.Aide
             }
 
             var alias = _input.Substring(start, length);
-            AideToken aliasedToken;
+            TokenBase aliasedToken;
 
             switch (alias)
             {
                 case "BeginBlockDefinition":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.BeginBlockDefinition, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.BeginBlockDefinition, tokenName);
                     break;
 
                 case "EndBlockDefinition":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.EndBlockDefinition, tokenName);
-                    break;
-
-                case "CloneBlock":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.CloneBlock, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.EndBlockDefinition, tokenName);
                     break;
 
                 case "Identifier":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.Identifier, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Identifier, tokenName);
                     break;
 
                 case "BlockReference":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.BlockReference, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.BlockReference, tokenName);
                     break;
 
-                case "Link":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.Link, tokenName);
-                    break;
+                //case "Link":
+                //    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Link, tokenName);
+                //    break;
 
                 case "Idle":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.Idle, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Idle, tokenName);
                     break;
 
-                case "WrongWay":
-                    aliasedToken = new SyntaxElementAideToken(SyntaxElement.WrongWay, tokenName);
+                //case "WrongWay":
+                //    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.WrongWay, tokenName);
+                //    break;
+
+                case "Clone":
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Clone, tokenName);
                     break;
 
                 default:
@@ -265,7 +265,7 @@ namespace TauCode.Parsing.Aide
             return tokenName;
         }
 
-        private NameReferenceAideToken ReadNameReference()
+        private SpecialStringToken<AideSpecialString> ReadNameReference()
         {
             var start = this.GetCurrentPosition();
 
@@ -298,7 +298,7 @@ namespace TauCode.Parsing.Aide
             }
 
             var referencedName = _input.Substring(start, length);
-            return new NameReferenceAideToken(referencedName);
+            return new SpecialStringToken<AideSpecialString>(AideSpecialString.NameReference, referencedName);
         }
 
         private void SkipComment()
@@ -437,7 +437,7 @@ namespace TauCode.Parsing.Aide
                     }
 
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.LeftParenthesis, null);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.LeftParenthesis, null);
                     list.Add(token);
                 }
                 else if (c == ')')
@@ -448,7 +448,7 @@ namespace TauCode.Parsing.Aide
                     }
 
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.RightParenthesis, null);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.RightParenthesis, null);
                     list.Add(token);
                 }
                 else if (c == ':')
@@ -465,7 +465,7 @@ namespace TauCode.Parsing.Aide
                 else if (c == '[')
                 {
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.LeftBracket, upcomingTokenName);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.LeftBracket, upcomingTokenName);
                     upcomingTokenName = null;
 
                     list.Add(token);
@@ -478,7 +478,7 @@ namespace TauCode.Parsing.Aide
                     }
 
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.RightBracket, null);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.RightBracket, null);
                     list.Add(token);
                 }
                 else if (c == '{')
@@ -489,7 +489,7 @@ namespace TauCode.Parsing.Aide
                     }
 
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.LeftCurlyBracket, null);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.LeftCurlyBracket, null);
                     list.Add(token);
                 }
                 else if (c == '}')
@@ -500,7 +500,7 @@ namespace TauCode.Parsing.Aide
                     }
 
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.RightCurlyBracket, null);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.RightCurlyBracket, null);
                     list.Add(token);
                 }
                 else if (c == '|')
@@ -511,7 +511,7 @@ namespace TauCode.Parsing.Aide
                     }
 
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.VerticalBar, null);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.VerticalBar, null);
                     list.Add(token);
                 }
                 else if (c == ',')
@@ -522,7 +522,7 @@ namespace TauCode.Parsing.Aide
                     }
 
                     this.Advance();
-                    var token = new SyntaxElementAideToken(SyntaxElement.Comma, null);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.Comma, null);
                     list.Add(token);
                 }
                 else
