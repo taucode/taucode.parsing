@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing
 {
-    public class Context2 : IContext2
+    public class Context : IContext
     {
         private IReadOnlyCollection<INode> _nodes;
 
-        public Context2(ITokenStream tokenStream)
+        public Context(ITokenStream tokenStream)
         {
             this.TokenStream = tokenStream ?? throw new ArgumentNullException(nameof(tokenStream));
             this.ResultAccumulator = new ResultAccumulator();

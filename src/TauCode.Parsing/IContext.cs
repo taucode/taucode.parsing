@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing
 {
-    public interface IContext2
+    public interface IContext
     {
         ITokenStream TokenStream { get; }
         void SetNodes(IReadOnlyCollection<INode> nodes); // todo: (debug-)check no idle nodes there?

@@ -12,7 +12,7 @@ namespace TauCode.Parsing
             // todo check args
 
             var stream = new TokenStream(tokens);
-            IContext2 context = new Context2(stream);
+            IContext context = new Context(stream);
             var initialNodes = ParsingHelper.GetNonIdleNodes(new[] { root });
 
             context.SetNodes(initialNodes);
