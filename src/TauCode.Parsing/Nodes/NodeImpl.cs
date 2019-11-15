@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Utils.CommandLine.Parsing;
 using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Nodes
@@ -19,8 +20,17 @@ namespace TauCode.Parsing.Nodes
 
         protected NodeImpl(INodeFamily family, string name)
         {
-            // todo: check args
-            var familyImpl = (NodeFamily)family; // todo check
+            if (family != null)
+            {
+                if (!(family is NodeFamily))
+                {
+                    throw new ArgumentException(
+                        $"'{nameof(family)}' must be of type '{typeof(NodeFamily).FullName}'.",
+                        nameof(family));
+                }
+            }
+
+            var familyImpl = (NodeFamily)family;
 
             this.Family = family;
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
@@ -47,7 +57,7 @@ namespace TauCode.Parsing.Nodes
         }
 
         #endregion
-        
+
         #region Polymorph
 
         protected abstract InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator);
@@ -74,10 +84,14 @@ namespace TauCode.Parsing.Nodes
 
         public InquireResult Inquire(IToken token, IResultAccumulator resultAccumulator)
         {
-            // todo checks
             if (token == null)
             {
                 throw new ArgumentNullException(nameof(token));
+            }
+
+            if (resultAccumulator == null)
+            {
+                throw new ArgumentNullException(nameof(resultAccumulator));
             }
 
             var basicInquireResult = this.InquireImpl(token, resultAccumulator);
@@ -115,7 +129,7 @@ namespace TauCode.Parsing.Nodes
 
             if (_links.Contains(node))
             {
-                throw new NotImplementedException();
+                throw new ParsingException("This is node is already linked to.");
             }
 
             _links.Add(node);
@@ -123,15 +137,19 @@ namespace TauCode.Parsing.Nodes
 
         public virtual void AddLinkByName(string nodeName)
         {
-            // todo check args
+            if (nodeName == null)
+            {
+                throw new ArgumentNullException(nameof(nodeName));
+            }
+
             if (_links.Select(x => x.Name).Contains(nodeName))
             {
-                throw new NotImplementedException();
+                throw new ArgumentException($"Node is already linked to a node with name '{nodeName}'.");
             }
 
             if (_linkedNodeNames.Contains(nodeName))
             {
-                throw new NotImplementedException();
+                throw new ArgumentException($"Node is already linked to a node with name '{nodeName}'.");
             }
 
             _linkedNodeNames.Add(nodeName);
@@ -141,7 +159,7 @@ namespace TauCode.Parsing.Nodes
         {
             get
             {
-                if (_linkedNodeNames.Any()) // todo optimize
+                if (_linkedNodeNames.Count > 0)
                 {
                     this.ResolvePendingLinks();
                 }

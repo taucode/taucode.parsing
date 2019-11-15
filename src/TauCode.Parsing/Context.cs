@@ -33,9 +33,7 @@ namespace TauCode.Parsing
 
         public void SetNodes(IReadOnlyCollection<INode> nodes)
         {
-            // todo: checks
-
-            _nodes = nodes;
+            _nodes = nodes ?? throw new ArgumentNullException(nameof(nodes));
         }
 
         public IReadOnlyCollection<INode> GetNodes() => _nodes;

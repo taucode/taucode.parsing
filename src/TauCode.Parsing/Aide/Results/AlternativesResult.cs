@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
@@ -18,6 +17,7 @@ namespace TauCode.Parsing.Aide.Results
             this.Name = name;
             _alternatives = new List<Content>();
             this.AddAlternative();
+            this.Arguments = new List<string>();
         }
 
         #endregion
@@ -41,7 +41,8 @@ namespace TauCode.Parsing.Aide.Results
         #region IAideResult Members
 
         public string Name { get; }
-        public IList<string> Arguments => throw new NotImplementedException();
+
+        public IList<string> Arguments { get; }
 
         #endregion
     }

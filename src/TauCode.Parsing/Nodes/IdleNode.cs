@@ -1,6 +1,8 @@
-﻿namespace TauCode.Parsing.Nodes
+﻿using TauCode.Utils.CommandLine.Parsing;
+
+namespace TauCode.Parsing.Nodes
 {
-    public class IdleNode : NodeImpl
+    public sealed class IdleNode : NodeImpl
     {
         #region Constructor
 
@@ -9,21 +11,19 @@
         {
         }
 
-
         #endregion
 
         #region Overridden
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new System.NotImplementedException();
+            throw new ParsingException("'Inquire' should not be called for 'IdleNode'.");
         }
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new System.NotImplementedException();
+            throw new ParsingException("'Act' should not be called for 'IdleNode'.");
         }
-
 
         #endregion
     }

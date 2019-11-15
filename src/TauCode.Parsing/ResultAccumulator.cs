@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace TauCode.Parsing
@@ -44,7 +45,11 @@ namespace TauCode.Parsing
 
         public void AddResult(object result)
         {
-            // todo: checks
+            if (result == null)
+            {
+                throw new ArgumentNullException(nameof(result));
+            }
+
             _results.Add(result);
         }
 

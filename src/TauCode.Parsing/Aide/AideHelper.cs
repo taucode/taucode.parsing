@@ -162,7 +162,7 @@ namespace TauCode.Parsing.Aide
             }
             else
             {
-                throw new NotImplementedException();
+                throw new ArgumentOutOfRangeException();
             }
 
             return result;

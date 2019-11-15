@@ -25,7 +25,6 @@ namespace TauCode.Parsing.Nodes
         {
         }
 
-
         #endregion
     }
 }

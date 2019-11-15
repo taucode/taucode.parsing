@@ -31,7 +31,10 @@ namespace TauCode.Parsing
 
         internal void RegisterNode(INode node)
         {
-            // todo: checks
+            if (node == null)
+            {
+                throw new ArgumentNullException(nameof(node));
+            }
 
             _nodesByName.Add(node.Name, node);
             _nodes.Add(node);
@@ -55,11 +58,6 @@ namespace TauCode.Parsing
         }
 
         public INode[] GetNodes() => _nodesByName.Values.ToArray();
-
-        public void AddLink(string fromName, string toName)
-        {
-            throw new NotImplementedException();
-        }
 
         #endregion
     }

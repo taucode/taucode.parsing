@@ -5,6 +5,5 @@
         string Name { get; }
         INode GetNode(string nodeName);
         INode[] GetNodes();
-        void AddLink(string fromName, string toName);
     }
 }

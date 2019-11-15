@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Nodes;
+using TauCode.Utils.CommandLine.Parsing;
 
 namespace TauCode.Parsing
 {
@@ -9,7 +10,15 @@ namespace TauCode.Parsing
     {
         public object[] Parse(INode root, IEnumerable<IToken> tokens)
         {
-            // todo check args
+            if (root == null)
+            {
+                throw new ArgumentNullException(nameof(root));
+            }
+
+            if (tokens == null)
+            {
+                throw new ArgumentNullException(nameof(tokens));
+            }
 
             var stream = new TokenStream(tokens);
             IContext context = new Context(stream);
@@ -30,7 +39,7 @@ namespace TauCode.Parsing
                     }
                     else
                     {
-                        throw new NotImplementedException(); // unexpected end of stream.
+                        throw new ParsingException("Unexpected end of stream.");
                     }
                 }
 
@@ -54,7 +63,7 @@ namespace TauCode.Parsing
                         case InquireResult.Skip:
                             if (gotActor)
                             {
-                                throw new NotImplementedException();
+                                throw new ParsingException("Nodes logic error. More than one node accepted the token.");
                             }
                             gotSkippers = true;
                             winners.Add(node);
@@ -63,7 +72,7 @@ namespace TauCode.Parsing
                         case InquireResult.Act:
                             if (gotActor)
                             {
-                                throw new NotImplementedException();
+                                throw new ParsingException("Nodes logic error. More than one node accepted the token.");
                             }
                             gotActor = true;
                             winners.Add(node);
@@ -88,19 +97,19 @@ namespace TauCode.Parsing
                     }
                     else
                     {
-                        throw new NotImplementedException(); // error: unexpected token
+                        throw new ParsingException("Unexpected token.");
                     }
                 }
                 else
                 {
                     if (gotActor)
                     {
-                        var actor = winners.Single(); // todo optimize & check single
+                        var actor = winners.Single();
                         var oldVersion = context.ResultAccumulator.Version;
                         actor.Act(token, context.ResultAccumulator);
                         if (oldVersion + 1 != context.ResultAccumulator.Version)
                         {
-                            throw new NotImplementedException();
+                            throw new ParsingException("Internal error. Non sequential result accumulator versions.");
                         }
                     }
                     else
@@ -108,7 +117,7 @@ namespace TauCode.Parsing
                         // 'gotSkippers' must be true
                         if (!gotSkippers)
                         {
-                            throw new NotImplementedException(); // error
+                            throw new ParsingException("Internal parser error.");
                         }
                     }
 

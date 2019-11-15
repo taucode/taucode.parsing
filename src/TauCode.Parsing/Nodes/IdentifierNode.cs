@@ -12,7 +12,6 @@ namespace TauCode.Parsing.Nodes
         {
         }
 
-
         #endregion
 
         #region Overridden

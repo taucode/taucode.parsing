@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
@@ -8,8 +9,7 @@ namespace TauCode.Parsing.Aide.Results
 
         public TokenResult(IToken token)
         {
-            // todo checks
-            this.Token = token;
+            this.Token = token ?? throw new ArgumentNullException(nameof(token));
             this.Arguments = new List<string>();
         }
 

@@ -33,7 +33,7 @@ namespace TauCode.Parsing
             tokenStream.Position++;
         }
 
-        public static IReadOnlyCollection<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes) // todo: optimize. use IEnumerable?
+        public static IReadOnlyCollection<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
         {
             if (nodes.Any(x => x is IdleNode))
             {
