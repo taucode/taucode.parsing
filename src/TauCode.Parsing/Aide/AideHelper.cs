@@ -7,8 +7,7 @@ using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes2;
 using TauCode.Parsing.Tokens;
 
-// todo clean up
-
+// todo clean up; formatting methods naming.
 namespace TauCode.Parsing.Aide
 {
     public static class AideHelper
@@ -89,7 +88,8 @@ namespace TauCode.Parsing.Aide
             }
             else if (aideResult is TokenResult tokenResult)
             {
-                result = $@"{aideResult.Name.ToAideResultName()}{tokenResult.Token.FormatToken()}";
+                var namesString = aideResult.Arguments.FormatArguments();
+                result = $@"{aideResult.Name.ToAideResultName()}{tokenResult.Token.FormatToken()}{namesString}";
             }
             //else if (aideResult is WordNodeResult wordNodeResult)
             //{
@@ -114,13 +114,13 @@ namespace TauCode.Parsing.Aide
             {
                 var content = optionalResult.OptionalContent;
                 var contentString = content.FormatContent();
-                result = $@"{optionalResult.Name.ToAideResultName()}[{contentString}]";
+                result = $@"{optionalResult.Name.ToAideResultName()}[ {contentString} ]";
             }
             else if (aideResult is AlternativesResult alternativesResult)
             {
                 var alternatives = alternativesResult.GetAllAlternatives();
                 var sb = new StringBuilder();
-                sb.Append("{");
+                sb.Append("{ ");
 
                 for (var i = 0; i < alternatives.Count; i++)
                 {
@@ -134,7 +134,7 @@ namespace TauCode.Parsing.Aide
                     }
                 }
 
-                sb.Append("}");
+                sb.Append(" }");
 
                 result = sb.ToString();
             }
@@ -223,11 +223,11 @@ namespace TauCode.Parsing.Aide
             }
             else if (token is EnumToken<SyntaxElement> syntaxEnumToken)
             {
-                return syntaxEnumToken.Value.ToString();
+                return $@"\{syntaxEnumToken.Value}";
             }
             else if (token is SymbolToken symbolToken)
             {
-                return symbolToken.Value.ToString();
+                return $@"\{symbolToken.Value.ToFormat()}";
             }
             else
             {
