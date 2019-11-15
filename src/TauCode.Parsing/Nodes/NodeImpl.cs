@@ -10,7 +10,7 @@ namespace TauCode.Parsing.Nodes
         #region Fields
 
         private readonly HashSet<INode> _links;
-        private readonly HashSet<string> _linkAddresses;
+        private readonly HashSet<string> _linkedNodeNames;
         private Func<IToken, IResultAccumulator, bool> _additionalChecker;
 
         #endregion
@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Nodes
             familyImpl?.RegisterNode(this);
 
             _links = new HashSet<INode>();
-            _linkAddresses = new HashSet<string>();
+            _linkedNodeNames = new HashSet<string>();
         }
 
         #endregion
@@ -37,13 +37,13 @@ namespace TauCode.Parsing.Nodes
 
         private void ResolvePendingLinks()
         {
-            foreach (var linkAddress in _linkAddresses)
+            foreach (var linkAddress in _linkedNodeNames)
             {
                 var node = this.Family.GetNode(linkAddress);
                 this.AddLink(node);
             }
 
-            _linkAddresses.Clear();
+            _linkedNodeNames.Clear();
         }
 
         #endregion
@@ -129,19 +129,19 @@ namespace TauCode.Parsing.Nodes
                 throw new NotImplementedException();
             }
 
-            if (_linkAddresses.Contains(nodeName))
+            if (_linkedNodeNames.Contains(nodeName))
             {
                 throw new NotImplementedException();
             }
 
-            _linkAddresses.Add(nodeName);
+            _linkedNodeNames.Add(nodeName);
         }
 
         public virtual IReadOnlyCollection<INode> Links
         {
             get
             {
-                if (_linkAddresses.Any()) // todo optimize
+                if (_linkedNodeNames.Any()) // todo optimize
                 {
                     this.ResolvePendingLinks();
                 }

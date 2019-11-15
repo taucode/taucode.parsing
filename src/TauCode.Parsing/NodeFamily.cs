@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using TauCode.Utils.CommandLine.Parsing;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing
 {
-    // todo: consider rid of 'address' word anywhere
     public class NodeFamily : INodeFamily
     {
         #region Fields
@@ -43,14 +45,16 @@ namespace TauCode.Parsing
 
         public INode GetNode(string nodeName)
         {
-            // todo checks
-            return _nodesByName[nodeName];
+            if (nodeName == null)
+            {
+                throw new ArgumentNullException(nameof(nodeName));
+            }
+
+            var node = _nodesByName.GetOrDefault(nodeName) ?? throw new ParsingException($"Node not found: '{nodeName}'.");
+            return node;
         }
 
-        public INode[] GetNodes()
-        {
-            throw new NotImplementedException();
-        }
+        public INode[] GetNodes() => _nodesByName.Values.ToArray();
 
         public void AddLink(string fromName, string toName)
         {
