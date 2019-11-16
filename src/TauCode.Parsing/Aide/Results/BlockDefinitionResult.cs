@@ -19,6 +19,11 @@ namespace TauCode.Parsing.Aide.Results
         
         public IContent Content { get; }
 
+        public string GetBlockName()
+        {
+            return this.Arguments[1]; // todo checks
+        }
+
         #endregion
 
         #region IAideResult Members

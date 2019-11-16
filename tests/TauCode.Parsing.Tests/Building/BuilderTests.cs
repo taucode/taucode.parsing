@@ -1,6 +1,9 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Linq;
 using TauCode.Parsing.Aide;
+using TauCode.Parsing.Aide.Building;
+using TauCode.Parsing.Aide.Results;
 using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Tests.Building
@@ -9,30 +12,25 @@ namespace TauCode.Parsing.Tests.Building
     public class BuilderTests
     {
         [Test]
-        public void ToDo()
+        public void Builder_SqlGrammar_ProducesValidRootNode()
         {
             // Arrange
             var input = this.GetType().Assembly.GetResourceText("AllBlocks.txt", true);
 
             var lexer = new AideLexer();
             var tokens = lexer.Lexize(input);
-            throw new NotImplementedException();
-            //IParser parser = new AideParser();
-            //var context = parser.Parse(tokens);
 
-            //var builder = new Builder();
-            //var buildEnvironment = new BuildEnvironment();
+            IParser parser = new Parser();
+            var aideRoot = AideHelper.BuildParserRoot();
+            var results = parser.Parse(aideRoot, tokens);
+
+            IBuilder builder = new Builder();
             
-            //// Act
-            //builder.BuildMainBlock(
-            //    context
-            //        .ToArray()
-            //        .Cast<IAideResult>()
-            //        .ToArray(),
-            //    buildEnvironment);
+            // Act
+            var sqlRoot = builder.Build(results.Cast<BlockDefinitionResult>());
 
-            //// Assert
-            //throw new NotImplementedException();
+            // Assert
+            throw new NotImplementedException();
         }
     }
 }
