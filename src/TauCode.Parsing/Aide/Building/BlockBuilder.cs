@@ -9,12 +9,6 @@ namespace TauCode.Parsing.Aide.Building
 {
     public class BlockBuilder
     {
-        private class ContentOutcome
-        {
-            public INode Root { get; }
-            public List<INode> Nodes { get; }
-        }
-
         public BlockBuilder(Boss boss, BlockDefinitionResult source)
         {
             // todo checks
@@ -58,15 +52,22 @@ namespace TauCode.Parsing.Aide.Building
         private ContentOutcome CreateContentOutcome(IContent content)
         {
             var outcome = new ContentOutcome();
-            var gotRoot = false;
 
             foreach (var aideResult in this.Source.Content)
             {
-                INode node;
+                NodeBuilder nodeBuilder;
 
                 if (aideResult is TokenResult tokenResult)
                 {
-                    node = this.BuildNode(tokenResult);
+                    nodeBuilder = new NodeBuilder(tokenResult, this.Boss.NodeFamily);
+                    nodeBuilder.Build();
+                }
+                else if (aideResult is OptionalResult optionalResult)
+                {
+                    throw new NotImplementedException();
+                }
+                else if (aideResult is AlternativesResult alternativesResult)
+                {
                     throw new NotImplementedException();
                 }
                 else
@@ -74,15 +75,12 @@ namespace TauCode.Parsing.Aide.Building
                     throw new NotImplementedException();
                 }
 
-                throw new NotImplementedException();
+                outcome.AddNode(nodeBuilder);
             }
 
-            return outcome;
-        }
+            outcome.InitLinks();
 
-        private INode BuildNode(TokenResult tokenResult)
-        {
-            throw new NotImplementedException();
+            return outcome;
         }
     }
 }

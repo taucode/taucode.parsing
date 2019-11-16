@@ -15,6 +15,8 @@ namespace TauCode.Parsing.Aide.Building
             // todo: checks.
             //_blockDefinitions = results.Cast<BlockDefinitionResult>().ToList();
 
+            NodeFamily = new NodeFamily("todo family");
+
             this.Squad = new Squad();
             _blockBuilders = results
                 .Cast<BlockDefinitionResult>()
@@ -47,5 +49,7 @@ namespace TauCode.Parsing.Aide.Building
         }
 
         public Squad Squad { get; }
+
+        public INodeFamily NodeFamily { get; }
     }
 }

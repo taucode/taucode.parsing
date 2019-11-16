@@ -123,7 +123,7 @@ namespace TauCode.Parsing
 
                     // skip
                     context.TokenStream.AdvanceStreamPosition();
-                    var successors = winners.SelectMany(x => x.Links).ToList();
+                    var successors = winners.SelectMany(x => x.ResolveLinks()).ToList();
 
                     var nonIdleSuccessors = ParsingHelper.GetNonIdleNodes(successors);
 

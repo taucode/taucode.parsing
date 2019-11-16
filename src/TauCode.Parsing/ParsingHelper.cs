@@ -61,7 +61,7 @@ namespace TauCode.Parsing
         {
             if (node is IdleNode)
             {
-                var links = node.Links;
+                var links = node.ResolveLinks();
                 foreach (var link in links)
                 {
                     WriteNonIdleNodes(link, destination);
@@ -87,7 +87,7 @@ namespace TauCode.Parsing
                     throw new ArgumentException($"'{nameof(names)}' must not contain nulls.");
                 }
 
-                node.AddLinkByName(name);
+                node.ClaimLink(name);
             }
         }
 
@@ -105,7 +105,7 @@ namespace TauCode.Parsing
                     throw new ArgumentException($"'{nameof(drawFromNode)}' must not contain nulls.");
                 }
 
-                drawFromNode.AddLink(node);
+                drawFromNode.EstablishLink(node);
             }
         }
 

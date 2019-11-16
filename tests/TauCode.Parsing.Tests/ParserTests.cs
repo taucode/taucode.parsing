@@ -80,19 +80,19 @@ namespace TauCode.Parsing.Tests
             var comma = new ExactSymbolNode(family, "Node: ,", null, ',');
             var rightParen = new ExactSymbolNode(family, "Node: )", null, ')');
 
-            root.AddLink(create);
-            create.AddLink(table);
-            table.AddLink(tableName);
-            tableName.AddLink(leftParen);
-            leftParen.AddLink(columnName);
-            columnName.AddLink(typeName);
+            root.EstablishLink(create);
+            create.EstablishLink(table);
+            table.EstablishLink(tableName);
+            tableName.EstablishLink(leftParen);
+            leftParen.EstablishLink(columnName);
+            columnName.EstablishLink(typeName);
 
-            typeName.AddLink(comma);
-            typeName.AddLink(rightParen);
+            typeName.EstablishLink(comma);
+            typeName.EstablishLink(rightParen);
 
-            comma.AddLink(columnName);
+            comma.EstablishLink(columnName);
 
-            rightParen.AddLink(EndNode.Instance);
+            rightParen.EstablishLink(EndNode.Instance);
 
             return root;
         }
