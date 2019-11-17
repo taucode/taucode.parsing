@@ -33,7 +33,7 @@ namespace TauCode.Parsing.Nodes
             var familyImpl = (NodeFamily)family;
 
             this.Family = family;
-            this.Name = name ?? throw new ArgumentNullException(nameof(name));
+            this.Name = name;
 
             familyImpl?.RegisterNode(this);
 

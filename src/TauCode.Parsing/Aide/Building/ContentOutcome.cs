@@ -11,6 +11,7 @@ namespace TauCode.Parsing.Aide.Building
         }
 
         public NodeBuilder First { get; private set; }
+
         public List<NodeBuilder> Nodes { get; }
 
         public void AddNode(NodeBuilder nodeBuilder)
@@ -25,7 +26,10 @@ namespace TauCode.Parsing.Aide.Building
 
         public void InitLinks()
         {
-            throw new NotImplementedException();
+            for (var i = 0; i < this.Nodes.Count; i++)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
 }

@@ -53,29 +53,39 @@ namespace TauCode.Parsing.Aide.Building
         {
             var outcome = new ContentOutcome();
 
-            foreach (var aideResult in this.Source.Content)
+            foreach (var aideResult in content)
             {
-                NodeBuilder nodeBuilder;
-
                 if (aideResult is TokenResult tokenResult)
                 {
-                    nodeBuilder = new NodeBuilder(tokenResult, this.Boss.NodeFamily);
+                    var nodeBuilder = new NodeBuilder(this.Boss.NodeFamily, tokenResult);
                     nodeBuilder.Build();
+                    outcome.AddNode(nodeBuilder);
                 }
                 else if (aideResult is OptionalResult optionalResult)
                 {
+                    var start = new NodeBuilder(this.Boss.NodeFamily, optionalResult.Name);
+                    var optionalOutcome = this.CreateContentOutcome(optionalResult.OptionalContent);
+                    var end = new NodeBuilder(this.Boss.NodeFamily, (string)null);
+
                     throw new NotImplementedException();
                 }
                 else if (aideResult is AlternativesResult alternativesResult)
                 {
+                    var start = new NodeBuilder(this.Boss.NodeFamily, alternativesResult.Name);
+
+                    var alternativeOutcomes = alternativesResult
+                        .GetAllAlternatives()
+                        .Select(x => this.CreateContentOutcome(x))
+                        .ToList();
+
+                    var end = new NodeBuilder(this.Boss.NodeFamily, (string)null);
+
                     throw new NotImplementedException();
                 }
                 else
                 {
                     throw new NotImplementedException();
                 }
-
-                outcome.AddNode(nodeBuilder);
             }
 
             outcome.InitLinks();

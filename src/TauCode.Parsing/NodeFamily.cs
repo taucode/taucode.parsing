@@ -10,7 +10,7 @@ namespace TauCode.Parsing
     {
         #region Fields
 
-        private readonly Dictionary<string, INode> _nodesByName;
+        private readonly Dictionary<string, INode> _namedNodes;
         private readonly HashSet<INode> _nodes;
 
         #endregion
@@ -21,7 +21,7 @@ namespace TauCode.Parsing
         {
             this.Name = name ?? throw new ArgumentNullException(nameof(name));
 
-            _nodesByName = new Dictionary<string, INode>();
+            _namedNodes = new Dictionary<string, INode>();
             _nodes = new HashSet<INode>();
         }
 
@@ -36,7 +36,11 @@ namespace TauCode.Parsing
                 throw new ArgumentNullException(nameof(node));
             }
 
-            _nodesByName.Add(node.Name, node);
+            if (node.Name != null)
+            {
+                _namedNodes.Add(node.Name, node);
+            }
+
             _nodes.Add(node);
         }
 
@@ -53,11 +57,11 @@ namespace TauCode.Parsing
                 throw new ArgumentNullException(nameof(nodeName));
             }
 
-            var node = _nodesByName.GetOrDefault(nodeName) ?? throw new ParsingException($"Node not found: '{nodeName}'.");
+            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new ParsingException($"Node not found: '{nodeName}'.");
             return node;
         }
 
-        public INode[] GetNodes() => _nodesByName.Values.ToArray();
+        public INode[] GetNodes() => _namedNodes.Values.ToArray();
 
         #endregion
     }
