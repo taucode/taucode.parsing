@@ -8,62 +8,96 @@ namespace TauCode.Parsing.Aide.Building
 {
     public class NodeBuilder
     {
-        private readonly INodeFamily _nodeFamily;
-        private readonly List<NodeBuilder> _extraLinks;
+        //private readonly INodeFamily _nodeFamily;
+        private readonly List<NodeBuilder> _explicitLinks;
+        private readonly List<string> _linksToClaim;
 
-        public NodeBuilder(INodeFamily nodeFamily, TokenResult source)
+        public NodeBuilder(INodeFamily nodeFamily, TokenResult tokenResult)
+            : this(BuildNode(nodeFamily, tokenResult))
         {
-            this.Source = source;
-            _nodeFamily = nodeFamily;
-            _extraLinks = new List<NodeBuilder>();
+            // todo check args
+            //this.Source = source;
+            //_nodeFamily = nodeFamily;
         }
 
-        public NodeBuilder(INodeFamily nodeFamily, string nodeName)
+        public NodeBuilder(INode node)
         {
-            this.Node = new IdleNode(nodeFamily, nodeName);
-            _nodeFamily = nodeFamily;
-            _extraLinks = new List<NodeBuilder>();
+            // todo check args
+            this.Node = node;
+            _explicitLinks = new List<NodeBuilder>();
+            _linksToClaim = new List<string>();
+            //this.Node = new IdleNode(nodeFamily, nodeName);
+            //_nodeFamily = nodeFamily;
+            //_explicitLinks = new List<NodeBuilder>();
+            //_linksToClaim = new List<string>();
         }
 
-        public TokenResult Source { get; } // todo: private?
+        //public TokenResult Source { get; } // todo: private?
 
         public INode Node { get; private set; }
 
-        public void Build()
+        private static INode BuildNode(INodeFamily nodeFamily, TokenResult tokenResult)
         {
-            if (this.Node != null)
-            {
-                throw new NotImplementedException();
-            }
-
             INode node;
-            if (this.Source.Token is EnumToken<SyntaxElement> syntaxToken)
+            if (tokenResult.Token is EnumToken<SyntaxElement> syntaxToken)
             {
                 switch (syntaxToken.Value)
                 {
                     case SyntaxElement.Identifier:
-                        node = new IdentifierNode(_nodeFamily, syntaxToken.Name, null);
+                        node = new IdentifierNode(nodeFamily, syntaxToken.Name, null);
                         break;
 
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
-            else if (this.Source.Token is WordToken wordToken)
+            else if (tokenResult.Token is WordToken wordToken)
             {
-                node = new WordNode(_nodeFamily, wordToken.Name, null);
+                node = new WordNode(nodeFamily, wordToken.Name, null);
             }
             else
             {
                 throw new NotImplementedException();
             }
 
-            this.Node = node;
+            return node;
         }
 
-        public void AddExtraLink(NodeBuilder link)
-        {
-            _extraLinks.Add(link);
-        }
+        //public void Build()
+        //{
+        //    if (this.Node != null)
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //    INode node;
+        //    if (this.Source.Token is EnumToken<SyntaxElement> syntaxToken)
+        //    {
+        //        switch (syntaxToken.Value)
+        //        {
+        //            case SyntaxElement.Identifier:
+        //                node = new IdentifierNode(_nodeFamily, syntaxToken.Name, null);
+        //                break;
+
+        //            default:
+        //                throw new ArgumentOutOfRangeException();
+        //        }
+        //    }
+        //    else if (this.Source.Token is WordToken wordToken)
+        //    {
+        //        node = new WordNode(_nodeFamily, wordToken.Name, null);
+        //    }
+        //    else
+        //    {
+        //        throw new NotImplementedException();
+        //    }
+
+        //    this.Node = node;
+        //}
+
+        //public void AddExtraLink(NodeBuilder link)
+        //{
+        //    _explicitLinks.Add(link);
+        //}
     }
 }

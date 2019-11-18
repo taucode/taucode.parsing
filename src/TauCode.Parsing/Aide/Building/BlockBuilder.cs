@@ -34,6 +34,8 @@ namespace TauCode.Parsing.Aide.Building
         public BlockDefinitionResult Source { get; }
         public List<string> ReferencedBlockNames { get; }
 
+        public NodeBuilder SubTree { get; private set; }
+
         internal void Resolve()
         {
             foreach (var referencedBlockName in this.ReferencedBlockNames)
@@ -45,52 +47,63 @@ namespace TauCode.Parsing.Aide.Building
 
         public void Build()
         {
-            var outcome = this.CreateContentOutcome(this.Source.Content);
             throw new NotImplementedException();
         }
 
-        private ContentOutcome CreateContentOutcome(IContent content)
-        {
-            var outcome = new ContentOutcome();
+        //public void Build()
+        //{
+        //    var outcome = this.CreateContentOutcome(this.Source.Content);
+        //    throw new NotImplementedException();
+        //}
 
-            foreach (var aideResult in content)
-            {
-                if (aideResult is TokenResult tokenResult)
-                {
-                    var nodeBuilder = new NodeBuilder(this.Boss.NodeFamily, tokenResult);
-                    nodeBuilder.Build();
-                    outcome.AddNode(nodeBuilder);
-                }
-                else if (aideResult is OptionalResult optionalResult)
-                {
-                    var start = new NodeBuilder(this.Boss.NodeFamily, optionalResult.Name);
-                    var optionalOutcome = this.CreateContentOutcome(optionalResult.OptionalContent);
-                    var end = new NodeBuilder(this.Boss.NodeFamily, (string)null);
+        //private ContentOutcome CreateContentOutcome(IContent content)
+        //{
+        //    var outcome = new ContentOutcome();
 
-                    throw new NotImplementedException();
-                }
-                else if (aideResult is AlternativesResult alternativesResult)
-                {
-                    var start = new NodeBuilder(this.Boss.NodeFamily, alternativesResult.Name);
+        //    foreach (var aideResult in content)
+        //    {
+        //        if (aideResult is TokenResult tokenResult)
+        //        {
+        //            var nodeBuilder = new NodeBuilder(this.Boss.NodeFamily, tokenResult);
+        //            nodeBuilder.Build();
+        //            outcome.AddNode(nodeBuilder, true);
+        //        }
+        //        else if (aideResult is OptionalResult optionalResult)
+        //        {
+        //            var start = new NodeBuilder(this.Boss.NodeFamily, optionalResult.Name);
+        //            var optionalOutcome = this.CreateContentOutcome(optionalResult.OptionalContent);
+        //            var end = new NodeBuilder(this.Boss.NodeFamily, (string)null);
 
-                    var alternativeOutcomes = alternativesResult
-                        .GetAllAlternatives()
-                        .Select(x => this.CreateContentOutcome(x))
-                        .ToList();
+        //            throw new NotImplementedException();
+        //        }
+        //        else if (aideResult is AlternativesResult alternativesResult)
+        //        {
+        //            var start = new NodeBuilder(this.Boss.NodeFamily, alternativesResult.Name);
 
-                    var end = new NodeBuilder(this.Boss.NodeFamily, (string)null);
+        //            var alternativeOutcomes = alternativesResult
+        //                .GetAllAlternatives()
+        //                .Select(x => this.CreateContentOutcome(x))
+        //                .ToList();
 
-                    throw new NotImplementedException();
-                }
-                else
-                {
-                    throw new NotImplementedException();
-                }
-            }
+        //            var end = new NodeBuilder(this.Boss.NodeFamily, (string)null);
 
-            outcome.InitLinks();
+        //            foreach (var alternativeOutcome in alternativeOutcomes)
+        //            {
+        //                start.Node.EstablishLink(alternativeOutcome.Nodes.First().Node);
+        //                alternativeOutcome.AddNode(end, true);
+        //            }
 
-            return outcome;
-        }
+
+        //        }
+        //        else
+        //        {
+        //            throw new NotImplementedException();
+        //        }
+        //    }
+
+        //    //outcome.InitLinks();
+
+        //    return outcome;
+        //}
     }
 }
