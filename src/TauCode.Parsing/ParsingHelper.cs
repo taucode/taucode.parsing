@@ -33,7 +33,7 @@ namespace TauCode.Parsing
             tokenStream.Position++;
         }
 
-        public static IReadOnlyCollection<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
+        public static IReadOnlyList<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
         {
             if (nodes.Any(x => x is IdleNode))
             {
@@ -53,7 +53,7 @@ namespace TauCode.Parsing
             }
             else
             {
-                return nodes;
+                return nodes.ToList(); // todo optimize
             }
         }
 
@@ -61,7 +61,7 @@ namespace TauCode.Parsing
         {
             if (node is IdleNode)
             {
-                var links = node.Links;
+                var links = node.ResolveLinks();
                 foreach (var link in links)
                 {
                     WriteNonIdleNodes(link, destination);
@@ -87,7 +87,7 @@ namespace TauCode.Parsing
                     throw new ArgumentException($"'{nameof(names)}' must not contain nulls.");
                 }
 
-                node.AddLinkByName(name);
+                node.ClaimLink(name);
             }
         }
 
@@ -105,7 +105,7 @@ namespace TauCode.Parsing
                     throw new ArgumentException($"'{nameof(drawFromNode)}' must not contain nulls.");
                 }
 
-                drawFromNode.AddLink(node);
+                drawFromNode.EstablishLink(node);
             }
         }
 
@@ -131,10 +131,13 @@ namespace TauCode.Parsing
 
             if (result.GetType() != typeof(T))
             {
-                throw new ParsingException($"Last result expected to be of type '{typeof(T).FullName}', but is of type '{result.GetType().FullName}'.");
+                throw new ParsingException(
+                    $"Last result expected to be of type '{typeof(T).FullName}', but is of type '{result.GetType().FullName}'.");
             }
 
             return (T)result;
         }
+
+        public static IReadOnlyList<INode> GetNonIdleLinks(this INode node) => GetNonIdleNodes(node.ResolveLinks());
     }
 }

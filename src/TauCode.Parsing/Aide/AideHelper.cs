@@ -234,7 +234,7 @@ namespace TauCode.Parsing.Aide
         {
             INodeFamily family = new NodeFamily("Aide");
             var root = new IdleNode(family, "root");
-            root.AddLinkByName("begin_block_def");
+            root.ClaimLink("begin_block_def");
 
             var beginBlockDef = new ExactEnumNode<SyntaxElement>(
                 family,
@@ -249,11 +249,11 @@ namespace TauCode.Parsing.Aide
             var args = BuildArgumentsRoot("block def begin args", family, acc => acc.GetLastResult<BlockDefinitionResult>());
             var beginBlockDefArgs = args.Item1;
             var beginBlockDefArgsExit = args.Item2;
-            beginBlockDef.AddLink(beginBlockDefArgs);
-            beginBlockDefArgsExit.AddLinkByName("leftSplitter");
+            beginBlockDef.EstablishLink(beginBlockDefArgs);
+            beginBlockDefArgsExit.ClaimLink("leftSplitter");
 
             var leftSplitter = new IdleNode(family, "leftSplitter");
-            leftSplitter.AddLinksByNames("word", "identifier", "symbol", "blockReference", "idle", "clone", "optional", "alternatives");
+            leftSplitter.AddLinksByNames("word", "identifier", "symbol", "blockReference", "idle", "optional", "alternatives");
 
             var word = new WordNode(
                 family,
@@ -304,17 +304,6 @@ namespace TauCode.Parsing.Aide
                     content.AddResult(result);
                 },
                 SyntaxElement.Idle);
-            var clone = new ExactEnumNode<SyntaxElement>(
-                family,
-                "clone",
-                (token, accumulator) =>
-                {
-                    var content = accumulator.GetActualContent();
-                    var result = new TokenResult(token);
-                    content.AddResult(result);
-                },
-                SyntaxElement.Clone);
-
 
             #region optional
 
@@ -398,43 +387,43 @@ namespace TauCode.Parsing.Aide
             #endregion
 
             var beforeArgsSplitter = new IdleNode(family, "beforeArgsSplitter");
-            beforeArgsSplitter.DrawLinkFromNodes(word, identifier, symbol, blockReference, idle, clone);
+            beforeArgsSplitter.DrawLinkFromNodes(word, identifier, symbol, blockReference, idle);
 
             args = BuildArgumentsRoot("content args", family, acc => acc.GetActualContent().Last());
             var contentNodeArgs = args.Item1;
             var contentNodeArgsExit = args.Item2;
 
-            beforeArgsSplitter.AddLink(contentNodeArgs);
+            beforeArgsSplitter.EstablishLink(contentNodeArgs);
 
             var afterArgsSplitter = new IdleNode(family, "afterArgsSplitter");
 
             afterArgsSplitter.DrawLinkFromNodes(contentNodeArgsExit, beforeArgsSplitter);
-            afterArgsSplitter.AddLink(leftSplitter);
-            afterArgsSplitter.AddLinkByName("endBlockDef");
+            afterArgsSplitter.EstablishLink(leftSplitter);
+            afterArgsSplitter.ClaimLink("endBlockDef");
 
             #region links for optional
 
             // opening
-            optional.AddLink(leftSplitter);
+            optional.EstablishLink(leftSplitter);
 
             // closing
-            closeOptional.AddLink(beforeArgsSplitter);
-            afterArgsSplitter.AddLink(closeOptional);
+            closeOptional.EstablishLink(beforeArgsSplitter);
+            afterArgsSplitter.EstablishLink(closeOptional);
 
             #endregion
 
             #region links for alternatives
 
             // opening
-            alternatives.AddLink(leftSplitter);
+            alternatives.EstablishLink(leftSplitter);
 
             // addAlternative
-            addAlternative.AddLink(leftSplitter);
-            afterArgsSplitter.AddLink(addAlternative);
+            addAlternative.EstablishLink(leftSplitter);
+            afterArgsSplitter.EstablishLink(addAlternative);
 
             // closing
-            closeAlternatives.AddLink(beforeArgsSplitter);
-            afterArgsSplitter.AddLink(closeAlternatives);
+            closeAlternatives.EstablishLink(beforeArgsSplitter);
+            afterArgsSplitter.EstablishLink(closeAlternatives);
 
             #endregion
 
@@ -448,7 +437,7 @@ namespace TauCode.Parsing.Aide
                 },
                 SyntaxElement.EndBlockDefinition);
 
-            endBlockDef.AddLink(EndNode.Instance);
+            endBlockDef.EstablishLink(EndNode.Instance);
 
             return root;
         }
@@ -472,10 +461,10 @@ namespace TauCode.Parsing.Aide
             INode end = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: )", null, SyntaxElement.RightParenthesis);
 
 
-            begin.AddLink(arg);
-            arg.AddLink(comma);
-            arg.AddLink(end);
-            comma.AddLink(arg);
+            begin.EstablishLink(arg);
+            arg.EstablishLink(comma);
+            arg.EstablishLink(end);
+            comma.EstablishLink(arg);
 
             return Tuple.Create(begin, end);
         }

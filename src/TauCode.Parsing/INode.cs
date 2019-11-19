@@ -8,8 +8,10 @@ namespace TauCode.Parsing
         string Name { get; }
         InquireResult Inquire(IToken token, IResultAccumulator resultAccumulator);
         void Act(IToken token, IResultAccumulator resultAccumulator);
-        void AddLink(INode node);
-        void AddLinkByName(string nodeName);
-        IReadOnlyCollection<INode> Links { get; }
+        void EstablishLink(INode node);
+        void ClaimLink(string nodeName);
+        IReadOnlyCollection<INode> EstablishedLinks { get; }
+        IReadOnlyCollection<string> ClaimedLinkNames { get; }
+        IReadOnlyCollection<INode> ResolveLinks();
     }
 }

@@ -49,7 +49,7 @@ PRIMARY KEY <pk_name>\Identifier <pk_columns>\BlockReference
 
 \BeginBlockDefinition(:inner, :foreign_key) /* 5 */
 
-FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_referenced_columns>\BlockReference
+FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_referenced_table_name>\Identifier <fk_referenced_columns>\BlockReference
 
 \EndBlockDefinition
 
@@ -65,6 +65,8 @@ FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_refe
 
 /****** Foreign Key Referenced Columns ******/
 
-\BeginBlockDefinition(:clone, :fk_referenced_columns)
-\Clone(:fk_columns)
+\BeginBlockDefinition(:inner, :fk_referenced_columns) /* 7 */
+
+\( <fk_referenced_column_name>\Identifier { \,(:fk_referenced_column_name) | \) }
+
 \EndBlockDefinition

@@ -5,6 +5,6 @@ namespace TauCode.Parsing.Aide.Results
     public interface IAideResult
     {
         string Name { get; }
-        IList<string> Arguments { get; }
+        List<string> Arguments { get; }
     }
 }

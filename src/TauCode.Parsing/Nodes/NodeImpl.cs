@@ -10,8 +10,8 @@ namespace TauCode.Parsing.Nodes
     {
         #region Fields
 
-        private readonly HashSet<INode> _links;
-        private readonly HashSet<string> _linkedNodeNames;
+        private readonly HashSet<INode> _establishedLinks;
+        private readonly HashSet<string> _claimedLinkNames;
         private Func<IToken, IResultAccumulator, bool> _additionalChecker;
 
         #endregion
@@ -33,12 +33,12 @@ namespace TauCode.Parsing.Nodes
             var familyImpl = (NodeFamily)family;
 
             this.Family = family;
-            this.Name = name ?? throw new ArgumentNullException(nameof(name));
+            this.Name = name;
 
             familyImpl?.RegisterNode(this);
 
-            _links = new HashSet<INode>();
-            _linkedNodeNames = new HashSet<string>();
+            _establishedLinks = new HashSet<INode>();
+            _claimedLinkNames = new HashSet<string>();
         }
 
         #endregion
@@ -47,13 +47,13 @@ namespace TauCode.Parsing.Nodes
 
         private void ResolvePendingLinks()
         {
-            foreach (var linkAddress in _linkedNodeNames)
+            foreach (var linkAddress in _claimedLinkNames)
             {
                 var node = this.Family.GetNode(linkAddress);
-                this.AddLink(node);
+                this.EstablishLink(node);
             }
 
-            _linkedNodeNames.Clear();
+            _claimedLinkNames.Clear();
         }
 
         #endregion
@@ -120,52 +120,53 @@ namespace TauCode.Parsing.Nodes
             this.ActImpl(token, resultAccumulator);
         }
 
-        public virtual void AddLink(INode node)
+        public virtual void EstablishLink(INode node)
         {
             if (node == null)
             {
                 throw new ArgumentNullException(nameof(node));
             }
 
-            if (_links.Contains(node))
+            if (_establishedLinks.Contains(node))
             {
                 throw new ParsingException("This is node is already linked to.");
             }
 
-            _links.Add(node);
+            _establishedLinks.Add(node);
         }
 
-        public virtual void AddLinkByName(string nodeName)
+        public virtual void ClaimLink(string nodeName)
         {
             if (nodeName == null)
             {
                 throw new ArgumentNullException(nameof(nodeName));
             }
 
-            if (_links.Select(x => x.Name).Contains(nodeName))
+            if (_establishedLinks.Select(x => x.Name).Contains(nodeName))
             {
                 throw new ArgumentException($"Node is already linked to a node with name '{nodeName}'.");
             }
 
-            if (_linkedNodeNames.Contains(nodeName))
+            if (_claimedLinkNames.Contains(nodeName))
             {
                 throw new ArgumentException($"Node is already linked to a node with name '{nodeName}'.");
             }
 
-            _linkedNodeNames.Add(nodeName);
+            _claimedLinkNames.Add(nodeName);
         }
 
-        public virtual IReadOnlyCollection<INode> Links
-        {
-            get
-            {
-                if (_linkedNodeNames.Count > 0)
-                {
-                    this.ResolvePendingLinks();
-                }
+        public virtual IReadOnlyCollection<INode> EstablishedLinks => _establishedLinks;
 
-                return _links;
+        public IReadOnlyCollection<string> ClaimedLinkNames => _claimedLinkNames;
+
+        public IReadOnlyCollection<INode> ResolveLinks()
+        {
+            if (_claimedLinkNames.Count > 0)
+            {
+                this.ResolvePendingLinks();
             }
+
+            return _establishedLinks;
         }
 
         #endregion

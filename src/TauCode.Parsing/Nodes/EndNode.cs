@@ -29,12 +29,12 @@ namespace TauCode.Parsing.Nodes
             throw new ParsingException("Cannot call 'Act' for end node.");
         }
 
-        public override void AddLink(INode node)
+        public override void EstablishLink(INode node)
         {
             throw new ParsingException("Cannot add link to end node.");
         }
 
-        public override void AddLinkByName(string nodeName)
+        public override void ClaimLink(string nodeName)
         {
             throw new ParsingException("Cannot add link to end node.");
         }
