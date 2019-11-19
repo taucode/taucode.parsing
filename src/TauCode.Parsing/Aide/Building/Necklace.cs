@@ -75,12 +75,15 @@ namespace TauCode.Parsing.Aide.Building
             }
         }
 
-        public void InsertNecklace(NodeBuilder left, NodeBuilder to, Necklace subNecklace)
+        public void InsertNecklace(NodeBuilder left, NodeBuilder right, Necklace subNecklace)
         {
             this.Items.AddRange(subNecklace.Items);
 
-            left.AddExplicitLink(subNecklace.Left);
-            subNecklace.Right.AddExplicitLink(Right);
+            //left.AddExplicitLink(subNecklace.Left);
+            this.MakeLinks(left, subNecklace.Left);
+
+            //subNecklace.Right.AddExplicitLink(right);
+            this.MakeLinks(subNecklace.Right, right);
         }
 
         public INode ToRootNode()

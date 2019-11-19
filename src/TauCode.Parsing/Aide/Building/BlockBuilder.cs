@@ -10,6 +10,8 @@ namespace TauCode.Parsing.Aide.Building
 {
     public class BlockBuilder
     {
+        //private static readonly IReadOnlyList<string> EmptyStrings = new List<string>();
+
         public BlockBuilder(Boss boss, BlockDefinitionResult source)
         {
             // todo checks
@@ -58,9 +60,10 @@ namespace TauCode.Parsing.Aide.Building
 
         private Necklace ContentToNecklace(IContent content)
         {
+            //additionalArguments = additionalArguments ?? EmptyStrings;
             var necklace = new Necklace();
 
-            for (int i = 0; i < content.Count; i++)
+            for (var i = 0; i < content.Count; i++)
             {
                 var result = content[i];
                 if (result is TokenResult tokenResult)
@@ -74,6 +77,8 @@ namespace TauCode.Parsing.Aide.Building
                         {
                             throw new NotImplementedException();
                         }
+
+                        //blockNecklace.Right.Arguments.AddRange(additionalArguments);
                         necklace.AppendNecklace(blockNecklace);
                     }
                     else

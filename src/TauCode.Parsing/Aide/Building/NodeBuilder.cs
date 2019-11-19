@@ -30,7 +30,7 @@ namespace TauCode.Parsing.Aide.Building
             }
         }
 
-        public IReadOnlyList<string> Arguments => _arguments;
+        public List<string> Arguments => _arguments;
 
         public INode Node { get; private set; }
 

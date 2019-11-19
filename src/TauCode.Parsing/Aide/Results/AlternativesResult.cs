@@ -42,7 +42,7 @@ namespace TauCode.Parsing.Aide.Results
 
         public string Name { get; }
 
-        public IList<string> Arguments { get; }
+        public List<string> Arguments { get; }
 
         #endregion
     }
