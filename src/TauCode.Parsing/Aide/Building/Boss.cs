@@ -8,12 +8,10 @@ namespace TauCode.Parsing.Aide.Building
     public class Boss
     {
         private readonly Dictionary<string, BlockBuilder> _blockBuilders;
-        private INode _root;
 
         public Boss(IEnumerable<IAideResult> results)
         {
             // todo: checks.
-            //_blockDefinitions = results.Cast<BlockDefinitionResult>().ToList();
 
             NodeFamily = new NodeFamily("todo family");
 

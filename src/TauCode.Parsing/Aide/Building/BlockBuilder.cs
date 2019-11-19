@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Algorithms.Graphs;
 using TauCode.Parsing.Aide.Results;
+using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Aide.Building
@@ -34,7 +35,7 @@ namespace TauCode.Parsing.Aide.Building
         public BlockDefinitionResult Source { get; }
         public List<string> ReferencedBlockNames { get; }
 
-        public NodeBuilder SubTree { get; private set; }
+        public Necklace Necklace { get; private set; }
 
         internal void Resolve()
         {
@@ -47,63 +48,88 @@ namespace TauCode.Parsing.Aide.Building
 
         public void Build()
         {
-            throw new NotImplementedException();
+            if (this.Necklace != null)
+            {
+                throw new NotImplementedException();
+            }
+
+            this.Necklace = this.ContentToNecklace(this.Source.Content);
         }
 
-        //public void Build()
-        //{
-        //    var outcome = this.CreateContentOutcome(this.Source.Content);
-        //    throw new NotImplementedException();
-        //}
+        private Necklace ContentToNecklace(IContent content)
+        {
+            var necklace = new Necklace();
 
-        //private ContentOutcome CreateContentOutcome(IContent content)
-        //{
-        //    var outcome = new ContentOutcome();
+            for (int i = 0; i < content.Count; i++)
+            {
+                var result = content[i];
+                if (result is TokenResult tokenResult)
+                {
+                    if (tokenResult.Token is EnumToken<SyntaxElement> syntaxToken &&
+                        syntaxToken.Value == SyntaxElement.BlockReference)
+                    {
+                        var referencedBlockName = syntaxToken.Name;
+                        var blockNecklace = this.Boss.Squad.GetBlockBuilder(referencedBlockName).Necklace;
+                        if (blockNecklace == null)
+                        {
+                            throw new NotImplementedException();
+                        }
+                        necklace.AppendNecklace(blockNecklace);
+                    }
+                    else
+                    {
+                        var nodeBuilder = new NodeBuilder(this.Boss.NodeFamily, tokenResult);
+                        necklace.AddItem(nodeBuilder, true);
+                    }
+                }
+                else if (result is OptionalResult optionalResult)
+                {
+                    var optionalNecklace = this.BuildOptionalNecklace(optionalResult);
+                    necklace.AppendNecklace(optionalNecklace);
+                }
+                else if (result is AlternativesResult alternativesResult)
+                {
+                    var alternativesNecklace = this.BuildAlternativesNecklace(alternativesResult);
+                    necklace.AppendNecklace(alternativesNecklace);
+                }
+                else
+                {
+                    throw new NotImplementedException();
+                }
+            }
 
-        //    foreach (var aideResult in content)
-        //    {
-        //        if (aideResult is TokenResult tokenResult)
-        //        {
-        //            var nodeBuilder = new NodeBuilder(this.Boss.NodeFamily, tokenResult);
-        //            nodeBuilder.Build();
-        //            outcome.AddNode(nodeBuilder, true);
-        //        }
-        //        else if (aideResult is OptionalResult optionalResult)
-        //        {
-        //            var start = new NodeBuilder(this.Boss.NodeFamily, optionalResult.Name);
-        //            var optionalOutcome = this.CreateContentOutcome(optionalResult.OptionalContent);
-        //            var end = new NodeBuilder(this.Boss.NodeFamily, (string)null);
+            return necklace;
+        }
 
-        //            throw new NotImplementedException();
-        //        }
-        //        else if (aideResult is AlternativesResult alternativesResult)
-        //        {
-        //            var start = new NodeBuilder(this.Boss.NodeFamily, alternativesResult.Name);
+        private Necklace BuildOptionalNecklace(OptionalResult optionalResult)
+        {
+            var result = new Necklace();
+            var left = new NodeBuilder(new IdleNode(this.Boss.NodeFamily, optionalResult.Name), null);
+            result.AddItem(left, false);
+            var right = new NodeBuilder(new IdleNode(this.Boss.NodeFamily, null), optionalResult.Arguments);
+            result.AddItem(right, true);
 
-        //            var alternativeOutcomes = alternativesResult
-        //                .GetAllAlternatives()
-        //                .Select(x => this.CreateContentOutcome(x))
-        //                .ToList();
+            var optionalContentNecklace = this.ContentToNecklace(optionalResult.OptionalContent);
+            
+            result.InsertNecklace(left, right, optionalContentNecklace);
+            return result;
+        }
 
-        //            var end = new NodeBuilder(this.Boss.NodeFamily, (string)null);
+        private Necklace BuildAlternativesNecklace(AlternativesResult alternativesResult)
+        {
+            var result = new Necklace();
+            var left = new NodeBuilder(new IdleNode(this.Boss.NodeFamily, alternativesResult.Name), null);
+            result.AddItem(left, false);
+            var right = new NodeBuilder(new IdleNode(this.Boss.NodeFamily, null), alternativesResult.Arguments);
+            result.AddItem(right, false);
 
-        //            foreach (var alternativeOutcome in alternativeOutcomes)
-        //            {
-        //                start.Node.EstablishLink(alternativeOutcome.Nodes.First().Node);
-        //                alternativeOutcome.AddNode(end, true);
-        //            }
+            foreach (var alternative in alternativesResult.GetAllAlternatives())
+            {
+                var alternativeNecklace = this.ContentToNecklace(alternative);
+                result.InsertNecklace(left, right, alternativeNecklace);
+            }
 
-
-        //        }
-        //        else
-        //        {
-        //            throw new NotImplementedException();
-        //        }
-        //    }
-
-        //    //outcome.InitLinks();
-
-        //    return outcome;
-        //}
+            return result;
+        }
     }
 }

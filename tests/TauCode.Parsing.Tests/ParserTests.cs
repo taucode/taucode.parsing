@@ -50,12 +50,20 @@ namespace TauCode.Parsing.Tests
             INodeFamily family = new NodeFamily("parser_demo");
 
             var root = new IdleNode(family, "root");
-            var create = new ExactWordNode(family, "Node: CREATE", "CREATE", null);
-            var table = new ExactWordNode(family, "Node: TABLE", "TABLE", (token, accumulator) =>
-            {
-                var tableInfo = new TableInfo();
-                accumulator.AddResult(tableInfo);
-            });
+            var create = new ExactWordNode(
+                family, 
+                "Node: CREATE", 
+                null,
+                "CREATE");
+            var table = new ExactWordNode(
+                family, 
+                "Node: TABLE", 
+                (token, accumulator) =>
+                {
+                    var tableInfo = new TableInfo();
+                    accumulator.AddResult(tableInfo);
+                }, 
+                "TABLE");
             var tableName = new IdentifierNode(family, "Node: <table_name>", (token, accumulator) =>
             {
                 var tableInfo = (TableInfo)accumulator.Last();

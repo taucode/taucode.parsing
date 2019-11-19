@@ -8,31 +8,29 @@ namespace TauCode.Parsing.Aide.Building
 {
     public class NodeBuilder
     {
-        //private readonly INodeFamily _nodeFamily;
         private readonly List<NodeBuilder> _explicitLinks;
         private readonly List<string> _linksToClaim;
+        private readonly List<string> _arguments;
 
         public NodeBuilder(INodeFamily nodeFamily, TokenResult tokenResult)
-            : this(BuildNode(nodeFamily, tokenResult))
+            : this(BuildNode(nodeFamily, tokenResult), tokenResult.Arguments)
         {
-            // todo check args
-            //this.Source = source;
-            //_nodeFamily = nodeFamily;
         }
 
-        public NodeBuilder(INode node)
+        public NodeBuilder(INode node, IEnumerable<string> arguments)
         {
             // todo check args
             this.Node = node;
             _explicitLinks = new List<NodeBuilder>();
             _linksToClaim = new List<string>();
-            //this.Node = new IdleNode(nodeFamily, nodeName);
-            //_nodeFamily = nodeFamily;
-            //_explicitLinks = new List<NodeBuilder>();
-            //_linksToClaim = new List<string>();
+            _arguments = new List<string>();
+            if (arguments != null)
+            {
+                _arguments.AddRange(arguments);
+            }
         }
 
-        //public TokenResult Source { get; } // todo: private?
+        public IReadOnlyList<string> Arguments => _arguments;
 
         public INode Node { get; private set; }
 
@@ -47,13 +45,21 @@ namespace TauCode.Parsing.Aide.Building
                         node = new IdentifierNode(nodeFamily, syntaxToken.Name, null);
                         break;
 
+                    case SyntaxElement.Idle:
+                        node = new IdleNode(nodeFamily, syntaxToken.Name);
+                        break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
             else if (tokenResult.Token is WordToken wordToken)
             {
-                node = new WordNode(nodeFamily, wordToken.Name, null);
+                node = new ExactWordNode(nodeFamily, wordToken.Name, null, wordToken.Word);
+            }
+            else if (tokenResult.Token is SymbolToken symbolToken)
+            {
+                node = new ExactSymbolNode(nodeFamily, symbolToken.Name, null, symbolToken.Value);
             }
             else
             {
@@ -63,41 +69,14 @@ namespace TauCode.Parsing.Aide.Building
             return node;
         }
 
-        //public void Build()
-        //{
-        //    if (this.Node != null)
-        //    {
-        //        throw new NotImplementedException();
-        //    }
+        public void AddExplicitLink(NodeBuilder to)
+        {
+            _explicitLinks.Add(to);
+        }
 
-        //    INode node;
-        //    if (this.Source.Token is EnumToken<SyntaxElement> syntaxToken)
-        //    {
-        //        switch (syntaxToken.Value)
-        //        {
-        //            case SyntaxElement.Identifier:
-        //                node = new IdentifierNode(_nodeFamily, syntaxToken.Name, null);
-        //                break;
-
-        //            default:
-        //                throw new ArgumentOutOfRangeException();
-        //        }
-        //    }
-        //    else if (this.Source.Token is WordToken wordToken)
-        //    {
-        //        node = new WordNode(_nodeFamily, wordToken.Name, null);
-        //    }
-        //    else
-        //    {
-        //        throw new NotImplementedException();
-        //    }
-
-        //    this.Node = node;
-        //}
-
-        //public void AddExtraLink(NodeBuilder link)
-        //{
-        //    _explicitLinks.Add(link);
-        //}
+        public void AddLinkClaim(string linkClaim)
+        {
+            _linksToClaim.Add(linkClaim);
+        }
     }
 }
