@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Linq;
 using TauCode.Parsing.Aide;
 using TauCode.Parsing.Aide.Building;
@@ -189,12 +188,83 @@ namespace TauCode.Parsing.Tests.Building
 
             // pk columns right paren
             nextNodes = pkColumnsRightParen.GetNonIdleLinks();
+            Assert.That(nextNodes, Has.Count.EqualTo(2));
 
             Assert.That(nextNodes, Does.Contain(tableClosing));
 
+            // CONSTRAINT-s comma
+            var constraintsComma = nextNodes.Single(x =>
+                x is ExactSymbolNode symbolNode4 && symbolNode4.Value == SymbolValue.Comma);
 
+            nextNodes = constraintsComma.GetNonIdleLinks();
+            Assert.That(nextNodes.Single(), Is.SameAs(constraint));
 
-            throw new NotImplementedException("go on, looks good!");
+            // FOREIGN
+            var foreignKey = foreign.GetNonIdleLinks().Single();
+            Assert.That(foreignKey, Has.Property("Word").EqualTo("KEY"));
+
+            // fk name
+            var fkName = foreignKey.GetNonIdleLinks().Single();
+            Assert.That(fkName, Is.TypeOf<IdentifierNode>());
+            Assert.That(fkName.Name, Is.EqualTo("fk_name"));
+
+            // fk left paren
+            var fkLeftParen = fkName.GetNonIdleLinks().Single();
+            Assert.That(fkLeftParen, Is.TypeOf<ExactSymbolNode>());
+            symbolNode = (ExactSymbolNode) fkLeftParen;
+            Assert.That(symbolNode.Value, Is.EqualTo(SymbolValue.LeftParenthesis));
+
+            // fk column name
+            var fkColumnName = fkLeftParen.GetNonIdleLinks().Single();
+            Assert.That(fkColumnName, Is.TypeOf<IdentifierNode>());
+            Assert.That(fkColumnName.Name, Is.EqualTo("fk_column_name"));
+
+            nextNodes = fkColumnName.GetNonIdleLinks();
+            Assert.That(nextNodes, Has.Count.EqualTo(2));
+
+            // fk column names comma
+            var fkColumnNamesComma = nextNodes.Single(x =>
+                x is ExactSymbolNode symbolNode5 && symbolNode5.Value == SymbolValue.Comma);
+            Assert.That(fkColumnNamesComma.GetNonIdleLinks().Single(), Is.SameAs(fkColumnName));
+
+            // fk column names right paren
+            var fkColumnNamesRightParen = nextNodes.Single(x =>
+                x is ExactSymbolNode symbolNode6 && symbolNode6.Value == SymbolValue.RightParenthesis);
+
+            // REFERENCES
+            var references = fkColumnNamesRightParen.GetNonIdleLinks().Single();
+            Assert.That(references, Has.Property("Word").EqualTo("REFERENCES"));
+
+            // ref'd table name
+            var referencedTableName = references.GetNonIdleLinks().Single();
+            Assert.That(referencedTableName, Is.TypeOf<IdentifierNode>());
+            Assert.That(referencedTableName.Name, Is.EqualTo("fk_referenced_table_name"));
+
+            // fk ref'd left paren
+            var fkReferencedLeftParen = referencedTableName.GetNonIdleLinks().Single();
+            Assert.That(fkReferencedLeftParen, Has.Property("Value").EqualTo(SymbolValue.LeftParenthesis));
+
+            // fk ref'd column name
+            var fkReferencedColumnName = fkReferencedLeftParen.GetNonIdleLinks().Single();
+            Assert.That(fkReferencedColumnName, Is.TypeOf<IdentifierNode>());
+            Assert.That(fkReferencedColumnName.Name, Is.EqualTo("fk_referenced_column_name"));
+
+            nextNodes = fkReferencedColumnName.GetNonIdleLinks();
+            
+            // fk ref'd column name comma
+            var fkReferencedColumnNameComma = nextNodes.Single(x =>
+                x is ExactSymbolNode symbolNode7 && symbolNode7.Value == SymbolValue.Comma);
+            Assert.That(fkReferencedColumnNameComma.GetNonIdleLinks().Single(), Is.SameAs(fkReferencedColumnName));
+
+            // fk ref'd columns right paren
+            var fkReferencedColumnsRightParen = nextNodes.Single(x =>
+                x is ExactSymbolNode symbolNode8 && symbolNode8.Value == SymbolValue.RightParenthesis);
+
+            nextNodes = fkReferencedColumnsRightParen.GetNonIdleLinks();
+            Assert.That(nextNodes, Has.Count.EqualTo(2));
+
+            Assert.That(nextNodes, Does.Contain(tableClosing));
+            Assert.That(nextNodes, Does.Contain(constraintsComma));
         }
     }
 }
