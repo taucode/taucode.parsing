@@ -30,7 +30,10 @@ namespace TauCode.Parsing.Aide.Building
             {
                 blockBuilder.Resolve();
             }
+        }
 
+        public INode Deliver()
+        {
             var orderedNames = this.Squad.GetOrderedNames();
             foreach (var orderedName in orderedNames)
             {
@@ -38,12 +41,19 @@ namespace TauCode.Parsing.Aide.Building
                 blockBuilder.Build();
             }
 
-            throw new NotImplementedException();
-        }
+            var topNecklaces = _blockBuilders
+                .Values
+                .Where(x => x.Source.IsTop())
+                .Select(x => x.Necklace)
+                .ToList();
 
-        public INode Deliver()
-        {
-            throw new System.NotImplementedException();
+            if (topNecklaces.Count != 1)
+            {
+                throw new NotImplementedException(); // todo
+            }
+
+            var node = topNecklaces.Single().ToRootNode();
+            return node;
         }
 
         public Squad Squad { get; }

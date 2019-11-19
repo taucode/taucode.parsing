@@ -78,5 +78,18 @@ namespace TauCode.Parsing.Aide.Building
         {
             _linksToClaim.Add(linkClaim);
         }
+
+        public void InitNodeLinks()
+        {
+            foreach (var explicitLink in _explicitLinks)
+            {
+                this.Node.EstablishLink(explicitLink.Node);
+            }
+
+            foreach (var linkToClaim in _linksToClaim)
+            {
+                this.Node.ClaimLink(linkToClaim);
+            }
+        }
     }
 }

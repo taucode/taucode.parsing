@@ -82,5 +82,15 @@ namespace TauCode.Parsing.Aide.Building
             left.AddExplicitLink(subNecklace.Left);
             subNecklace.Right.AddExplicitLink(Right);
         }
+
+        public INode ToRootNode()
+        {
+            foreach (var item in this.Items)
+            {
+                item.InitNodeLinks();
+            }
+
+            return this.Left.Node;
+        }
     }
 }

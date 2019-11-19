@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
@@ -22,6 +23,23 @@ namespace TauCode.Parsing.Aide.Results
         public string GetBlockName()
         {
             return this.Arguments[1]; // todo checks
+        }
+
+        public bool IsTop()
+        {
+            var topness = this.Arguments[0];
+
+            switch (topness)
+            {
+                case "top":
+                    return true;
+
+                case "inner":
+                    return false;
+
+                default:
+                    throw new NotImplementedException();
+            }
         }
 
         #endregion
