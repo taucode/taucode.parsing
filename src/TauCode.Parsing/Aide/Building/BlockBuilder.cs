@@ -10,8 +10,6 @@ namespace TauCode.Parsing.Aide.Building
 {
     public class BlockBuilder
     {
-        //private static readonly IReadOnlyList<string> EmptyStrings = new List<string>();
-
         public BlockBuilder(Boss boss, BlockDefinitionResult source)
         {
             // todo checks
@@ -60,7 +58,6 @@ namespace TauCode.Parsing.Aide.Building
 
         private Necklace ContentToNecklace(IContent content)
         {
-            //additionalArguments = additionalArguments ?? EmptyStrings;
             var necklace = new Necklace();
 
             for (var i = 0; i < content.Count; i++)
@@ -78,7 +75,13 @@ namespace TauCode.Parsing.Aide.Building
                             throw new NotImplementedException();
                         }
 
-                        //blockNecklace.Right.Arguments.AddRange(additionalArguments);
+                        blockNecklace.Right.Arguments.AddRange(tokenResult.Arguments);
+
+                        // add idle node with name == <name of block> in front of the block
+                        var blockStartingItem = new NodeBuilder(new IdleNode(this.Boss.NodeFamily, referencedBlockName), null);
+                        necklace.AddItem(blockStartingItem, true);
+                        
+                        // append block necklace
                         necklace.AppendNecklace(blockNecklace);
                     }
                     else
@@ -90,11 +93,13 @@ namespace TauCode.Parsing.Aide.Building
                 else if (result is OptionalResult optionalResult)
                 {
                     var optionalNecklace = this.BuildOptionalNecklace(optionalResult);
+                    optionalNecklace.Right.Arguments.AddRange(optionalResult.Arguments);
                     necklace.AppendNecklace(optionalNecklace);
                 }
                 else if (result is AlternativesResult alternativesResult)
                 {
                     var alternativesNecklace = this.BuildAlternativesNecklace(alternativesResult);
+                    alternativesNecklace.Right.Arguments.AddRange(alternativesResult.Arguments);
                     necklace.AppendNecklace(alternativesNecklace);
                 }
                 else
