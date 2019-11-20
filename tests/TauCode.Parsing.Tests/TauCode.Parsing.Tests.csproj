@@ -16,9 +16,11 @@
     <None Remove="Resources\Result5.txt" />
     <None Remove="Resources\Result6.txt" />
     <None Remove="Resources\Result7.txt" />
+    <None Remove="Resources\SQLiteRealGrammar.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\SQLiteRealGrammar.txt" />
     <EmbeddedResource Include="Resources\Result2.txt" />
     <EmbeddedResource Include="Resources\Result3.txt" />
     <EmbeddedResource Include="Resources\Result4.txt" />

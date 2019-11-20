@@ -9,3 +9,9 @@
 2019-11-16
 ==========
 x   1. Get rid of 'Aide'.
+
+2019-11-20
+==========
+    1. Cache non-idle successor nodes for finalized nodes.
+    2. LexerBase
+    3. IParser.Parse ==> List<IParsingResult>!
