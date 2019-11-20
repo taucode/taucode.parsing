@@ -8,6 +8,6 @@ namespace TauCode.Parsing.Tests.Data
         public bool IsUnique { get; set; }
         public string TableName { get; set; }
         public List<IndexColumnInfo> Columns { get; set; } = new List<IndexColumnInfo>();
-        public bool IsFinalized { get; set; }
+        public bool IsCreationFinalized { get; set; }
     }
 }

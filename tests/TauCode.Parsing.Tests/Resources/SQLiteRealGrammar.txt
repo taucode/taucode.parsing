@@ -29,7 +29,7 @@ CREATE
 
 { <column_name>\Identifier | <column_name_word>\Word }
 { <type_name>\Identifier | <type_name_word>\Word }
-<scale_and_precision>[ \( <scale>\Integer [ \, <precision>\Integer ] \) ]
+<scale_and_precision>[ \( <precision>\Integer [ \, <scale>\Integer ] \) ]
 <nullability>[ { <null>NULL | NOT <not_null>NULL } ]
 
 \EndBlockDefinition
