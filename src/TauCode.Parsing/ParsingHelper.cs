@@ -139,5 +139,39 @@ namespace TauCode.Parsing
         }
 
         public static IReadOnlyCollection<INode> GetNonIdleLinks(this INode node) => GetNonIdleNodes(node.ResolveLinks());
+
+        public static IReadOnlyCollection<INode> FetchTree(this INode root)
+        {
+            // todo checks
+
+            var all = new HashSet<INode>();
+            var currentNodes = new List<INode>(new[] { root });
+            var links = new List<INode>();
+            while (true)
+            {
+                links.Clear();
+
+                foreach (var node in currentNodes)
+                {
+                    if (!all.Contains(node))
+                    {
+                        // new one
+                        all.Add(node);
+                        links.AddRange(node.ResolveLinks());
+                    }
+                }
+
+                if (links.Count == 0)
+                {
+                    // nothing to add anymore
+                    break;
+                }
+
+                currentNodes.Clear();
+                currentNodes.AddRange(links);
+            }
+
+            return all;
+        }
     }
 }
