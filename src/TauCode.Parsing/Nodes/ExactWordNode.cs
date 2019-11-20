@@ -20,14 +20,25 @@ namespace TauCode.Parsing.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is WordToken wordToken && wordToken.Word == this.Word)
+            if (token is WordToken wordToken)
             {
-                return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+                bool condition;
+                if (this.IsCaseSensitive)
+                {
+                    condition = string.Equals(wordToken.Word, this.Word);
+                }
+                else
+                {
+                    condition = string.Equals(wordToken.Word, this.Word, StringComparison.InvariantCultureIgnoreCase);
+                }
+
+                if (condition)
+                {
+                    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+                }
             }
-            else
-            {
-                return InquireResult.Reject;
-            }
+
+            return InquireResult.Reject;
         }
 
         #endregion
@@ -35,6 +46,8 @@ namespace TauCode.Parsing.Nodes
         #region Public
 
         public string Word { get; }
+
+        public bool IsCaseSensitive { get; set; }
 
         #endregion
     }

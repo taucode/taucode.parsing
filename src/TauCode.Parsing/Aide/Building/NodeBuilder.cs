@@ -48,6 +48,18 @@ namespace TauCode.Parsing.Aide.Building
                         node = new IdleNode(nodeFamily, syntaxToken.Name);
                         break;
 
+                    case SyntaxElement.Word:
+                        node = new WordNode(nodeFamily, syntaxToken.Name, null);
+                        break;
+
+                    case SyntaxElement.Integer:
+                        node = new IntegerNode(nodeFamily, syntaxToken.Name, null);
+                        break;
+
+                    case SyntaxElement.End:
+                        node = EndNode.Instance;
+                        break;
+
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
