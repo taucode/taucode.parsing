@@ -229,6 +229,13 @@ namespace TauCode.Parsing.Aide
             }
         }
 
+        private static void AddTokenResult(IToken token, IResultAccumulator accumulator)
+        {
+            var content = accumulator.GetActualContent();
+            var result = new TokenResult(token);
+            content.AddResult(result);
+        }
+
         public static INode BuildParserRoot()
         {
             INodeFamily family = new NodeFamily("Aide");
@@ -257,51 +264,25 @@ namespace TauCode.Parsing.Aide
             var word = new WordNode(
                 family,
                 "word",
-                (token, accumulator) =>
-                {
-                    // todo: this lambda is copy-paste
-                    var content = accumulator.GetActualContent();
-                    var result = new TokenResult(token);
-                    content.AddResult(result);
-                });
+                AddTokenResult);
             var identifier = new ExactEnumNode<SyntaxElement>(
                 family,
                 "identifier",
-                (token, accumulator) =>
-                {
-                    var content = accumulator.GetActualContent();
-                    var result = new TokenResult(token);
-                    content.AddResult(result);
-                },
+                AddTokenResult,
                 SyntaxElement.Identifier);
             var symbol = new SymbolNode(
                 family,
                 "symbol",
-                (token, accumulator) =>
-                {
-                    var content = accumulator.GetActualContent();
-                    var result = new TokenResult(token);
-                    content.AddResult(result);
-                });
+                AddTokenResult);
             var blockReference = new ExactEnumNode<SyntaxElement>(
                 family,
                 "blockReference",
-                (token, accumulator) =>
-                {
-                    var content = accumulator.GetActualContent();
-                    var result = new TokenResult(token);
-                    content.AddResult(result);
-                },
+                AddTokenResult,
                 SyntaxElement.BlockReference);
             var idle = new ExactEnumNode<SyntaxElement>(
                 family,
                 "idle",
-                (token, accumulator) =>
-                {
-                    var content = accumulator.GetActualContent();
-                    var result = new TokenResult(token);
-                    content.AddResult(result);
-                },
+                AddTokenResult,
                 SyntaxElement.Idle);
 
             #region optional
