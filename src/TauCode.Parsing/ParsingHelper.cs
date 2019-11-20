@@ -142,7 +142,10 @@ namespace TauCode.Parsing
 
         public static IReadOnlyCollection<INode> FetchTree(this INode root)
         {
-            // todo checks
+            if (root == null)
+            {
+                throw new ArgumentNullException(nameof(root));
+            }
 
             var all = new HashSet<INode>();
             var currentNodes = new List<INode>(new[] { root });

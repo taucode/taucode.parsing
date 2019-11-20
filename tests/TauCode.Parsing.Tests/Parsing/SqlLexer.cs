@@ -42,11 +42,16 @@ namespace TauCode.Parsing.Tests.Parsing
         private string _input;
         private int _pos;
 
+        private Exception CreateSqlLexerException()
+        {
+            return new Exception("Test SQL Lexer error.");
+        }
+
         private char GetCurrentChar()
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException();
+                throw this.CreateSqlLexerException();
             }
 
             return _input[_pos];
@@ -70,7 +75,7 @@ namespace TauCode.Parsing.Tests.Parsing
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException();
+                throw this.CreateSqlLexerException();
             }
 
             _pos += step;
@@ -159,7 +164,7 @@ namespace TauCode.Parsing.Tests.Parsing
 
             if (word.Length == 0)
             {
-                throw new NotImplementedException();
+                throw this.CreateSqlLexerException();
             }
 
             return new WordToken(word);
@@ -186,7 +191,7 @@ namespace TauCode.Parsing.Tests.Parsing
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw this.CreateSqlLexerException();
                 }
             }
             else
@@ -219,7 +224,7 @@ namespace TauCode.Parsing.Tests.Parsing
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw this.CreateSqlLexerException();
                 }
             }
 
@@ -229,7 +234,7 @@ namespace TauCode.Parsing.Tests.Parsing
 
             if (word.Length == 0)
             {
-                throw new NotImplementedException();
+                throw this.CreateSqlLexerException();
             }
 
             return new IntegerToken(word);
@@ -242,7 +247,7 @@ namespace TauCode.Parsing.Tests.Parsing
                 return ']';
             }
 
-            throw new NotImplementedException();
+            throw this.CreateSqlLexerException();
         }
 
         private IdentifierToken ReadIdentifierToken(char? leftDelimiter)
@@ -285,7 +290,7 @@ namespace TauCode.Parsing.Tests.Parsing
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw this.CreateSqlLexerException();
                 }
 
                 identBegin = false;
@@ -301,7 +306,6 @@ namespace TauCode.Parsing.Tests.Parsing
 
             return new IdentifierToken(identifier);
         }
-
         public List<IToken> Lexize(string input)
         {
             _input = input ?? throw new ArgumentNullException(nameof(input));
@@ -343,7 +347,7 @@ namespace TauCode.Parsing.Tests.Parsing
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw this.CreateSqlLexerException();
                 }
             }
         }
