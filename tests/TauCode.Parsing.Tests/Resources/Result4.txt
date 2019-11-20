@@ -1,0 +1,3 @@
+﻿\BeginBlockDefinition(:inner, :pk_columns)
+\( <pk_column_name>\Identifier [ { <asc>ASC | <desc>DESC } ] { \,(:pk_column_name) | \) }
+\EndBlockDefinition
