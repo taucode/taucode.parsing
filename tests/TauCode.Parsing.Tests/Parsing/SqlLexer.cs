@@ -177,7 +177,9 @@ namespace TauCode.Parsing.Tests.Parsing
                     this.IsWhiteSpaceChar(nextChar) ||
                     this.IsWordStartingChar(nextChar) ||
                     this.IsDigitChar(nextChar) ||
-                    this.IsSymbolChar(nextChar))
+                    this.IsSymbolChar(nextChar) ||
+                    this.IsIdentifierStartChar(nextChar) ||
+                    this.IsIdentifierLeftDelimiterChar(nextChar))
                 {
                     this.Advance();
                     return new SymbolToken(c);

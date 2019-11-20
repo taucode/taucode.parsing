@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+using System.Linq;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Data;
 using TauCode.Parsing.Tokens;
@@ -37,11 +37,11 @@ namespace TauCode.Parsing.Tests.Parsing
             Assert.That(tableInfo.Columns, Has.Count.EqualTo(2));
 
             var column = tableInfo.Columns[0];
-            Assert.That(column.ColumnName, Is.EqualTo("id"));
+            Assert.That(column.Name, Is.EqualTo("id"));
             Assert.That(column.TypeName, Is.EqualTo("integer"));
 
             column = tableInfo.Columns[1];
-            Assert.That(column.ColumnName, Is.EqualTo("name"));
+            Assert.That(column.Name, Is.EqualTo("name"));
             Assert.That(column.TypeName, Is.EqualTo("text"));
         }
 
@@ -75,7 +75,7 @@ namespace TauCode.Parsing.Tests.Parsing
                 var tableInfo = (TableInfo)accumulator.Last();
                 var column = new ColumnInfo
                 {
-                    ColumnName = ((IdentifierToken)token).Identifier,
+                    Name = ((IdentifierToken)token).Identifier,
                 };
                 tableInfo.Columns.Add(column);
             });

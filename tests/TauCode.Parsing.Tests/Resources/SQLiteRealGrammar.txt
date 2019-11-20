@@ -12,7 +12,7 @@ CREATE
 
 \BeginBlockDefinition(:inner, :create_table)
 
-TABLE
+<do_create_table>TABLE
 { <table_name>\Identifier | <table_name_word>\Word }
 \(
 <column_definition>\BlockReference(:table_closing, :next)
@@ -51,7 +51,7 @@ TABLE
 
 \BeginBlockDefinition(:inner, :primary_key)
 
-PRIMARY
+<do_primary_key>PRIMARY
 KEY
 <pk_columns>\BlockReference
 
@@ -75,7 +75,7 @@ KEY
 
 \BeginBlockDefinition(:inner, :foreign_key)
 
-FOREIGN
+<do_foreign_key>FOREIGN
 KEY
 <fk_columns>\BlockReference
 REFERENCES
@@ -113,8 +113,8 @@ REFERENCES
 
 \BeginBlockDefinition(:inner, :create_index)
 
-[<unique>UNIQUE]
-INDEX
+[<do_create_unique_index>UNIQUE]
+<do_create_index>INDEX
 { <index_name>\Identifier | <index_name_word>\Word }
 ON
 { <index_table_name>\Identifier | <index_table_name_word>\Word }
