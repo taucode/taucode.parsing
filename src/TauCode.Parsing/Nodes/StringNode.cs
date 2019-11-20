@@ -3,11 +3,11 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
 {
-    public class IntegerNode : ActionNode
+    public class StringNode : ActionNode
     {
         #region Constructor
 
-        public IntegerNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action)
+        public StringNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action)
             : base(family, name, action)
         {
         }
@@ -18,7 +18,7 @@ namespace TauCode.Parsing.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is IntegerToken)
+            if (token is StringToken)
             {
                 return this.Action == null ? InquireResult.Skip : InquireResult.Act;
             }

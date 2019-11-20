@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.Tokens;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Tests.Parsing
 {
@@ -113,10 +114,7 @@ namespace TauCode.Parsing.Tests.Parsing
             return c >= '0' && c <= '9';
         }
 
-        private bool IsIdentifierLeftDelimiterChar(char c)
-        {
-            return c == '[';
-        }
+        private bool IsIdentifierLeftDelimiterChar(char c) => c.IsIn('[', '"');
 
         private bool IsIdentifierStartChar(char c)
         {
@@ -247,6 +245,15 @@ namespace TauCode.Parsing.Tests.Parsing
                 return ']';
             }
 
+            switch (leftDelimiter)
+            {
+                case '[':
+                    return ']';
+
+                case '"':
+                    return '"';
+            }
+
             throw this.CreateSqlLexerException();
         }
 
@@ -306,6 +313,39 @@ namespace TauCode.Parsing.Tests.Parsing
 
             return new IdentifierToken(identifier);
         }
+
+        private StringToken ReadStringToken()
+        {
+            this.Advance();
+            var start = this.GetCurrentPosition();
+
+            while (true)
+            {
+                if (this.IsEnd())
+                {
+                    throw this.CreateSqlLexerException();
+                }
+
+                var c = this.GetCurrentChar();
+
+                if (c == '\'')
+                {
+                    this.Advance();
+                    break;
+                }
+                else
+                {
+                    this.Advance();
+                }
+            }
+
+            var end = this.GetCurrentPosition();
+            var len = end - start - 1;
+            var str = _input.Substring(start, len);
+
+            return new StringToken(str);
+        }
+
         public List<IToken> Lexize(string input)
         {
             _input = input ?? throw new ArgumentNullException(nameof(input));
@@ -343,6 +383,11 @@ namespace TauCode.Parsing.Tests.Parsing
                 else if (this.IsIdentifierLeftDelimiterChar(c))
                 {
                     var token = this.ReadIdentifierToken(c);
+                    list.Add(token);
+                }
+                else if (c == '\'')
+                {
+                    var token = this.ReadStringToken();
                     list.Add(token);
                 }
                 else

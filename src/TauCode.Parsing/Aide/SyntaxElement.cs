@@ -7,6 +7,7 @@
         Identifier,
         Word,
         Integer,
+        String,
         BlockReference,
         Idle,
         Comma,
@@ -17,6 +18,6 @@
         RightCurlyBracket,
         LeftBracket,
         RightBracket,
-        End
+        End,
     }
 }
