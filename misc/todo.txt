@@ -14,3 +14,4 @@ x   1. Get rid of 'Aide'.
 ==========
     1. Cache non-idle successor nodes for finalized nodes.
     2. LexerBase
+    3. IParser.Parse ==> List<IParsingResult>!
