@@ -19,8 +19,7 @@ namespace TauCode.Parsing.Aide.Building
 
         public NodeBuilder(INode node, IEnumerable<string> arguments)
         {
-            // todo check args
-            this.Node = node;
+            this.Node = node ?? throw new ArgumentNullException(nameof(node));
             _explicitLinks = new List<NodeBuilder>();
             _linksToClaim = new List<string>();
             _arguments = new List<string>();
@@ -63,7 +62,7 @@ namespace TauCode.Parsing.Aide.Building
             }
             else
             {
-                throw new NotImplementedException();
+                throw new AideException($"Could not build node using token of type '{tokenResult.Token.GetType().FullName}'.");
             }
 
             return node;

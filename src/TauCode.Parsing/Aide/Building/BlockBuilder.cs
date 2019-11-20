@@ -12,9 +12,8 @@ namespace TauCode.Parsing.Aide.Building
     {
         public BlockBuilder(Boss boss, BlockDefinitionResult source)
         {
-            // todo checks
-            this.Boss = boss;
-            this.Source = source;
+            this.Boss = boss ?? throw new ArgumentNullException(nameof(boss));
+            this.Source = source ?? throw new ArgumentNullException(nameof(source));
             this.GraphNode = this.Boss.Squad.RegisterBuilder(this);
 
             this.ReferencedBlockNames = this
@@ -50,7 +49,7 @@ namespace TauCode.Parsing.Aide.Building
         {
             if (this.Necklace != null)
             {
-                throw new NotImplementedException();
+                throw new AideException("Block is already built.");
             }
 
             this.Necklace = this.ContentToNecklace(this.Source.Content);
@@ -72,7 +71,7 @@ namespace TauCode.Parsing.Aide.Building
                         var blockNecklace = this.Boss.Squad.GetBlockBuilder(referencedBlockName).Necklace;
                         if (blockNecklace == null)
                         {
-                            throw new NotImplementedException();
+                            throw new AideException($"Necklace not built for block '{referencedBlockName}'.");
                         }
 
                         blockNecklace.Right.Arguments.AddRange(tokenResult.Arguments);
@@ -104,7 +103,7 @@ namespace TauCode.Parsing.Aide.Building
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new AideException("Unexpected result.");
                 }
             }
 

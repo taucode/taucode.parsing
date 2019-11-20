@@ -7,7 +7,6 @@ using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tokens;
 
-// todo clean up; formatting methods naming.
 namespace TauCode.Parsing.Aide
 {
     public static class AideHelper

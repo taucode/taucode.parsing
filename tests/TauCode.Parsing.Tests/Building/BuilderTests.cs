@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Tests.Building
             IBuilder builder = new Builder();
 
             // Act
-            var sqlRoot = builder.Build(results.Cast<BlockDefinitionResult>());
+            var sqlRoot = builder.Build("sql tree", results.Cast<BlockDefinitionResult>());
 
             // Assert
 

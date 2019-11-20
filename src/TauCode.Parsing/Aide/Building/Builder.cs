@@ -5,9 +5,9 @@ namespace TauCode.Parsing.Aide.Building
 {
     public class Builder : IBuilder
     {
-        public INode Build(IEnumerable<IAideResult> results)
+        public INode Build(string nodeFamilyName, IEnumerable<IAideResult> results)
         {
-            var boss = new Boss(results);
+            var boss = new Boss(nodeFamilyName, results);
             var node = boss.Deliver();
             return node;
         }

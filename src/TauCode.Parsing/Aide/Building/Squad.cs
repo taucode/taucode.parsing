@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TauCode.Algorithms.Graphs;
 
@@ -17,7 +18,11 @@ namespace TauCode.Parsing.Aide.Building
 
         public BlockBuilder GetBlockBuilder(string blockName)
         {
-            // todo checks
+            if (blockName == null)
+            {
+                throw new ArgumentNullException(nameof(blockName));
+            }
+
             return _blockBuilders[blockName];
         }
 

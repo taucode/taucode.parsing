@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TauCode.Parsing.Aide.Results
 {
@@ -22,11 +21,21 @@ namespace TauCode.Parsing.Aide.Results
 
         public string GetBlockName()
         {
-            return this.Arguments[1]; // todo checks
+            if (this.Arguments.Count != 2)
+            {
+                throw new AideException("Argument count is expected to be 2.");
+            }
+
+            return this.Arguments[1];
         }
 
         public bool IsTop()
         {
+            if (this.Arguments.Count != 2)
+            {
+                throw new AideException("Argument count is expected to be 2.");
+            }
+
             var topness = this.Arguments[0];
 
             switch (topness)
@@ -38,7 +47,7 @@ namespace TauCode.Parsing.Aide.Results
                     return false;
 
                 default:
-                    throw new NotImplementedException();
+                    throw new AideException($"Invalid block modifier: '{topness}'.");
             }
         }
 

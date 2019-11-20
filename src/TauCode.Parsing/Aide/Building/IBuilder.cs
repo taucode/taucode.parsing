@@ -5,6 +5,6 @@ namespace TauCode.Parsing.Aide.Building
 {
     public interface IBuilder
     {
-        INode Build(IEnumerable<IAideResult> results);
+        INode Build(string nodeFamilyName, IEnumerable<IAideResult> results);
     }
 }

@@ -33,7 +33,7 @@ namespace TauCode.Parsing
             tokenStream.Position++;
         }
 
-        public static IReadOnlyList<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
+        public static IReadOnlyCollection<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
         {
             if (nodes.Any(x => x is IdleNode))
             {
@@ -53,7 +53,7 @@ namespace TauCode.Parsing
             }
             else
             {
-                return nodes.ToList(); // todo optimize
+                return nodes;
             }
         }
 
@@ -138,6 +138,6 @@ namespace TauCode.Parsing
             return (T)result;
         }
 
-        public static IReadOnlyList<INode> GetNonIdleLinks(this INode node) => GetNonIdleNodes(node.ResolveLinks());
+        public static IReadOnlyCollection<INode> GetNonIdleLinks(this INode node) => GetNonIdleNodes(node.ResolveLinks());
     }
 }

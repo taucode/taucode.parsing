@@ -9,11 +9,14 @@ namespace TauCode.Parsing.Aide.Building
     {
         private readonly Dictionary<string, BlockBuilder> _blockBuilders;
 
-        public Boss(IEnumerable<IAideResult> results)
+        public Boss(string nodeFamilyName, IEnumerable<IAideResult> results)
         {
-            // todo: checks.
+            if (nodeFamilyName == null)
+            {
+                throw new ArgumentNullException(nameof(nodeFamilyName));
+            }
 
-            NodeFamily = new NodeFamily("todo family");
+            NodeFamily = new NodeFamily("nodeFamilyName");
 
             this.Squad = new Squad();
             _blockBuilders = results
@@ -49,7 +52,7 @@ namespace TauCode.Parsing.Aide.Building
 
             if (topNecklaces.Count != 1)
             {
-                throw new NotImplementedException(); // todo
+                throw new AideException("Top block count doesn't equal to 1.");
             }
 
             var node = topNecklaces.Single().ToRootNode();
