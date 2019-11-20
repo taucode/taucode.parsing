@@ -206,6 +206,18 @@ namespace TauCode.Parsing.Aide
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Idle, tokenName);
                     break;
 
+                case "Word":
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Word, tokenName);
+                    break;
+
+                case "Integer":
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Integer, tokenName);
+                    break;
+
+                case "End":
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.End, tokenName);
+                    break;
+
                 default:
                     throw new AideException($"Unknown alias: '{alias}'.");
             }
@@ -471,13 +483,10 @@ namespace TauCode.Parsing.Aide
                 }
                 else if (c == '{')
                 {
-                    if (upcomingTokenName != null)
-                    {
-                        throw AideHelper.CreateTokenNameCannotPrecedeChar(c);
-                    }
-
                     this.Advance();
-                    var token = new EnumToken<SyntaxElement>(SyntaxElement.LeftCurlyBracket, null);
+                    var token = new EnumToken<SyntaxElement>(SyntaxElement.LeftCurlyBracket, upcomingTokenName);
+                    upcomingTokenName = null;
+
                     list.Add(token);
                 }
                 else if (c == '}')

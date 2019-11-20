@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
-using System.Linq;
+﻿using System.Linq;
+using NUnit.Framework;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Data;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tests
+namespace TauCode.Parsing.Tests.Parsing
 {
     [TestFixture]
     public class ParserTests

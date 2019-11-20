@@ -5,6 +5,8 @@
         BeginBlockDefinition = 1,
         EndBlockDefinition,
         Identifier,
+        Word,
+        Integer,
         BlockReference,
         Idle,
         Comma,
@@ -15,5 +17,6 @@
         RightCurlyBracket,
         LeftBracket,
         RightBracket,
+        End
     }
 }

@@ -3,7 +3,7 @@
 \BeginBlockDefinition(:top, :create)
 
 CREATE
-{ <create_table>\BlockReference | <create_index>\BlockReference }
+{ <create_table>\BlockReference | <create_index>\BlockReference } \End
 
 \EndBlockDefinition
 
@@ -40,6 +40,7 @@ TABLE
 \BeginBlockDefinition(:inner, :constraint_definitions)
 
 <constraint>CONSTRAINT
+{ <constraint_name>\Identifier | <constraint_name_word>\Word }
 { <primary_key>\BlockReference | <foreign_key>\BlockReference }
 { \,(:constraint) | \Idle }
 
@@ -52,7 +53,6 @@ TABLE
 
 PRIMARY
 KEY
-{ <pk_name>\Identifier | <pk_name_word>\Word }
 <pk_columns>\BlockReference
 
 \EndBlockDefinition
@@ -77,7 +77,6 @@ KEY
 
 FOREIGN
 KEY
-{ <fk_name>\Identifier | <fk_name_word>\Word }
 <fk_columns>\BlockReference
 REFERENCES
 { <fk_referenced_table_name>\Identifier | <fk_referenced_table_name_word>\Word }
