@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text;
 
 namespace TauCode.Parsing.Tests.Data
@@ -14,7 +13,19 @@ namespace TauCode.Parsing.Tests.Data
             var sb = new StringBuilder();
             sb.Append($"    CONSTRAINT [{this.Name}] PRIMARY KEY(");
 
-            throw new NotImplementedException();
+            for (var i = 0; i < this.Columns.Count; i++)
+            {
+                var indexColumn = this.Columns[i];
+                sb.Append($"[{indexColumn.ColumnName}] {indexColumn.SortDirection.ToString().ToUpperInvariant()}");
+
+                if (i < this.Columns.Count - 1)
+                {
+                    sb.Append(", ");
+                }
+            }
+
+            sb.Append(")");
+            return sb.ToString();
         }
     }
 }

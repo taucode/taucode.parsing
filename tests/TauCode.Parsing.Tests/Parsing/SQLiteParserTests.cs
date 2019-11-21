@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using System.IO;
 using System.Text;
 using TauCode.Utils.Extensions;
 
@@ -31,10 +30,6 @@ namespace TauCode.Parsing.Tests.Parsing
 
             var actualText = sb.ToString();
             var expectedText = this.GetType().Assembly.GetResourceText("sqlite-expected.sql", true);
-
-            // todo
-            File.WriteAllText("c:/temp/zema11/v0.sql", actualText);
-            File.WriteAllText("c:/temp/zema11/v1.sql", expectedText);
 
             Assert.That(actualText, Is.EqualTo(expectedText));
         }
