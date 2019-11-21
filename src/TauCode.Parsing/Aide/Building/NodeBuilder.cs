@@ -56,6 +56,11 @@ namespace TauCode.Parsing.Aide.Building
                         node = new IntegerNode(nodeFamily, syntaxToken.Name, null);
                         break;
 
+                    case SyntaxElement.String:
+                        node = new StringNode(nodeFamily, syntaxToken.Name, null);
+                        break;
+
+
                     case SyntaxElement.End:
                         node = EndNode.Instance;
                         break;

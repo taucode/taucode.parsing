@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Parsing</id>
-    <version>3.0.1</version>
+    <version>3.0.2</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -10,7 +10,7 @@
     <projectUrl>http://taucode.com/</projectUrl>
     <description>TauCode parsing library</description>
     <releaseNotes>
-      Tested for real SQL parser
+      1. Added string tokens support.
     </releaseNotes>
     <tags>taucode parsing</tags>
     <dependencies>

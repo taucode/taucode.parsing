@@ -2,3 +2,8 @@
 ==========
     Version: v3.0.1
     1. Release v3.0.1
+
+2019-11-21
+==========
+    Version: v3.0.2
+    1. Added string tokens support.

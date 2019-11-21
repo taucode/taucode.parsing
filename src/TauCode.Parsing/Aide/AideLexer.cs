@@ -214,6 +214,10 @@ namespace TauCode.Parsing.Aide
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Integer, tokenName);
                     break;
 
+                case "String":
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.String, tokenName);
+                    break;
+
                 case "End":
                     aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.End, tokenName);
                     break;

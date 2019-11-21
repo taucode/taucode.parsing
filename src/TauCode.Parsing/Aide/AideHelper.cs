@@ -263,6 +263,7 @@ namespace TauCode.Parsing.Aide
                 "syntaxWord",
                 "anyWord",
                 "anyInteger",
+                "anyString",
                 "identifier",
                 "syntaxSymbol",
                 "blockReference",
@@ -285,6 +286,11 @@ namespace TauCode.Parsing.Aide
                 "anyInteger",
                 AddTokenResult,
                 SyntaxElement.Integer);
+            var anyString = new ExactEnumNode<SyntaxElement>(
+                family,
+                "anyString",
+                AddTokenResult,
+                SyntaxElement.String);
             var identifier = new ExactEnumNode<SyntaxElement>(
                 family,
                 "identifier",
@@ -396,6 +402,7 @@ namespace TauCode.Parsing.Aide
                 syntaxWord,
                 anyWord,
                 anyInteger,
+                anyString,
                 identifier,
                 syntaxSymbol,
                 blockReference,
