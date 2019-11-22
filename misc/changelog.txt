@@ -10,5 +10,6 @@
 
 2019-11-22
 ==========
-    Version: v3.0.2.1
+    Version: v3.0.2.2
     1. Hotfix: using ParserException.
+    2. Updated references to NuGet-s.
