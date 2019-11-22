@@ -1,5 +1,5 @@
 ﻿using System;
-using TauCode.Utils.CommandLine.Parsing;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Nodes
 {
@@ -26,23 +26,23 @@ namespace TauCode.Parsing.Nodes
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new ParsingException("Cannot call 'Act' for end node.");
+            throw new ParserException("Cannot call 'Act' for end node.");
         }
 
         public override void EstablishLink(INode node)
         {
-            throw new ParsingException("Cannot add link to end node.");
+            throw new ParserException("Cannot add link to end node.");
         }
 
         public override void ClaimLink(string nodeName)
         {
-            throw new ParsingException("Cannot add link to end node.");
+            throw new ParserException("Cannot add link to end node.");
         }
 
         public override Func<IToken, IResultAccumulator, bool> AdditionalChecker
         {
             get => null;
-            set => throw new ParsingException("Cannot set 'AdditionalChecker' for end node.");
+            set => throw new ParserException("Cannot set 'AdditionalChecker' for end node.");
         }
 
         #endregion

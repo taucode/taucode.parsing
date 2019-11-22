@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes;
-using TauCode.Utils.CommandLine.Parsing;
 
 namespace TauCode.Parsing
 {
@@ -27,7 +27,7 @@ namespace TauCode.Parsing
 
             if (tokenStream.IsEndOfStream())
             {
-                throw new ParsingException($"'{nameof(tokenStream)}' is at the end. Cannot advance.");
+                throw new ParserException($"'{nameof(tokenStream)}' is at the end. Cannot advance.");
             }
 
             tokenStream.Position++;
@@ -118,7 +118,7 @@ namespace TauCode.Parsing
 
             if (accumulator.Count == 0)
             {
-                throw new ParsingException("Result accumulator is empty.");
+                throw new ParserException("Result accumulator is empty.");
             }
 
             var index = accumulator.Count - 1;
@@ -126,12 +126,12 @@ namespace TauCode.Parsing
 
             if (result == null)
             {
-                throw new ParsingException($"Last result is null.");
+                throw new ParserException($"Last result is null.");
             }
 
             if (result.GetType() != typeof(T))
             {
-                throw new ParsingException(
+                throw new ParserException(
                     $"Last result expected to be of type '{typeof(T).FullName}', but is of type '{result.GetType().FullName}'.");
             }
 
