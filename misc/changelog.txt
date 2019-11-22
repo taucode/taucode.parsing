@@ -7,3 +7,8 @@
 ==========
     Version: v3.0.2
     1. Added string tokens support.
+
+2019-11-22
+==========
+    Version: v3.0.2.1
+    1. Hotfix: using ParserException.
