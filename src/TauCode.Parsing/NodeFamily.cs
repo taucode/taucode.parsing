@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Utils.CommandLine.Parsing;
+using TauCode.Parsing.Exceptions;
 using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing
@@ -57,7 +57,7 @@ namespace TauCode.Parsing
                 throw new ArgumentNullException(nameof(nodeName));
             }
 
-            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new ParsingException($"Node not found: '{nodeName}'.");
+            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new ParserException($"Node not found: '{nodeName}'.");
             return node;
         }
 
