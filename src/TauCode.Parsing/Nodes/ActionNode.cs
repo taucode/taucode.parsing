@@ -1,5 +1,5 @@
 ﻿using System;
-using TauCode.Utils.CommandLine.Parsing;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Nodes
 {
@@ -25,7 +25,7 @@ namespace TauCode.Parsing.Nodes
         {
             if (this.Action == null)
             {
-                throw new ParsingException("'Act' should not be called if 'Action' is null.");
+                throw new ParserException("'Act' should not be called if 'Action' is null.");
             }
 
             this.Action(token, resultAccumulator);
