@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
     <PackageReference Include="TauCode.Algorithms" Version="3.0.1" />
-    <PackageReference Include="TauCode.Data" Version="3.0.0" />
+    <PackageReference Include="TauCode.Data" Version="3.0.0.1" />
     <PackageReference Include="TauCode.Utils" Version="3.0.1" />
   </ItemGroup>
 
