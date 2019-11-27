@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Resources\AllBlocks.txt" />
+    <None Remove="Resources\CliGrammar.txt" />
     <None Remove="Resources\Result0.txt" />
     <None Remove="Resources\Result1.txt" />
     <None Remove="Resources\Result2.txt" />
@@ -24,6 +25,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\sqlite-expected.sql" />
     <EmbeddedResource Include="Resources\sqlite-real.sql" />
+    <EmbeddedResource Include="Resources\CliGrammar.txt" />
     <EmbeddedResource Include="Resources\SQLiteRealGrammar.txt" />
     <EmbeddedResource Include="Resources\Result2.txt" />
     <EmbeddedResource Include="Resources\Result3.txt" />
@@ -45,6 +47,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TauCode.Parsing\TauCode.Parsing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Cli\" />
   </ItemGroup>
 
 </Project>
