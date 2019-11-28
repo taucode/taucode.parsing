@@ -5,16 +5,16 @@ namespace TauCode.Parsing.Lexer2
     public class CommentExtractor : TokenExtractorBase
     {
         private static readonly char[] AllowedFirstChars = { '/' };
-        private bool _lastCharWasAsterisk;
+        //private bool _lastCharWasAsterisk;
 
         public CommentExtractor()
-            : base(new char[] { }, AllowedFirstChars) // todo: use static; doesn't care about spaces at all.
+            : base(LexerHelper.StandardSpaceChars, AllowedFirstChars)
         {
         }
 
         protected override void Reset()
         {
-            _lastCharWasAsterisk = false;
+            //_lastCharWasAsterisk = false;
         }
 
         protected override IToken ProduceResult()
@@ -40,21 +40,30 @@ namespace TauCode.Parsing.Lexer2
                 return this.ContinueIf(c != '/');
             }
 
-            if (c == '*')
+            if (c == '/' && this.GetPreviousChar() == '*')
             {
-                _lastCharWasAsterisk = true;
-                return TestCharResult.Continue;
+                this.Advance(); // todo: is this good? altering state instead of just 'testing curr char'...
+                return TestCharResult.End;
             }
-            else
-            {
-                if (c == '/' && _lastCharWasAsterisk)
-                {
-                    return TestCharResult.End;
-                }
 
-                _lastCharWasAsterisk = false;
-                return TestCharResult.Continue;
-            }
+            return TestCharResult.Continue;
+
+            //if (c == '*')
+            //{
+            //    _lastCharWasAsterisk = true;
+            //    return TestCharResult.Continue;
+            //}
+            //else
+            //{
+            //    if (c == '/' && _lastCharWasAsterisk)
+            //    {
+            //        this.Advance(); // todo: is this good? altering state instead of just 'testing curr char'...
+            //        return TestCharResult.End;
+            //    }
+
+            //    _lastCharWasAsterisk = false;
+            //    return TestCharResult.Continue;
+            //}
         }
     }
 }

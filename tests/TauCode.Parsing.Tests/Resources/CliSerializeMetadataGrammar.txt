@@ -9,7 +9,7 @@ tau db mm --conn="Server=.;Database=econera.diet.tracking;Trusted_Connection=Tru
 
 ***************************************/
 
-\BeginBlockDefinition(*top, *migrate_metadata)
+\BeginBlockDefinition ( *top, *migrate_metadata )
 
 mm
 { 

@@ -4,7 +4,6 @@ using System.Linq;
 using TauCode.Parsing.Aide;
 using TauCode.Parsing.Aide.Building;
 using TauCode.Parsing.Aide.Results;
-using TauCode.Parsing.Lexer2;
 using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Tests.Cli
@@ -20,14 +19,17 @@ namespace TauCode.Parsing.Tests.Cli
 
             //var lexer = new AideLexer();
 
-            var lexer = new LexerBase(
-                LexerHelper.StandardSpaceChars,
-                new ITokenExtractor[]
-                {
-                    new CommentExtractor(), 
-                    new WordExtractor(LexerHelper.StandardSpaceChars),
-                    new AideSyntaxTokenExtractor(),
-                });
+            //var lexer = new LexerBase(
+            //    LexerHelper.StandardSpaceChars,
+            //    new ITokenExtractor[]
+            //    {
+            //        new CommentExtractor(), 
+            //        new WordExtractor(LexerHelper.StandardSpaceChars),
+            //        new AideSyntaxTokenExtractor(),
+            //        new AideSymbolExtractor(LexerHelper.StandardSpaceChars), 
+            //    });
+
+            ILexer lexer = new CliLexer();
 
             var tokens = lexer.Lexize(input);
 

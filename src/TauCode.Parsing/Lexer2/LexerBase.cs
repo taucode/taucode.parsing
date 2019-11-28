@@ -5,19 +5,20 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexer2
 {
-    public class LexerBase : ILexer
+    public abstract class LexerBase : ILexer
     {
         private string _input;
         private int _pos;
 
         private readonly HashSet<char> _spaceChars;
         private readonly List<ITokenExtractor> _tokenExtractors;
+        private bool _tokenExtractorsInited;
 
-        public LexerBase(char[] spaceChars, ITokenExtractor[] tokenExtractors)
+        protected LexerBase(char[] spaceChars/*, ITokenExtractor[] tokenExtractors*/)
         {
             // todo check args
             _spaceChars = new HashSet<char>(spaceChars);
-            _tokenExtractors = new List<ITokenExtractor>(tokenExtractors);
+            _tokenExtractors = new List<ITokenExtractor>();
         }
 
         protected bool IsEnd() => _pos == _input.Length;
@@ -50,8 +51,22 @@ namespace TauCode.Parsing.Lexer2
             return _tokenExtractors.Where(x => x.AllowsFirstChar(firstChar)).ToList();
         }
 
+        protected abstract void InitTokenExtractors();
+
+        protected void AddTokenExtractor(ITokenExtractor tokenExtractor)
+        {
+            // todo checks
+            _tokenExtractors.Add(tokenExtractor);
+        }
+
         public List<IToken> Lexize(string input)
         {
+            if (!_tokenExtractorsInited)
+            {
+                this.InitTokenExtractors();
+                _tokenExtractorsInited = true;
+            }
+
             _input = input ?? throw new ArgumentNullException(nameof(input));
             _pos = 0;
             var list = new List<IToken>();
@@ -114,6 +129,7 @@ namespace TauCode.Parsing.Lexer2
                 if (nextToken is NullToken)
                 {
                     // ignore it
+                    //list.Add(nextToken); // todo: remove.
                 }
                 else
                 {

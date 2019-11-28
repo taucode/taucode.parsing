@@ -1,26 +1,24 @@
 ﻿using System.Collections.Generic;
+using TauCode.Parsing.Aide;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexer2
 {
-    public class WordExtractor : TokenExtractorBase
+    public class AideNameReferenceExtractor : TokenExtractorBase
     {
-        private static readonly char[] WordFirstChars = GetWordFirstChars();
-        private static readonly HashSet<char> InnerChars = new HashSet<char>(GetWordFirstChars());
+        private static readonly HashSet<char> NameChars = new HashSet<char>(GetNameChars()); // todo: lot of copy-paste
 
-        private static char[] GetWordFirstChars()
+        private static char[] GetNameChars()
         {
             var list = new List<char>();
-            list.Add('_');
             list.AddCharRange('a', 'z');
             list.AddCharRange('A', 'Z');
-            list.AddCharRange('0', '9');
-
+            list.Add('_');
             return list.ToArray();
         }
 
-        public WordExtractor(char[] spaceChars)
-            : base(spaceChars, WordFirstChars)
+        public AideNameReferenceExtractor(char[] spaceChars)
+            : base(spaceChars, new[] { '*' })
         {
         }
 
@@ -32,7 +30,13 @@ namespace TauCode.Parsing.Lexer2
         protected override IToken ProduceResult()
         {
             var resultString = this.ExtractResultString();
-            return new WordToken(resultString);
+            var value = resultString.Substring(1);
+            if (value.Length == 0)
+            {
+                return null;
+            }
+
+            return new SpecialStringToken(AideHelper.AideNameReferenceClass, value);
         }
 
         protected override TestCharResult TestCurrentChar()
@@ -45,7 +49,7 @@ namespace TauCode.Parsing.Lexer2
                 return TestCharResult.Continue;
             }
 
-            if (InnerChars.Contains(c))
+            if (NameChars.Contains(c))
             {
                 return TestCharResult.Continue;
             }
