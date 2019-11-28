@@ -223,7 +223,7 @@ namespace TauCode.Parsing.Aide
             {
                 properties = new Dictionary<string, string>
                 {
-                    { "Aide.SpecialStringClassName", specialStringClass } // todo: const
+                    { AideHelper.AideSpecialStringClassName, specialStringClass }
                 };
             }
 

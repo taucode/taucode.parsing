@@ -12,6 +12,7 @@ namespace TauCode.Parsing.Aide
     public static class AideHelper
     {
         internal const string AideNameReferenceClass = "Aide.NameReference";
+        internal const string AideSpecialStringClassName = "Aide.SpecialStringClassName";
 
         #region Exceptions
 
@@ -50,8 +51,16 @@ namespace TauCode.Parsing.Aide
             }
             else if (aideResult is AlternativesResult alternativesResult)
             {
-                var alternatives = alternativesResult.GetAllAlternatives();
+                var namesString = aideResult.Arguments.FormatArguments();
                 var sb = new StringBuilder();
+
+                if (aideResult.Name != null)
+                {
+                    sb.Append($"<{aideResult.Name}>");
+                }
+
+                var alternatives = alternativesResult.GetAllAlternatives();
+                
                 sb.Append("{ ");
 
                 for (var i = 0; i < alternatives.Count; i++)
@@ -67,6 +76,7 @@ namespace TauCode.Parsing.Aide
                 }
 
                 sb.Append(" }");
+                sb.Append(namesString);
 
                 result = sb.ToString();
             }
@@ -158,7 +168,22 @@ namespace TauCode.Parsing.Aide
             }
             else if (token is EnumToken<SyntaxElement> syntaxEnumToken)
             {
-                return $@"\{syntaxEnumToken.Value}";
+                var sb = new StringBuilder();
+                sb.Append($@"\{syntaxEnumToken.Value}");
+
+                if (syntaxEnumToken.Properties.Any())
+                {
+                    var todoHas = syntaxEnumToken.Properties.TryGetValue(AideHelper.AideSpecialStringClassName, out var @class);
+                    if (!todoHas)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    sb.Append($":{@class}");
+                }
+
+                //return $@"\{syntaxEnumToken.Value}"; // todo clean up
+                return sb.ToString();
             }
             else if (token is SymbolToken symbolToken)
             {
