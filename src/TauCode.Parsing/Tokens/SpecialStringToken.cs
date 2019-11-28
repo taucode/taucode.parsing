@@ -1,23 +1,23 @@
-﻿namespace TauCode.Parsing.Tokens
-{
-    public class SpecialStringToken<TStringClass> : TokenBase where TStringClass : struct
-    {
-        #region Constructor
+﻿using System;
 
-        public SpecialStringToken(TStringClass @class, string value)
+namespace TauCode.Parsing.Tokens
+{
+    public class SpecialStringToken : TokenBase
+    {
+        public SpecialStringToken(string @class, string value, string name)
+            : base(name)
         {
-            this.Class = @class;
-            this.Value = value;
+            this.Class = @class ?? throw new ArgumentNullException(nameof(@class));
+            this.Value = value ?? throw new ArgumentNullException(nameof(name));
         }
 
-        #endregion
+        public SpecialStringToken(string @class, string value)
+            : this(@class, value, null)
+        {
+        }
 
-        #region Public
+        public string Class { get; }
 
-        public TStringClass Class { get; }
-
-        public string Value { get; }
-
-        #endregion
+        public string Value { get; set; }
     }
 }

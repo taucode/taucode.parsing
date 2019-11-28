@@ -3,28 +3,24 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
 {
-    public class SpecialStringNode<TStringClass> : ActionNode where TStringClass : struct
+    public class SpecialStringNode : ActionNode
     {
-        #region Constructor
-
         public SpecialStringNode(
             INodeFamily family,
             string name,
             Action<IToken, IResultAccumulator> action,
-            TStringClass @class)
+            string @class)
             : base(family, name, action)
         {
-            this.Class = @class;
+            this.Class = @class ?? throw new ArgumentNullException(nameof(@class));
         }
 
-        #endregion
-
-        #region Overridden
+        public string Class { get; }
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             if (
-                token is SpecialStringToken<TStringClass> specialStringToken &&
+                token is SpecialStringToken specialStringToken &&
                 specialStringToken.Class.Equals(this.Class))
             {
                 return this.Action == null ? InquireResult.Skip : InquireResult.Act;
@@ -34,13 +30,5 @@ namespace TauCode.Parsing.Nodes
                 return InquireResult.Reject;
             }
         }
-
-        #endregion
-
-        #region Public
-
-        public TStringClass Class { get; }
-
-        #endregion
     }
 }

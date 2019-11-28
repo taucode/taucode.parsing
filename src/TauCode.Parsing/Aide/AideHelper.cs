@@ -11,6 +11,8 @@ namespace TauCode.Parsing.Aide
 {
     public static class AideHelper
     {
+        internal const string AideNameReferenceClass = "Aide.NameReference";
+
         #region Exceptions
 
         internal static LexerException CreateTokenNameCannotPrecedeChar(char c)
@@ -109,7 +111,7 @@ namespace TauCode.Parsing.Aide
 
             for (var i = 0; i < names.Length; i++)
             {
-                sb.Append(":");
+                sb.Append("*");
                 sb.Append(names[i]);
                 if (i < names.Length - 1)
                 {
@@ -468,15 +470,15 @@ namespace TauCode.Parsing.Aide
             Func<IResultAccumulator, IAideResult> resultGetter)
         {
             INode begin = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: (", null, SyntaxElement.LeftParenthesis);
-            INode arg = new SpecialStringNode<AideSpecialString>(
+            INode arg = new SpecialStringNode(
                 family,
                 $"{prefix}: arg",
                 (token, accumulator) =>
                 {
                     var result = resultGetter(accumulator);
-                    result.Arguments.Add(((SpecialStringToken<AideSpecialString>)token).Value);
+                    result.Arguments.Add(((SpecialStringToken)token).Value);
                 },
-                AideSpecialString.NameReference);
+                AideNameReferenceClass);
             INode comma = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: ,", null, SyntaxElement.Comma);
             INode end = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: )", null, SyntaxElement.RightParenthesis);
 

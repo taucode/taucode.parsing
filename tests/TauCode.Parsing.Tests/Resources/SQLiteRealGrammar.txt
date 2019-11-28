@@ -1,6 +1,6 @@
 ﻿/****** Create ******/
 
-\BeginBlockDefinition(:top, :create)
+\BeginBlockDefinition(*top, *create)
 
 CREATE
 { <create_table>\BlockReference | <create_index>\BlockReference } \End
@@ -10,13 +10,13 @@ CREATE
 
 /****** Create Table ******/
 
-\BeginBlockDefinition(:inner, :create_table)
+\BeginBlockDefinition(*inner, *create_table)
 
 <do_create_table>TABLE
 { <table_name>\Identifier | <table_name_word>\Word }
 \(
-<column_definition>\BlockReference(:table_closing, :next)
-<comma>\,(:column_definition, :next)
+<column_definition>\BlockReference(*table_closing, *next)
+<comma>\,(*column_definition, *next)
 <constraint_definitions>\BlockReference
 <table_closing>\)
 
@@ -25,7 +25,7 @@ CREATE
 
 /****** Column Definition ******/
 
-\BeginBlockDefinition(:inner, :column_definition)
+\BeginBlockDefinition(*inner, *column_definition)
 
 { <column_name>\Identifier | <column_name_word>\Word }
 { <type_name>\Identifier | <type_name_word>\Word }
@@ -39,19 +39,19 @@ CREATE
 
 /****** Constraint Definitions ******/
 
-\BeginBlockDefinition(:inner, :constraint_definitions)
+\BeginBlockDefinition(*inner, *constraint_definitions)
 
 <constraint>CONSTRAINT
 { <constraint_name>\Identifier | <constraint_name_word>\Word }
 { <primary_key>\BlockReference | <foreign_key>\BlockReference }
-{ \,(:constraint) | \Idle }
+{ \,(*constraint) | \Idle }
 
 \EndBlockDefinition
 
 
 /****** Primary Key ******/
 
-\BeginBlockDefinition(:inner, :primary_key)
+\BeginBlockDefinition(*inner, *primary_key)
 
 <do_primary_key>PRIMARY
 KEY
@@ -62,12 +62,12 @@ KEY
 
 /****** Primary Key Columns ******/
 
-\BeginBlockDefinition(:inner, :pk_columns)
+\BeginBlockDefinition(*inner, *pk_columns)
 
 \(
 <pk_column_name_alternatives>{ <pk_column_name>\Identifier | <pk_column_name_word>\Word }
 [ { <asc>ASC | <desc>DESC } ]
-{ \,(:pk_column_name_alternatives) | \Idle }
+{ \,(*pk_column_name_alternatives) | \Idle }
 \)
 
 \EndBlockDefinition
@@ -75,7 +75,7 @@ KEY
 
 /****** Foreign Key ******/
 
-\BeginBlockDefinition(:inner, :foreign_key)
+\BeginBlockDefinition(*inner, *foreign_key)
 
 <do_foreign_key>FOREIGN
 KEY
@@ -89,11 +89,11 @@ REFERENCES
 
 /****** Foreign Key Columns ******/
 
-\BeginBlockDefinition(:inner, :fk_columns)
+\BeginBlockDefinition(*inner, *fk_columns)
 
 \(
 <fk_column_name_alternatives>{ <fk_column_name>\Identifier | <fk_column_name_word>\Word }
-{ \,(:fk_column_name_alternatives) | \Idle }
+{ \,(*fk_column_name_alternatives) | \Idle }
 \)
 
 \EndBlockDefinition
@@ -101,11 +101,11 @@ REFERENCES
 
 /****** Foreign Key Referenced Columns ******/
 
-\BeginBlockDefinition(:inner, :fk_referenced_columns)
+\BeginBlockDefinition(*inner, *fk_referenced_columns)
 
 \(
 <fk_referenced_column_name_alternatives>{ <fk_referenced_column_name>\Identifier | <fk_referenced_column_name_word>\Word }
-{ \,(:fk_referenced_column_name_alternatives) | \Idle }
+{ \,(*fk_referenced_column_name_alternatives) | \Idle }
 \)
 
 \EndBlockDefinition
@@ -113,7 +113,7 @@ REFERENCES
 
 /****** Create Index ******/
 
-\BeginBlockDefinition(:inner, :create_index)
+\BeginBlockDefinition(*inner, *create_index)
 
 [<do_create_unique_index>UNIQUE]
 <do_create_index>INDEX
@@ -123,7 +123,7 @@ ON
 \(
 <index_column_name_alternatives>{ <index_column_name>\Identifier | <index_column_name_word>\Word }
 [ { <index_column_asc>ASC | <index_column_desc>DESC } ]
-{ \,(:index_column_name_alternatives) | \Idle }
+{ \,(*index_column_name_alternatives) | \Idle }
 \)
 
 \EndBlockDefinition

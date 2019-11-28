@@ -269,7 +269,7 @@ namespace TauCode.Parsing.Aide
             return tokenName;
         }
 
-        private SpecialStringToken<AideSpecialString> ReadNameReference()
+        private SpecialStringToken ReadNameReference()
         {
             var start = this.GetCurrentPosition();
 
@@ -302,7 +302,7 @@ namespace TauCode.Parsing.Aide
             }
 
             var referencedName = _input.Substring(start, length);
-            return new SpecialStringToken<AideSpecialString>(AideSpecialString.NameReference, referencedName);
+            return new SpecialStringToken(AideHelper.AideNameReferenceClass, referencedName);
         }
 
         private void SkipComment()
@@ -455,7 +455,7 @@ namespace TauCode.Parsing.Aide
                     var token = new EnumToken<SyntaxElement>(SyntaxElement.RightParenthesis, null);
                     list.Add(token);
                 }
-                else if (c == ':')
+                else if (c == '*')
                 {
                     if (upcomingTokenName != null)
                     {
