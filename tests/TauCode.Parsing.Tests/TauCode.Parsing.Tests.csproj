@@ -49,8 +49,4 @@
     <ProjectReference Include="..\..\src\TauCode.Parsing\TauCode.Parsing.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Cli\" />
-  </ItemGroup>
-
 </Project>
