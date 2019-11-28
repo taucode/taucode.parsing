@@ -1,4 +1,7 @@
-﻿\BeginBlockDefinition(*top, *name_placeholder)
+﻿/*** General CLI interface ***/
+
+
+\BeginBlockDefinition(*top, *name_placeholder)
 
 <command>\Word <alternatives>{ 
     <argument_word>\Word 
@@ -23,29 +26,3 @@
 \End
 
 \EndBlockDefinition
-
-
-/***************************************
-
-*** Wannabe 'serialize-metadata' ***
-
-sm
-{ 
-    "--conn":Key \= \String "--provider":Key \= \Word "--format":Key \= \Word
-    | -help
-    | --help
-} \End
-
-E.g.:
-tau db sm --conn="Server=.;Database=econera.diet.tracking;Trusted_Connection=True;" --provider=sqlserver --format=json
-
-*** Wannabe 'migrate-metadata' ***
-
-mm "--conn":Key \= \String "--provider":Key \= \Word "--to":Key \= \Word
-
-E.g.:
-
-tau db mm --conn="Server=.;Database=econera.diet.tracking;Trusted_Connection=True;" --provider=sqlserver --to=sqlite
-
-
-***************************************/
