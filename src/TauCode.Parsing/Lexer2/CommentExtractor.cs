@@ -8,7 +8,7 @@ namespace TauCode.Parsing.Lexer2
         private bool _lastCharWasAsterisk;
 
         public CommentExtractor()
-            : base(AllowedFirstChars)
+            : base(new char[] { }, AllowedFirstChars) // todo: use static; doesn't care about spaces at all.
         {
         }
 

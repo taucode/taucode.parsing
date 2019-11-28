@@ -10,9 +10,19 @@ namespace TauCode.Parsing.Lexer2
         private int _startPos;
         private int _localPos;
 
-        protected TokenExtractorBase(char[] allowedFirstChars)
+        protected TokenExtractorBase(char[] spaceChars, char[] allowedFirstChars)
         {
+            // todo checks
+
+            this.SpaceChars = new HashSet<char>(spaceChars);
             _allowedFirstChars = new HashSet<char>(allowedFirstChars);
+        }
+
+        protected HashSet<char> SpaceChars { get; }
+
+        protected bool IsSpaceChar(char c)
+        {
+            return this.SpaceChars.Contains(c);
         }
 
         protected bool IsEnd()

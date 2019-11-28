@@ -21,11 +21,11 @@ namespace TauCode.Parsing.Tests.Cli
             //var lexer = new AideLexer();
 
             var lexer = new LexerBase(
-                new[] { ' ', '\r', '\n', '\t' },
+                LexerHelper.StandardSpaceChars,
                 new ITokenExtractor[]
                 {
                     new CommentExtractor(), 
-                    new WordExtractor(),
+                    new WordExtractor(LexerHelper.StandardSpaceChars),
                     new AideSyntaxTokenExtractor(),
                 });
 

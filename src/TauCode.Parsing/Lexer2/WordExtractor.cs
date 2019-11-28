@@ -18,8 +18,8 @@ namespace TauCode.Parsing.Lexer2
             return list.ToArray();
         }
 
-        public WordExtractor()
-            : base(WordFirstChars)
+        public WordExtractor(char[] spaceChars)
+            : base(spaceChars, WordFirstChars)
         {
         }
 
