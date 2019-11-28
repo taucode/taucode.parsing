@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Resources\AllBlocks.txt" />
+    <None Remove="Resources\CliCommand.txt" />
     <None Remove="Resources\CliGrammar.txt" />
     <None Remove="Resources\CliGrammarExpected.txt" />
     <None Remove="Resources\CliSerializeMetadataGrammar.txt" />
@@ -25,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Resources\CliCommand.txt" />
     <EmbeddedResource Include="Resources\CliSerializeMetadataGrammar.txt" />
     <EmbeddedResource Include="Resources\CliGrammarExpected.txt" />
     <EmbeddedResource Include="Resources\sqlite-expected.sql" />

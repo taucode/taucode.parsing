@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TauCode.Parsing.Aide.Results;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tokens;
@@ -76,6 +77,11 @@ namespace TauCode.Parsing.Aide.Building
             else if (tokenResult.Token is WordToken wordToken)
             {
                 node = new ExactWordNode(nodeFamily, wordToken.Name, null, wordToken.Word);
+            }
+            else if (tokenResult.Token is StringToken stringToken)
+            {
+                var @class = stringToken.Properties.Single().Value; // todo!
+                node = new ExactSpecialStringNode(nodeFamily, stringToken.Name, null, @class, stringToken.String);
             }
             else if (tokenResult.Token is SymbolToken symbolToken)
             {

@@ -95,6 +95,14 @@ namespace TauCode.Parsing.Aide
             return SymbolChars.Contains(c);
         }
 
+        private bool IsSpecialStringClassNameChar(char c)
+        {
+            return
+                (c >= 'a' && c <= 'z') ||
+                (c >= 'A' && c <= 'Z') ||
+                false;
+        }
+
         private WordToken ReadWordToken(string tokenName)
         {
             var start = this.GetCurrentPosition();
@@ -128,6 +136,85 @@ namespace TauCode.Parsing.Aide
             }
 
             return new WordToken(word, tokenName);
+        }
+
+        private StringToken ReadStringToken(string tokenName)
+        {
+            var stringBegin = this.GetCurrentPosition();
+            this.Advance(); // skip '"'
+
+            // read string itself
+            while (true)
+            {
+                if (this.IsEnd())
+                {
+                    throw new NotImplementedException();
+                }
+
+                var c = this.GetCurrentChar();
+                if (c == '"')
+                {
+                    var nextChar = this.TryGetNextChar() ?? (char)0;
+
+                    if (nextChar != ':')
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    this.Advance();
+                    break;
+                }
+                else
+                {
+                    this.Advance();
+                }
+            }
+
+            var len = this.GetCurrentPosition() - stringBegin;
+            var str = _input.Substring(stringBegin + 1, len - 2);
+
+            if (str.Length == 0)
+            {
+                throw new NotImplementedException();
+            }
+
+            this.Advance(); // skip ':'
+
+            var stringClassNameBegin = this.GetCurrentPosition();
+
+            while (true)
+            {
+                if (this.IsEnd())
+                {
+                    break;
+                }
+
+                var c = this.GetCurrentChar();
+
+                if (this.IsSpecialStringClassNameChar(c))
+                {
+                    this.Advance();
+                }
+                else if (this.IsWhiteSpaceChar(c) || this.IsSymbolChar(c))
+                {
+                    break;
+                }
+                else
+                {
+                    throw new NotImplementedException(); // could not extract special string class name.
+                }
+            }
+
+            var classNameLen = this.GetCurrentPosition() - stringClassNameBegin;
+            var className = _input.Substring(stringClassNameBegin, classNameLen);
+
+            var properties = new Dictionary<string, string>
+            {
+                { AideHelper.AideSpecialStringClassName, className }
+            };
+
+            var token = new StringToken(str, tokenName, properties);
+            return token;
         }
 
         private TokenBase ReadSpecialToken(string tokenName)
@@ -574,6 +661,12 @@ namespace TauCode.Parsing.Aide
 
                     this.Advance();
                     var token = new EnumToken<SyntaxElement>(SyntaxElement.Comma, null);
+                    list.Add(token);
+                }
+                else if (c == '"')
+                {
+                    var token = this.ReadStringToken(upcomingTokenName);
+                    upcomingTokenName = null;
                     list.Add(token);
                 }
                 else

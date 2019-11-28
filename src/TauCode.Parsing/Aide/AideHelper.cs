@@ -291,6 +291,7 @@ namespace TauCode.Parsing.Aide
             var leftSplitter = new IdleNode(family, "leftSplitter");
             leftSplitter.AddLinksByNames(
                 "syntaxWord",
+                "syntaxSpecialString",
                 "anyWord",
                 "anyInteger",
                 "anyString",
@@ -306,6 +307,10 @@ namespace TauCode.Parsing.Aide
             var syntaxWord = new WordNode(
                 family,
                 "syntaxWord",
+                AddTokenResult);
+            var syntaxSpecialString = new StringNode(
+                family,
+                "syntaxSpecialString",
                 AddTokenResult);
             var anyWord = new ExactEnumNode<SyntaxElement>(
                 family,
@@ -436,6 +441,7 @@ namespace TauCode.Parsing.Aide
             var beforeArgsSplitter = new IdleNode(family, "beforeArgsSplitter");
             beforeArgsSplitter.DrawLinkFromNodes(
                 syntaxWord,
+                syntaxSpecialString,
                 anyWord,
                 anyInteger,
                 anyString,
