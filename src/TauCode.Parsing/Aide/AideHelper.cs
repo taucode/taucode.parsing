@@ -140,6 +140,9 @@ namespace TauCode.Parsing.Aide
                 case SymbolValue.Semicolon:
                     return ";";
 
+                case SymbolValue.Equals:
+                    return "="; // todo: use mutual map Dictionary<char, SymbolValue> and vice-versa?
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(symbol));
             }
@@ -268,6 +271,7 @@ namespace TauCode.Parsing.Aide
                 "anyString",
                 "identifier",
                 "syntaxSymbol",
+                "specialString",
                 "blockReference",
                 "idle",
                 "end",
@@ -302,6 +306,11 @@ namespace TauCode.Parsing.Aide
                 family,
                 "syntaxSymbol",
                 AddTokenResult);
+            var specialString = new ExactEnumNode<SyntaxElement>(
+                family,
+                "specialString",
+                AddTokenResult,
+                SyntaxElement.SpecialString);
             var blockReference = new ExactEnumNode<SyntaxElement>(
                 family,
                 "blockReference",
@@ -407,6 +416,7 @@ namespace TauCode.Parsing.Aide
                 anyString,
                 identifier,
                 syntaxSymbol,
+                specialString,
                 blockReference,
                 idle,
                 end);
@@ -470,7 +480,7 @@ namespace TauCode.Parsing.Aide
             Func<IResultAccumulator, IAideResult> resultGetter)
         {
             INode begin = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: (", null, SyntaxElement.LeftParenthesis);
-            INode arg = new SpecialStringNode(
+            INode arg = new ClassedSpecialStringNode(
                 family,
                 $"{prefix}: arg",
                 (token, accumulator) =>
@@ -481,7 +491,6 @@ namespace TauCode.Parsing.Aide
                 AideNameReferenceClass);
             INode comma = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: ,", null, SyntaxElement.Comma);
             INode end = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: )", null, SyntaxElement.RightParenthesis);
-
 
             begin.EstablishLink(arg);
             arg.EstablishLink(comma);

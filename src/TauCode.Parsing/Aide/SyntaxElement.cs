@@ -8,6 +8,7 @@
         Word,
         Integer,
         String,
+        SpecialString,
         BlockReference,
         Idle,
         Comma,

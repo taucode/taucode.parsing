@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Aide
@@ -19,6 +20,7 @@ namespace TauCode.Parsing.Aide
             '(',
             ')',
             ',',
+            '=',
         });
 
         private string _input;
@@ -136,6 +138,7 @@ namespace TauCode.Parsing.Aide
             }
 
             var start = this.GetCurrentPosition();
+            var gotColon = false;
 
             var c = this.GetCurrentChar();
 
@@ -158,6 +161,7 @@ namespace TauCode.Parsing.Aide
                 {
                     break;
                 }
+
                 if (this.IsAliasedTokenChar(c))
                 {
                     this.Advance();
@@ -166,6 +170,16 @@ namespace TauCode.Parsing.Aide
                 else if (this.IsSymbolChar(c))
                 {
                     break;
+                }
+                else if (c == ':')
+                {
+                    if (gotColon)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    gotColon = true;
+                    this.Advance();
                 }
                 else
                 {
@@ -181,45 +195,81 @@ namespace TauCode.Parsing.Aide
                 throw LexerHelper.CreateEmptyTokenException();
             }
 
-            var alias = _input.Substring(start, length);
+            string alias;
+            string specialStringClass;
+
+            var outcome = _input.Substring(start, length);
+
+            if (gotColon)
+            {
+                var parts = outcome.Split(':');
+                alias = parts.First();
+                specialStringClass = parts.Skip(1).Single();
+
+                if (alias.Length == 0 || specialStringClass.Length == 0)
+                {
+                    throw new NotImplementedException();
+                }
+            }
+            else
+            {
+                alias = outcome;
+                specialStringClass = null;
+            }
+
+            Dictionary<string, string> properties = null;
+
+            if (specialStringClass != null)
+            {
+                properties = new Dictionary<string, string>
+                {
+                    { "Aide.SpecialStringClassName", specialStringClass } // todo: const
+                };
+            }
+
             TokenBase aliasedToken;
 
             switch (alias)
             {
                 case "BeginBlockDefinition":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.BeginBlockDefinition, tokenName);
+                    aliasedToken =
+                        new EnumToken<SyntaxElement>(SyntaxElement.BeginBlockDefinition, tokenName, properties);
                     break;
 
                 case "EndBlockDefinition":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.EndBlockDefinition, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.EndBlockDefinition, tokenName, properties);
                     break;
 
                 case "Identifier":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Identifier, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Identifier, tokenName, properties);
                     break;
 
                 case "BlockReference":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.BlockReference, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.BlockReference, tokenName, properties);
                     break;
 
                 case "Idle":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Idle, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Idle, tokenName, properties);
                     break;
 
                 case "Word":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Word, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Word, tokenName, properties);
                     break;
 
                 case "Integer":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Integer, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.Integer, tokenName, properties);
                     break;
 
                 case "String":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.String, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.String, tokenName, properties);
+                    break;
+
+                case "SpecialString":
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.SpecialString, tokenName, properties);
                     break;
 
                 case "End":
-                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.End, tokenName);
+                    aliasedToken = new EnumToken<SyntaxElement>(SyntaxElement.End, tokenName, properties);
                     break;
 
                 default:

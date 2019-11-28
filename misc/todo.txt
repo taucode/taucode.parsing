@@ -15,3 +15,9 @@ x   1. Get rid of 'Aide'.
     1. Cache non-idle successor nodes for finalized nodes.
     2. LexerBase
     3. IParser.Parse ==> List<IParsingResult>!
+
+2019-11-28
+==========
+    1. Enums for all symbols (+UT-s)
+    2. Non-advance inquire result
+

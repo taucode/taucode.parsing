@@ -38,6 +38,9 @@ namespace TauCode.Parsing
                 case ',':
                     return SymbolValue.Comma;
 
+                case '=':
+                    return SymbolValue.Equals;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(c));
             }
