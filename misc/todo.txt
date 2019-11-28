@@ -20,4 +20,5 @@ x   1. Get rid of 'Aide'.
 ==========
     1. Enums for all symbols (+UT-s)
     2. Non-advance inquire result
+    3. Only \SpecialString and "<some_exact_special_string>" want ':Some_Class' suffix.
 

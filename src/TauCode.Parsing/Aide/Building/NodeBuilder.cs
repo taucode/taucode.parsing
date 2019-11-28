@@ -60,6 +60,10 @@ namespace TauCode.Parsing.Aide.Building
                         node = new StringNode(nodeFamily, syntaxToken.Name, null);
                         break;
 
+                    case SyntaxElement.SpecialString:
+                        var @class = syntaxToken.Properties.GetOrDefault(AideHelper.AideSpecialStringClassName);
+                        node = new ClassedSpecialStringNode(nodeFamily, syntaxToken.Name, null, @class);
+                        break;
 
                     case SyntaxElement.End:
                         node = EndNode.Instance;

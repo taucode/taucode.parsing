@@ -12,14 +12,40 @@
     <argument_key>\SpecialString:Key { 
         \Idle
         |
-        \= {
+        <assignment>\= {
             <key_value_word>\Word
             |
             <key_value_string>\String
             |
-            <key_value_string>\Integer
+            <key_value_integer>\Integer
             |
-            <key_value_path>\SpecialString:Path  } } }(*alternatives, *next)
+            <key_value_path>\SpecialString:Path  } } } \Idle(*alternatives, *next)        /* todo(bug): without this Idle node, won't work (i.e. if arguments are related to "}", not to "\Idle"). */
 \End
 
 \EndBlockDefinition
+
+
+/***************************************
+
+*** Wannabe 'serialize-metadata' ***
+
+sm
+{ 
+    "--conn":Key \= \String "--provider":Key \= \Word "--format":Key \= \Word
+    | -help
+    | --help
+} \End
+
+E.g.:
+tau db sm --conn="Server=.;Database=econera.diet.tracking;Trusted_Connection=True;" --provider=sqlserver --format=json
+
+*** Wannabe 'migrate-metadata' ***
+
+mm "--conn":Key \= \String "--provider":Key \= \Word "--to":Key \= \Word
+
+E.g.:
+
+tau db mm --conn="Server=.;Database=econera.diet.tracking;Trusted_Connection=True;" --provider=sqlserver --to=sqlite
+
+
+***************************************/

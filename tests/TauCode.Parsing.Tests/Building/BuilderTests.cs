@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Aide;
 using TauCode.Parsing.Aide.Building;
@@ -138,7 +139,7 @@ namespace TauCode.Parsing.Tests.Building
 
             // PRIMARY
             nextNodes = primary.GetNonIdleLinks();
-            
+
             // (primary)_KEY
             var primaryKey = nextNodes.Single();
             Assert.That(primaryKey, Has.Property("Word").EqualTo("KEY"));
@@ -211,7 +212,7 @@ namespace TauCode.Parsing.Tests.Building
             // fk left paren
             var fkLeftParen = fkName.GetNonIdleLinks().Single();
             Assert.That(fkLeftParen, Is.TypeOf<ExactSymbolNode>());
-            symbolNode = (ExactSymbolNode) fkLeftParen;
+            symbolNode = (ExactSymbolNode)fkLeftParen;
             Assert.That(symbolNode.Value, Is.EqualTo(SymbolValue.LeftParenthesis));
 
             // fk column name
@@ -250,7 +251,7 @@ namespace TauCode.Parsing.Tests.Building
             Assert.That(fkReferencedColumnName.Name, Is.EqualTo("fk_referenced_column_name"));
 
             nextNodes = fkReferencedColumnName.GetNonIdleLinks();
-            
+
             // fk ref'd column name comma
             var fkReferencedColumnNameComma = nextNodes.Single(x =>
                 x is ExactSymbolNode symbolNode7 && symbolNode7.Value == SymbolValue.Comma);
@@ -265,6 +266,94 @@ namespace TauCode.Parsing.Tests.Building
 
             Assert.That(nextNodes, Does.Contain(tableClosing));
             Assert.That(nextNodes, Does.Contain(constraintsComma));
+        }
+
+        [Test]
+        public void Builder_CliGrammar_ProducesValidRootNode()
+        {
+            // Arrange
+            var input = this.GetType().Assembly.GetResourceText("CliGrammar.txt", true);
+
+            var lexer = new AideLexer();
+            var tokens = lexer.Lexize(input);
+
+            IParser parser = new Parser();
+            var aideRoot = AideHelper.BuildParserRoot();
+            var results = parser.Parse(aideRoot, tokens);
+
+            IBuilder builder = new Builder();
+
+            // Act
+            var cliRoot = builder.Build("cli tree", results.Cast<BlockDefinitionResult>());
+
+            // Assert
+
+            // <command>\Word
+            var curr = cliRoot;
+            Assert.That(curr, Is.TypeOf<WordNode>());
+            Assert.That(curr.Name, Is.EqualTo("command"));
+
+            var nextNodes = curr.GetNonIdleLinks();
+            Assert.That(nextNodes.Count, Is.EqualTo(5));
+
+            // <argument_word>\Word 
+            var wordNode = (WordNode)nextNodes.Single(x => x is WordNode);
+            Assert.That(wordNode.Name, Is.EqualTo("argument_word"));
+            Assert.That(nextNodes, Does.Contain(wordNode));
+            Assert.That(wordNode.GetNonIdleLinks(), Does.Contain(EndNode.Instance));
+
+            // <argument_string>\String
+            var stringNode = (StringNode)nextNodes.Single(x => x is StringNode);
+            Assert.That(stringNode.Name, Is.EqualTo("argument_string"));
+            Assert.That(nextNodes, Does.Contain(stringNode));
+            Assert.That(stringNode.GetNonIdleLinks(), Does.Contain(EndNode.Instance));
+
+            // <argument_integer>\Integer
+            var integerNode = (IntegerNode)nextNodes.Single(x => x is IntegerNode);
+            Assert.That(integerNode.Name, Is.EqualTo("argument_integer"));
+            Assert.That(nextNodes, Does.Contain(integerNode));
+            Assert.That(integerNode.GetNonIdleLinks(), Does.Contain(EndNode.Instance));
+
+            // <argument_path>\SpecialString:Path
+            var pathNode = (ClassedSpecialStringNode)nextNodes.Single(x => x is ClassedSpecialStringNode classedSpecialStringNode && classedSpecialStringNode.Class == "Path");
+            Assert.That(pathNode.Name, Is.EqualTo("argument_path"));
+            Assert.That(nextNodes, Does.Contain(pathNode));
+            Assert.That(pathNode.GetNonIdleLinks(), Does.Contain(EndNode.Instance));
+
+            // <argument_key>\SpecialString:Key
+            var keyNode = (ClassedSpecialStringNode)nextNodes.Single(x => x is ClassedSpecialStringNode classedSpecialStringNode && classedSpecialStringNode.Class == "Key");
+            Assert.That(keyNode.Name, Is.EqualTo("argument_key"));
+            Assert.That(nextNodes, Does.Contain(keyNode));
+            Assert.That(keyNode.GetNonIdleLinks(), Does.Contain(EndNode.Instance));
+            var assignment = keyNode.GetNonIdleLinks().Single(x =>
+                x is ExactSymbolNode exactSymbolNode && exactSymbolNode.Value == SymbolValue.Equals);
+
+            // <assignment>\=
+            var assignmentNextNodes = assignment.GetNonIdleLinks();
+            Assert.That(assignmentNextNodes, Has.Count.EqualTo(4));
+
+            var assignmentValueExits = new List<INode>(nextNodes);
+            assignmentValueExits.Add(EndNode.Instance);
+
+            // <key_value_word>\Word
+            wordNode = (WordNode)assignmentNextNodes.Single(x => x is WordNode);
+            Assert.That(wordNode.Name, Is.EqualTo("key_value_word"));
+            CollectionAssert.AreEquivalent(assignmentValueExits, wordNode.GetNonIdleLinks());
+
+            // <key_value_string>\String
+            stringNode = (StringNode)assignmentNextNodes.Single(x => x is StringNode);
+            Assert.That(stringNode.Name, Is.EqualTo("key_value_string"));
+            CollectionAssert.AreEquivalent(assignmentValueExits, stringNode.GetNonIdleLinks());
+
+            // <key_value_integer>\Integer
+            integerNode = (IntegerNode)assignmentNextNodes.Single(x => x is IntegerNode);
+            Assert.That(integerNode.Name, Is.EqualTo("key_value_integer"));
+            CollectionAssert.AreEquivalent(assignmentValueExits, integerNode.GetNonIdleLinks());
+
+            // <key_value_path>\SpecialString:Path
+            pathNode = (ClassedSpecialStringNode)assignmentNextNodes.Single(x => x is ClassedSpecialStringNode classedSpecialStringNode && classedSpecialStringNode.Class == "Path");
+            Assert.That(pathNode.Name, Is.EqualTo("key_value_path"));
+            CollectionAssert.AreEquivalent(assignmentValueExits, pathNode.GetNonIdleLinks());
         }
     }
 }
