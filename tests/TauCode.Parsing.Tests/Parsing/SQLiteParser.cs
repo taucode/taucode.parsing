@@ -180,7 +180,7 @@ namespace TauCode.Parsing.Tests.Parsing
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.Default = $"'{((StringToken)token).String}'";
+                columnInfo.Default = $"'{((StringToken)token).Value}'";
             };
 
             var constraintName = (ActionNode)allSqlNodes.Single(x => x.Name == "constraint_name");

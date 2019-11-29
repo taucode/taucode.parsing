@@ -81,7 +81,7 @@ namespace TauCode.Parsing.Aide.Building
             else if (tokenResult.Token is StringToken stringToken)
             {
                 var @class = stringToken.Properties.Single().Value; // todo!
-                node = new ExactSpecialStringNode(nodeFamily, stringToken.Name, null, @class, stringToken.String);
+                node = new ExactSpecialStringNode(nodeFamily, stringToken.Name, null, @class, stringToken.Value);
             }
             else if (tokenResult.Token is SymbolToken symbolToken)
             {
