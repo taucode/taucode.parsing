@@ -1,4 +1,7 @@
-﻿\BeginBlockDefinition(*top, *name_placeholder)
+﻿/*** General CLI interface ***/
+
+
+\BeginBlockDefinition(*top, *name_placeholder)
 
 <command>\Word <alternatives>{ 
     <argument_word>\Word 
@@ -12,14 +15,14 @@
     <argument_key>\SpecialString:Key { 
         \Idle
         |
-        \= {
+        <assignment>\= {
             <key_value_word>\Word
             |
             <key_value_string>\String
             |
-            <key_value_string>\Integer
+            <key_value_integer>\Integer
             |
-            <key_value_path>\SpecialString:Path  } } }(*alternatives, *next)
+            <key_value_path>\SpecialString:Path  } } } \Idle(*alternatives, *next)        /* todo(bug): without this Idle node, won't work (i.e. if arguments are related to "}", not to "\Idle"). */
 \End
 
 \EndBlockDefinition

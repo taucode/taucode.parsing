@@ -22,7 +22,7 @@ namespace TauCode.Parsing
         {
             return new LexerException("Empty token.");
         }
-        
+
         #endregion
 
         public static SymbolValue SymbolTokenFromChar(char c)
@@ -38,9 +38,14 @@ namespace TauCode.Parsing
                 case ',':
                     return SymbolValue.Comma;
 
+                case '=':
+                    return SymbolValue.Equals;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(c));
             }
         }
+
+        public static readonly char[] StandardSpaceChars = new[] { ' ', '\r', '\n', '\t' };
     }
 }

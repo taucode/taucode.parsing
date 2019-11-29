@@ -6,5 +6,8 @@
         LeftParenthesis,
         RightParenthesis,
         Semicolon,
+        Equals,
+        Plus,
+        Minus,
     }
 }

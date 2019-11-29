@@ -1,18 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
     public class WordToken : TokenBase
     {
-        #region Constructors
+        #region Constructor
 
-        public WordToken(string word)
-            : this(word, null)
-        {
-        }
-
-        public WordToken(string word, string name)
-            : base(name)
+        public WordToken(
+            string word,
+            string name = null,
+            IEnumerable<KeyValuePair<string, string>> properties = null)
+            : base(name, properties)
         {
             this.Word = word ?? throw new ArgumentNullException(nameof(word));
         }

@@ -7,14 +7,14 @@ namespace TauCode.Parsing.Nodes
     {
         #region Static
 
-        public static EndNode Instance = new EndNode();
+        public static EndNode Instance { get; } = new EndNode();
 
         #endregion
 
         #region Constructor
 
         private EndNode()
-            : base(null, "end")
+            : base(null, "<End>")
         {
         }
 

@@ -1,0 +1,23 @@
+﻿/***************************************
+
+* Wannabe 'migrate-metadata' *
+
+
+E.g.:
+
+tau db mm --conn="Server=.;Database=econera.diet.tracking;Trusted_Connection=True;" --provider=sqlserver --to=sqlite
+
+***************************************/
+
+\BeginBlockDefinition ( *top, *migrate_metadata )
+
+mm
+{ 
+    <connection_string_key>"--conn":Key \= <connection_string_value>\String
+    <provider_key>"--provider":Key \= <provider_value>\Word
+    <format_key>"--format":Key \= <format_value>\Word
+| "-help":Key
+| "--help":Key
+} \End
+
+\EndBlockDefinition

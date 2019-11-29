@@ -11,6 +11,9 @@ namespace TauCode.Parsing.Aide
 {
     public static class AideHelper
     {
+        internal const string AideNameReferenceClass = "Aide.NameReference";
+        internal const string AideSpecialStringClassName = "Aide.SpecialStringClassName";
+
         #region Exceptions
 
         internal static LexerException CreateTokenNameCannotPrecedeChar(char c)
@@ -48,8 +51,16 @@ namespace TauCode.Parsing.Aide
             }
             else if (aideResult is AlternativesResult alternativesResult)
             {
-                var alternatives = alternativesResult.GetAllAlternatives();
+                var namesString = aideResult.Arguments.FormatArguments();
                 var sb = new StringBuilder();
+
+                if (aideResult.Name != null)
+                {
+                    sb.Append($"<{aideResult.Name}>");
+                }
+
+                var alternatives = alternativesResult.GetAllAlternatives();
+                
                 sb.Append("{ ");
 
                 for (var i = 0; i < alternatives.Count; i++)
@@ -65,6 +76,7 @@ namespace TauCode.Parsing.Aide
                 }
 
                 sb.Append(" }");
+                sb.Append(namesString);
 
                 result = sb.ToString();
             }
@@ -109,7 +121,7 @@ namespace TauCode.Parsing.Aide
 
             for (var i = 0; i < names.Length; i++)
             {
-                sb.Append(":");
+                sb.Append("*");
                 sb.Append(names[i]);
                 if (i < names.Length - 1)
                 {
@@ -138,6 +150,9 @@ namespace TauCode.Parsing.Aide
                 case SymbolValue.Semicolon:
                     return ";";
 
+                case SymbolValue.Equals:
+                    return "="; // todo: use mutual map Dictionary<char, SymbolValue> and vice-versa?
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(symbol));
             }
@@ -153,7 +168,22 @@ namespace TauCode.Parsing.Aide
             }
             else if (token is EnumToken<SyntaxElement> syntaxEnumToken)
             {
-                return $@"\{syntaxEnumToken.Value}";
+                var sb = new StringBuilder();
+                sb.Append($@"\{syntaxEnumToken.Value}");
+
+                if (syntaxEnumToken.Properties.Any())
+                {
+                    var todoHas = syntaxEnumToken.Properties.TryGetValue(AideHelper.AideSpecialStringClassName, out var @class);
+                    if (!todoHas)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    sb.Append($":{@class}");
+                }
+
+                //return $@"\{syntaxEnumToken.Value}"; // todo clean up
+                return sb.ToString();
             }
             else if (token is SymbolToken symbolToken)
             {
@@ -261,11 +291,13 @@ namespace TauCode.Parsing.Aide
             var leftSplitter = new IdleNode(family, "leftSplitter");
             leftSplitter.AddLinksByNames(
                 "syntaxWord",
+                "syntaxSpecialString",
                 "anyWord",
                 "anyInteger",
                 "anyString",
                 "identifier",
                 "syntaxSymbol",
+                "specialString",
                 "blockReference",
                 "idle",
                 "end",
@@ -275,6 +307,10 @@ namespace TauCode.Parsing.Aide
             var syntaxWord = new WordNode(
                 family,
                 "syntaxWord",
+                AddTokenResult);
+            var syntaxSpecialString = new StringNode(
+                family,
+                "syntaxSpecialString",
                 AddTokenResult);
             var anyWord = new ExactEnumNode<SyntaxElement>(
                 family,
@@ -300,6 +336,11 @@ namespace TauCode.Parsing.Aide
                 family,
                 "syntaxSymbol",
                 AddTokenResult);
+            var specialString = new ExactEnumNode<SyntaxElement>(
+                family,
+                "specialString",
+                AddTokenResult,
+                SyntaxElement.SpecialString);
             var blockReference = new ExactEnumNode<SyntaxElement>(
                 family,
                 "blockReference",
@@ -400,11 +441,13 @@ namespace TauCode.Parsing.Aide
             var beforeArgsSplitter = new IdleNode(family, "beforeArgsSplitter");
             beforeArgsSplitter.DrawLinkFromNodes(
                 syntaxWord,
+                syntaxSpecialString,
                 anyWord,
                 anyInteger,
                 anyString,
                 identifier,
                 syntaxSymbol,
+                specialString,
                 blockReference,
                 idle,
                 end);
@@ -468,18 +511,17 @@ namespace TauCode.Parsing.Aide
             Func<IResultAccumulator, IAideResult> resultGetter)
         {
             INode begin = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: (", null, SyntaxElement.LeftParenthesis);
-            INode arg = new SpecialStringNode<AideSpecialString>(
+            INode arg = new ClassedSpecialStringNode(
                 family,
                 $"{prefix}: arg",
                 (token, accumulator) =>
                 {
                     var result = resultGetter(accumulator);
-                    result.Arguments.Add(((SpecialStringToken<AideSpecialString>)token).Value);
+                    result.Arguments.Add(((SpecialStringToken)token).Value);
                 },
-                AideSpecialString.NameReference);
+                AideNameReferenceClass);
             INode comma = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: ,", null, SyntaxElement.Comma);
             INode end = new ExactEnumNode<SyntaxElement>(family, $"{prefix}: )", null, SyntaxElement.RightParenthesis);
-
 
             begin.EstablishLink(arg);
             arg.EstablishLink(comma);

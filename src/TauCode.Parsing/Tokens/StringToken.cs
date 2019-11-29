@@ -1,18 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
     public class StringToken : TokenBase
     {
-        #region Constructors
+        #region Constructor
 
-        public StringToken(string str)
-            : this(str, null)
-        {
-        }
-
-        public StringToken(string str, string name)
-            : base(name)
+        public StringToken(
+            string str,
+            string name = null,
+            IEnumerable<KeyValuePair<string, string>> properties = null)
+            : base(name, properties)
         {
             this.String = str ?? throw new ArgumentNullException(nameof(str));
         }

@@ -1,19 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
     public class IntegerToken : TokenBase
     {
-        #region Constructors
+        #region Constructor
 
-        public IntegerToken(string integerValue)
-            : this(integerValue, null)
-        {
-
-        }
-
-        public IntegerToken(string integerValue, string name)
-            : base(name)
+        public IntegerToken(
+            string integerValue,
+            string name = null,
+            IEnumerable<KeyValuePair<string, string>> properties = null)
+            : base(name, properties)
         {
             this.IntegerValue = integerValue ?? throw new ArgumentNullException(nameof(integerValue));
         }
