@@ -11,13 +11,17 @@ namespace TauCode.Parsing.Lexer2
         private int _pos;
 
         private readonly HashSet<char> _spaceChars;
+        private readonly HashSet<char> _lineBreakChars;
+
         private readonly List<ITokenExtractor> _tokenExtractors;
         private bool _tokenExtractorsInited;
 
-        protected LexerBase(char[] spaceChars/*, ITokenExtractor[] tokenExtractors*/)
+        protected LexerBase(char[] spaceChars, char[] lineBreakChars)
         {
             // todo check args
+            // todo: line breaks must be contained in space chars.
             _spaceChars = new HashSet<char>(spaceChars);
+            _lineBreakChars = new HashSet<char>(lineBreakChars);
             _tokenExtractors = new List<ITokenExtractor>();
         }
 

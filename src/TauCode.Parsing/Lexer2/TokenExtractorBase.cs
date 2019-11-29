@@ -5,27 +5,39 @@ namespace TauCode.Parsing.Lexer2
 {
     public abstract class TokenExtractorBase : ITokenExtractor
     {
-        private readonly HashSet<char> _allowedFirstChars;
+        private readonly HashSet<char> _spaceChars;
+        private readonly HashSet<char> _lineBreakChars;
+        private readonly HashSet<char> _firstChars;
         private string _input;
         private int _startPos;
         private int _localPos;
 
         private readonly List<ITokenExtractor> _successors;
 
-        protected TokenExtractorBase(char[] spaceChars, char[] allowedFirstChars)
+        protected TokenExtractorBase(
+            char[] spaceChars,
+            char[] lineBreakChars,
+            char[] firstChars)
         {
             // todo checks
 
-            this.SpaceChars = new HashSet<char>(spaceChars);
-            _allowedFirstChars = new HashSet<char>(allowedFirstChars);
+            _spaceChars = new HashSet<char>(spaceChars);
+            _lineBreakChars = new HashSet<char>(lineBreakChars);
+            _firstChars = new HashSet<char>(firstChars);
+
             _successors = new List<ITokenExtractor>();
         }
 
-        protected HashSet<char> SpaceChars { get; }
+        ///protected HashSet<char> SpaceChars => _spaceChars;
 
         protected bool IsSpaceChar(char c)
         {
-            return this.SpaceChars.Contains(c);
+            return _spaceChars.Contains(c);
+        }
+
+        protected bool IsLineBreakChar(char c)
+        {
+            return _lineBreakChars.Contains(c);
         }
 
         protected bool IsEnd()
@@ -92,7 +104,23 @@ namespace TauCode.Parsing.Lexer2
 
                 if (this.IsEnd())
                 {
-                    throw new NotImplementedException();
+                    var testEndResult = this.TestEnd();
+                    if (testEndResult)
+                    {
+                        var token = this.ProduceResult();
+                        if (token == null)
+                        {
+                            throw new NotImplementedException();
+                        }
+                        else
+                        {
+                            return new TokenExtractionResult(this.GetLocalPosition(), token);
+                        }
+                    }
+                    else
+                    {
+                        throw new NotImplementedException();
+                    }
                 }
 
                 var testCharResult = this.TestCurrentChar();
@@ -177,6 +205,9 @@ namespace TauCode.Parsing.Lexer2
         }
 
         protected abstract TestCharResult TestCurrentChar();
+
+        protected abstract bool TestEnd();
+
         //{
         //    var c = this.GetCurrentChar();
         //    var localPos = this.GetLocalPosition();
@@ -215,7 +246,7 @@ namespace TauCode.Parsing.Lexer2
 
         public bool AllowsFirstChar(char firstChar)
         {
-            return _allowedFirstChars.Contains(firstChar);
+            return _firstChars.Contains(firstChar);
         }
 
         public void AddSuccessors(params TokenExtractorBase[] successors)

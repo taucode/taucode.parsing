@@ -5,6 +5,9 @@ namespace TauCode.Parsing.TinyLisp
 {
     public static class TinyLispHelper
     {
+        internal static readonly char[] SpaceChars = { ' ', '\t', '\r', '\n' };
+        internal static readonly char[] LineBreakChars = { '\r', '\n' };
+
         private static readonly HashSet<char> AcceptableSymbolNameSymbols = new HashSet<char>(new[]
         {
             '~',
@@ -90,7 +93,7 @@ namespace TauCode.Parsing.TinyLisp
                 }
             }
 
-            if (onlyDigits) 
+            if (onlyDigits)
             {
                 return false;
             }

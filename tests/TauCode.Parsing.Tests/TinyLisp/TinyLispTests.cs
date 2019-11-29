@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
+using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.TinyLisp
 {
@@ -7,7 +9,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
     public class TinyLispTests
     {
         [Test]
-        public void Wat()
+        public void TodoWat()
         {
             // Arrange
 
@@ -32,6 +34,29 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(ReferenceEquals(kek, kek2));
 
             Assert.That(s != sk);
+        }
+
+        [Test]
+        public void TodoWat2()
+        {
+            // Arrange
+            var input =
+                @"
+; first comment
+; second comment";
+
+            // Act
+            ILexer lexer = new TinyLispLexer
+            {
+                AddCommentTokens = true,
+            };
+
+            var tokens = lexer.Lexize(input);
+
+            // Assert
+            Assert.That(tokens, Has.Count.EqualTo(2));
+            Assert.That(tokens[0] as CommentToken, Has.Property("Comment").EqualTo("; first comment"));
+            Assert.That(tokens[1] as CommentToken, Has.Property("Comment").EqualTo("; second comment"));
         }
     }
 }
