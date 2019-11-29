@@ -4,13 +4,13 @@ using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispKeywordExtractor : TokenExtractorBase
+    public class TinyLispSymbolExtractor : TokenExtractorBase
     {
-        public TinyLispKeywordExtractor()
+        public TinyLispSymbolExtractor() 
             : base(
                 TinyLispHelper.IsSpace,
                 TinyLispHelper.IsLineBreak,
-                x => x == ':')
+                TinyLispHelper.IsAcceptableSymbolNameChar)
         {
         }
 
@@ -22,24 +22,17 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         protected override IToken ProduceResult()
         {
             var res = this.ExtractResultString();
-
-            return new KeywordToken(res);
+            return new LispSymbolToken(res);
         }
 
         protected override TestCharResult TestCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            //var pos = this.GetLocalPosition();
 
-            if (pos == 0)
+            if (c.IsAcceptableSymbolNameChar())
             {
-                return this.ContinueIf(c == ':');
-            }
-
-            var isMine = c.IsAcceptableSymbolNameChar();
-            if (isMine)
-            {
-                return TestCharResult.Continue;
+                return TestCharResult.Continue; // todo: deal with integers, doubles and ratios.
             }
 
             return TestCharResult.Finish;

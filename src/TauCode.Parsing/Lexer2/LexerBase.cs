@@ -5,23 +5,32 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexer2
 {
+    // todo clean up
     public abstract class LexerBase : ILexer
     {
         private string _input;
         private int _pos;
 
-        private readonly HashSet<char> _spaceChars;
-        private readonly HashSet<char> _lineBreakChars;
+        //private readonly HashSet<char> _spaceChars;
+        //private readonly HashSet<char> _lineBreakChars;
+        private readonly Func<char, bool> _spacePredicate;
+        private readonly Func<char, bool> _lineBreakPredicate;
 
         private readonly List<ITokenExtractor> _tokenExtractors;
         private bool _tokenExtractorsInited;
 
-        protected LexerBase(char[] spaceChars, char[] lineBreakChars)
+        protected LexerBase(
+            Func<char, bool> spacePredicate,
+            Func<char, bool> lineBreakPredicate)
         {
             // todo check args
             // todo: line breaks must be contained in space chars.
-            _spaceChars = new HashSet<char>(spaceChars);
-            _lineBreakChars = new HashSet<char>(lineBreakChars);
+            //_spaceChars = new HashSet<char>(spaceChars);
+            //_lineBreakChars = new HashSet<char>(lineBreakChars);
+
+            _spacePredicate = spacePredicate;
+            _lineBreakPredicate = lineBreakPredicate;
+
             _tokenExtractors = new List<ITokenExtractor>();
         }
 
@@ -39,10 +48,10 @@ namespace TauCode.Parsing.Lexer2
 
         protected int GetCurrentPosition() => _pos;
 
-        protected bool IsSpaceChar(char c)
-        {
-            return _spaceChars.Contains(c);
-        }
+        protected bool IsSpaceChar(char c) => _spacePredicate(c);
+        //{
+        //    return _spaceChars.Contains(c);
+        //}
 
         protected void Advance(int shift = 1)
         {

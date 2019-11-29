@@ -7,8 +7,8 @@ namespace TauCode.Parsing.TinyLisp
     {
         public TinyLispLexer()
             : base(
-                TinyLispHelper.SpaceChars,
-                TinyLispHelper.LineBreakChars)
+                TinyLispHelper.IsSpace,
+                TinyLispHelper.IsLineBreak)
         {
         }
 
@@ -28,13 +28,22 @@ namespace TauCode.Parsing.TinyLisp
             var keywordExtractor = new TinyLispKeywordExtractor();
             this.AddTokenExtractor(keywordExtractor);
 
+            // symbol
+            var symbolExtractor = new TinyLispSymbolExtractor();
+            this.AddTokenExtractor(symbolExtractor);
+
             // *** Links ***
             punctuationExtractor.AddSuccessors(
                 commentExtractor,
                 punctuationExtractor,
-                keywordExtractor);
+                keywordExtractor,
+                symbolExtractor);
 
             keywordExtractor.AddSuccessors(
+                commentExtractor,
+                punctuationExtractor);
+
+            symbolExtractor.AddSuccessors(
                 commentExtractor,
                 punctuationExtractor);
 

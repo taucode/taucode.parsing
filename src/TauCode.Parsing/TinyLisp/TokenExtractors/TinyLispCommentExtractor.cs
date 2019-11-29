@@ -7,9 +7,9 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispCommentExtractor()
             : base(
-                TinyLispHelper.SpaceChars,
-                TinyLispHelper.LineBreakChars,
-                new[] { ';' })
+                TinyLispHelper.IsSpace,
+                TinyLispHelper.IsLineBreak,
+                x => x == ';') // todo: consider extracting delegate into TinyLispHelper.
         {
         }
 

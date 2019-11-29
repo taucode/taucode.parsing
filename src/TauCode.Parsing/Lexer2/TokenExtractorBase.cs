@@ -3,11 +3,17 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Lexer2
 {
+    // todo clean up
     public abstract class TokenExtractorBase : ITokenExtractor
     {
-        private readonly HashSet<char> _spaceChars;
-        private readonly HashSet<char> _lineBreakChars;
-        private readonly HashSet<char> _firstChars;
+        //private readonly HashSet<char> _spaceChars;
+        //private readonly HashSet<char> _lineBreakChars;
+        //private readonly HashSet<char> _firstChars;
+
+        private readonly Func<char, bool> _spacePredicate;
+        private readonly Func<char, bool> _lineBreakPredicate;
+        private readonly Func<char, bool> _firstCharPredicate;
+
         private string _input;
         private int _startPos;
         private int _localPos;
@@ -15,28 +21,32 @@ namespace TauCode.Parsing.Lexer2
         private readonly List<ITokenExtractor> _successors;
 
         protected TokenExtractorBase(
-            char[] spaceChars,
-            char[] lineBreakChars,
-            char[] firstChars)
+            Func<char, bool> spacePredicate,
+            Func<char, bool> lineBreakPredicate,
+            Func<char, bool> firstCharPredicate)
         {
             // todo checks
 
-            _spaceChars = new HashSet<char>(spaceChars);
-            _lineBreakChars = new HashSet<char>(lineBreakChars);
-            _firstChars = new HashSet<char>(firstChars);
+            //_spaceChars = new HashSet<char>(spaceChars);
+            //_lineBreakChars = new HashSet<char>(lineBreakChars);
+            //_firstChars = new HashSet<char>(firstChars);
+
+            _spacePredicate = spacePredicate;
+            _lineBreakPredicate = lineBreakPredicate;
+            _firstCharPredicate = firstCharPredicate;
 
             _successors = new List<ITokenExtractor>();
         }
 
-        protected bool IsSpaceChar(char c)
-        {
-            return _spaceChars.Contains(c);
-        }
+        protected bool IsSpaceChar(char c) => _spacePredicate(c);
+        //{
+        //    return _spaceChars.Contains(c);
+        //}
 
-        protected bool IsLineBreakChar(char c)
-        {
-            return _lineBreakChars.Contains(c);
-        }
+        protected bool IsLineBreakChar(char c) => _lineBreakPredicate(c);
+        //{
+        //    return _lineBreakChars.Contains(c);
+        //}
 
         protected bool IsEnd()
         {
@@ -242,10 +252,10 @@ namespace TauCode.Parsing.Lexer2
 
         //protected abstract bool AllowsCharAtLocalPosition(char c, int localPos);
 
-        public bool AllowsFirstChar(char firstChar)
-        {
-            return _firstChars.Contains(firstChar);
-        }
+        public bool AllowsFirstChar(char c) => _firstCharPredicate(c);
+        //{
+        //    return _firstChars.Contains(firstChar);
+        //}
 
         public void AddSuccessors(params TokenExtractorBase[] successors)
         {
