@@ -32,25 +32,33 @@ namespace TauCode.Parsing.TinyLisp
             var symbolExtractor = new TinyLispSymbolExtractor();
             this.AddTokenExtractor(symbolExtractor);
 
+            // string
+            var stringExtractor = new TinyLispStringExtractor();
+            this.AddTokenExtractor(stringExtractor);
+
             // *** Links ***
             punctuationExtractor.AddSuccessors(
                 commentExtractor,
                 punctuationExtractor,
                 keywordExtractor,
-                symbolExtractor);
+                symbolExtractor,
+                stringExtractor);
 
             keywordExtractor.AddSuccessors(
                 commentExtractor,
-                punctuationExtractor);
+                punctuationExtractor,
+                stringExtractor);
 
             symbolExtractor.AddSuccessors(
                 commentExtractor,
-                punctuationExtractor);
+                punctuationExtractor,
+                stringExtractor);
 
-            //punctuationExtractor.AddSuccessors(
-            //    commentExtractor,
-            //    punctuationExtractor);
-
+            stringExtractor.AddSuccessors(
+                commentExtractor,
+                punctuationExtractor,
+                keywordExtractor,
+                symbolExtractor);
         }
     }
 }
