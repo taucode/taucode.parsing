@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp
 {
@@ -7,8 +8,9 @@ namespace TauCode.Parsing.TinyLisp
     {
         internal static readonly char[] SpaceChars = { ' ', '\t', '\r', '\n' };
         internal static readonly char[] LineBreakChars = { '\r', '\n' };
+        internal static char[] PunctuationChars = { '(', ')', '\'', '`', '.', ',' };
 
-        private static readonly HashSet<char> AcceptableSymbolNameSymbols = new HashSet<char>(new[]
+        private static readonly HashSet<char> AcceptableSymbolNamePunctuationChars = new HashSet<char>(new[]
         {
             '~',
             '?',
@@ -29,8 +31,15 @@ namespace TauCode.Parsing.TinyLisp
             '\\',
         });
 
-        internal static bool IsAcceptableSymbolNameSymbol(this char c) => AcceptableSymbolNameSymbols.Contains(c);
 
+
+        internal static bool IsAcceptableSymbolNamePunctuationChar(this char c) => AcceptableSymbolNamePunctuationChars.Contains(c);
+
+        internal static bool IsAcceptableSymbolNameChar(this char c) =>
+            char.IsDigit(c) ||
+            char.IsLetter(c) ||
+            c == '_' ||
+            AcceptableSymbolNamePunctuationChars.Contains(c);
 
         public static bool IsValidSymbolName(string name, bool mustBeKeyword)
         {
@@ -81,11 +90,13 @@ namespace TauCode.Parsing.TinyLisp
                     }
                 }
 
-                var isValid =
-                    char.IsDigit(c) ||
-                    char.IsLetter(c) ||
-                    c.IsAcceptableSymbolNameSymbol() ||
-                    c == '_';
+                var isValid = IsAcceptableSymbolNameChar(c);
+
+                //var isValid =
+                //    char.IsDigit(c) ||
+                //    char.IsLetter(c) ||
+                //    c.IsAcceptableSymbolNamePunctuationChar() ||
+                //    c == '_';
 
                 if (!isValid)
                 {
@@ -99,6 +110,22 @@ namespace TauCode.Parsing.TinyLisp
             }
 
             return true;
+        }
+
+        public static Punctuation CharToPunctuation(char c)
+        {
+            // todo: dictionary mapping <char> <--> <punctuation>
+            switch (c)
+            {
+                case '(':
+                    return Punctuation.LeftParenthesis;
+
+                case ')':
+                    return Punctuation.RightParenthesis;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

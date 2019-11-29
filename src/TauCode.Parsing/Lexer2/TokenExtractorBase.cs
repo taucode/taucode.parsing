@@ -28,8 +28,6 @@ namespace TauCode.Parsing.Lexer2
             _successors = new List<ITokenExtractor>();
         }
 
-        ///protected HashSet<char> SpaceChars => _spaceChars;
-
         protected bool IsSpaceChar(char c)
         {
             return _spaceChars.Contains(c);
@@ -134,7 +132,7 @@ namespace TauCode.Parsing.Lexer2
                         this.Advance();
                         break;
 
-                    case TestCharResult.End:
+                    case TestCharResult.Finish:
                         var token = this.ProduceResult();
                         //this.Advance();
                         

@@ -36,7 +36,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
             if (this.IsLineBreakChar(c))
             {
-                return TestCharResult.End;
+                return TestCharResult.Finish;
             }
 
             return TestCharResult.Continue;

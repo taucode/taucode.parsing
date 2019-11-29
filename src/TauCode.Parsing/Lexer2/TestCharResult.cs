@@ -4,6 +4,6 @@
     {
         NotAllowed = 1,
         Continue = 2,
-        End, // todo: rename to 'Finalize'
+        Finish,
     }
 }
