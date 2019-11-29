@@ -3,6 +3,7 @@ using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Tests.TinyLisp
 {
@@ -169,6 +170,24 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(
                 tokens[19] as PunctuationToken,
                 Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
+        }
+
+        [Test]
+        public void TodoWat5()
+        {
+            // Arrange
+            var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
+
+            // Act
+            ILexer lexer = new TinyLispLexer
+            {
+                AddCommentTokens = true,
+            };
+
+            var tokens = lexer.Lexize(input);
+
+            // Assert
+            // passed
         }
     }
 }

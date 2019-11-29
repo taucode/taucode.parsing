@@ -1,5 +1,5 @@
 ; CREATE
-(:defblock create
+(:defblock create :is-top t
 	(:word "CREATE")
 	(:alt (:block create-table) (:block create-index))
 )
