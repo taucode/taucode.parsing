@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TauCode.Parsing.TinyLisp.Data
 {
-    public class PseudoList : Atom, IEnumerable<Element>
+    public class PseudoList : Atom, IReadOnlyList<Element>
     {
         private readonly List<Element> _elements;
 
@@ -45,5 +45,9 @@ namespace TauCode.Parsing.TinyLisp.Data
             sb.Append(")");
             return sb.ToString();
         }
+
+        public int Count => _elements.Count;
+
+        public Element this[int index] => _elements[index];
     }
 }

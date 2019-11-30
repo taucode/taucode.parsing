@@ -20,6 +20,7 @@
     <None Remove="Resources\Result5.txt" />
     <None Remove="Resources\Result6.txt" />
     <None Remove="Resources\Result7.txt" />
+    <None Remove="Resources\sql-grammar-expected.lisp" />
     <None Remove="Resources\sql-grammar.lisp" />
     <None Remove="Resources\sqlite-expected.sql" />
     <None Remove="Resources\sqlite-real.sql" />
@@ -30,6 +31,7 @@
     <EmbeddedResource Include="Resources\CliCommand.txt" />
     <EmbeddedResource Include="Resources\CliSerializeMetadataGrammar.txt" />
     <EmbeddedResource Include="Resources\CliGrammarExpected.txt" />
+    <EmbeddedResource Include="Resources\sql-grammar-expected.lisp" />
     <EmbeddedResource Include="Resources\sql-grammar.lisp" />
     <EmbeddedResource Include="Resources\sqlite-expected.sql" />
     <EmbeddedResource Include="Resources\sqlite-real.sql" />

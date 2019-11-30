@@ -25,6 +25,6 @@ namespace TauCode.Parsing.TinyLisp.Data
 
         public override int GetHashCode() => this.Value.GetHashCode();
 
-        public override string ToString() => Value;
+        public override string ToString() => $"\"{Value}\"";
     }
 }

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Linq;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;
@@ -201,7 +202,36 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var list = reader.Read(tokens);
 
             // Assert
-            throw new NotImplementedException();
+            Assert.That(list, Has.Count.EqualTo(10));
+
+            var expectedTexts = this.GetType().Assembly
+                .GetResourceText("sql-grammar-expected.lisp", true)
+                .Split(";;; splitting comment", StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x.Trim())
+                .ToList();
+
+            Assert.That(expectedTexts, Has.Count.EqualTo(list.Count()));
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var actual = list[i].ToString();
+
+                var alteredActual = actual
+                    .Replace(" )", ")")
+                    .Replace(" )", ")")
+                    .Replace(" (", "(")
+                    .Replace(" (", "(");
+
+                var expected = expectedTexts[i]
+                    .Replace(Environment.NewLine, " ")
+                    .Replace("\t", "")
+                    .Replace(" )", ")")
+                    .Replace(" )", ")")
+                    .Replace(" (", "(")
+                    .Replace(" (", "(");
+
+                Assert.That(alteredActual, Is.EqualTo(expected).IgnoreCase);
+            }
         }
     }
 }
