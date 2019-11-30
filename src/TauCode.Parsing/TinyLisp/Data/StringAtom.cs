@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace TauCode.Parsing.TinyLisp.Data
 {
+    [DebuggerDisplay("{" + nameof(Value) + "}")]
     public sealed class StringAtom : Atom
     {
         public StringAtom(string value)
@@ -22,5 +24,7 @@ namespace TauCode.Parsing.TinyLisp.Data
         }
 
         public override int GetHashCode() => this.Value.GetHashCode();
+
+        public override string ToString() => Value;
     }
 }

@@ -20,5 +20,8 @@ todo3. IParser.Parse ==> List<IParsingResult>!
 ==========
 todo1. Enums for all symbols (+UT-s)
 todo2. Non-advance inquire result
-todo3. Only \SpecialString and "<some_exact_special_string>" want ':Some_Class' suffix.
+x   3. Only \SpecialString and "<some_exact_special_string>" want ':Some_Class' suffix.
 
+2019-11-30
+==========
+todo1. Clean up codebase.

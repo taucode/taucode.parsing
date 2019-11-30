@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;
@@ -35,6 +36,13 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(kek == kek2);
             Assert.That(ReferenceEquals(kek, kek2));
 
+            var myNil = Symbol.Create("nil");
+            var myT = Symbol.Create("t");
+
+
+            Assert.That(Nil.Instance, Is.SameAs(myNil));
+            Assert.That(True.Instance, Is.SameAs(myT));
+
             Assert.That(s != sk);
         }
 
@@ -48,10 +56,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 ; second comment";
 
             // Act
-            ILexer lexer = new TinyLispLexer
-            {
-                AddCommentTokens = true,
-            };
+            ILexer lexer = new TinyLispLexer();
 
             var tokens = lexer.Lexize(input);
 
@@ -69,10 +74,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
                 @"();wat";
 
             // Act
-            ILexer lexer = new TinyLispLexer
-            {
-                AddCommentTokens = true,
-            };
+            ILexer lexer = new TinyLispLexer();
 
             var tokens = lexer.Lexize(input);
 
@@ -98,10 +100,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 ";
 
             // Act
-            ILexer lexer = new TinyLispLexer
-            {
-                AddCommentTokens = true,
-            };
+            ILexer lexer = new TinyLispLexer();
 
             var tokens = lexer.Lexize(input);
 
@@ -179,15 +178,30 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
 
             // Act
-            ILexer lexer = new TinyLispLexer
-            {
-                AddCommentTokens = true,
-            };
+            ILexer lexer = new TinyLispLexer();
 
             var tokens = lexer.Lexize(input);
 
             // Assert
             // passed
+        }
+
+        [Test]
+        public void TodoWat6_Reader()
+        {
+            // Arrange
+            var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
+            ILexer lexer = new TinyLispLexer();
+
+            var tokens = lexer.Lexize(input);
+
+            var reader = new TinyLispPseudoReader();
+
+            // Act
+            var list = reader.Read(tokens);
+
+            // Assert
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexer2
 {
@@ -114,24 +113,6 @@ namespace TauCode.Parsing.Lexer2
                         nextToken = result.Token;
                         break;
                     }
-
-                    //if (result.Token == null)
-                    //{
-                    //    if (tokenExtractors.Count == 1)
-                    //    {
-                    //        // no one else will try to 
-                    //        throw result.Exception;
-                    //    }
-                    //    else
-                    //    {
-                    //        continue;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    // got token
-                    //    throw new NotImplementedException();
-                    //}
                 }
 
                 if (nextToken == null)
@@ -139,17 +120,10 @@ namespace TauCode.Parsing.Lexer2
                     throw new NotImplementedException();
                 }
 
-                if (nextToken is NullToken)
-                {
-                    // ignore it
-                    //list.Add(nextToken); // todo: remove.
-                }
-                else
+                if (nextToken.HasPayload)
                 {
                     list.Add(nextToken);
                 }
-
-                //throw new NotImplementedException(); // error - none produced the result
             }
         }
     }

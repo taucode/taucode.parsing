@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Tokens
 {
+    [DebuggerDisplay("{" + nameof(Keyword) + "}")]
     public class KeywordToken : TokenBase
     {
         public KeywordToken(
@@ -16,5 +18,7 @@ namespace TauCode.Parsing.TinyLisp.Tokens
         }
 
         public string Keyword { get; }
+
+        public override string ToString() => Keyword;
     }
 }

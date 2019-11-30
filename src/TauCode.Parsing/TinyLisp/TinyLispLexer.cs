@@ -12,7 +12,7 @@ namespace TauCode.Parsing.TinyLisp
         {
         }
 
-        public bool AddCommentTokens { get; set; }
+        //public bool AddCommentTokens { get; set; }
 
         protected override void InitTokenExtractors()
         {

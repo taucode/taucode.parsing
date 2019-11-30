@@ -21,7 +21,9 @@ namespace TauCode.Parsing.Tokens
         #region Public
 
         public string Value { get; }
-
+        
         #endregion
+
+        public override string ToString() => Value;
     }
 }

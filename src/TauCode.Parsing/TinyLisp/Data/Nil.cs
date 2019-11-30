@@ -1,11 +1,20 @@
 ﻿namespace TauCode.Parsing.TinyLisp.Data
 {
-    public sealed class Nil : Atom
+    public sealed class Nil : Symbol
     {
-        public static Nil Instance { get; } = new Nil();
+        public const string NilSymbolName = "NIL";
+
+        public static Nil Instance { get; }
+
+        static Nil()
+        {
+            Instance = new Nil();
+            RegisterSymbol(Instance);
+        }
 
         private Nil()
-        {   
+            : base(NilSymbolName)
+        {
         }
 
         public override bool Equals(Element other)

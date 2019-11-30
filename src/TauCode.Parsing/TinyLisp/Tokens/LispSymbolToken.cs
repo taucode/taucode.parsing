@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Tokens
 {
+    [DebuggerDisplay("{Symbol}")]
     public class LispSymbolToken : TokenBase
     {
         public LispSymbolToken(
@@ -16,5 +18,7 @@ namespace TauCode.Parsing.TinyLisp.Tokens
         }
 
         public string Symbol { get; }
+
+        public override string ToString() => Symbol;
     }
 }

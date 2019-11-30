@@ -113,6 +113,12 @@ namespace TauCode.Parsing.TinyLisp
             return true;
         }
 
+        public static bool IsSpace(char c) => SpaceChars.Contains(c);
+
+        public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
+
+        public static bool IsPunctuation(char c) => PunctuationChars.Contains(c);
+
         public static Punctuation CharToPunctuation(char c)
         {
             // todo: dictionary mapping <char> <--> <punctuation>
@@ -129,10 +135,32 @@ namespace TauCode.Parsing.TinyLisp
             }
         }
 
-        public static bool IsSpace(char c) => SpaceChars.Contains(c);
+        public static char PunctuationToChar(this Punctuation punctuation)
+        {
+            // todo: dictionary mapping <char> <--> <punctuation>
+            switch (punctuation)
+            {
+                case Punctuation.LeftParenthesis:
+                    return '(';
 
-        public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
+                case Punctuation.RightParenthesis:
+                    return ')';
 
-        public static bool IsPunctuation(char c) => PunctuationChars.Contains(c);
+                case Punctuation.Quote:
+                    return '\'';
+
+                case Punctuation.BackQuote:
+                    return '`';
+
+                case Punctuation.Period:
+                    return '.';
+
+                case Punctuation.Comma:
+                    return ',';
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(punctuation), punctuation, null);
+            }
+        }
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Tokens
 {
+    [DebuggerDisplay("{" + nameof(ToString) + "()}")]
     public class PunctuationToken : EnumToken<Punctuation>
     {
         public PunctuationToken(
@@ -12,5 +14,7 @@ namespace TauCode.Parsing.TinyLisp.Tokens
             : base(value, name, properties)
         {
         }
+
+        public override string ToString() => Value.PunctuationToChar().ToString();
     }
 }
