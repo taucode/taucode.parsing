@@ -94,13 +94,13 @@
 
 ; FOREIGN KEY columns
 (defblock :name fk-columns
-	(symbol "(")
-	(alt :name fk-column-name-alternatives (:some-ident fk-column-name-ident) (:some-word fk-column-name-word))
+	(symbol :value "(")
+	(alt :name fk-column-name-alternatives (some-ident :name fk-column-name-ident) (some-word :name fk-column-name-word))
 	(alt
-		(symbol "," :links fk-column-name-alternatives)
+		(symbol :value "," :links fk-column-name-alternatives)
 		(idle)
 	)
-	(symbol ")")
+	(symbol :value ")")
 )
 
 ; FOREIGN KEY referenced columns
@@ -120,5 +120,17 @@
 	(word :value "INDEX" :name do-create-index)
 	(alt (some-ident :name index-name-ident) (some-word :name index-name-word))
 	(word "ON")
-	(alt (:some-ident :name index-table-name-ident) (some-word :name index-table-name-word))	
+	(alt (some-ident :name index-table-name-ident) (some-word :name index-table-name-word))
+	(symbol "(")
+	(alt :name index-column-name-alternatives (some-ident :name index-column-name) (some-word :name index-column-name-word))
+	(opt
+		(alt
+			(word :value "ASC" :name index-column-asc)
+			(word :value "DESC" :name index-column-desc))
+	)
+	(alt
+		(symbol :value "," :links index-column-name-alternatives)
+		(idle)
+	)
+	(symbol ")")
 )
