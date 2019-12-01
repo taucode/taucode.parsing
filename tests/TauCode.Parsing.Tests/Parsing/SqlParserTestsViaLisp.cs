@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
-using TauCode.Parsing.Aide2;
+using TauCode.Parsing.Aide;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Data;
 using TauCode.Parsing.TinyLisp;
@@ -26,7 +26,7 @@ namespace TauCode.Parsing.Tests.Parsing
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
-            IBuilder2 builder = new Builder2();
+            IBuilder builder = new Builder();
             var freshRoot = builder.Build(list);
             //root.FetchTree();
 

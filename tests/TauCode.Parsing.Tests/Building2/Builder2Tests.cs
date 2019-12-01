@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Linq;
-using TauCode.Parsing.Aide2;
+using TauCode.Parsing.Aide;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
@@ -24,7 +24,7 @@ namespace TauCode.Parsing.Tests.Building2
             var list = reader.Read(tokens);
 
             // Act
-            IBuilder2 builder = new Builder2();
+            IBuilder builder = new Builder();
             var root = builder.Build(list);
             root.FetchTree();
 
