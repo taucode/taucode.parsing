@@ -7,7 +7,7 @@
 
 ; CREATE TABLE
 (defblock :name create-table
-	(word :value "TABLE")
+	(word :value "TABLE" :name do-create-table)
 	(alt (some-ident :name table-name-ident) (some-word :name table-name-word))
 	(symbol :value "(")
 	(block :ref column-def :links table-closing next)
@@ -73,8 +73,10 @@
 	(symbol :value "(")
 	(alt :name pk-column-name-alternatives (some-ident :name pk-column-name-ident) (some-word :name pk-column-name-word))
 	(opt
-		(word :value "ASC" :name asc)
-		(word :value "DESC" :name desc)
+		(alt
+			(word :value "ASC" :name asc)
+			(word :value "DESC" :name desc)
+		)
 	)
 	(alt
 		(symbol :value "," :links pk-column-name-alternatives)
@@ -123,7 +125,7 @@
 	(word :value "ON")
 	(alt (some-ident :name index-table-name-ident) (some-word :name index-table-name-word))
 	(symbol :value "(")
-	(alt :name index-column-name-alternatives (some-ident :name index-column-name) (some-word :name index-column-name-word))
+	(alt :name index-column-name-alternatives (some-ident :name index-column-name-ident) (some-word :name index-column-name-word))
 	(opt
 		(alt
 			(word :value "ASC" :name index-column-asc)
