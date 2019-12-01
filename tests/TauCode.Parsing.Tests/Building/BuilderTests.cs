@@ -9,7 +9,7 @@ using TauCode.Utils.Extensions;
 namespace TauCode.Parsing.Tests.Building
 {
     [TestFixture]
-    public class Builder2Tests
+    public class BuilderTests
     {
         [Test]
         public void TodoWatBuild2()

@@ -3,7 +3,7 @@
     public enum TestCharResult
     {
         NotAllowed = 1,
-        Continue = 2,
+        Continue,
         Finish,
     }
 }
