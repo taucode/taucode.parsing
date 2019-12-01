@@ -85,6 +85,11 @@ namespace TauCode.Parsing.TinyLisp
             }
 
             var element = list.GetSingleKeywordArgument(argumentName, allowsAbsence);
+            if (element == null)
+            {
+                return null;
+            }
+
             if (element is TElement expectedElement)
             {
                 return expectedElement;

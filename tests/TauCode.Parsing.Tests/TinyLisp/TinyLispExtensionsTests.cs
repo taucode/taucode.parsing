@@ -10,7 +10,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
     [TestFixture]
     public class TinyLispExtensionsTests
     {
-        private PseudoList _inputTokens;
+        private PseudoList _rootList;
 
         [SetUp]
         public void SetUp()
@@ -21,15 +21,14 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var tokens = lexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
-            _inputTokens = reader.Read(tokens);
+            _rootList = reader.Read(tokens);
         }
 
         [Test]
         public void TinyLispExtensions_Create_ProducesValidResults()
         {
             // Arrange
-
-            var defBlock = _inputTokens[0].AsPseudoList();
+            var defBlock = _rootList[0].AsPseudoList();
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -66,7 +65,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
 
-            var defBlock = _inputTokens[1].AsPseudoList();
+            var defBlock = _rootList[1].AsPseudoList();
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -137,7 +136,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
 
-            var defBlock = _inputTokens[2];
+            var defBlock = _rootList[2];
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -241,7 +240,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void TinyLispExtensions_ConstraintDefinitions_ProducesValidResults()
         {
             // Arrange
-            var defBlock = _inputTokens[3];
+            var defBlock = _rootList[3];
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -300,7 +299,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void TinyLispExtensions_PrimaryKey_ProducesValidResults()
         {
             // Arrange
-            var defBlock = _inputTokens[4];
+            var defBlock = _rootList[4];
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -336,7 +335,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void TinyLispExtensions_PrimaryKeyColumns_ProducesValidResults()
         {
             // Arrange
-            var defBlock = _inputTokens[5];
+            var defBlock = _rootList[5];
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -404,7 +403,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void TinyLispExtensions_ForeignKey_ProducesValidResults()
         {
             // Arrange
-            var defBlock = _inputTokens[6];
+            var defBlock = _rootList[6];
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -460,7 +459,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void TinyLispExtensions_ForeignKeyColumns_ProducesValidResults()
         {
             // Arrange
-            var defBlock = _inputTokens[7];
+            var defBlock = _rootList[7];
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -518,7 +517,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void TinyLispExtensions_ForeignKeyReferencedColumns_ProducesValidResults()
         {
             // Arrange
-            var defBlock = _inputTokens[8];
+            var defBlock = _rootList[8];
 
             // Act
             var verb = defBlock.GetCarSymbolName();
@@ -576,7 +575,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void TinyLispExtensions_CreateIndex_ProducesValidResults()
         {
             // Arrange
-            var defBlock = _inputTokens[9];
+            var defBlock = _rootList[9];
 
             // Act
             var verb = defBlock.GetCarSymbolName();
