@@ -7,7 +7,7 @@ using TauCode.Parsing.TinyLisp.Data;
 
 namespace TauCode.Parsing.Aide2
 {
-    // todo: deal with empty blocks, which is an error.
+    // todo: deal with empty blocks, alt-s, opt-s and seq-s, which is an error.
     public class Builder2 : IBuilder2
     {
         private class NodeBox
@@ -86,7 +86,10 @@ namespace TauCode.Parsing.Aide2
                 }
             }
 
-            // todo: tail must contain "next" node link!
+            if (tail.Links.Any())
+            {
+                throw new NotImplementedException();
+            }
 
             var buildResult = new BuildResult
             {
@@ -104,16 +107,16 @@ namespace TauCode.Parsing.Aide2
 
             switch (car)
             {
+                case "BLOCK":
+                    buildResult = this.BuildBlock(item);
+                    break;
+
                 case "ALT":
                     buildResult = this.BuildAlt(item);
                     break;
 
                 case "OPT":
                     buildResult = this.BuildOpt(item);
-                    break;
-
-                case "BLOCK":
-                    buildResult = this.BuildBlock(item);
                     break;
 
                 case "SEQ":
@@ -126,29 +129,6 @@ namespace TauCode.Parsing.Aide2
             }
 
             return buildResult;
-        }
-
-        private BuildResult BuildBlock(Element item)
-        {
-            var blockName = item.GetSingleKeywordArgument<Symbol>(":ref").Name;
-            var defblock = _defblocks[blockName];
-            var args = defblock.GetFreeArguments();
-
-            var blockEnter = new NodeBox
-            {
-                Node = new IdleNode(_family, blockName),
-            };
-
-            var contentResult = this.BuildContent(args);
-
-            blockEnter.Node.EstablishLink(contentResult.Head.Node);
-            var result = new BuildResult
-            {
-                Head = blockEnter,
-                Tail = contentResult.Tail,
-            };
-
-            return result;
         }
 
         private static string GetItemName(Element item)
@@ -244,6 +224,29 @@ namespace TauCode.Parsing.Aide2
                 .ToList();
 
             return links;
+        }
+
+        private BuildResult BuildBlock(Element item)
+        {
+            var blockName = item.GetSingleKeywordArgument<Symbol>(":ref").Name;
+            var defblock = _defblocks[blockName];
+            var args = defblock.GetFreeArguments();
+
+            var blockEnter = new NodeBox
+            {
+                Node = new IdleNode(_family, blockName),
+            };
+
+            var contentResult = this.BuildContent(args);
+
+            blockEnter.Node.EstablishLink(contentResult.Head.Node);
+            var result = new BuildResult
+            {
+                Head = blockEnter,
+                Tail = contentResult.Tail,
+            };
+
+            return result;
         }
 
         private BuildResult BuildAlt(Element item)
