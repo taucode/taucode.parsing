@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.Tokens;
 using TauCode.Utils.Extensions;
 

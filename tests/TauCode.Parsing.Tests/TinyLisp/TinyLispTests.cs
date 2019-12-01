@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;

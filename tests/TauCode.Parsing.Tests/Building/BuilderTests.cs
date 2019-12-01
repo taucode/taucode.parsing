@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System.Linq;
 using TauCode.Parsing.Aide;
+using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
