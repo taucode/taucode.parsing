@@ -119,9 +119,9 @@
 	(word :value "UNIQUE" :name do-create-unique-index)
 	(word :value "INDEX" :name do-create-index)
 	(alt (some-ident :name index-name-ident) (some-word :name index-name-word))
-	(word "ON")
+	(word :value "ON")
 	(alt (some-ident :name index-table-name-ident) (some-word :name index-table-name-word))
-	(symbol "(")
+	(symbol :value "(")
 	(alt :name index-column-name-alternatives (some-ident :name index-column-name) (some-word :name index-column-name-word))
 	(opt
 		(alt
@@ -132,5 +132,5 @@
 		(symbol :value "," :links index-column-name-alternatives)
 		(idle)
 	)
-	(symbol ")")
+	(symbol :value ")")
 )

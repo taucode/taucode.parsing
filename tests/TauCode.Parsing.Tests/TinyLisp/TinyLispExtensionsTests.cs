@@ -572,5 +572,112 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(symbol1.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo(")"));
         }
 
+        [Test]
+        public void TinyLispExtensions_CreateIndex_ProducesValidResults()
+        {
+            // Arrange
+            var defBlock = _inputTokens[9];
+
+            // Act
+            var verb = defBlock.GetCarSymbolName();
+            var name = defBlock.GetSingleKeywordArgument<Symbol>(":name").Name;
+
+            var free = defBlock.GetFreeArguments();
+
+            // Assert
+            Assert.That(verb, Is.EqualTo("defblock").IgnoreCase);
+            Assert.That(name, Is.EqualTo("create-index").IgnoreCase);
+
+            Assert.That(free, Has.Count.EqualTo(10));
+
+            var word0 = free[0];
+            var word1 = free[1];
+            var alt0 = free[2];
+            var word2 = free[3];
+            var alt1 = free[4];
+            var symbol0 = free[5];
+            var alt2 = free[6];
+            var opt = free[7];
+            var alt3 = free[8];
+            var symbol1 = free[9];
+
+            // word 0
+            Assert.That(word0.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word0.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("UNIQUE"));
+            Assert.That(word0.GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("do-create-unique-index").IgnoreCase);
+
+            // word 1
+            Assert.That(word1.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word1.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("INDEX"));
+            Assert.That(word1.GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("do-create-index").IgnoreCase);
+
+            // alt 0
+            Assert.That(alt0.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
+            free = alt0.GetFreeArguments();
+            Assert.That(free, Has.Count.EqualTo(2));
+            Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("index-name-ident").IgnoreCase);
+            Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("index-name-word").IgnoreCase);
+
+            // word 2
+            Assert.That(word2.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word2.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("ON").IgnoreCase);
+            
+            // alt 1
+            Assert.That(alt1.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
+            free = alt1.GetFreeArguments();
+            Assert.That(free, Has.Count.EqualTo(2));
+            Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("index-table-name-ident").IgnoreCase);
+            Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("index-table-name-word").IgnoreCase);
+
+            // symbol 0
+            Assert.That(symbol0.GetCarSymbolName(), Is.EqualTo("symbol").IgnoreCase);
+            Assert.That(symbol0.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("("));
+
+            // alt 2
+            Assert.That(alt2.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
+            free = alt2.GetFreeArguments();
+            Assert.That(free, Has.Count.EqualTo(2));
+            Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("index-column-name").IgnoreCase);
+            Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("index-column-name-word").IgnoreCase);
+
+            // opt
+            Assert.That(opt.GetCarSymbolName(), Is.EqualTo("opt").IgnoreCase);
+            free = opt.GetFreeArguments();
+            Assert.That(free, Has.Count.EqualTo(1));
+            var innerAlt = free.Single();
+            Assert.That(innerAlt.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
+            free = innerAlt.GetFreeArguments();
+            Assert.That(free, Has.Count.EqualTo(2));
+            Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("ASC"));
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("index-column-asc").IgnoreCase);
+            Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("DESC"));
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("index-column-desc").IgnoreCase);
+
+            // alt 3
+            Assert.That(alt3.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
+            free = alt3.GetFreeArguments();
+            Assert.That(free, Has.Count.EqualTo(2));
+            Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("symbol").IgnoreCase);
+            CollectionAssert.AreEqual(
+                new List<Symbol>
+                {
+                    Symbol.Create("index-column-name-alternatives")
+                },
+                free[0].GetAllKeywordArguments(":links")
+            );
+            Assert.That(free[1].ToString(), Is.EqualTo("(idle)").IgnoreCase);
+
+            // symbol 1
+            Assert.That(symbol1.GetCarSymbolName(), Is.EqualTo("symbol").IgnoreCase);
+            Assert.That(symbol1.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo(")"));
+        }
     }
 }
