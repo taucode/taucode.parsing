@@ -105,7 +105,7 @@
 
 ; FOREIGN KEY referenced columns
 (defblock :name fk-referenced-columns
-	(symbol "(")
+	(symbol :value "(")
 	(alt :name fk-referenced-column-name-alternatives (some-ident :name fk-referenced-column-name-ident) (some-word :name fk-referenced-column-name-word))
 	(alt
 		(symbol :value "," :links fk-referenced-column-name-alternatives)
