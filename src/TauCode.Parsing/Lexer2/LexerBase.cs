@@ -1,23 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexer2
 {
+    // todo clean up
     public abstract class LexerBase : ILexer
     {
         private string _input;
         private int _pos;
 
-        private readonly HashSet<char> _spaceChars;
+        //private readonly HashSet<char> _spaceChars;
+        //private readonly HashSet<char> _lineBreakChars;
+        private readonly Func<char, bool> _spacePredicate;
+        private readonly Func<char, bool> _lineBreakPredicate;
+
         private readonly List<ITokenExtractor> _tokenExtractors;
         private bool _tokenExtractorsInited;
 
-        protected LexerBase(char[] spaceChars/*, ITokenExtractor[] tokenExtractors*/)
+        protected LexerBase(
+            Func<char, bool> spacePredicate,
+            Func<char, bool> lineBreakPredicate)
         {
             // todo check args
-            _spaceChars = new HashSet<char>(spaceChars);
+            // todo: line breaks must be contained in space chars.
+            //_spaceChars = new HashSet<char>(spaceChars);
+            //_lineBreakChars = new HashSet<char>(lineBreakChars);
+
+            _spacePredicate = spacePredicate;
+            _lineBreakPredicate = lineBreakPredicate;
+
             _tokenExtractors = new List<ITokenExtractor>();
         }
 
@@ -35,10 +47,10 @@ namespace TauCode.Parsing.Lexer2
 
         protected int GetCurrentPosition() => _pos;
 
-        protected bool IsSpaceChar(char c)
-        {
-            return _spaceChars.Contains(c);
-        }
+        protected bool IsSpaceChar(char c) => _spacePredicate(c);
+        //{
+        //    return _spaceChars.Contains(c);
+        //}
 
         protected void Advance(int shift = 1)
         {
@@ -101,24 +113,6 @@ namespace TauCode.Parsing.Lexer2
                         nextToken = result.Token;
                         break;
                     }
-
-                    //if (result.Token == null)
-                    //{
-                    //    if (tokenExtractors.Count == 1)
-                    //    {
-                    //        // no one else will try to 
-                    //        throw result.Exception;
-                    //    }
-                    //    else
-                    //    {
-                    //        continue;
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    // got token
-                    //    throw new NotImplementedException();
-                    //}
                 }
 
                 if (nextToken == null)
@@ -126,17 +120,10 @@ namespace TauCode.Parsing.Lexer2
                     throw new NotImplementedException();
                 }
 
-                if (nextToken is NullToken)
-                {
-                    // ignore it
-                    //list.Add(nextToken); // todo: remove.
-                }
-                else
+                if (nextToken.HasPayload)
                 {
                     list.Add(nextToken);
                 }
-
-                //throw new NotImplementedException(); // error - none produced the result
             }
         }
     }

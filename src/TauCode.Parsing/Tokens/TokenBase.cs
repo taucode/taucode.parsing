@@ -36,6 +36,7 @@ namespace TauCode.Parsing.Tokens
         #region IToken Members
 
         public string Name { get; }
+        public virtual bool HasPayload => true;
         public IReadOnlyDictionary<string, string> Properties => _properties;
 
         #endregion

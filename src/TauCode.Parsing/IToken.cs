@@ -6,6 +6,8 @@ namespace TauCode.Parsing
     {
         string Name { get; }
 
+        bool HasPayload { get; }
+
         IReadOnlyDictionary<string, string> Properties { get; }
     }
 }

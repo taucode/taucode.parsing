@@ -8,20 +8,22 @@ namespace TauCode.Parsing.Tokens
         #region Constructor
 
         public StringToken(
-            string str,
+            string value,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
             : base(name, properties)
         {
-            this.String = str ?? throw new ArgumentNullException(nameof(str));
+            this.Value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         #endregion
 
         #region Public
 
-        public string String { get; }
-
+        public string Value { get; }
+        
         #endregion
+
+        public override string ToString() => Value;
     }
 }
