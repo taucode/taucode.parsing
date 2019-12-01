@@ -89,7 +89,7 @@
 	(block :ref fk-columns)
 	(word :value "REFERENCES")
 	(alt (some-ident :name fk-referenced-table-name-ident) (some-word :name fk-referenced-table-name-word))
-	(block :name fk-referenced-columns)
+	(block :ref fk-referenced-columns)
 )
 
 ; FOREIGN KEY columns

@@ -399,5 +399,61 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(symbol1.GetCarSymbolName(), Is.EqualTo("symbol").IgnoreCase);
             Assert.That(symbol1.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo(")"));
         }
+
+        [Test]
+        public void TinyLispExtensions_ForeignKey_ProducesValidResults()
+        {
+            // Arrange
+            var defBlock = _inputTokens[6];
+
+            // Act
+            var verb = defBlock.GetCarSymbolName();
+            var name = defBlock.GetSingleKeywordArgument<Symbol>(":name").Name;
+
+            var free = defBlock.GetFreeArguments();
+
+            // Assert
+            Assert.That(verb, Is.EqualTo("defblock").IgnoreCase);
+            Assert.That(name, Is.EqualTo("foreign-key").IgnoreCase);
+
+            Assert.That(free, Has.Count.EqualTo(6));
+
+            var word0 = free[0];
+            var word1 = free[1];
+            var block0 = free[2];
+            var word2 = free[3];
+            var alt = free[4];
+            var block1 = free[5];
+
+            // word 0
+            Assert.That(word0.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word0.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("FOREIGN"));
+            Assert.That(word0.GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("do-primary-key").IgnoreCase);
+
+            // word 1
+            Assert.That(word1.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word1.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("KEY"));
+
+            // block 0
+            Assert.That(block0.GetCarSymbolName(), Is.EqualTo("block").IgnoreCase);
+            Assert.That(block0.GetSingleKeywordArgument<Symbol>(":ref").Name, Is.EqualTo("fk-columns").IgnoreCase);
+
+            // word 2
+            Assert.That(word2.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word2.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("REFERENCES"));
+
+            // alt
+            Assert.That(alt.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
+            free = alt.GetFreeArguments();
+            Assert.That(free, Has.Count.EqualTo(2));
+            Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-referenced-table-name-ident").IgnoreCase);
+            Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-referenced-table-name-word").IgnoreCase);
+
+            // block 1
+            Assert.That(block1.GetCarSymbolName(), Is.EqualTo("block").IgnoreCase);
+            Assert.That(block1.GetSingleKeywordArgument<Symbol>(":ref").Name, Is.EqualTo("fk-referenced-columns").IgnoreCase);
+        }
     }
 }
