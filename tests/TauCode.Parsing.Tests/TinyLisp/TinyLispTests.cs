@@ -319,6 +319,5 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             throw new NotImplementedException("good, go on!");
         }
-
     }
 }
