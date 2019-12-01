@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TauCode.Parsing.Lexer2
+namespace TauCode.Parsing.Lexizing
 {
     // todo clean up
     public abstract class TokenExtractorBase : ITokenExtractor

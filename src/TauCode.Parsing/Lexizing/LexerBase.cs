@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TauCode.Parsing.Lexer2
+namespace TauCode.Parsing.Lexizing
 {
     // todo clean up
     public abstract class LexerBase : ILexer

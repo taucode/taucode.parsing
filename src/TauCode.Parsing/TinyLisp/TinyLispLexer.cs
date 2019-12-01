@@ -1,4 +1,4 @@
-﻿using TauCode.Parsing.Lexer2;
+﻿using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.TinyLisp.TokenExtractors;
 
 namespace TauCode.Parsing.TinyLisp

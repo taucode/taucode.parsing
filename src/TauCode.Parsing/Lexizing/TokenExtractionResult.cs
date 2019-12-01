@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Lexer2
+﻿namespace TauCode.Parsing.Lexizing
 {
     public struct TokenExtractionResult
     {

@@ -6,7 +6,7 @@ using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 using TauCode.Utils.Extensions;
 
-namespace TauCode.Parsing.Tests.Building2
+namespace TauCode.Parsing.Tests.Building
 {
     [TestFixture]
     public class Builder2Tests
