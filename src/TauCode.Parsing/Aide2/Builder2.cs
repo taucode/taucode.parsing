@@ -12,8 +12,74 @@ namespace TauCode.Parsing.Aide2
     {
         private class NodeBox
         {
-            public INode Node { get; set; }
-            public List<string> Links { get; set; } = new List<string>();
+            private readonly INode _node;
+            private readonly List<string> _links;
+            private bool _linksRequested;
+
+            public NodeBox(INode node, IEnumerable<string> links = null)
+            {
+                // todo checks
+                _node = node ?? throw new ArgumentNullException(nameof(node));
+                _links = (links ?? new List<string>()).ToList();
+            }
+
+            public INode GetNode() => _node;
+            public IReadOnlyList<string> Links => _links;
+
+            public void RequestLink(NodeBox to)
+            {
+                // todo checks
+
+                if (_linksRequested)
+                {
+                    throw new NotImplementedException(); // error.
+                }
+
+                if (_links.Any())
+                {
+                    foreach (var link in _links)
+                    {
+                        if (link == "NEXT")
+                        {
+                            _node.EstablishLink(to._node);
+
+                            //tail.Node.EstablishLink(result.Head.Node);
+                        }
+                        else
+                        {
+                            _node.ClaimLink(link);
+                            //tail.Node.ClaimLink(link);
+                        }
+                    }
+                }
+                else
+                {
+                    //tail.Node.EstablishLink(result.Head.Node);
+                    _node.EstablishLink(to._node);
+                }
+
+                _linksRequested = true;
+            }
+
+            public void DemandLink(NodeBox to)
+            {
+                if (_linksRequested)
+                {
+                    throw new NotImplementedException();
+                }
+
+                if (_links.Any())
+                {
+                    throw new NotImplementedException(); // you may not demand link if there are '_links'
+                }
+
+                _node.EstablishLink(to._node);
+
+                //throw new NotImplementedException();
+            }
+
+            //public INode Node { get; set; }
+            //public List<string> Links { get; set; } = new List<string>();
         }
 
         private class BuildResult
@@ -48,7 +114,7 @@ namespace TauCode.Parsing.Aide2
 
             var result = this.BuildContent(topBlockContent);
 
-            return result.Head.Node;
+            return result.Head.GetNode();
         }
 
         private BuildResult BuildContent(PseudoList content)
@@ -69,26 +135,29 @@ namespace TauCode.Parsing.Aide2
                 }
                 else
                 {
-                    if (tail.Links.Any())
-                    {
-                        foreach (var link in tail.Links)
-                        {
-                            if (link == "NEXT")
-                            {
-                                tail.Node.EstablishLink(result.Head.Node);
-                            }
-                            else
-                            {
-                                tail.Node.ClaimLink(link);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        tail.Node.EstablishLink(result.Head.Node);
-                    }
-
+                    tail.RequestLink(result.Head);
                     tail = result.Tail;
+
+                    //if (tail.Links.Any())
+                    //{
+                    //    foreach (var link in tail.Links)
+                    //    {
+                    //        if (link == "NEXT")
+                    //        {
+                    //            tail.Node.EstablishLink(result.Head.Node);
+                    //        }
+                    //        else
+                    //        {
+                    //            tail.Node.ClaimLink(link);
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    tail.Node.EstablishLink(result.Head.Node);
+                    //}
+
+                    //tail = result.Tail;
                 }
             }
 
@@ -207,11 +276,11 @@ namespace TauCode.Parsing.Aide2
                     throw new NotImplementedException();
             }
 
-            var nodeBox = new NodeBox
-            {
-                Node = node,
-                Links = links,
-            };
+            var nodeBox = new NodeBox(node, links);
+            //{
+            //    Node = node,
+            //    Links = links,
+            //};
 
             return new BuildResult(nodeBox, nodeBox);
         }
@@ -232,14 +301,15 @@ namespace TauCode.Parsing.Aide2
             var defblock = _defblocks[blockName];
             var args = defblock.GetFreeArguments();
 
-            var blockEnter = new NodeBox
-            {
-                Node = new IdleNode(_family, blockName),
-            };
+            var blockEnter = new NodeBox(new IdleNode(_family, blockName));
+            //{
+            //    Node = new IdleNode(_family, blockName),
+            //};
 
             var contentResult = this.BuildContent(args);
 
-            blockEnter.Node.EstablishLink(contentResult.Head.Node);
+            //blockEnter.Node.EstablishLink(contentResult.Head.Node);
+            blockEnter.DemandLink(contentResult.Head);
             var result = new BuildResult(blockEnter, contentResult.Tail);
 
             return result;
@@ -249,22 +319,25 @@ namespace TauCode.Parsing.Aide2
         {
             var alternatives = item.GetFreeArguments();
 
-            var altEnter = new NodeBox
-            {
-                Node = new IdleNode(_family, GetItemName(item)),
-            };
+            var altEnter = new NodeBox(new IdleNode(_family, GetItemName(item)));
+            //{
+            //    Node = new IdleNode(_family, GetItemName(item)),
+            //};
 
-            var altExit = new NodeBox
-            {
-                Node = new IdleNode(_family, null),
-            };
+            var altExit = new NodeBox(new IdleNode(_family, null));
+            //{
+            //    Node = new IdleNode(_family, null),
+            //};
 
             foreach (var alternative in alternatives)
             {
                 var alternativeResult = this.BuildItem(alternative);
 
-                altEnter.Node.EstablishLink(alternativeResult.Head.Node);
-                alternativeResult.Tail.Node.EstablishLink(altExit.Node);
+                altEnter.DemandLink(alternativeResult.Head);
+                //altEnter.Node.EstablishLink(alternativeResult.Head.Node);
+
+                //alternativeResult.Tail.Node.EstablishLink(altExit.Node);
+                alternativeResult.Tail.RequestLink(altExit);
             }
 
             var result = new BuildResult(altEnter, altExit);
@@ -274,24 +347,28 @@ namespace TauCode.Parsing.Aide2
 
         private BuildResult BuildOpt(Element item)
         {
-            var optEnter = new NodeBox
-            {
-                Node = new IdleNode(_family, GetItemName(item)),
-            };
+            var optEnter = new NodeBox(new IdleNode(_family, GetItemName(item)));
+            //{
+            //    Node = new IdleNode(_family, GetItemName(item)),
+            //};
 
-            var optExit = new NodeBox
-            {
-                Node = new IdleNode(_family, null),
-            };
+            var optExit = new NodeBox(new IdleNode(_family, null));
+            //{
+            //    Node = new IdleNode(_family, null),
+            //};
 
             // short circuit!
-            optEnter.Node.EstablishLink(optExit.Node);
+            //optEnter.Node.EstablishLink(optExit.Node);
+            optEnter.DemandLink(optExit);
 
             var args = item.GetFreeArguments();
             var contentResult = this.BuildContent(args);
 
-            optEnter.Node.EstablishLink(contentResult.Head.Node);
-            contentResult.Tail.Node.EstablishLink(optExit.Node);
+            //optEnter.Node.EstablishLink(contentResult.Head.Node);
+            optEnter.DemandLink(contentResult.Head);
+
+            //contentResult.Tail.Node.EstablishLink(optExit.Node);
+            contentResult.Tail.RequestLink(optExit);
 
             var result = new BuildResult(optEnter, optExit);
 
