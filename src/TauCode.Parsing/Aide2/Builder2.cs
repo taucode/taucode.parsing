@@ -18,8 +18,14 @@ namespace TauCode.Parsing.Aide2
 
         private class BuildResult
         {
-            public NodeBox Head { get; set; }
-            public NodeBox Tail { get; set; }
+            public BuildResult(NodeBox head, NodeBox tail)
+            {
+                this.Head = head ?? throw new ArgumentNullException(nameof(head));
+                this.Tail = tail ?? throw new ArgumentNullException(nameof(tail));
+            }
+
+            public NodeBox Head { get; }
+            public NodeBox Tail { get; }
         }
 
         private Dictionary<string, PseudoList> _defblocks;
@@ -86,16 +92,14 @@ namespace TauCode.Parsing.Aide2
                 }
             }
 
+            // todo: check for null (which means empty 'sequence', actually).
+
             if (tail.Links.Any())
             {
                 throw new NotImplementedException();
             }
 
-            var buildResult = new BuildResult
-            {
-                Head = head,
-                Tail = tail,
-            };
+            var buildResult = new BuildResult(head, tail);
 
             return buildResult;
         }
@@ -209,11 +213,7 @@ namespace TauCode.Parsing.Aide2
                 Links = links,
             };
 
-            return new BuildResult
-            {
-                Head = nodeBox,
-                Tail = nodeBox,
-            };
+            return new BuildResult(nodeBox, nodeBox);
         }
 
         private List<string> GetItemLinks(Element item)
@@ -240,11 +240,7 @@ namespace TauCode.Parsing.Aide2
             var contentResult = this.BuildContent(args);
 
             blockEnter.Node.EstablishLink(contentResult.Head.Node);
-            var result = new BuildResult
-            {
-                Head = blockEnter,
-                Tail = contentResult.Tail,
-            };
+            var result = new BuildResult(blockEnter, contentResult.Tail);
 
             return result;
         }
@@ -271,11 +267,7 @@ namespace TauCode.Parsing.Aide2
                 alternativeResult.Tail.Node.EstablishLink(altExit.Node);
             }
 
-            var result = new BuildResult
-            {
-                Head = altEnter,
-                Tail = altExit,
-            };
+            var result = new BuildResult(altEnter, altExit);
 
             return result;
         }
@@ -301,11 +293,7 @@ namespace TauCode.Parsing.Aide2
             optEnter.Node.EstablishLink(contentResult.Head.Node);
             contentResult.Tail.Node.EstablishLink(optExit.Node);
 
-            var result = new BuildResult
-            {
-                Head = optEnter,
-                Tail = optExit,
-            };
+            var result = new BuildResult(optEnter, optExit);
 
             return result;
         }
