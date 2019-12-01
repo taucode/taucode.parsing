@@ -57,6 +57,16 @@ namespace TauCode.Parsing.TinyLisp
             return wantedElement;
         }
 
+        public static TElement GetSingleKeywordArgument<TElement>(this PseudoList list, string argumentName, bool allowsAbsence = false) where TElement : Element
+        {
+            var element = list.GetSingleKeywordArgument(argumentName, allowsAbsence);
+            if (element is TElement expectedElement)
+            {
+                return expectedElement;
+            }
+
+            throw new NotImplementedException(); // error
+        }
         public static PseudoList GetAllKeywordArguments(this PseudoList list, string argumentName, bool allowsAbsence = false)
         {
             if (list == null)
@@ -141,7 +151,13 @@ namespace TauCode.Parsing.TinyLisp
             throw new NotImplementedException(); // only T or NIL accepted here.
         }
 
-        public static IList<PseudoList> GetFreeArgumentSets(this PseudoList list)
+        // todo: check that '.Single()' doesn't throw.
+        public static PseudoList GetFreeArguments(this PseudoList list)
+        {
+            return list.GetMultipleFreeArgumentSets().Single();
+        }
+
+        public static IList<PseudoList> GetMultipleFreeArgumentSets(this PseudoList list)
         {
             if (list == null)
             {
@@ -169,7 +185,14 @@ namespace TauCode.Parsing.TinyLisp
                     }
                     else
                     {
-                        var firstArgIndex = startIndex + 1;
+                        // got free args.
+                        var firstArgIndex = startIndex;
+
+                        if (startedWithKeyword)
+                        {
+                            firstArgIndex++;
+                        }
+
                         var lastArgIndex = index - 1;
 
                         var freeArgsPseudoList = new PseudoList();
