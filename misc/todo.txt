@@ -8,12 +8,12 @@
 
 2019-11-16
 ==========
-x   1. Get rid of 'Aide'.
++   1. Get rid of 'Aide'.
 
 2019-11-20
 ==========
 todo1. Cache non-idle successor nodes for finalized nodes.
-todo2. LexerBase
++   2. LexerBase
 todo3. IParser.Parse ==> List<IParsingResult>!
 
 2019-11-28
