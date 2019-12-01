@@ -1,3 +1,0 @@
-﻿\BeginBlockDefinition(*inner, *fk_columns)
-\( <fk_column_name>\Identifier { \,(*fk_column_name) | \) }
-\EndBlockDefinition

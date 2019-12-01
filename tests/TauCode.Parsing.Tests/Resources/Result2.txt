@@ -1,3 +1,0 @@
-﻿\BeginBlockDefinition(*inner, *constraint_definitions)
-<begin>CONSTRAINT { <primary_key>\BlockReference | <foreign_key>\BlockReference } { \,(*begin) | \Idle }
-\EndBlockDefinition
