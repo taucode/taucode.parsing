@@ -365,19 +365,6 @@ namespace TauCode.Parsing.TinyLisp
 
         public static PseudoList AsPseudoList(this Element shouldBePseudoList) =>
             shouldBePseudoList.AsElement<PseudoList>();
-        //{
-        //    if (shouldBePseudoList == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(shouldBePseudoList));
-        //    }
-
-        //    if (shouldBePseudoList is PseudoList pseudoList)
-        //    {
-        //        return pseudoList;
-        //    }
-
-        //    throw new NotImplementedException(); // error
-        //}
 
         public static TElement AsElement<TElement>(this Element element) where TElement : Element
         {

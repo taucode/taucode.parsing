@@ -1,5 +1,5 @@
 ﻿using System;
-using TauCode.Parsing.Lexer2;
+using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors

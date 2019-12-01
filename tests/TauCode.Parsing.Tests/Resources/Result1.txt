@@ -1,3 +1,0 @@
-﻿\BeginBlockDefinition(*inner, *column_definition)
-<column_name>\Identifier <type_name>\Identifier <nullability>[ { <null>NULL | NOT <not_null>NULL } ] <end>\Idle
-\EndBlockDefinition

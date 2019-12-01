@@ -93,12 +93,6 @@ namespace TauCode.Parsing.TinyLisp
 
                 var isValid = IsAcceptableSymbolNameChar(c);
 
-                //var isValid =
-                //    char.IsDigit(c) ||
-                //    char.IsLetter(c) ||
-                //    c.IsAcceptableSymbolNamePunctuationChar() ||
-                //    c == '_';
-
                 if (!isValid)
                 {
                     return false;

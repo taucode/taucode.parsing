@@ -1,8 +1,8 @@
 ﻿using TauCode.Parsing.TinyLisp.Data;
 
-namespace TauCode.Parsing.Aide2
+namespace TauCode.Parsing.Aide
 {
-    public interface IBuilder2
+    public interface IBuilder
     {
         INode Build(PseudoList defblocks);
     }

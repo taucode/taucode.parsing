@@ -5,10 +5,10 @@ using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 
-namespace TauCode.Parsing.Aide2
+namespace TauCode.Parsing.Aide
 {
     // todo: deal with empty blocks, alt-s, opt-s and seq-s, which is an error.
-    public class Builder2 : IBuilder2
+    public class Builder : IBuilder
     {
         private class NodeBox
         {

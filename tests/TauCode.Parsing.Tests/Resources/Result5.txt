@@ -1,3 +1,0 @@
-﻿\BeginBlockDefinition(*inner, *foreign_key)
-FOREIGN KEY <fk_name>\Identifier <fk_columns>\BlockReference REFERENCES <fk_referenced_table_name>\Identifier <fk_referenced_columns>\BlockReference
-\EndBlockDefinition

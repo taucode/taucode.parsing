@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TauCode.Parsing
+namespace TauCode.Parsing.Lexizing
 {
     public interface ILexer
     {

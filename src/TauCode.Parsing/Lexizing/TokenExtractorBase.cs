@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace TauCode.Parsing.Lexer2
+namespace TauCode.Parsing.Lexizing
 {
-    // todo clean up
     public abstract class TokenExtractorBase : ITokenExtractor
     {
-        //private readonly HashSet<char> _spaceChars;
-        //private readonly HashSet<char> _lineBreakChars;
-        //private readonly HashSet<char> _firstChars;
-
         private readonly Func<char, bool> _spacePredicate;
         private readonly Func<char, bool> _lineBreakPredicate;
         private readonly Func<char, bool> _firstCharPredicate;
@@ -26,11 +21,6 @@ namespace TauCode.Parsing.Lexer2
             Func<char, bool> firstCharPredicate)
         {
             // todo checks
-
-            //_spaceChars = new HashSet<char>(spaceChars);
-            //_lineBreakChars = new HashSet<char>(lineBreakChars);
-            //_firstChars = new HashSet<char>(firstChars);
-
             _spacePredicate = spacePredicate;
             _lineBreakPredicate = lineBreakPredicate;
             _firstCharPredicate = firstCharPredicate;
@@ -39,31 +29,16 @@ namespace TauCode.Parsing.Lexer2
         }
 
         protected bool IsSpaceChar(char c) => _spacePredicate(c);
-        //{
-        //    return _spaceChars.Contains(c);
-        //}
 
         protected bool IsLineBreakChar(char c) => _lineBreakPredicate(c);
-        //{
-        //    return _lineBreakChars.Contains(c);
-        //}
 
-        protected bool IsEnd()
-        {
-            return this.GetAbsolutePosition() == _input.Length;
-        }
+        protected bool IsEnd() => this.GetAbsolutePosition() == _input.Length;
 
-        protected int GetLocalPosition()
-        {
-            return _localPos;
-        }
+        protected int GetLocalPosition() => _localPos;
 
         protected abstract void Reset();
 
-        protected int GetAbsolutePosition()
-        {
-            return _startPos + _localPos;
-        }
+        protected int GetAbsolutePosition() => _startPos + _localPos;
 
         protected virtual bool AllowsEndAfterProduction() => true;
 
@@ -106,10 +81,6 @@ namespace TauCode.Parsing.Lexer2
 
             while (true)
             {
-                //var absolutePos = position + localPos;
-
-                //var c = input[absolutePos];
-
                 if (this.IsEnd())
                 {
                     var testEndResult = this.TestEnd();
@@ -144,8 +115,7 @@ namespace TauCode.Parsing.Lexer2
 
                     case TestCharResult.Finish:
                         var token = this.ProduceResult();
-                        //this.Advance();
-                        
+
                         if (token == null)
                         {
                             // yes, maybe. e.g. \BeginFoo instead of \BeginBlockDefinition
@@ -186,11 +156,9 @@ namespace TauCode.Parsing.Lexer2
                         return new TokenExtractionResult(this.GetLocalPosition(), token);
 
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        throw new ArgumentOutOfRangeException(); // todo
                 }
             }
-
-            throw new NotImplementedException();
         }
 
         protected abstract IToken ProduceResult();
@@ -216,26 +184,6 @@ namespace TauCode.Parsing.Lexer2
 
         protected abstract bool TestEnd();
 
-        //{
-        //    var c = this.GetCurrentChar();
-        //    var localPos = this.GetLocalPosition();
-
-        //    if (localPos == 0)
-        //    {
-        //        return this.AllowsFirstChar(c) ? TestCharResult.Continue : TestCharResult.NotAllowed;
-        //    }
-
-        //    return this.TestCurrentCharImpl();
-
-        //    //throw new NotImplementedException();
-        //    //if (localPosition == 0)
-        //    //{
-        //    //    return this.AllowsFirstChar(c) ? TestCharResult.Continue : TestCharResult.NotAllowed;
-        //    //}
-
-        //    //return this.TestCharImpl(c, localPosition);
-        //}
-
         protected char GetCurrentChar()
         {
             if (this.IsEnd())
@@ -248,18 +196,8 @@ namespace TauCode.Parsing.Lexer2
             return c;
         }
 
-        //protected abstract TestCharResult TestCurrentCharImpl();
-
-        //protected abstract bool AllowsCharAtLocalPosition(char c, int localPos);
-
         public bool AllowsFirstChar(char c) => _firstCharPredicate(c);
-        //{
-        //    return _firstChars.Contains(firstChar);
-        //}
 
-        public void AddSuccessors(params TokenExtractorBase[] successors)
-        {
-            _successors.AddRange(successors);
-        }
+        public void AddSuccessors(params TokenExtractorBase[] successors) => _successors.AddRange(successors);
     }
 }
