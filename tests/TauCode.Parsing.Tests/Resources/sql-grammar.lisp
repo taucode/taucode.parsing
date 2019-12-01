@@ -2,6 +2,7 @@
 (defblock :name create :is-top t
 	(word :value "CREATE")
 	(alt (block :ref create-table) (block :ref create-index))
+	(end)
 )
 
 ; CREATE TABLE
@@ -52,7 +53,7 @@
 )
 
 ; constraint definitions
-(defblock :name constraint-definitions
+(defblock :name constraint-defs
 	(word :value "CONSTRAINT" :name constraint)
 	(alt (some-ident :name constraint-name-ident) (some-word :name constraint-name-word))
 	(alt (block :ref primary-key) (block :ref foreign-key))
@@ -84,7 +85,7 @@
 
 ; FOREIGN KEY
 (defblock :name foreign-key
-	(word :value "FOREIGN" :name do-primary-key)
+	(word :value "FOREIGN" :name do-foreign-key)
 	(word :value "KEY")
 	(block :ref fk-columns)
 	(word :value "REFERENCES")
@@ -116,7 +117,7 @@
 
 ; CREATE INDEX
 (defblock :name create-index
-	(word :value "UNIQUE" :name do-create-unique-index)
+	(opt (word :value "UNIQUE" :name do-create-unique-index))
 	(word :value "INDEX" :name do-create-index)
 	(alt (some-ident :name index-name-ident) (some-word :name index-name-word))
 	(word :value "ON")
