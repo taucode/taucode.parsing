@@ -56,12 +56,12 @@
 	(word :value "CONSTRAINT" :name constraint)
 	(alt (some-ident :name constraint-name-ident) (some-word :name constraint-name-word))
 	(alt (block :ref primary-key) (block :ref foreign-key))
-	(symbol "," :links constraint)
+	(symbol :value "," :links constraint)
 	(idle)
 )
 
 ; PRIMARY KEY
-(defblock primary-key
+(defblock :name primary-key
 	(word :value "PRIMARY" :name do-primary-key)
 	(word :value "KEY")
 	(block :ref pk-columns)

@@ -236,5 +236,100 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(innerAltFree[2].GetCarSymbolName(), Is.EqualTo("some-string").IgnoreCase);
             Assert.That(innerAltFree[2].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("default-string").IgnoreCase);
         }
+
+        [Test]
+        public void TinyLispExtensions_ConstraintDefinitions_ProducesValidResults()
+        {
+            // Arrange
+            var defBlock = _inputTokens[3];
+
+            // Act
+            var verb = defBlock.GetCarSymbolName();
+            var name = defBlock.GetSingleKeywordArgument<Symbol>(":name").Name;
+
+            var free = defBlock.GetFreeArguments();
+
+            // Assert
+            Assert.That(verb, Is.EqualTo("defblock").IgnoreCase);
+            Assert.That(name, Is.EqualTo("constraint-definitions").IgnoreCase);
+
+            Assert.That(free, Has.Count.EqualTo(5));
+
+            var word = free[0];
+            var alt0 = free[1];
+            var alt1 = free[2];
+            var symbol = free[3];
+            var idle = free[4];
+
+            // word
+            Assert.That(word.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("CONSTRAINT"));
+            Assert.That(word.GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("constraint").IgnoreCase);
+
+            // alt0
+            var altFree = alt0.GetFreeArguments();
+            Assert.That(altFree[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
+            Assert.That(altFree[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("constraint-name-ident").IgnoreCase);
+            Assert.That(altFree[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
+            Assert.That(altFree[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("constraint-name-word").IgnoreCase);
+
+            // alt1
+            altFree = alt1.GetFreeArguments();
+            Assert.That(altFree[0].GetCarSymbolName(), Is.EqualTo("block").IgnoreCase);
+            Assert.That(altFree[0].GetSingleKeywordArgument<Symbol>(":ref").Name, Is.EqualTo("primary-key").IgnoreCase);
+            Assert.That(altFree[1].GetCarSymbolName(), Is.EqualTo("block").IgnoreCase);
+            Assert.That(altFree[1].GetSingleKeywordArgument<Symbol>(":ref").Name, Is.EqualTo("foreign-key").IgnoreCase);
+
+            // symbol
+            Assert.That(symbol.GetCarSymbolName(), Is.EqualTo("symbol").IgnoreCase);
+            Assert.That(symbol.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo(","));
+            free = symbol.GetAllKeywordArguments(":links");
+            CollectionAssert.AreEqual(
+                new List<Symbol>
+                {
+                    Symbol.Create("constraint")
+                },
+                free);
+
+            // idle
+            Assert.That(idle.ToString(), Is.EqualTo("(IDLE)"));
+
+        }
+
+        [Test]
+        public void TinyLispExtensions_PrimaryKey_ProducesValidResults()
+        {
+            // Arrange
+            var defBlock = _inputTokens[4];
+
+            // Act
+            var verb = defBlock.GetCarSymbolName();
+            var name = defBlock.GetSingleKeywordArgument<Symbol>(":name").Name;
+
+            var free = defBlock.GetFreeArguments();
+
+            // Assert
+            Assert.That(verb, Is.EqualTo("defblock").IgnoreCase);
+            Assert.That(name, Is.EqualTo("primary-key").IgnoreCase);
+
+            Assert.That(free, Has.Count.EqualTo(3));
+
+            var word0 = free[0];
+            var word1 = free[1];
+            var block = free[2];
+
+            // word 0
+            Assert.That(word0.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word0.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("PRIMARY"));
+            Assert.That(word0.GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("do-primary-key").IgnoreCase);
+
+            // word 1
+            Assert.That(word1.GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
+            Assert.That(word1.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("KEY"));
+
+            // block
+            Assert.That(block.GetCarSymbolName(), Is.EqualTo("block").IgnoreCase);
+            Assert.That(block.GetSingleKeywordArgument<Symbol>(":ref").Name, Is.EqualTo("pk-columns").IgnoreCase);
+        }
     }
 }
