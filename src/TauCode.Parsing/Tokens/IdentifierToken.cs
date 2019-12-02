@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
+    // todo: need this? move to tests, to SQLite test.
     public class IdentifierToken : TokenBase
     {
         #region Constructor

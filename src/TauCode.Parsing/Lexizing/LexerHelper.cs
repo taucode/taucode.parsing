@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Tokens;
 using TauCode.Utils.Lab;
 
 namespace TauCode.Parsing.Lexizing
@@ -69,27 +68,6 @@ namespace TauCode.Parsing.Lexizing
         }
 
         #endregion
-
-        public static SymbolValue SymbolTokenFromChar(char c)
-        {
-            switch (c)
-            {
-                case '(':
-                    return SymbolValue.LeftParenthesis;
-
-                case ')':
-                    return SymbolValue.RightParenthesis;
-
-                case ',':
-                    return SymbolValue.Comma;
-
-                case '=':
-                    return SymbolValue.Equals;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(c));
-            }
-        }
 
         public static bool IsIntegerFirstChar(char c) => IntegerFirstChars.Contains(c);
 

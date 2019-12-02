@@ -190,24 +190,24 @@ namespace TauCode.Parsing.Building
             {
                 case "WORD":
                     node = new ExactWordNode(
-                        _family,
-                        GetItemName(item),
+                        item.GetSingleKeywordArgument<StringAtom>(":value").Value,
                         null,
-                        item.GetSingleKeywordArgument<StringAtom>(":value").Value);
+                        _family,
+                        GetItemName(item));
                     break;
 
                 case "SOME-IDENT":
                     node = new IdentifierNode(
+                        null,
                         _family,
-                        GetItemName(item),
-                        null);
+                        GetItemName(item));
                     break;
 
                 case "SOME-WORD":
                     node = new WordNode(
+                        null,
                         _family,
-                        GetItemName(item),
-                        null);
+                        GetItemName(item));
                     break;
 
                 // todo !!! need to implement nod factory asap :/
@@ -221,16 +221,16 @@ namespace TauCode.Parsing.Building
 
                 case "SOME-INT":
                     node = new IntegerNode(
+                        null,
                         _family,
-                        GetItemName(item),
-                        null);
+                        GetItemName(item));
                     break;
 
                 case "SOME-STRING":
                     node = new StringNode(
+                        null,
                         _family,
-                        GetItemName(item),
-                        null);
+                        GetItemName(item));
                     break;
 
                 case "IDLE": // todo: to std items, out of custom?

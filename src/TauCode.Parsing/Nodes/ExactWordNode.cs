@@ -7,8 +7,12 @@ namespace TauCode.Parsing.Nodes
     {
         #region Constructor
 
-        public ExactWordNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action, string word)
-            : base(family, name, action)
+        public ExactWordNode(
+            string word,
+            Action<IToken, IResultAccumulator> action,
+            INodeFamily family,
+            string name)
+            : base(action, family, name)
         {
             this.Word = word ?? throw new ArgumentNullException(nameof(word));
         }

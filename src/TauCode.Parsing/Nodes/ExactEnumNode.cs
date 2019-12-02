@@ -7,8 +7,12 @@ namespace TauCode.Parsing.Nodes
     {
         #region Constructor
 
-        public ExactEnumNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action, TEnum value)
-            : base(family, name, action)
+        public ExactEnumNode(
+            TEnum value,
+            Action<IToken, IResultAccumulator> action,
+            INodeFamily family,
+            string name)
+            : base(action, family, name)
         {
             this.Value = value;
         }

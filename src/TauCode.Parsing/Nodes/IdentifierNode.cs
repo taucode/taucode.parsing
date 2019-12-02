@@ -7,8 +7,11 @@ namespace TauCode.Parsing.Nodes
     {
         #region Constructor
 
-        public IdentifierNode(INodeFamily family, string name, Action<IToken, IResultAccumulator> action)
-            : base(family, name, action)
+        public IdentifierNode(
+            Action<IToken, IResultAccumulator> action,
+            INodeFamily family,
+            string name)
+            : base(action, family, name)
         {
         }
 
