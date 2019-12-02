@@ -610,5 +610,74 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Assert
             Assert.That(ex.Message, Is.EqualTo("Argument for ':your-key' was found, but it appears to be of type 'TauCode.Parsing.TinyLisp.Data.StringAtom' instead of expected type 'TauCode.Parsing.TinyLisp.Data.Symbol'."));
         }
+
+        [Test]
+        public void GetAllKeywordArguments_ValidArguments_ReturnsExpectedResult()
+        {
+            // Arrange
+            var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var args = pseudoList.GetAllKeywordArguments(":key");
+
+            // Assert
+            CollectionAssert.AreEqual(
+                new Element[]
+                {
+                    Symbol.Create("one"),
+                    Symbol.Create("two"),
+                    new StringAtom("three"),
+                },
+                args);
+        }
+
+        [Test]
+        public void GetAllKeywordArguments_NoSuchKeyAbsenceIsAllowed_ReturnsEmptyPseudoList()
+        {
+            // Arrange
+            var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var args = pseudoList.GetAllKeywordArguments(":non-existing-key", true);
+
+            // Assert
+            Assert.That(args, Is.Empty);
+        }
+
+        [Test]
+        public void GetAllKeywordArguments_PseudoListIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            PseudoList pseudoList = null;
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => pseudoList.GetAllKeywordArguments(":key"));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
+
+        [Test]
+        public void GetAllKeywordArguments_FirstArgumentIsNotPseudoList_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var symbol = Symbol.Create("hello");
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => symbol.GetAllKeywordArguments(":key"));
+
+            // Assert
+            Assert.That(ex.Message,
+                Does.StartWith("Argument is not of type 'TauCode.Parsing.TinyLisp.Data.PseudoList'."));
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
     }
 }

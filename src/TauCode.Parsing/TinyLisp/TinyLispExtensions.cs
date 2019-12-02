@@ -105,7 +105,9 @@ namespace TauCode.Parsing.TinyLisp
 
             if (list == null)
             {
-                throw new NotImplementedException(); // error
+                throw new ArgumentException(
+                    $"Argument is not of type '{typeof(PseudoList).FullName}'.",
+                    nameof(shouldBePseudoList));
             }
 
             if (argumentName == null)
