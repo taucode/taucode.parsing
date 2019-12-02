@@ -10,8 +10,6 @@ namespace TauCode.Parsing.Lexizing
         private string _input;
         private int _pos;
 
-        //private readonly HashSet<char> _spaceChars;
-        //private readonly HashSet<char> _lineBreakChars;
         private readonly Func<char, bool> _spacePredicate;
         private readonly Func<char, bool> _lineBreakPredicate;
 
@@ -24,8 +22,6 @@ namespace TauCode.Parsing.Lexizing
         {
             // todo check args
             // todo: line breaks must be contained in space chars.
-            //_spaceChars = new HashSet<char>(spaceChars);
-            //_lineBreakChars = new HashSet<char>(lineBreakChars);
 
             _spacePredicate = spacePredicate;
             _lineBreakPredicate = lineBreakPredicate;
@@ -48,9 +44,6 @@ namespace TauCode.Parsing.Lexizing
         protected int GetCurrentPosition() => _pos;
 
         protected bool IsSpaceChar(char c) => _spacePredicate(c);
-        //{
-        //    return _spaceChars.Contains(c);
-        //}
 
         protected void Advance(int shift = 1)
         {
@@ -107,7 +100,7 @@ namespace TauCode.Parsing.Lexizing
                     var result = tokenExtractor.Extract(_input, pos);
                     nextToken = result.Token;
 
-                    if (nextToken != null)
+                    if (nextToken != null) // todo: and what if null?
                     {
                         this.Advance(result.Shift);
                         nextToken = result.Token;
