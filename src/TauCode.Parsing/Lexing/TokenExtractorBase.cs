@@ -143,7 +143,6 @@ namespace TauCode.Parsing.Lexing
                     }
                 }
 
-                var c = this.GetCurrentChar();
                 var testCharResult = this.ChallengeCurrentChar();
 
                 switch (testCharResult)
@@ -160,15 +159,7 @@ namespace TauCode.Parsing.Lexing
 
                         if (token == null)
                         {
-                            // todo: this is wrong. see comment for challenge-end:
-
-                            /// QUOTE
-                            // possible situation. e.g. in LISP '+1488' looks like as a symbol at the beginning, but at the end would appear
-                            // an integer, and symbol extractor would refuse deliver such a result as a symbol.
-                            /// END-QUOTE
-
-
-                            throw new LexerException($"Internal error. Token extractor of type '{this.GetType().FullName}' produced a null token.");
+                            return new TokenExtractionResult(0, null);
                         }
 
                         // check if next char is ok.

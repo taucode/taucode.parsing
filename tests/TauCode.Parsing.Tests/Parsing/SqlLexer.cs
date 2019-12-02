@@ -1,5 +1,6 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Lexing.StandardTokenExtractors;
+using TauCode.Parsing.Tests.Parsing.TokenExtractors;
 
 namespace TauCode.Parsing.Tests.Parsing
 {
@@ -11,7 +12,37 @@ namespace TauCode.Parsing.Tests.Parsing
 
         protected override void InitTokenExtractors()
         {
-            throw new NotImplementedException();
+            // word
+            var wordExtractor = new WordExtractor(this.Environment);
+            this.AddTokenExtractor(wordExtractor);
+
+            // punctuation
+            var punctuationExtractor = new SqlPunctuationExtractor();
+            this.AddTokenExtractor(punctuationExtractor);
+
+            // integer
+            var integerExtractor = new IntegerExtractor(this.Environment);
+            this.AddTokenExtractor(integerExtractor);
+
+            // identifier
+            var identifierExtractor = new SqlIdentifierExtractor();
+            this.AddTokenExtractor(identifierExtractor);
+
+            // *** Links ***
+            wordExtractor.AddSuccessors(
+                punctuationExtractor);
+
+            punctuationExtractor.AddSuccessors(
+                punctuationExtractor,
+                wordExtractor,
+                integerExtractor,
+                identifierExtractor);
+
+            integerExtractor.AddSuccessors(
+                punctuationExtractor);
+
+            identifierExtractor.AddSuccessors(
+                punctuationExtractor);
         }
     }
 }

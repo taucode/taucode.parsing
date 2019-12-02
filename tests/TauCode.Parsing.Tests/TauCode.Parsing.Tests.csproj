@@ -10,16 +10,12 @@
     <None Remove="Resources\CliCommand.txt" />
     <None Remove="Resources\sql-grammar-expected.lisp" />
     <None Remove="Resources\sql-grammar.lisp" />
-    <None Remove="Resources\sqlite-expected.sql" />
-    <None Remove="Resources\sqlite-real.sql" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\CliCommand.txt" />
     <EmbeddedResource Include="Resources\sql-grammar-expected.lisp" />
     <EmbeddedResource Include="Resources\sql-grammar.lisp" />
-    <EmbeddedResource Include="Resources\sqlite-expected.sql" />
-    <EmbeddedResource Include="Resources\sqlite-real.sql" />
   </ItemGroup>
 
   <ItemGroup>

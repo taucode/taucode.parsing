@@ -465,7 +465,7 @@ CREATE INDEX IX_id ON [my_tab](id)
 CREATE INDEX [IX_Salary] ON my_tab([salary])
 
 ";
-            ILexer sqlLexer = new TinyLispLexer(); // todo !! SQL Lexer here! inserted just not to comment out the entire thing.
+            ILexer sqlLexer = new SqlLexer();
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act

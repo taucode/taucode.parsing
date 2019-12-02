@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 using TauCode.Utils.Lab;
 
@@ -13,6 +12,7 @@ namespace TauCode.Parsing.Lexing
         private static readonly HashSet<char> IntegerFirstChars;
         private static readonly HashSet<char> Digits;
         private static readonly HashSet<char> StandardPunctuationChars;
+        private static readonly HashSet<char> LatinLetters;
 
         static LexingHelper()
         {
@@ -36,21 +36,33 @@ namespace TauCode.Parsing.Lexing
                 '?',
                 '!',
                 '@',
+                '#',
                 '$',
                 '%',
                 '^',
                 '&',
                 '*',
+                '|',
                 '/',
                 '+',
                 '-',
                 '[',
                 ']',
+                '(',
+                ')',
                 '{',
                 '}',
                 '\\',
+                '.',
+                ',',
             });
             StandardPunctuationChars = new HashSet<char>(punctList);
+
+            var latinLetters = new List<char>();
+            latinLetters.AddCharRange('a', 'z');
+            latinLetters.AddCharRange('A', 'Z');
+
+            LatinLetters = new HashSet<char>(latinLetters);
         }
 
         #region Exceptions
@@ -80,9 +92,8 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsDigit(char c) => Digits.Contains(c);
 
-        public static bool IsStandardPunctuationChar(char c)
-        {
-            throw new NotImplementedException();
-        }
+        public static bool IsStandardPunctuationChar(char c) => StandardPunctuationChars.Contains(c); // todo: ut this.
+
+        public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
     }
 }
