@@ -1,5 +1,5 @@
 ﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -8,8 +8,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispStringExtractor()
             : base(
-                TinyLispHelper.IsSpace,
-                TinyLispHelper.IsLineBreak,
+                StandardLexingEnvironment.Instance,
                 x => x == '"') // todo: consider extracting delegate into TinyLispHelper.
         {
         }

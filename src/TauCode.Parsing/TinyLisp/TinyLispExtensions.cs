@@ -22,7 +22,9 @@ namespace TauCode.Parsing.TinyLisp
 
             if (list == null)
             {
-                throw new NotImplementedException(); // todo0
+                throw new ArgumentException(
+                    $"Argument is not of type '{typeof(PseudoList).FullName}'.",
+                    nameof(shouldBePseudoList));
             }
 
             if (argumentName == null)
@@ -32,7 +34,7 @@ namespace TauCode.Parsing.TinyLisp
 
             if (!TinyLispHelper.IsValidSymbolName(argumentName, true))
             {
-                throw new NotImplementedException();
+                throw new ArgumentException($"'{argumentName}' is not a valid keyword.", nameof(argumentName));
             }
 
             var wantedKeyword = Symbol.Create(argumentName);
@@ -41,7 +43,7 @@ namespace TauCode.Parsing.TinyLisp
 
             if (
                 index < 0 || // not found
-                index + 1 >= list.Count // next is keyword
+                index + 1 >= list.Count // keyword is last
             )
             {
                 if (allowsAbsence)
@@ -72,19 +74,7 @@ namespace TauCode.Parsing.TinyLisp
             string argumentName,
             bool allowsAbsence = false) where TElement : Element
         {
-            if (shouldBePseudoList == null)
-            {
-                throw new ArgumentNullException(nameof(shouldBePseudoList));
-            }
-
-            var list = shouldBePseudoList as PseudoList;
-
-            if (list == null)
-            {
-                throw new NotImplementedException(); // error
-            }
-
-            var element = list.GetSingleKeywordArgument(argumentName, allowsAbsence);
+            var element = shouldBePseudoList.GetSingleKeywordArgument(argumentName, allowsAbsence);
             if (element == null)
             {
                 return null;
@@ -348,21 +338,6 @@ namespace TauCode.Parsing.TinyLisp
             throw new NotImplementedException(); // todo error
         }
 
-        public static Element GetPseudoLast(this Element shouldBePseudoList)
-        {
-            if (shouldBePseudoList == null)
-            {
-                throw new ArgumentNullException(nameof(shouldBePseudoList));
-            }
-
-            if (shouldBePseudoList is PseudoList pseudoList)
-            {
-                return pseudoList.Last();
-            }
-
-            throw new NotImplementedException(); // error
-        }
-
         public static PseudoList AsPseudoList(this Element shouldBePseudoList) =>
             shouldBePseudoList.AsElement<PseudoList>();
 
@@ -378,7 +353,9 @@ namespace TauCode.Parsing.TinyLisp
                 return wantedElement;
             }
 
-            throw new NotImplementedException(); // error
+            throw new ArgumentException(
+                $"Argument is expected to be of type '{typeof(PseudoList).FullName}', but was of type '{element.GetType().FullName}'.",
+                nameof(element));
         }
     }
 }

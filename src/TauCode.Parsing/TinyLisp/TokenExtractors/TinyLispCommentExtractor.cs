@@ -1,5 +1,5 @@
 ﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -8,8 +8,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispCommentExtractor()
             : base(
-                TinyLispHelper.IsSpace,
-                TinyLispHelper.IsLineBreak,
+                StandardLexingEnvironment.Instance,
                 x => x == ';') // todo: consider extracting delegate into TinyLispHelper.
         {
         }
@@ -33,11 +32,11 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 }
                 else
                 {
-                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                    throw new LexerException("Internal error."); // how on earth we could even get here? todo copy paste
                 }
             }
 
-            if (this.LineBreakPredicate(c))
+            if (this.Environment.IsLineBreak(c))
             {
                 return CharChallengeResult.Finish;
             }

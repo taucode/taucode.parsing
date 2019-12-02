@@ -1,35 +1,48 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace TauCode.Parsing.TinyLisp.Data
 {
     public class PseudoList : Atom, IReadOnlyList<Element>
     {
+        #region Fields
+
         private readonly List<Element> _elements;
+
+        #endregion
+
+        #region Constructors
 
         public PseudoList()
         {
             _elements = new List<Element>();
         }
 
-        public IReadOnlyList<Element> Elements => _elements;
-
-        public void AddElement(Element element)
+        public PseudoList(IEnumerable<Element> elements)
         {
-            if (element == null)
+            if (elements == null)
             {
-                throw new ArgumentNullException(nameof(element));
+                throw new ArgumentNullException(nameof(elements));
             }
 
-            _elements.Add(element);
+            var list = elements.ToList();
+
+            if (list.Any(x => x == null))
+            {
+                throw new ArgumentException($"'{nameof(elements)}' must not contain nulls.", nameof(elements));
+            }
+
+            _elements = list;
         }
 
-        public override bool Equals(Element other) => ReferenceEquals(this, other);
-        public IEnumerator<Element> GetEnumerator() => _elements.GetEnumerator();
+        #endregion
 
-        IEnumerator IEnumerable.GetEnumerator() => _elements.GetEnumerator();
+        #region Overridden
+
+        public override bool Equals(Element other) => ReferenceEquals(this, other);
 
         public override string ToString()
         {
@@ -51,8 +64,32 @@ namespace TauCode.Parsing.TinyLisp.Data
             return sb.ToString();
         }
 
+        #endregion
+
+        #region IReadOnlyList<Element> Members
+
+        public IEnumerator<Element> GetEnumerator() => _elements.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => _elements.GetEnumerator();
+
         public int Count => _elements.Count;
 
         public Element this[int index] => _elements[index];
+
+        #endregion
+
+        #region Public
+
+        public void AddElement(Element element)
+        {
+            if (element == null)
+            {
+                throw new ArgumentNullException(nameof(element));
+            }
+
+            _elements.Add(element);
+        }
+
+        #endregion
     }
 }

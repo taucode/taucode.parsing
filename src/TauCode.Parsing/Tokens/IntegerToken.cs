@@ -13,14 +13,14 @@ namespace TauCode.Parsing.Tokens
             IEnumerable<KeyValuePair<string, string>> properties = null)
             : base(name, properties)
         {
-            this.IntegerValue = integerValue ?? throw new ArgumentNullException(nameof(integerValue));
+            this.Value = integerValue ?? throw new ArgumentNullException(nameof(integerValue));
         }
 
         #endregion
 
         #region Public
 
-        public string IntegerValue { get; }
+        public string Value { get; }
 
         #endregion
     }

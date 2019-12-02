@@ -8,8 +8,6 @@ namespace TauCode.Parsing.TinyLisp
 {
     public static class TinyLispHelper
     {
-        internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
-        internal static readonly HashSet<char> LineBreakChars = new HashSet<char>(new[] { '\r', '\n' });
         internal static readonly HashSet<char> PunctuationChars = new HashSet<char>(new char[] { '(', ')', '\'', '`', '.', ',' });
 
         private static readonly HashSet<char> AcceptableSymbolNamePunctuationChars = new HashSet<char>(new[]
@@ -33,8 +31,8 @@ namespace TauCode.Parsing.TinyLisp
             '\\',
         });
 
-        private static Dictionary<char, Punctuation> PunctuationsByChar;
-        private static Dictionary<Punctuation, char> CharsByPunctuation;
+        private static readonly Dictionary<char, Punctuation> PunctuationsByChar;
+        private static readonly Dictionary<Punctuation, char> CharsByPunctuation;
 
         static TinyLispHelper()
         {
@@ -128,10 +126,6 @@ namespace TauCode.Parsing.TinyLisp
 
             return true;
         }
-
-        public static bool IsSpace(char c) => SpaceChars.Contains(c);
-
-        public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
 
         public static bool IsPunctuation(char c) => PunctuationChars.Contains(c);
 

@@ -1,15 +1,13 @@
-﻿using TauCode.Parsing.Lexizing;
-using TauCode.Parsing.Lexizing.StandardTokenExtractors;
+﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.TinyLisp.TokenExtractors;
 
 namespace TauCode.Parsing.TinyLisp
 {
     public class TinyLispLexer : LexerBase
     {
-        public TinyLispLexer()
-            : base(
-                TinyLispHelper.IsSpace,
-                TinyLispHelper.IsLineBreak)
+        public TinyLispLexer(ILexingEnvironment environment = null)
+            : base(environment)
         {
         }
 
@@ -36,7 +34,7 @@ namespace TauCode.Parsing.TinyLisp
             this.AddTokenExtractor(stringExtractor);
 
             // integer
-            var integerExtractor = new IntegerExtractor(TinyLispHelper.IsSpace, TinyLispHelper.IsLineBreak);
+            var integerExtractor = new IntegerExtractor(this.Environment);
             this.AddTokenExtractor(integerExtractor);
 
             // *** Links ***

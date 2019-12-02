@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Tokens;
 using TauCode.Utils.Lab;
 
-namespace TauCode.Parsing.Lexizing
+namespace TauCode.Parsing.Lexing
 {
-    public static class LexerHelper
+    public static class LexingHelper
     {
+        internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
+        internal static readonly HashSet<char> LineBreakChars = new HashSet<char>(new[] { '\r', '\n' });
+
         private static readonly HashSet<char> IntegerFirstChars;
         private static readonly HashSet<char> Digits;
         private static readonly HashSet<char> StandardPunctuationChars;
+        private static readonly HashSet<char> LatinLetters;
 
-        static LexerHelper()
+        static LexingHelper()
         {
             var list = new List<char>
             {
@@ -34,21 +36,33 @@ namespace TauCode.Parsing.Lexizing
                 '?',
                 '!',
                 '@',
+                '#',
                 '$',
                 '%',
                 '^',
                 '&',
                 '*',
+                '|',
                 '/',
                 '+',
                 '-',
                 '[',
                 ']',
+                '(',
+                ')',
                 '{',
                 '}',
                 '\\',
+                '.',
+                ',',
             });
             StandardPunctuationChars = new HashSet<char>(punctList);
+
+            var latinLetters = new List<char>();
+            latinLetters.AddCharRange('a', 'z');
+            latinLetters.AddCharRange('A', 'Z');
+
+            LatinLetters = new HashSet<char>(latinLetters);
         }
 
         #region Exceptions
@@ -70,34 +84,16 @@ namespace TauCode.Parsing.Lexizing
 
         #endregion
 
-        public static SymbolValue SymbolTokenFromChar(char c)
-        {
-            switch (c)
-            {
-                case '(':
-                    return SymbolValue.LeftParenthesis;
+        public static bool IsSpace(char c) => SpaceChars.Contains(c);
 
-                case ')':
-                    return SymbolValue.RightParenthesis;
-
-                case ',':
-                    return SymbolValue.Comma;
-
-                case '=':
-                    return SymbolValue.Equals;
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(c));
-            }
-        }
-
+        public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
+        
         public static bool IsIntegerFirstChar(char c) => IntegerFirstChars.Contains(c);
 
         public static bool IsDigit(char c) => Digits.Contains(c);
 
-        public static bool IsStandardPunctuationChar(char c)
-        {
-            throw new NotImplementedException();
-        }
+        public static bool IsStandardPunctuationChar(char c) => StandardPunctuationChars.Contains(c); // todo: ut this.
+
+        public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
     }
 }

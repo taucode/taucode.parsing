@@ -3,31 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
 
-namespace TauCode.Parsing.Lexizing
+namespace TauCode.Parsing.Lexing
 {
     public abstract class LexerBase : ILexer
     {
+        #region Fields
+
         private string _input;
         private int _pos;
-
-        private readonly Func<char, bool> _spacePredicate;
-        private readonly Func<char, bool> _lineBreakPredicate;
 
         private readonly List<ITokenExtractor> _tokenExtractors;
         private bool _tokenExtractorsInited;
 
-        protected LexerBase(
-            Func<char, bool> spacePredicate,
-            Func<char, bool> lineBreakPredicate)
+
+        #endregion
+
+        #region Constructor
+
+        protected LexerBase(ILexingEnvironment environment = null)
         {
-            // todo check args
-            // todo: line breaks must be contained in space chars.
-
-            _spacePredicate = spacePredicate;
-            _lineBreakPredicate = lineBreakPredicate;
-
+            this.Environment = environment ?? StandardLexingEnvironment.Instance;
             _tokenExtractors = new List<ITokenExtractor>();
         }
+
+
+        #endregion
+
+        #region Abstract
+
+        protected abstract void InitTokenExtractors();
+
+        #endregion
+
+        #region Protected
 
         protected bool IsEnd() => _pos == _input.Length;
 
@@ -35,15 +43,13 @@ namespace TauCode.Parsing.Lexizing
         {
             if (this.IsEnd())
             {
-                throw LexerHelper.CreateUnexpectedEndOfInputException();
+                throw LexingHelper.CreateUnexpectedEndOfInputException();
             }
 
             return _input[_pos];
         }
 
         protected int GetCurrentPosition() => _pos;
-
-        protected bool IsSpaceChar(char c) => _spacePredicate(c);
 
         protected void Advance(int shift = 1)
         {
@@ -56,13 +62,18 @@ namespace TauCode.Parsing.Lexizing
             return _tokenExtractors.Where(x => x.AllowsFirstChar(firstChar)).ToList();
         }
 
-        protected abstract void InitTokenExtractors();
-
         protected void AddTokenExtractor(ITokenExtractor tokenExtractor)
         {
             // todo checks
             _tokenExtractors.Add(tokenExtractor);
         }
+
+
+        #endregion
+
+        #region ILexer Members
+
+        public ILexingEnvironment Environment { get; }
 
         public List<IToken> Lexize(string input)
         {
@@ -86,7 +97,7 @@ namespace TauCode.Parsing.Lexizing
                 var c = this.GetCurrentChar();
                 var pos = this.GetCurrentPosition();
 
-                if (this.IsSpaceChar(c))
+                if (this.Environment.IsSpace(c))
                 {
                     this.Advance();
                     continue;
@@ -119,5 +130,7 @@ namespace TauCode.Parsing.Lexizing
                 }
             }
         }
+
+        #endregion
     }
 }

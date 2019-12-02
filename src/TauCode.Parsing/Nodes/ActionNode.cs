@@ -8,9 +8,9 @@ namespace TauCode.Parsing.Nodes
         #region Constructor
 
         protected ActionNode(
+            Action<IToken, IResultAccumulator> action,
             INodeFamily family,
-            string name,
-            Action<IToken, IResultAccumulator> action)
+            string name)
             : base(family, name)
         {
             this.Action = action; // can be null

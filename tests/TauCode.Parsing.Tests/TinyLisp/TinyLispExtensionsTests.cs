@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Utils.Extensions;
@@ -407,6 +408,88 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // symbol 1
             Assert.That(symbol1.GetCarSymbolName(), Is.EqualTo("symbol").IgnoreCase);
             Assert.That(symbol1.GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo(")"));
+        }
+
+        [Test]
+        public void AsPseudoList_ElementIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            Element element = null;
+            
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => element.AsPseudoList());
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("element"));
+        }
+
+        [Test]
+        public void AsPseudoList_ArgumentIsNotPseudoList_ThrowsArgumentException()
+        {
+            // Arrange
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => True.Instance.AsPseudoList());
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith($"Argument is expected to be of type '{typeof(PseudoList).FullName}', but was of type '{typeof(True).FullName}'."));
+            Assert.That(ex.ParamName, Is.EqualTo("element"));
+        }
+
+        [Test]
+        public void GetSingleKeywordArgument_ElementIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            Element element = null;
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => element.GetSingleKeywordArgument(":arg"));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
+
+        [Test]
+        public void GetSingleKeywordArgument_ElementIsNotPseudoList_ThrowsArgumentException()
+        {
+            // Arrange
+            Element element = True.Instance;
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => element.GetSingleKeywordArgument(":arg"));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("Argument is not of type 'TauCode.Parsing.TinyLisp.Data.PseudoList'."));
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
+
+        [Test]
+        public void GetSingleKeywordArgument_ArgumentNameIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            Element element = new PseudoList();
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => element.GetSingleKeywordArgument(null));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
+        }
+
+        [Test]
+        [TestCase("non-keyword")]
+        [TestCase("\"some-string\"")]
+        public void GetSingleKeywordArgument_ArgumentIsNotKeyword_ThrowsArgumentException(string badKeywordName)
+        {
+            // Arrange
+            Element element = new PseudoList();
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => element.GetSingleKeywordArgument(badKeywordName));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith($"'{badKeywordName}' is not a valid keyword."));
+            Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
         }
     }
 }

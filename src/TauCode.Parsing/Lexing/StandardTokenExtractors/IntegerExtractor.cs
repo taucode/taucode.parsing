@@ -1,24 +1,26 @@
-﻿using System;
-using TauCode.Parsing.Exceptions;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
+namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
     public class IntegerExtractor : TokenExtractorBase
     {
-        public IntegerExtractor(
-            Func<char, bool> spacePredicate,
-            Func<char, bool> lineBreakPredicate)
+        public IntegerExtractor(ILexingEnvironment environment)
             : base(
-                spacePredicate,
-                lineBreakPredicate,
-                LexerHelper.IsIntegerFirstChar)
+                environment,
+                LexingHelper.IsIntegerFirstChar)
         {
         }
 
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
+            if (str[0] == '+')
+            {
+                // omit leading '+'
+                str = str.Substring(1);
+            }
+
             return new IntegerToken(str);
         }
 
@@ -39,7 +41,7 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
                 }
             }
 
-            if (LexerHelper.IsDigit(c))
+            if (LexingHelper.IsDigit(c))
             {
                 return CharChallengeResult.Continue; // digits are always welcome in an integer.
             }
@@ -58,7 +60,7 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
                 return CharChallengeResult.Finish;
             }
 
-            if (this.SpacePredicate(c) || char.IsWhiteSpace(c))
+            if (this.Environment.IsSpace(c) || char.IsWhiteSpace(c))
             {
                 return CharChallengeResult.Finish;
             }
@@ -71,13 +73,27 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
         {
             var localPos = this.GetLocalPosition();
 
-            if (localPos > 1)
+            if (localPos == 0)
+            {
+                throw new LexerException("Internal error."); // todo copy/paste
+            }
+            else if (localPos == 1)
+            {
+                var c = this.GetLocalChar(0);
+                if (LexingHelper.IsDigit(c))
+                {
+                    return CharChallengeResult.Finish; // int consisting of a single digit - no problem.
+                }
+                else
+                {
+                    return CharChallengeResult.GiveUp; // not an int. let some another extractor deal with it.
+                }
+            }
+            else
             {
                 // we consumed more than one char, so it is guaranteed we've got a good int already
                 return CharChallengeResult.Finish;
             }
-
-            throw new NotImplementedException();
         }
     }
 }

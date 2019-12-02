@@ -2,39 +2,60 @@
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 
-namespace TauCode.Parsing.Lexizing
+namespace TauCode.Parsing.Lexing
 {
-    // todo clean up
     public abstract class TokenExtractorBase : ITokenExtractor
     {
-        protected Func<char, bool> SpacePredicate { get; }
-        protected Func<char, bool> LineBreakPredicate { get; }
-        protected Func<char, bool> FirstCharPredicate { get; }
+        #region Fields
 
         private string _input;
         private int _startPos;
         private int _localPos;
-
         private readonly List<ITokenExtractor> _successors;
 
+        #endregion
+
+        #region Constructor
+
         protected TokenExtractorBase(
-            Func<char, bool> spacePredicate,
-            Func<char, bool> lineBreakPredicate,
+            ILexingEnvironment environment,
             Func<char, bool> firstCharPredicate)
         {
-            // todo checks
-            SpacePredicate = spacePredicate;
-            LineBreakPredicate = lineBreakPredicate;
-            FirstCharPredicate = firstCharPredicate;
+
+            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            FirstCharPredicate = firstCharPredicate ?? throw new ArgumentNullException(nameof(firstCharPredicate));
 
             _successors = new List<ITokenExtractor>();
         }
+
+        #endregion
+
+        #region Abstract
+
+        protected abstract IToken ProduceResult();
+
+        protected abstract CharChallengeResult ChallengeCurrentChar();
+
+        protected abstract CharChallengeResult ChallengeEnd();
+
+        #endregion
+
+        #region Protected
+
+        protected readonly ILexingEnvironment Environment;
+
+        protected Func<char, bool> FirstCharPredicate { get; }
 
         protected bool IsEnd() => this.GetAbsolutePosition() == _input.Length;
 
         protected int GetLocalPosition() => _localPos;
 
         protected int GetAbsolutePosition() => _startPos + _localPos;
+
+        protected char GetLocalChar(int localPosition)
+        {
+            return _input[_startPos + localPosition];
+        }
 
         protected virtual bool AllowsCharAfterProduction(char c)
         {
@@ -54,6 +75,29 @@ namespace TauCode.Parsing.Lexizing
             var str = _input.Substring(_startPos, _localPos);
             return str;
         }
+
+        protected void Advance()
+        {
+            _localPos++;
+        }
+
+        protected char GetCurrentChar()
+        {
+            if (this.IsEnd())
+            {
+                throw new LexerException("Internal error: trying to get current char at the end of input.");
+            }
+
+            var absPos = this.GetAbsolutePosition();
+            var c = _input[absPos];
+            return c;
+        }
+
+        public void AddSuccessors(params TokenExtractorBase[] successors) => _successors.AddRange(successors);
+
+        #endregion
+
+        #region ITokenExtractor Members
 
         public TokenExtractionResult Extract(string input, int position)
         {
@@ -99,7 +143,6 @@ namespace TauCode.Parsing.Lexizing
                     }
                 }
 
-                var c = this.GetCurrentChar();
                 var testCharResult = this.ChallengeCurrentChar();
 
                 switch (testCharResult)
@@ -116,14 +159,14 @@ namespace TauCode.Parsing.Lexizing
 
                         if (token == null)
                         {
-                            throw new LexerException($"Internal error. Token extractor of type '{this.GetType().FullName}' produced a null token.");
+                            return new TokenExtractionResult(0, null);
                         }
 
                         // check if next char is ok.
                         if (!this.IsEnd())
                         {
                             var upcomingChar = this.GetCurrentChar();
-                            if (!this.SpacePredicate(upcomingChar))
+                            if (!Environment.IsSpace(upcomingChar))
                             {
                                 var check = this.AllowsCharAfterProduction(upcomingChar);
                                 if (!check)
@@ -141,31 +184,8 @@ namespace TauCode.Parsing.Lexizing
             }
         }
 
-        protected abstract IToken ProduceResult();
-
-        protected void Advance()
-        {
-            _localPos++;
-        }
-
-        protected abstract CharChallengeResult ChallengeCurrentChar();
-
-        protected abstract CharChallengeResult ChallengeEnd();
-
-        protected char GetCurrentChar()
-        {
-            if (this.IsEnd())
-            {
-                throw new LexerException("Internal error: trying to get current char at the end of input.");
-            }
-
-            var absPos = this.GetAbsolutePosition();
-            var c = _input[absPos];
-            return c;
-        }
-
         public virtual bool AllowsFirstChar(char c) => FirstCharPredicate(c);
 
-        public void AddSuccessors(params TokenExtractorBase[] successors) => _successors.AddRange(successors);
+        #endregion
     }
 }

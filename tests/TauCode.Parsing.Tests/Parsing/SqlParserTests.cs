@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using TauCode.Parsing.Building;
-using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Data;
 using TauCode.Parsing.TinyLisp;
@@ -12,12 +12,13 @@ using TauCode.Utils.Extensions;
 namespace TauCode.Parsing.Tests.Parsing
 {
     [TestFixture]
-    public class SqlParserTestsViaLisp
+    public class SqlParserTests
     {
         [Test]
         public void SqlParser_ValidInput_Parses()
         {
             // Arrange
+            var nodeFactory = new SqlNodeFactory("my-sqlite");
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
             ILexer lexer2 = new TinyLispLexer();
             var tokens = lexer2.Lexize(input);
@@ -25,7 +26,7 @@ namespace TauCode.Parsing.Tests.Parsing
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
-            var freshRoot = builder.Build(list);
+            var freshRoot = builder.Build(nodeFactory, list);
 
             IParser freshParser = new Parser();
 
@@ -129,7 +130,7 @@ namespace TauCode.Parsing.Tests.Parsing
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.Precision = ((IntegerToken) token).IntegerValue.ToInt32();
+                columnInfo.Precision = ((IntegerToken) token).Value.ToInt32();
             };
 
             var scale = (ActionNode) allSqlNodes.Single(x =>
@@ -138,7 +139,7 @@ namespace TauCode.Parsing.Tests.Parsing
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.Scale = ((IntegerToken) token).IntegerValue.ToInt32();
+                columnInfo.Scale = ((IntegerToken) token).Value.ToInt32();
             };
 
             var nullToken = (ActionNode) allSqlNodes.Single(x =>
@@ -464,7 +465,7 @@ CREATE INDEX IX_id ON [my_tab](id)
 CREATE INDEX [IX_Salary] ON my_tab([salary])
 
 ";
-            var sqlLexer = new SqlLexer();
+            ILexer sqlLexer = new SqlLexer();
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act
