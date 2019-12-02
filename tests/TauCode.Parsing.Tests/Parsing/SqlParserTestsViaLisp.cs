@@ -129,7 +129,7 @@ namespace TauCode.Parsing.Tests.Parsing
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.Precision = ((IntegerToken) token).IntegerValue.ToInt32();
+                columnInfo.Precision = ((IntegerToken) token).Value.ToInt32();
             };
 
             var scale = (ActionNode) allSqlNodes.Single(x =>
@@ -138,7 +138,7 @@ namespace TauCode.Parsing.Tests.Parsing
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.Scale = ((IntegerToken) token).IntegerValue.ToInt32();
+                columnInfo.Scale = ((IntegerToken) token).Value.ToInt32();
             };
 
             var nullToken = (ActionNode) allSqlNodes.Single(x =>
@@ -464,7 +464,7 @@ CREATE INDEX IX_id ON [my_tab](id)
 CREATE INDEX [IX_Salary] ON my_tab([salary])
 
 ";
-            var sqlLexer = new SqlLexer();
+            ILexer sqlLexer = new TinyLispLexer(); // todo !! SQL Lexer here! inserted just not to comment out the entire thing.
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act

@@ -30,3 +30,6 @@ todo2. TauCode.Utils: 'FindFirstIndexOf' => takes IReadOnlyLit, not IList!
 2019-12-02
 ==========
 todo1. Node factory.
+todo2. Symbols vs integers: +1488, +1488+, +, -, etc.
+todo3. TinyLisp: ratios and doubles.
+todo4. SQLite test lexer remastered.

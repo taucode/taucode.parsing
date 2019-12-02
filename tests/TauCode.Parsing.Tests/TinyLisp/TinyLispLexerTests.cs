@@ -196,5 +196,40 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Assert
             Assert.That(tokens.Last(), Is.TypeOf(lastTokenExpectedType));
         }
+
+        [Test]
+        public void Lexize_IntAndTheLike_LexizedCorrectly()
+        {
+            // Arrange
+            var input1 = "1";
+            var input2 = "+1";
+            var input3 = "-1";
+            var input4 = "-133";
+            var input5 = "+391";
+            var input6 = "+";
+            var input7 = "-";
+            var input8 = "1-";
+
+            // Act
+            ILexer lexer = new TinyLispLexer();
+            var token1 = lexer.Lexize(input1).Single();
+            var token2 = lexer.Lexize(input2).Single();
+            var token3 = lexer.Lexize(input3).Single();
+            var token4 = lexer.Lexize(input4).Single();
+            var token5 = lexer.Lexize(input5).Single();
+            var token6 = lexer.Lexize(input6).Single();
+            var token7 = lexer.Lexize(input7).Single();
+            var token8 = lexer.Lexize(input8).Single();
+
+            // Assert
+            Assert.That(token1 as IntegerToken, Has.Property("Value").EqualTo("1"));
+            Assert.That(token2 as IntegerToken, Has.Property("Value").EqualTo("1"));
+            Assert.That(token3 as IntegerToken, Has.Property("Value").EqualTo("-1"));
+            Assert.That(token4 as IntegerToken, Has.Property("Value").EqualTo("-133"));
+            Assert.That(token5 as IntegerToken, Has.Property("Value").EqualTo("391"));
+            Assert.That(token6 as LispSymbolToken, Has.Property("SymbolName").EqualTo("+"));
+            Assert.That(token7 as LispSymbolToken, Has.Property("SymbolName").EqualTo("-"));
+            Assert.That(token8 as LispSymbolToken, Has.Property("SymbolName").EqualTo("1-"));
+        }
     }
 }

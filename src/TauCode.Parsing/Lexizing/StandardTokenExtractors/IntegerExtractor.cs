@@ -19,6 +19,12 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
+            if (str[0] == '+')
+            {
+                // omit leading '+'
+                str = str.Substring(1);
+            }
+
             return new IntegerToken(str);
         }
 
@@ -71,13 +77,27 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
         {
             var localPos = this.GetLocalPosition();
 
-            if (localPos > 1)
+            if (localPos == 0)
+            {
+                throw new LexerException("Internal error."); // todo copy/paste
+            }
+            else if (localPos == 1)
+            {
+                var c = this.GetLocalChar(0);
+                if (LexerHelper.IsDigit(c))
+                {
+                    return CharChallengeResult.Finish; // int consisting of a single digit - no problem.
+                }
+                else
+                {
+                    return CharChallengeResult.GiveUp; // not an int. let some another extractor deal with it.
+                }
+            }
+            else
             {
                 // we consumed more than one char, so it is guaranteed we've got a good int already
                 return CharChallengeResult.Finish;
             }
-
-            throw new NotImplementedException();
         }
     }
 }

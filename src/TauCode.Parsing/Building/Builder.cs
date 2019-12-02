@@ -42,19 +42,15 @@ namespace TauCode.Parsing.Building
                         if (link == "NEXT")
                         {
                             _node.EstablishLink(to._node);
-
-                            //tail.Node.EstablishLink(result.Head.Node);
                         }
                         else
                         {
                             _node.ClaimLink(link);
-                            //tail.Node.ClaimLink(link);
                         }
                     }
                 }
                 else
                 {
-                    //tail.Node.EstablishLink(result.Head.Node);
                     _node.EstablishLink(to._node);
                 }
 
@@ -74,12 +70,7 @@ namespace TauCode.Parsing.Building
                 }
 
                 _node.EstablishLink(to._node);
-
-                //throw new NotImplementedException();
             }
-
-            //public INode Node { get; set; }
-            //public List<string> Links { get; set; } = new List<string>();
         }
 
         private class BuildResult
@@ -137,27 +128,6 @@ namespace TauCode.Parsing.Building
                 {
                     tail.RequestLink(result.Head);
                     tail = result.Tail;
-
-                    //if (tail.Links.Any())
-                    //{
-                    //    foreach (var link in tail.Links)
-                    //    {
-                    //        if (link == "NEXT")
-                    //        {
-                    //            tail.Node.EstablishLink(result.Head.Node);
-                    //        }
-                    //        else
-                    //        {
-                    //            tail.Node.ClaimLink(link);
-                    //        }
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    tail.Node.EstablishLink(result.Head.Node);
-                    //}
-
-                    //tail = result.Tail;
                 }
             }
 
@@ -240,13 +210,14 @@ namespace TauCode.Parsing.Building
                         null);
                     break;
 
-                case "SYMBOL":
-                    node = new ExactSymbolNode(
-                        _family,
-                        GetItemName(item),
-                        null,
-                        item.GetSingleKeywordArgument<StringAtom>(":value").Value.Single());
-                    break;
+                // todo !!! need to implement nod factory asap :/
+                //case "SYMBOL":
+                //    node = new ExactSymbolNode(
+                //        _family,
+                //        GetItemName(item),
+                //        null,
+                //        item.GetSingleKeywordArgument<StringAtom>(":value").Value.Single());
+                //    break;
 
                 case "SOME-INT":
                     node = new IntegerNode(
@@ -277,11 +248,6 @@ namespace TauCode.Parsing.Building
             }
 
             var nodeBox = new NodeBox(node, links);
-            //{
-            //    Node = node,
-            //    Links = links,
-            //};
-
             return new BuildResult(nodeBox, nodeBox);
         }
 
@@ -302,13 +268,8 @@ namespace TauCode.Parsing.Building
             var args = defblock.GetFreeArguments();
 
             var blockEnter = new NodeBox(new IdleNode(_family, blockName));
-            //{
-            //    Node = new IdleNode(_family, blockName),
-            //};
-
             var contentResult = this.BuildContent(args);
 
-            //blockEnter.Node.EstablishLink(contentResult.Head.Node);
             blockEnter.DemandLink(contentResult.Head);
             var result = new BuildResult(blockEnter, contentResult.Tail);
 
@@ -320,23 +281,13 @@ namespace TauCode.Parsing.Building
             var alternatives = item.GetFreeArguments();
 
             var altEnter = new NodeBox(new IdleNode(_family, GetItemName(item)));
-            //{
-            //    Node = new IdleNode(_family, GetItemName(item)),
-            //};
-
             var altExit = new NodeBox(new IdleNode(_family, null));
-            //{
-            //    Node = new IdleNode(_family, null),
-            //};
 
             foreach (var alternative in alternatives)
             {
                 var alternativeResult = this.BuildItem(alternative);
 
                 altEnter.DemandLink(alternativeResult.Head);
-                //altEnter.Node.EstablishLink(alternativeResult.Head.Node);
-
-                //alternativeResult.Tail.Node.EstablishLink(altExit.Node);
                 alternativeResult.Tail.RequestLink(altExit);
             }
 
@@ -348,26 +299,15 @@ namespace TauCode.Parsing.Building
         private BuildResult BuildOpt(Element item)
         {
             var optEnter = new NodeBox(new IdleNode(_family, GetItemName(item)));
-            //{
-            //    Node = new IdleNode(_family, GetItemName(item)),
-            //};
-
             var optExit = new NodeBox(new IdleNode(_family, null));
-            //{
-            //    Node = new IdleNode(_family, null),
-            //};
 
             // short circuit!
-            //optEnter.Node.EstablishLink(optExit.Node);
             optEnter.DemandLink(optExit);
 
             var args = item.GetFreeArguments();
             var contentResult = this.BuildContent(args);
 
-            //optEnter.Node.EstablishLink(contentResult.Head.Node);
             optEnter.DemandLink(contentResult.Head);
-
-            //contentResult.Tail.Node.EstablishLink(optExit.Node);
             contentResult.Tail.RequestLink(optExit);
 
             var result = new BuildResult(optEnter, optExit);

@@ -36,6 +36,11 @@ namespace TauCode.Parsing.Lexizing
 
         protected int GetAbsolutePosition() => _startPos + _localPos;
 
+        protected char GetLocalChar(int localPosition)
+        {
+            return _input[_startPos + localPosition];
+        }
+
         protected virtual bool AllowsCharAfterProduction(char c)
         {
             foreach (var successor in _successors)
@@ -116,6 +121,14 @@ namespace TauCode.Parsing.Lexizing
 
                         if (token == null)
                         {
+                            // todo: this is wrong. see comment for challenge-end:
+
+                            /// QUOTE
+                            // possible situation. e.g. in LISP '+1488' looks like as a symbol at the beginning, but at the end would appear
+                            // an integer, and symbol extractor would refuse deliver such a result as a symbol.
+                            /// END-QUOTE
+
+
                             throw new LexerException($"Internal error. Token extractor of type '{this.GetType().FullName}' produced a null token.");
                         }
 
