@@ -43,7 +43,7 @@ namespace TauCode.Parsing.TinyLisp
 
             if (
                 index < 0 || // not found
-                index + 1 >= list.Count // next is keyword
+                index + 1 >= list.Count // keyword is last
             )
             {
                 if (allowsAbsence)
@@ -74,19 +74,7 @@ namespace TauCode.Parsing.TinyLisp
             string argumentName,
             bool allowsAbsence = false) where TElement : Element
         {
-            if (shouldBePseudoList == null)
-            {
-                throw new ArgumentNullException(nameof(shouldBePseudoList));
-            }
-
-            var list = shouldBePseudoList as PseudoList;
-
-            if (list == null)
-            {
-                throw new NotImplementedException(); // error
-            }
-
-            var element = list.GetSingleKeywordArgument(argumentName, allowsAbsence);
+            var element = shouldBePseudoList.GetSingleKeywordArgument(argumentName, allowsAbsence);
             if (element == null)
             {
                 return null;
