@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexizing;
+﻿using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -45,9 +44,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return TestCharResult.Continue;
         }
 
-        protected override bool TestEnd()
-        {
-            throw new NotImplementedException();
-        }
+        protected override bool TestEnd() => false; // unclosed string.
     }
 }

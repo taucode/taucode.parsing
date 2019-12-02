@@ -5,20 +5,20 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Tokens
 {
-    [DebuggerDisplay("{Symbol}")]
+    [DebuggerDisplay("{" + nameof(SymbolName) + "}")]
     public class LispSymbolToken : TokenBase
     {
         public LispSymbolToken(
-            string symbol,
+            string symbolName,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
             : base(name, properties)
         {
-            this.Symbol = symbol ?? throw new ArgumentNullException(nameof(symbol));
+            this.SymbolName = symbolName ?? throw new ArgumentNullException(nameof(symbolName));
         }
 
-        public string Symbol { get; }
+        public string SymbolName { get; }
 
-        public override string ToString() => Symbol;
+        public override string ToString() => SymbolName;
     }
 }

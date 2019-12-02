@@ -42,9 +42,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return TestCharResult.Finish; // pos > 0 ==> finish no matter what.
         }
 
-        protected override bool TestEnd()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override bool TestEnd() => true; // end after punctuation? why not, let it be.
     }
 }

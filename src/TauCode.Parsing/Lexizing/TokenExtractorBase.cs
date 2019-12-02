@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Lexizing
 {
@@ -98,7 +99,7 @@ namespace TauCode.Parsing.Lexizing
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        throw new LexerException("Unexpected end of input.");
                     }
                 }
 
