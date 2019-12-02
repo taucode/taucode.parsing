@@ -7,6 +7,9 @@ namespace TauCode.Parsing.Lexizing
 {
     public static class LexizingHelper
     {
+        internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
+        internal static readonly HashSet<char> LineBreakChars = new HashSet<char>(new[] { '\r', '\n' });
+
         private static readonly HashSet<char> IntegerFirstChars;
         private static readonly HashSet<char> Digits;
         private static readonly HashSet<char> StandardPunctuationChars;
@@ -69,6 +72,10 @@ namespace TauCode.Parsing.Lexizing
 
         #endregion
 
+        public static bool IsSpace(char c) => SpaceChars.Contains(c);
+
+        public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
+        
         public static bool IsIntegerFirstChar(char c) => IntegerFirstChars.Contains(c);
 
         public static bool IsDigit(char c) => Digits.Contains(c);

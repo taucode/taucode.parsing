@@ -9,8 +9,8 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispPunctuationExtractor()
             : base(
-                TinyLispHelper.IsSpace,
-                TinyLispHelper.IsLineBreak, 
+                LexizingHelper.IsSpace,
+                LexizingHelper.IsLineBreak, 
                 TinyLispHelper.IsPunctuation)
         {
         }

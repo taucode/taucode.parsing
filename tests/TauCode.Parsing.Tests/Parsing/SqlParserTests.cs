@@ -12,7 +12,7 @@ using TauCode.Utils.Extensions;
 namespace TauCode.Parsing.Tests.Parsing
 {
     [TestFixture]
-    public class SqlParserTestsViaLisp
+    public class SqlParserTests
     {
         [Test]
         public void SqlParser_ValidInput_Parses()

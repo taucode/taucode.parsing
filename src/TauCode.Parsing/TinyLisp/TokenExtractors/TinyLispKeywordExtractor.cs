@@ -8,8 +8,8 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispKeywordExtractor()
             : base(
-                TinyLispHelper.IsSpace,
-                TinyLispHelper.IsLineBreak,
+                LexizingHelper.IsSpace,
+                LexizingHelper.IsLineBreak,
                 x => x == ':')
         {
         }
