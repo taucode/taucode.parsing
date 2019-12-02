@@ -12,10 +12,14 @@ namespace TauCode.Parsing.Tokens
             IEnumerable<KeyValuePair<string, string>> properties = null)
             : base(name, properties)
         {
-            if (!LexerHelper.IsStandardPunctuationChar(c))
+            if (!LexizingHelper.IsStandardPunctuationChar(c))
             {
                 throw new ArgumentOutOfRangeException(nameof(c));
             }
+
+            this.Value = c;
         }
+
+        public char Value { get; }
     }
 }

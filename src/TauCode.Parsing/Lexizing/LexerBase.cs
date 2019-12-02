@@ -35,7 +35,7 @@ namespace TauCode.Parsing.Lexizing
         {
             if (this.IsEnd())
             {
-                throw LexerHelper.CreateUnexpectedEndOfInputException();
+                throw LexizingHelper.CreateUnexpectedEndOfInputException();
             }
 
             return _input[_pos];

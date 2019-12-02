@@ -18,6 +18,7 @@ namespace TauCode.Parsing.Tests.Parsing
         public void SqlParser_ValidInput_Parses()
         {
             // Arrange
+            var nodeFactory = new SqlNodeFactory("my-sqlite");
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
             ILexer lexer2 = new TinyLispLexer();
             var tokens = lexer2.Lexize(input);
@@ -25,7 +26,7 @@ namespace TauCode.Parsing.Tests.Parsing
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
-            var freshRoot = builder.Build(list);
+            var freshRoot = builder.Build(nodeFactory, list);
 
             IParser freshParser = new Parser();
 

@@ -4,6 +4,6 @@ namespace TauCode.Parsing.Building
 {
     public interface IBuilder
     {
-        INode Build(PseudoList defblocks);
+        INode Build(INodeFactory nodeFactory, PseudoList defblocks);
     }
 }

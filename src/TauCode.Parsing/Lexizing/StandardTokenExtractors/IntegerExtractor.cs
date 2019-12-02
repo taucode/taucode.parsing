@@ -12,7 +12,7 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
             : base(
                 spacePredicate,
                 lineBreakPredicate,
-                LexerHelper.IsIntegerFirstChar)
+                LexizingHelper.IsIntegerFirstChar)
         {
         }
 
@@ -45,7 +45,7 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
                 }
             }
 
-            if (LexerHelper.IsDigit(c))
+            if (LexizingHelper.IsDigit(c))
             {
                 return CharChallengeResult.Continue; // digits are always welcome in an integer.
             }
@@ -84,7 +84,7 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
             else if (localPos == 1)
             {
                 var c = this.GetLocalChar(0);
-                if (LexerHelper.IsDigit(c))
+                if (LexizingHelper.IsDigit(c))
                 {
                     return CharChallengeResult.Finish; // int consisting of a single digit - no problem.
                 }

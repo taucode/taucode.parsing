@@ -5,13 +5,13 @@ using TauCode.Utils.Lab;
 
 namespace TauCode.Parsing.Lexizing
 {
-    public static class LexerHelper
+    public static class LexizingHelper
     {
         private static readonly HashSet<char> IntegerFirstChars;
         private static readonly HashSet<char> Digits;
         private static readonly HashSet<char> StandardPunctuationChars;
 
-        static LexerHelper()
+        static LexizingHelper()
         {
             var list = new List<char>
             {
