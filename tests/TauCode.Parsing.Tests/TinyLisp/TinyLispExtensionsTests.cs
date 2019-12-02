@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
@@ -508,22 +509,60 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Assert
             Assert.That(notFound, Is.Null);
         }
+
         [Test]
-        public void GetSingleKeywordArgument_ArgumentIsAbsentAbsenceNotAllowed_ThrowsArgumentOutOfRangeException()
+        public void GetSingleKeywordArgument_ArgumentIsAbsentAbsenceNotAllowed_ThrowsTinyLispException()
         {
             // Arrange
             var formText = "(foo one two :key three)";
             ILexer lexer = new TinyLispLexer();
             var tokens = lexer.Lexize(formText);
             var reader = new TinyLispPseudoReader();
-            var pseudoList = reader.Read(tokens);
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
-            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => pseudoList.GetSingleKeywordArgument(":non-existing-key"));
+            var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetSingleKeywordArgument(":non-existing-key"));
 
             // Assert
             Assert.That(ex.Message, Does.StartWith("No argument for keyword ':non-existing-key'."));
-            Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void GetSingleKeywordArgument_ArgumentNameIsPresentButIsAKeyword_ThrowsTinyLispException(bool absenceIsAllowed)
+        {
+            // Arrange
+            var formText = "(foo one two :key three :your-key :no-luck)";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetSingleKeywordArgument(":your-key", absenceIsAllowed));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("Keyword ':your-key' was found, but next element is a keyword too."));
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void GetSingleKeywordArgument_ArgumentNameIsPresentButIsAtEnd_ThrowsTinyLispException(bool absenceIsAllowed)
+        {
+            // Arrange
+            var formText = "(foo one two :key three :your-key)";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetSingleKeywordArgument(":your-key", absenceIsAllowed));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("Keyword ':your-key' was found, but at the end of the list."));
         }
     }
 }

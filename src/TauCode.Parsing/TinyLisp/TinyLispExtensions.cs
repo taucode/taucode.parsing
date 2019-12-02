@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Utils.Lab;
 
@@ -11,7 +12,7 @@ namespace TauCode.Parsing.TinyLisp
         public static Element GetSingleKeywordArgument(
             this Element shouldBePseudoList,
             string argumentName,
-            bool allowsAbsence = false)
+            bool absenceIsAllowed = false)
         {
             if (shouldBePseudoList == null)
             {
@@ -41,18 +42,15 @@ namespace TauCode.Parsing.TinyLisp
             int wantedIndex;
             var index = list.FindFirstIndexOfLab(wantedKeyword);
 
-            if (
-                index < 0 || // not found
-                index + 1 >= list.Count // keyword is last
-            )
+            if (index < 0)
             {
-                if (allowsAbsence)
+                if (absenceIsAllowed)
                 {
                     return null;
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException(nameof(argumentName), $"No argument for keyword '{argumentName}'.");
+                    throw new TinyLispException($"No argument for keyword '{argumentName}'.");
                 }
             }
             else
@@ -60,10 +58,15 @@ namespace TauCode.Parsing.TinyLisp
                 wantedIndex = index + 1;
             }
 
+            if (wantedIndex == list.Count)
+            {
+                throw new TinyLispException($"Keyword '{argumentName}' was found, but at the end of the list.");
+            }
+
             var wantedElement = list[wantedIndex];
             if (wantedElement is Keyword)
             {
-                throw new NotImplementedException();
+                throw new TinyLispException($"Keyword '{argumentName}' was found, but next element is a keyword too.");
             }
 
             return wantedElement;
@@ -72,9 +75,9 @@ namespace TauCode.Parsing.TinyLisp
         public static TElement GetSingleKeywordArgument<TElement>(
             this Element shouldBePseudoList,
             string argumentName,
-            bool allowsAbsence = false) where TElement : Element
+            bool absenceIsAllowed = false) where TElement : Element
         {
-            var element = shouldBePseudoList.GetSingleKeywordArgument(argumentName, allowsAbsence);
+            var element = shouldBePseudoList.GetSingleKeywordArgument(argumentName, absenceIsAllowed);
             if (element == null)
             {
                 return null;
@@ -91,7 +94,7 @@ namespace TauCode.Parsing.TinyLisp
         public static PseudoList GetAllKeywordArguments(
             this Element shouldBePseudoList,
             string argumentName,
-            bool allowsAbsence = false)
+            bool absenceIsAllowed = false)
         {
             if (shouldBePseudoList == null)
             {
@@ -120,7 +123,7 @@ namespace TauCode.Parsing.TinyLisp
 
             if (index == -1)
             {
-                if (allowsAbsence)
+                if (absenceIsAllowed)
                 {
                     return new PseudoList(); // empty
                 }
