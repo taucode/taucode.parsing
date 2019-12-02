@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Lexizing
 {
-    // todo clean up
     public abstract class LexerBase : ILexer
     {
         private string _input;
         private int _pos;
 
-        //private readonly HashSet<char> _spaceChars;
-        //private readonly HashSet<char> _lineBreakChars;
         private readonly Func<char, bool> _spacePredicate;
         private readonly Func<char, bool> _lineBreakPredicate;
 
@@ -24,8 +22,6 @@ namespace TauCode.Parsing.Lexizing
         {
             // todo check args
             // todo: line breaks must be contained in space chars.
-            //_spaceChars = new HashSet<char>(spaceChars);
-            //_lineBreakChars = new HashSet<char>(lineBreakChars);
 
             _spacePredicate = spacePredicate;
             _lineBreakPredicate = lineBreakPredicate;
@@ -48,9 +44,6 @@ namespace TauCode.Parsing.Lexizing
         protected int GetCurrentPosition() => _pos;
 
         protected bool IsSpaceChar(char c) => _spacePredicate(c);
-        //{
-        //    return _spaceChars.Contains(c);
-        //}
 
         protected void Advance(int shift = 1)
         {
@@ -117,7 +110,7 @@ namespace TauCode.Parsing.Lexizing
 
                 if (nextToken == null)
                 {
-                    throw new NotImplementedException();
+                    throw new LexerException($"Unexpected char: '{c}'.");
                 }
 
                 if (nextToken.HasPayload)

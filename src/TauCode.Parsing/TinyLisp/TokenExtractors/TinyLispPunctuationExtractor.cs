@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
@@ -14,37 +15,42 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
         }
 
-        protected override void Reset()
-        {
-            // idle
-        }
-
         protected override IToken ProduceResult()
         {
             var result = this.ExtractResultString();
-            // todo: result must be exactly 1 char
+
+            if (result.Length != 1)
+            {
+                // todo: copy-pasted exception.
+                throw new LexerException("Internal error."); // how on earth we could even get here?
+            }
+
             var c = result.Single();
             var punctuation = TinyLispHelper.CharToPunctuation(c);
 
-            return new PunctuationToken(punctuation);
+            return new LispPunctuationToken(punctuation);
         }
 
-        protected override TestCharResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
 
             if (pos == 0)
             {
-                return this.ContinueIf(TinyLispHelper.PunctuationChars.Contains(c)); // todo optimize with hash table
+                if (TinyLispHelper.PunctuationChars.Contains(c))
+                {
+                    return CharChallengeResult.Continue;
+                }
+                else
+                {
+                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                }
             }
 
-            return TestCharResult.Finish; // pos > 0 ==> finish no matter what.
+            return CharChallengeResult.Finish; // pos > 0 ==> finish no matter what.
         }
 
-        protected override bool TestEnd()
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish; // end after punctuation? why not, let it be.
     }
 }

@@ -26,3 +26,7 @@ x   3. Only \SpecialString and "<some_exact_special_string>" want ':Some_Class' 
 ==========
 todo1. Clean up codebase.
 todo2. TauCode.Utils: 'FindFirstIndexOf' => takes IReadOnlyLit, not IList!
+
+2019-12-02
+==========
+todo1. Node factory.

@@ -7,8 +7,13 @@ namespace TauCode.Parsing.Tests
     {
         internal static void WriteDiff(string actual, string expected, string directory, string fileExtension)
         {
-            var actualFileName = $"0-actual.{fileExtension}";
-            var expectedFileName = $"1-expected.{fileExtension}";
+            if (!fileExtension.StartsWith("."))
+            {
+                fileExtension = "." + fileExtension;
+            }
+
+            var actualFileName = $"0-actual{fileExtension}";
+            var expectedFileName = $"1-expected{fileExtension}";
 
             var actualFilePath = Path.Combine(directory, actualFileName);
             var expectedFilePath = Path.Combine(directory, expectedFileName);

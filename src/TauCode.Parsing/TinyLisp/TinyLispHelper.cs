@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TauCode.Parsing.TinyLisp.Tokens;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.TinyLisp
 {
-    // todo clean up
     public static class TinyLispHelper
     {
         internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
@@ -32,7 +33,28 @@ namespace TauCode.Parsing.TinyLisp
             '\\',
         });
 
+        private static Dictionary<char, Punctuation> PunctuationsByChar;
+        private static Dictionary<Punctuation, char> CharsByPunctuation;
 
+        static TinyLispHelper()
+        {
+            var pairs = new[]
+            {
+                "( LeftParenthesis",
+                ") RightParenthesis",
+                "' Quote",
+                "` BackQuote",
+                ". Period",
+                ", Comma",
+            };
+
+            PunctuationsByChar = pairs
+                .Select(x => x.Split(' '))
+                .ToDictionary(x => x[0].Single(), x => x[1].ToEnum<Punctuation>());
+
+            CharsByPunctuation = PunctuationsByChar
+                .ToDictionary(x => x.Value, x => x.Key);
+        }
 
         internal static bool IsAcceptableSymbolNamePunctuationChar(this char c) => AcceptableSymbolNamePunctuationChars.Contains(c);
 
@@ -115,46 +137,24 @@ namespace TauCode.Parsing.TinyLisp
 
         public static Punctuation CharToPunctuation(char c)
         {
-            // todo: dictionary mapping <char> <--> <punctuation>
-            switch (c)
+            var punctuation = PunctuationsByChar.GetOrDefault(c);
+            if (punctuation == default)
             {
-                case '(':
-                    return Punctuation.LeftParenthesis;
-
-                case ')':
-                    return Punctuation.RightParenthesis;
-
-                default:
-                    throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(c), $"'{c}' is not a known punctuation character.");
             }
+
+            return punctuation;
         }
 
         public static char PunctuationToChar(this Punctuation punctuation)
         {
-            // todo: dictionary mapping <char> <--> <punctuation>
-            switch (punctuation)
+            var c = CharsByPunctuation.GetOrDefault(punctuation);
+            if (c == default)
             {
-                case Punctuation.LeftParenthesis:
-                    return '(';
-
-                case Punctuation.RightParenthesis:
-                    return ')';
-
-                case Punctuation.Quote:
-                    return '\'';
-
-                case Punctuation.BackQuote:
-                    return '`';
-
-                case Punctuation.Period:
-                    return '.';
-
-                case Punctuation.Comma:
-                    return ',';
-
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(punctuation), punctuation, null);
+                throw new ArgumentOutOfRangeException(nameof(c), $"'{punctuation}' is not a known punctuation.");
             }
+
+            return c;
         }
     }
 }

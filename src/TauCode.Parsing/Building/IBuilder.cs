@@ -1,6 +1,6 @@
 ﻿using TauCode.Parsing.TinyLisp.Data;
 
-namespace TauCode.Parsing.Aide
+namespace TauCode.Parsing.Building
 {
     public interface IBuilder
     {

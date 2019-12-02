@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.Tokens;
 
@@ -14,11 +14,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
         }
 
-        protected override void Reset()
-        {
-            // idle
-        }
-
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
@@ -26,28 +21,35 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new StringToken(value);
         }
 
-        protected override TestCharResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
 
             if (pos == 0)
             {
-                return this.ContinueIf(c == '"');
+                if (c == '"')
+                {
+                    return CharChallengeResult.Continue;
+                }
+                else
+                {
+                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                }
             }
 
             if (c == '"')
             {
                 this.Advance();
-                return TestCharResult.Finish;
+                return CharChallengeResult.Finish;
             }
 
-            return TestCharResult.Continue;
+            return CharChallengeResult.Continue;
         }
 
-        protected override bool TestEnd()
+        protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            return CharChallengeResult.Error; // unclosed string. that's my error. no other extractor can handle this.
         }
     }
 }

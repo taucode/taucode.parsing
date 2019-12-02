@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
-using TauCode.Parsing.Aide;
+using TauCode.Parsing.Building;
 using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Data;
@@ -18,10 +18,7 @@ namespace TauCode.Parsing.Tests.Parsing
         public void SqlParser_ValidInput_Parses()
         {
             // Arrange
-            //var input = this.GetType().Assembly.GetResourceText("SQLiteRealGrammar.txt", true);
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
-            //var aideLexer = new AideLexer();
-            //IParser parser = new Parser();
             ILexer lexer2 = new TinyLispLexer();
             var tokens = lexer2.Lexize(input);
 
@@ -29,18 +26,8 @@ namespace TauCode.Parsing.Tests.Parsing
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var freshRoot = builder.Build(list);
-            //root.FetchTree();
 
             IParser freshParser = new Parser();
-
-            //var tokens = aideLexer.Lexize(input);
-            //var aideRoot = AideHelper.BuildParserRoot();
-            //var results = parser.Parse(aideRoot, tokens);
-
-            //IBuilder builder = new Builder();
-
-            //var sqlRoot = builder.Build("sql tree", results.Cast<BlockDefinitionResult>());
-
 
             var allSqlNodes = freshRoot.FetchTree();
 
@@ -59,8 +46,6 @@ namespace TauCode.Parsing.Tests.Parsing
                 .Distinct()
                 .Select(x => x.ToUpperInvariant())
                 .ToHashSet();
-
-            //var todoWtf = allSqlNodes.Where(x => x.Name != null).ToList();
 
             var identifiersAsWords = allSqlNodes
                 .Where(x =>

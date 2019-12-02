@@ -34,7 +34,7 @@ namespace TauCode.Parsing.TinyLisp
                 }
 
                 var token = tokens[pos];
-                if (token is PunctuationToken punctuationToken)
+                if (token is LispPunctuationToken punctuationToken)
                 {
                     switch (punctuationToken.Value)
                     {
@@ -68,7 +68,7 @@ namespace TauCode.Parsing.TinyLisp
                 }
                 else if (token is LispSymbolToken symbolToken)
                 {
-                    var element = Symbol.Create(symbolToken.Symbol);
+                    var element = Symbol.Create(symbolToken.SymbolName);
                     list.AddElement(element);
                     pos++;
                 }

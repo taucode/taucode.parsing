@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexizing;
+﻿using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -14,33 +13,33 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
         }
 
-        protected override void Reset()
-        {
-            // idle
-        }
-
         protected override IToken ProduceResult()
         {
-            var res = this.ExtractResultString();
-            return new LispSymbolToken(res);
+            var str = this.ExtractResultString();
+
+            if (int.TryParse(str, out var dummy)) // todo: move this check to helper.
+            {
+                return null;
+            }
+
+            return new LispSymbolToken(str);
         }
 
-        protected override TestCharResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            //var pos = this.GetLocalPosition();
 
             if (c.IsAcceptableSymbolNameChar())
             {
-                return TestCharResult.Continue; // todo: deal with integers, doubles and ratios.
+                return CharChallengeResult.Continue; // todo: deal with integers, doubles and ratios.
             }
 
-            return TestCharResult.Finish;
+            return CharChallengeResult.Finish;
         }
 
-        protected override bool TestEnd()
+        protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            return CharChallengeResult.Finish; // symbol ends with end-of-input? no problem then.
         }
     }
 }

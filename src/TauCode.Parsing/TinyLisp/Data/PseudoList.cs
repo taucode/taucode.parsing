@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -17,7 +18,11 @@ namespace TauCode.Parsing.TinyLisp.Data
 
         public void AddElement(Element element)
         {
-            // todo checks
+            if (element == null)
+            {
+                throw new ArgumentNullException(nameof(element));
+            }
+
             _elements.Add(element);
         }
 

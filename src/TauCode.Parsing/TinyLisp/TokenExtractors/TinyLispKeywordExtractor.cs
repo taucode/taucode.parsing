@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
@@ -14,11 +14,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
         }
 
-        protected override void Reset()
-        {
-            // idle
-        }
-
         protected override IToken ProduceResult()
         {
             var res = this.ExtractResultString();
@@ -26,28 +21,46 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new KeywordToken(res);
         }
 
-        protected override TestCharResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
 
             if (pos == 0)
             {
-                return this.ContinueIf(c == ':');
+                if (c == ':')
+                {
+                    return CharChallengeResult.Continue;
+                }
+                else
+                {
+                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                }
             }
 
             var isMine = c.IsAcceptableSymbolNameChar();
             if (isMine)
             {
-                return TestCharResult.Continue;
+                return CharChallengeResult.Continue;
             }
 
-            return TestCharResult.Finish;
+            return CharChallengeResult.Finish;
         }
 
-        protected override bool TestEnd()
+        protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            if (this.GetLocalPosition() > 1)
+            {
+                // consumed more than one char (0th is always ':'), so no problem here
+                return CharChallengeResult.Finish;
+                
+
+            }
+            else
+            {
+                // consumed just one char (':'), therefore error. on one other token extractor in LISP can have ':' at the beginning.
+                return CharChallengeResult.Error;
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Lexizing;
+﻿using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -13,35 +14,38 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
         }
 
-        protected override void Reset()
-        {
-            //
-        }
-
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
             return new CommentToken(str);
         }
 
-        protected override TestCharResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
 
             if (pos == 0)
             {
-                return this.ContinueIf(c == ';');
+                if (c == ';')
+                {
+                    return CharChallengeResult.Continue;
+                }
+                else
+                {
+                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                }
             }
 
-            if (this.IsLineBreakChar(c))
+            if (this.LineBreakPredicate(c))
             {
-                return TestCharResult.Finish;
+                return CharChallengeResult.Finish;
             }
 
-            return TestCharResult.Continue;
+            return CharChallengeResult.Continue;
         }
 
-        protected override bool TestEnd() => true;
+        protected override CharChallengeResult ChallengeEnd() =>
+            CharChallengeResult.Finish; // LISP comment can be terminated by the end of input, no problem.
     }
 }

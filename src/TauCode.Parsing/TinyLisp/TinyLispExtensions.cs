@@ -22,7 +22,7 @@ namespace TauCode.Parsing.TinyLisp
 
             if (list == null)
             {
-                throw new NotImplementedException(); // error
+                throw new NotImplementedException(); // todo0
             }
 
             if (argumentName == null)

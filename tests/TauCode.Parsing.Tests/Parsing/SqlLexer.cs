@@ -6,6 +6,7 @@ using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Tests.Parsing
 {
+    // todo: based on LexerBase.
     public class SqlLexer : ILexer
     {
         private static readonly HashSet<char> SpaceChars = new HashSet<char>(new[]

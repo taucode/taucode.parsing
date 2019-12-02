@@ -1,4 +1,5 @@
 ﻿using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexizing.StandardTokenExtractors;
 using TauCode.Parsing.TinyLisp.TokenExtractors;
 
 namespace TauCode.Parsing.TinyLisp
@@ -11,8 +12,6 @@ namespace TauCode.Parsing.TinyLisp
                 TinyLispHelper.IsLineBreak)
         {
         }
-
-        //public bool AddCommentTokens { get; set; }
 
         protected override void InitTokenExtractors()
         {
@@ -36,13 +35,18 @@ namespace TauCode.Parsing.TinyLisp
             var stringExtractor = new TinyLispStringExtractor();
             this.AddTokenExtractor(stringExtractor);
 
+            // integer
+            var integerExtractor = new IntegerExtractor(TinyLispHelper.IsSpace, TinyLispHelper.IsLineBreak);
+            this.AddTokenExtractor(integerExtractor);
+
             // *** Links ***
             punctuationExtractor.AddSuccessors(
                 commentExtractor,
                 punctuationExtractor,
                 keywordExtractor,
                 symbolExtractor,
-                stringExtractor);
+                stringExtractor,
+                integerExtractor);
 
             keywordExtractor.AddSuccessors(
                 commentExtractor,
@@ -58,7 +62,12 @@ namespace TauCode.Parsing.TinyLisp
                 commentExtractor,
                 punctuationExtractor,
                 keywordExtractor,
-                symbolExtractor);
+                symbolExtractor,
+                integerExtractor);
+
+            integerExtractor.AddSuccessors(
+                punctuationExtractor,
+                stringExtractor);
         }
     }
 }
