@@ -653,6 +653,62 @@ namespace TauCode.Parsing.Tests.TinyLisp
         }
 
         [Test]
+        public void GetAllKeywordArguments_NoSuchKeyAbsenceNotAllowed_ThrowsTinyLispException()
+        {
+            // Arrange
+            var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() =>
+                pseudoList.GetAllKeywordArguments(":non-existing-key", false));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("No argument for keyword ':non-existing-key'."));
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void GetAllKeywordArguments_KeywordFoundButNextItemIsAlsoKeyword_ReturnsEmptyPseudoList(bool absenceIsAllowed)
+        {
+            // Arrange
+            var formText = "(foo one two :key one two \"three\" :your-key :no-items-for-you \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var args = pseudoList.GetAllKeywordArguments(":your-key");
+
+            // Assert
+            Assert.That(args, Is.Empty);
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void GetAllKeywordArguments_KeywordFoundButAtEnd_ReturnsEmptyPseudoList(bool absenceIsAllowed)
+        {
+            // Arrange
+            var formText = "(foo one two :key one two \"three\" :no-items-for-you \"some string\" :your-key-at-end)";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var args = pseudoList.GetAllKeywordArguments(":your-key-at-end");
+
+            // Assert
+            Assert.That(args, Is.Empty);
+        }
+
+        [Test]
         public void GetAllKeywordArguments_PseudoListIsNull_ThrowsArgumentNullException()
         {
             // Arrange
@@ -717,6 +773,5 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(ex.Message, Does.StartWith($"'{badKeywordName}' is not a valid keyword."));
             Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
         }
-
     }
 }

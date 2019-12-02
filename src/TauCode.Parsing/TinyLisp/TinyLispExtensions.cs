@@ -131,7 +131,7 @@ namespace TauCode.Parsing.TinyLisp
                 }
                 else
                 {
-                    throw new NotImplementedException(); // not found
+                    throw new TinyLispException($"No argument for keyword '{argumentName}'.");
                 }
             }
 
