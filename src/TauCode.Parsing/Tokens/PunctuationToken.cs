@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.Tokens
 {
@@ -12,7 +12,7 @@ namespace TauCode.Parsing.Tokens
             IEnumerable<KeyValuePair<string, string>> properties = null)
             : base(name, properties)
         {
-            if (!LexizingHelper.IsStandardPunctuationChar(c))
+            if (!LexingHelper.IsStandardPunctuationChar(c))
             {
                 throw new ArgumentOutOfRangeException(nameof(c));
             }

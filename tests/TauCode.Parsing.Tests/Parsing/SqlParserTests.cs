@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using TauCode.Parsing.Building;
-using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Data;
 using TauCode.Parsing.TinyLisp;

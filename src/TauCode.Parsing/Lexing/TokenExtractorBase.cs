@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 
-namespace TauCode.Parsing.Lexizing
+namespace TauCode.Parsing.Lexing
 {
     // todo clean up
     public abstract class TokenExtractorBase : ITokenExtractor

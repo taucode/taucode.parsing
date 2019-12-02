@@ -1,4 +1,4 @@
-﻿using TauCode.Parsing.Lexizing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -7,8 +7,8 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispSymbolExtractor() 
             : base(
-                LexizingHelper.IsSpace,
-                LexizingHelper.IsLineBreak,
+                LexingHelper.IsSpace,
+                LexingHelper.IsLineBreak,
                 TinyLispHelper.IsAcceptableSymbolNameChar)
         {
         }

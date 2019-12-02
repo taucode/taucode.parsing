@@ -1,12 +1,12 @@
 ﻿using System;
-using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.Tests.Parsing
 {
     public class SqlLexer : LexerBase
     {
         public SqlLexer(Func<char, bool> spacePredicate, Func<char, bool> lineBreakPredicate)
-            : base(LexizingHelper.IsSpace, LexizingHelper.IsLineBreak)
+            : base(LexingHelper.IsSpace, LexingHelper.IsLineBreak)
         {
         }
 

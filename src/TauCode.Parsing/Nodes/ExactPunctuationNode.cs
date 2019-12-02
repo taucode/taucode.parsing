@@ -1,5 +1,5 @@
 ﻿using System;
-using TauCode.Parsing.Lexizing;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
@@ -12,7 +12,7 @@ namespace TauCode.Parsing.Nodes
             INodeFamily family,
             string name) : base(action, family, name)
         {
-            if (!LexizingHelper.IsStandardPunctuationChar(c))
+            if (!LexingHelper.IsStandardPunctuationChar(c))
             {
                 throw new ArgumentOutOfRangeException(nameof(c));
             }

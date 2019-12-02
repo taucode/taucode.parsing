@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
 
-namespace TauCode.Parsing.Lexizing
+namespace TauCode.Parsing.Lexing
 {
     public abstract class LexerBase : ILexer
     {
@@ -35,7 +35,7 @@ namespace TauCode.Parsing.Lexizing
         {
             if (this.IsEnd())
             {
-                throw LexizingHelper.CreateUnexpectedEndOfInputException();
+                throw LexingHelper.CreateUnexpectedEndOfInputException();
             }
 
             return _input[_pos];

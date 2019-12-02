@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 using TauCode.Utils.Lab;
 
-namespace TauCode.Parsing.Lexizing
+namespace TauCode.Parsing.Lexing
 {
-    public static class LexizingHelper
+    public static class LexingHelper
     {
         internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
         internal static readonly HashSet<char> LineBreakChars = new HashSet<char>(new[] { '\r', '\n' });
@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Lexizing
         private static readonly HashSet<char> Digits;
         private static readonly HashSet<char> StandardPunctuationChars;
 
-        static LexizingHelper()
+        static LexingHelper()
         {
             var list = new List<char>
             {
