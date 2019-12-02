@@ -30,16 +30,16 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new LispSymbolToken(str);
         }
 
-        protected override TestCharResult TestCurrentChar()
+        protected override CharChallengeResult TestCurrentChar()
         {
             var c = this.GetCurrentChar();
 
             if (c.IsAcceptableSymbolNameChar())
             {
-                return TestCharResult.Continue; // todo: deal with integers, doubles and ratios.
+                return CharChallengeResult.Continue; // todo: deal with integers, doubles and ratios.
             }
 
-            return TestCharResult.Finish;
+            return CharChallengeResult.Finish;
         }
 
         protected override bool TestEnd() => true;

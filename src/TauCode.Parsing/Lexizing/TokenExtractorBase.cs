@@ -101,14 +101,14 @@ namespace TauCode.Parsing.Lexizing
 
                 switch (testCharResult)
                 {
-                    case TestCharResult.NotAllowed:
+                    case CharChallengeResult.GiveUp:
                         return new TokenExtractionResult(0, null); // this extractor failed to recognize the whole token, no problem.
 
-                    case TestCharResult.Continue:
+                    case CharChallengeResult.Continue:
                         this.Advance();
                         break;
 
-                    case TestCharResult.Finish:
+                    case CharChallengeResult.Finish:
                         var token = this.ProduceResult();
 
                         if (token == null)
@@ -145,19 +145,7 @@ namespace TauCode.Parsing.Lexizing
             _localPos++;
         }
 
-        protected TestCharResult ContinueIf(bool cond)
-        {
-            if (cond)
-            {
-                return TestCharResult.Continue;
-            }
-            else
-            {
-                return TestCharResult.NotAllowed;
-            }
-        }
-
-        protected abstract TestCharResult TestCurrentChar();
+        protected abstract CharChallengeResult TestCurrentChar();
 
         protected abstract bool TestEnd();
 
@@ -165,7 +153,7 @@ namespace TauCode.Parsing.Lexizing
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException();
+                throw new LexerException("Internal error: trying to get current char at the end of input.");
             }
 
             var absPos = this.GetAbsolutePosition();

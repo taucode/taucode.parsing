@@ -5,9 +5,9 @@ using TauCode.Parsing.Tokens;
 namespace TauCode.Parsing.TinyLisp.Tokens
 {
     [DebuggerDisplay("{" + nameof(ToString) + "()}")]
-    public class PunctuationToken : EnumToken<Punctuation>
+    public class LispPunctuationToken : EnumToken<Punctuation>
     {
-        public PunctuationToken(
+        public LispPunctuationToken(
             Punctuation value,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)

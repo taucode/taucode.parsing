@@ -44,8 +44,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(2));
 
-            Assert.That(tokens[0] as PunctuationToken, Has.Property("Value").EqualTo(Punctuation.LeftParenthesis));
-            Assert.That(tokens[1] as PunctuationToken, Has.Property("Value").EqualTo(Punctuation.RightParenthesis));
+            Assert.That(tokens[0] as LispPunctuationToken, Has.Property("Value").EqualTo(Punctuation.LeftParenthesis));
+            Assert.That(tokens[1] as LispPunctuationToken, Has.Property("Value").EqualTo(Punctuation.RightParenthesis));
         }
 
         [Test]
@@ -70,33 +70,33 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(tokens, Has.Count.EqualTo(19));
 
             Assert.That(
-                tokens[0] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
+                tokens[0] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
 
             Assert.That(tokens[1] as KeywordToken, Has.Property(nameof(KeywordToken.Keyword)).EqualTo(":defblock"));
             Assert.That(tokens[2] as LispSymbolToken, Has.Property(nameof(LispSymbolToken.SymbolName)).EqualTo("create"));
 
             Assert.That(
-                tokens[3] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
+                tokens[3] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
 
             Assert.That(tokens[4] as KeywordToken, Has.Property(nameof(KeywordToken.Keyword)).EqualTo(":word"));
 
             Assert.That(tokens[5] as StringToken, Has.Property(nameof(StringToken.Value)).EqualTo("CREATE"));
 
             Assert.That(
-                tokens[6] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
+                tokens[6] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
 
             Assert.That(
-                tokens[7] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
+                tokens[7] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
 
             Assert.That(tokens[8] as KeywordToken, Has.Property(nameof(KeywordToken.Keyword)).EqualTo(":alt"));
 
             Assert.That(
-                tokens[9] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
+                tokens[9] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
 
             Assert.That(tokens[10] as KeywordToken, Has.Property(nameof(KeywordToken.Keyword)).EqualTo(":block"));
 
@@ -105,12 +105,12 @@ namespace TauCode.Parsing.Tests.TinyLisp
                 Has.Property(nameof(LispSymbolToken.SymbolName)).EqualTo("create-table"));
 
             Assert.That(
-                tokens[12] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
+                tokens[12] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
 
             Assert.That(
-                tokens[13] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
+                tokens[13] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.LeftParenthesis));
 
             Assert.That(tokens[14] as KeywordToken, Has.Property(nameof(KeywordToken.Keyword)).EqualTo(":block"));
 
@@ -119,16 +119,16 @@ namespace TauCode.Parsing.Tests.TinyLisp
                 Has.Property(nameof(LispSymbolToken.SymbolName)).EqualTo("create-index"));
 
             Assert.That(
-                tokens[16] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
+                tokens[16] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
 
             Assert.That(
-                tokens[17] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
+                tokens[17] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
 
             Assert.That(
-                tokens[18] as PunctuationToken,
-                Has.Property(nameof(PunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
+                tokens[18] as LispPunctuationToken,
+                Has.Property(nameof(LispPunctuationToken.Value)).EqualTo(Punctuation.RightParenthesis));
         }
 
         [Test]
@@ -157,15 +157,15 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(5));
-            Assert.That(tokens[0] as PunctuationToken, Has.Property(nameof(EnumToken<Punctuation>.Value)).EqualTo(Punctuation.LeftParenthesis));
+            Assert.That(tokens[0] as LispPunctuationToken, Has.Property(nameof(EnumToken<Punctuation>.Value)).EqualTo(Punctuation.LeftParenthesis));
             Assert.That(tokens[1] as LispSymbolToken, Has.Property(nameof(LispSymbolToken.SymbolName)).EqualTo("a"));
-            Assert.That(tokens[2] as PunctuationToken, Has.Property(nameof(EnumToken<Punctuation>.Value)).EqualTo(Punctuation.Period));
+            Assert.That(tokens[2] as LispPunctuationToken, Has.Property(nameof(EnumToken<Punctuation>.Value)).EqualTo(Punctuation.Period));
             Assert.That(tokens[3] as LispSymbolToken, Has.Property(nameof(LispSymbolToken.SymbolName)).EqualTo("b"));
-            Assert.That(tokens[4] as PunctuationToken, Has.Property(nameof(EnumToken<Punctuation>.Value)).EqualTo(Punctuation.RightParenthesis));
+            Assert.That(tokens[4] as LispPunctuationToken, Has.Property(nameof(EnumToken<Punctuation>.Value)).EqualTo(Punctuation.RightParenthesis));
         }
 
         [Test]
-        public void Lexize_UnexpectedEnd_ThrowsTodoException()
+        public void Lexize_UnexpectedEnd_ThrowsLexerException()
         {
             // Arrange
             var input = "\"not close";
@@ -183,7 +183,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [TestCase("keyword at :end", typeof(KeywordToken))]
         [TestCase("integer at end 1488", typeof(IntegerToken))]
         [TestCase("string at \"end\"", typeof(StringToken))]
-        [TestCase("( punctuation at end )", typeof(PunctuationToken))]
+        [TestCase("( punctuation at end )", typeof(LispPunctuationToken))]
         [TestCase("comment :somma ;end", typeof(KeywordToken))]
         public void Lexize_TokenAtEnd_LexizedCorrectly(string input, Type lastTokenExpectedType)
         {

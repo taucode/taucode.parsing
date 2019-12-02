@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Lexizing;
+﻿using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -24,22 +25,29 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new CommentToken(str);
         }
 
-        protected override TestCharResult TestCurrentChar()
+        protected override CharChallengeResult TestCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
 
             if (pos == 0)
             {
-                return this.ContinueIf(c == ';');
+                if (c == ';')
+                {
+                    return CharChallengeResult.Continue;
+                }
+                else
+                {
+                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                }
             }
 
             if (this.LineBreakPredicate(c))
             {
-                return TestCharResult.Finish;
+                return CharChallengeResult.Finish;
             }
 
-            return TestCharResult.Continue;
+            return CharChallengeResult.Continue;
         }
 
         protected override bool TestEnd() => true;

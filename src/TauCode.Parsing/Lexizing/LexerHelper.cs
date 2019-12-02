@@ -10,6 +10,7 @@ namespace TauCode.Parsing.Lexizing
     {
         private static readonly HashSet<char> IntegerFirstChars;
         private static readonly HashSet<char> Digits;
+        private static readonly HashSet<char> StandardPunctuationChars;
 
         static LexerHelper()
         {
@@ -25,6 +26,29 @@ namespace TauCode.Parsing.Lexizing
             var digits = new List<char>();
             digits.AddCharRange('0', '9');
             Digits = new HashSet<char>(digits);
+
+            var punctList = new List<char>();
+            punctList.AddRange(new []
+            {
+                '~',
+                '?',
+                '!',
+                '@',
+                '$',
+                '%',
+                '^',
+                '&',
+                '*',
+                '/',
+                '+',
+                '-',
+                '[',
+                ']',
+                '{',
+                '}',
+                '\\',
+            });
+            StandardPunctuationChars = new HashSet<char>(punctList);
         }
 
         #region Exceptions
@@ -70,5 +94,10 @@ namespace TauCode.Parsing.Lexizing
         public static bool IsIntegerFirstChar(char c) => IntegerFirstChars.Contains(c);
 
         public static bool IsDigit(char c) => Digits.Contains(c);
+
+        public static bool IsStandardPunctuationChar(char c)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

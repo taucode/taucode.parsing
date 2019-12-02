@@ -1,4 +1,5 @@
 ﻿using System;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
@@ -26,19 +27,26 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
             return new IntegerToken(str);
         }
 
-        protected override TestCharResult TestCurrentChar()
+        protected override CharChallengeResult TestCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
 
             if (pos == 0)
             {
-                return this.ContinueIf(this.FirstCharPredicate(c));
+                if (this.FirstCharPredicate(c))
+                {
+                    return CharChallengeResult.Continue;
+                }
+                else
+                {
+                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                }
             }
 
             if (LexerHelper.IsDigit(c))
             {
-                return TestCharResult.Continue; // digits are always welcome in an integer.
+                return CharChallengeResult.Continue; // digits are always welcome in an integer.
             }
 
             if (c == '.' || c == '_')
@@ -46,22 +54,22 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
                 // period ('.') is rarely a thing that you can delimit an integer within any grammar.
                 // underscore ('_') is a punctuation mark, but nowadays it is usually a part of identifiers.
 
-                return TestCharResult.NotAllowed;
+                return CharChallengeResult.GiveUp;
             }
 
             // other punctuation marks like Comma, (, ), others might delimit though...
             if (char.IsPunctuation(c))
             {
-                return TestCharResult.Finish;
+                return CharChallengeResult.Finish;
             }
 
             if (this.SpacePredicate(c) || char.IsWhiteSpace(c))
             {
-                return TestCharResult.Finish;
+                return CharChallengeResult.Finish;
             }
 
             // other chars like letters and stuff => not allowed.
-            return TestCharResult.NotAllowed;
+            return CharChallengeResult.GiveUp;
         }
 
         protected override bool TestEnd()
