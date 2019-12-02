@@ -491,5 +491,39 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(ex.Message, Does.StartWith($"'{badKeywordName}' is not a valid keyword."));
             Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
         }
+
+        [Test]
+        public void GetSingleKeywordArgument_ArgumentIsAbsentAbsenceAllowed_ReturnsNull()
+        {
+            // Arrange
+            var formText = "(foo one two :key three)";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens);
+
+            // Act
+            var notFound = pseudoList.GetSingleKeywordArgument(":non-existing-key", true);
+
+            // Assert
+            Assert.That(notFound, Is.Null);
+        }
+        [Test]
+        public void GetSingleKeywordArgument_ArgumentIsAbsentAbsenceNotAllowed_ThrowsArgumentOutOfRangeException()
+        {
+            // Arrange
+            var formText = "(foo one two :key three)";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens);
+
+            // Act
+            var ex = Assert.Throws<ArgumentOutOfRangeException>(() => pseudoList.GetSingleKeywordArgument(":non-existing-key"));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("No argument for keyword ':non-existing-key'."));
+            Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
+        }
     }
 }

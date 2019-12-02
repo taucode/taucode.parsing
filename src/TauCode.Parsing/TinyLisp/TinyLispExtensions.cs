@@ -52,7 +52,7 @@ namespace TauCode.Parsing.TinyLisp
                 }
                 else
                 {
-                    throw new NotImplementedException(); // not found
+                    throw new ArgumentOutOfRangeException(nameof(argumentName), $"No argument for keyword '{argumentName}'.");
                 }
             }
             else
