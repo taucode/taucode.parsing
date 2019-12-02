@@ -88,7 +88,7 @@ namespace TauCode.Parsing.TinyLisp
                 return expectedElement;
             }
 
-            throw new NotImplementedException(); // error
+            throw new TinyLispException($"Argument for '{argumentName}' was found, but it appears to be of type '{element.GetType().FullName}' instead of expected type '{typeof(TElement).FullName}'.");
         }
 
         public static PseudoList GetAllKeywordArguments(

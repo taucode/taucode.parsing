@@ -128,17 +128,21 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(alt0.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
             free = alt0.GetFreeArguments();
             Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
-            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("column-name-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("column-name-ident").IgnoreCase);
             Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
-            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("column-name-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("column-name-word").IgnoreCase);
 
             // alt1
             Assert.That(alt1.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
             free = alt1.GetFreeArguments();
             Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
-            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("type-name-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("type-name-ident").IgnoreCase);
             Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
-            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("type-name-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("type-name-word").IgnoreCase);
 
             // opt0
             free = opt0.GetFreeArguments();
@@ -151,7 +155,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var innerOptFree = innerOpt.GetFreeArguments();
             Assert.That(innerOptFree, Has.Count.EqualTo(2));
             Assert.That(innerOptFree[0].GetCarSymbolName(), Is.EqualTo("symbol").IgnoreCase);
-            Assert.That(innerOptFree[0].GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo(",").IgnoreCase);
+            Assert.That(innerOptFree[0].GetSingleKeywordArgument<StringAtom>(":value").Value,
+                Is.EqualTo(",").IgnoreCase);
             Assert.That(innerOptFree[1].GetCarSymbolName(), Is.EqualTo("some-int").IgnoreCase);
             Assert.That(innerOptFree[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("scale").IgnoreCase);
             Assert.That(free[3].GetCarSymbolName(), Is.EqualTo("symbol").IgnoreCase);
@@ -182,7 +187,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(free[0].GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("PRIMARY"));
             Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
             Assert.That(free[1].GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("KEY"));
-            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("inline-primary-key").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("inline-primary-key").IgnoreCase);
 
             // opt3
             Assert.That(opt3.GetCarSymbolName(), Is.EqualTo("opt").IgnoreCase);
@@ -196,11 +202,14 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(innerAlt.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
             Assert.That(innerAltFree[0].GetCarSymbolName(), Is.EqualTo("word").IgnoreCase);
             Assert.That(innerAltFree[0].GetSingleKeywordArgument<StringAtom>(":value").Value, Is.EqualTo("NULL"));
-            Assert.That(innerAltFree[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("default-null").IgnoreCase);
+            Assert.That(innerAltFree[0].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("default-null").IgnoreCase);
             Assert.That(innerAltFree[1].GetCarSymbolName(), Is.EqualTo("some-int").IgnoreCase);
-            Assert.That(innerAltFree[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("default-integer").IgnoreCase);
+            Assert.That(innerAltFree[1].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("default-integer").IgnoreCase);
             Assert.That(innerAltFree[2].GetCarSymbolName(), Is.EqualTo("some-string").IgnoreCase);
-            Assert.That(innerAltFree[2].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("default-string").IgnoreCase);
+            Assert.That(innerAltFree[2].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("default-string").IgnoreCase);
         }
 
         [Test]
@@ -286,13 +295,16 @@ namespace TauCode.Parsing.Tests.TinyLisp
             free = alt.GetFreeArguments();
             Assert.That(free, Has.Count.EqualTo(2));
             Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
-            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-referenced-table-name-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("fk-referenced-table-name-ident").IgnoreCase);
             Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
-            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-referenced-table-name-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("fk-referenced-table-name-word").IgnoreCase);
 
             // block 1
             Assert.That(block1.GetCarSymbolName(), Is.EqualTo("block").IgnoreCase);
-            Assert.That(block1.GetSingleKeywordArgument<Symbol>(":ref").Name, Is.EqualTo("fk-referenced-columns").IgnoreCase);
+            Assert.That(block1.GetSingleKeywordArgument<Symbol>(":ref").Name,
+                Is.EqualTo("fk-referenced-columns").IgnoreCase);
         }
 
         [Test]
@@ -324,13 +336,16 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             // alt 0
             Assert.That(alt0.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
-            Assert.That(alt0.GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-column-name-alternatives").IgnoreCase);
+            Assert.That(alt0.GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("fk-column-name-alternatives").IgnoreCase);
             free = alt0.GetFreeArguments();
             Assert.That(free, Has.Count.EqualTo(2));
             Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
-            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-column-name-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("fk-column-name-ident").IgnoreCase);
             Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
-            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-column-name-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("fk-column-name-word").IgnoreCase);
 
             // alt 1
             Assert.That(alt1.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
@@ -344,7 +359,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
                     Symbol.Create("fk-column-name-alternatives")
                 },
                 free[0].GetAllKeywordArguments(":links")
-                );
+            );
 
             Assert.That(free[1].ToString(), Is.EqualTo("(idle)").IgnoreCase);
 
@@ -382,13 +397,16 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             // alt 0
             Assert.That(alt0.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
-            Assert.That(alt0.GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-referenced-column-name-alternatives").IgnoreCase);
+            Assert.That(alt0.GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("fk-referenced-column-name-alternatives").IgnoreCase);
             free = alt0.GetFreeArguments();
             Assert.That(free, Has.Count.EqualTo(2));
             Assert.That(free[0].GetCarSymbolName(), Is.EqualTo("some-ident").IgnoreCase);
-            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-referenced-column-name-ident").IgnoreCase);
+            Assert.That(free[0].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("fk-referenced-column-name-ident").IgnoreCase);
             Assert.That(free[1].GetCarSymbolName(), Is.EqualTo("some-word").IgnoreCase);
-            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name, Is.EqualTo("fk-referenced-column-name-word").IgnoreCase);
+            Assert.That(free[1].GetSingleKeywordArgument<Symbol>(":name").Name,
+                Is.EqualTo("fk-referenced-column-name-word").IgnoreCase);
 
             // alt 1
             Assert.That(alt1.GetCarSymbolName(), Is.EqualTo("alt").IgnoreCase);
@@ -402,7 +420,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
                     Symbol.Create("fk-referenced-column-name-alternatives")
                 },
                 free[0].GetAllKeywordArguments(":links")
-                );
+            );
 
             Assert.That(free[1].ToString(), Is.EqualTo("(idle)").IgnoreCase);
 
@@ -416,7 +434,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
             Element element = null;
-            
+
             // Act
             var ex = Assert.Throws<ArgumentNullException>(() => element.AsPseudoList());
 
@@ -433,7 +451,9 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var ex = Assert.Throws<ArgumentException>(() => True.Instance.AsPseudoList());
 
             // Assert
-            Assert.That(ex.Message, Does.StartWith($"Argument is expected to be of type '{typeof(PseudoList).FullName}', but was of type '{typeof(True).FullName}'."));
+            Assert.That(ex.Message,
+                Does.StartWith(
+                    $"Argument is expected to be of type '{typeof(PseudoList).FullName}', but was of type '{typeof(True).FullName}'."));
             Assert.That(ex.ParamName, Is.EqualTo("element"));
         }
 
@@ -460,7 +480,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var ex = Assert.Throws<ArgumentException>(() => element.GetSingleKeywordArgument(":arg"));
 
             // Assert
-            Assert.That(ex.Message, Does.StartWith("Argument is not of type 'TauCode.Parsing.TinyLisp.Data.PseudoList'."));
+            Assert.That(ex.Message,
+                Does.StartWith("Argument is not of type 'TauCode.Parsing.TinyLisp.Data.PseudoList'."));
             Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
         }
 
@@ -524,13 +545,14 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetSingleKeywordArgument(":non-existing-key"));
 
             // Assert
-            Assert.That(ex.Message, Does.StartWith("No argument for keyword ':non-existing-key'."));
+            Assert.That(ex.Message, Is.EqualTo("No argument for keyword ':non-existing-key'."));
         }
 
         [Test]
         [TestCase(true)]
         [TestCase(false)]
-        public void GetSingleKeywordArgument_ArgumentNameIsPresentButIsAKeyword_ThrowsTinyLispException(bool absenceIsAllowed)
+        public void GetSingleKeywordArgument_ArgumentNameIsPresentButIsAKeyword_ThrowsTinyLispException(
+            bool absenceIsAllowed)
         {
             // Arrange
             var formText = "(foo one two :key three :your-key :no-luck)";
@@ -540,16 +562,19 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
-            var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetSingleKeywordArgument(":your-key", absenceIsAllowed));
+            var ex = Assert.Throws<TinyLispException>(() =>
+                pseudoList.GetSingleKeywordArgument(":your-key", absenceIsAllowed));
 
             // Assert
-            Assert.That(ex.Message, Does.StartWith("Keyword ':your-key' was found, but next element is a keyword too."));
+            Assert.That(ex.Message,
+                Is.EqualTo("Keyword ':your-key' was found, but next element is a keyword too."));
         }
 
         [Test]
         [TestCase(true)]
         [TestCase(false)]
-        public void GetSingleKeywordArgument_ArgumentNameIsPresentButIsAtEnd_ThrowsTinyLispException(bool absenceIsAllowed)
+        public void GetSingleKeywordArgument_ArgumentNameIsPresentButIsAtEnd_ThrowsTinyLispException(
+            bool absenceIsAllowed)
         {
             // Arrange
             var formText = "(foo one two :key three :your-key)";
@@ -559,10 +584,31 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
-            var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetSingleKeywordArgument(":your-key", absenceIsAllowed));
+            var ex = Assert.Throws<TinyLispException>(() =>
+                pseudoList.GetSingleKeywordArgument(":your-key", absenceIsAllowed));
 
             // Assert
-            Assert.That(ex.Message, Does.StartWith("Keyword ':your-key' was found, but at the end of the list."));
+            Assert.That(ex.Message, Is.EqualTo("Keyword ':your-key' was found, but at the end of the list."));
+        }
+
+        [Test]
+        [TestCase(true)]
+        [TestCase(false)]
+        public void GetSingleKeywordArgumentGeneric_ArgumentNameIsPresentButArgumentIsOfWrongType_ThrowsTinyLispException(bool absenceIsAllowed)
+        {
+            // Arrange
+            var formText = "(foo one two :key three :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() =>
+                pseudoList.GetSingleKeywordArgument<Symbol>(":your-key", absenceIsAllowed));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Argument for ':your-key' was found, but it appears to be of type 'TauCode.Parsing.TinyLisp.Data.StringAtom' instead of expected type 'TauCode.Parsing.TinyLisp.Data.Symbol'."));
         }
     }
 }
