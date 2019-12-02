@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using TauCode.Parsing.TinyLisp.Data;
 
 namespace TauCode.Parsing.Tests.TinyLisp
@@ -40,5 +41,62 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(symbol2 != symbol2ButKeyword);
         }
 
+        [Test]
+        public void Create_NullSymbolName_ThrowsTinyLispException()
+        {
+            // Arrange
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => Symbol.Create(null));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("name"));
+        }
+
+        [Test]
+        public void Create_EmptySymbolName_ThrowsTinyLispException()
+        {
+            // Arrange
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => Symbol.Create(""));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("Symbol name cannot be empty."));
+            Assert.That(ex.ParamName, Is.EqualTo("name"));
+        }
+
+        [Test]
+        [TestCase("the.symbol")]
+        [TestCase("symbol ")]
+        [TestCase(" symbol")]
+        public void Create_InvalidSymbolName_ThrowsTinyLispException(string badSymbolName)
+        {
+            // Arrange
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => Symbol.Create(badSymbolName));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith($"Invalid symbol name: '{badSymbolName}'."));
+            Assert.That(ex.ParamName, Is.EqualTo("name"));
+        }
+
+        [Test]
+        [TestCase(":")]
+        [TestCase(":ab ")]
+        [TestCase(": ab")]
+        [TestCase(":a:d")]
+        public void Create_InvalidKeywordName_ThrowsTinyLispException(string badKeywordName)
+        {
+            // Arrange
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => Symbol.Create(badKeywordName));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith($"Invalid keyword name: '{badKeywordName}'."));
+            Assert.That(ex.ParamName, Is.EqualTo("name"));
+        }
     }
 }

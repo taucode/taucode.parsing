@@ -2,7 +2,7 @@
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing
+namespace TauCode.Parsing.Lexizing
 {
     public static class LexerHelper
     {

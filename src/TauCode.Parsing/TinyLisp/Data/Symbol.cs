@@ -51,6 +51,11 @@ namespace TauCode.Parsing.TinyLisp.Data
                 throw new ArgumentNullException(nameof(name));
             }
 
+            if (name.Length == 0)
+            {
+                throw new ArgumentException($"Symbol name cannot be empty.", nameof(name));
+            }
+
             if (name[0] == ':')
             {
                 return CreateKeyword(name);
@@ -71,7 +76,7 @@ namespace TauCode.Parsing.TinyLisp.Data
             var validName = TinyLispHelper.IsValidSymbolName(name, false);
             if (!validName)
             {
-                throw new NotImplementedException();
+                throw new ArgumentException($"Invalid symbol name: '{name}'.", nameof(name));
             }
 
             var realName = GetRealName(name);
@@ -82,7 +87,6 @@ namespace TauCode.Parsing.TinyLisp.Data
             }
 
             var @new = new Symbol(realName);
-            //Symbols.Add(realName, @new);
             RegisterSymbol(@new);
             return @new;
         }
@@ -92,7 +96,7 @@ namespace TauCode.Parsing.TinyLisp.Data
             var validName = TinyLispHelper.IsValidSymbolName(name, true);
             if (!validName)
             {
-                throw new NotImplementedException();
+                throw new ArgumentException($"Invalid keyword name: '{name}'.", nameof(name));
             }
 
             var realName = GetRealName(name);
@@ -103,7 +107,6 @@ namespace TauCode.Parsing.TinyLisp.Data
             }
 
             var @new = new Keyword(realName);
-            //Symbols.Add(realName, @new);
             RegisterSymbol(@new);
             return @new;
         }
