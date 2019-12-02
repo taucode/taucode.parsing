@@ -4,7 +4,6 @@ using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp
 {
-    // todo clean up
     public static class TinyLispHelper
     {
         internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
@@ -31,8 +30,6 @@ namespace TauCode.Parsing.TinyLisp
             '}',
             '\\',
         });
-
-
 
         internal static bool IsAcceptableSymbolNamePunctuationChar(this char c) => AcceptableSymbolNamePunctuationChars.Contains(c);
 

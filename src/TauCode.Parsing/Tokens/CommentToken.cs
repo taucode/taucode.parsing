@@ -9,6 +9,7 @@ namespace TauCode.Parsing.Tokens
             string comment,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
+            : base(name, properties)
         {
             this.Comment = comment ?? throw new ArgumentNullException(nameof(comment));
         }

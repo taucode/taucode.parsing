@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace TauCode.Parsing.Lexizing
 {
-    // todo clean up
     public abstract class LexerBase : ILexer
     {
         private string _input;
