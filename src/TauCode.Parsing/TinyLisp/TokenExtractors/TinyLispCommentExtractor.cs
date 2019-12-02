@@ -32,7 +32,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 }
                 else
                 {
-                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                    throw new LexerException("Internal error."); // how on earth we could even get here? todo copy paste
                 }
             }
 
