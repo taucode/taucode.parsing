@@ -16,11 +16,6 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
         {
         }
 
-        protected override void Reset()
-        {
-            // idle
-        }
-
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();

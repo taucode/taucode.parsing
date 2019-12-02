@@ -13,11 +13,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
         }
 
-        protected override void Reset()
-        {
-            // idle
-        }
-
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();

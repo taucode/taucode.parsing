@@ -34,8 +34,6 @@ namespace TauCode.Parsing.Lexizing
 
         protected int GetLocalPosition() => _localPos;
 
-        protected abstract void Reset();
-
         protected int GetAbsolutePosition() => _startPos + _localPos;
 
         protected virtual bool AllowsCharAfterProduction(char c)
@@ -68,8 +66,6 @@ namespace TauCode.Parsing.Lexizing
 
             _startPos = position;
             _localPos = 0;
-
-            this.Reset();
 
             while (true)
             {
