@@ -1,4 +1,6 @@
 ﻿using NUnit.Framework;
+using System;
+using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.TinyLisp;
@@ -174,6 +176,25 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("Unexpected end of input."));
+        }
+
+        [Test]
+        [TestCase("symbol at end", typeof(LispSymbolToken))]
+        [TestCase("keyword at :end", typeof(KeywordToken))]
+        [TestCase("integer at end 1488", typeof(IntegerToken))]
+        [TestCase("string at \"end\"", typeof(StringToken))]
+        [TestCase("( punctuation at end )", typeof(PunctuationToken))]
+        [TestCase("comment :somma ;end", typeof(KeywordToken))]
+        public void Lexize_TokenAtEnd_LexizedCorrectly(string input, Type lastTokenExpectedType)
+        {
+            // Arrange
+            
+            // Act
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(input);
+
+            // Assert
+            Assert.That(tokens.Last(), Is.TypeOf(lastTokenExpectedType));
         }
     }
 }

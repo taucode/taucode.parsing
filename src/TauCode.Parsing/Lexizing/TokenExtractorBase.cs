@@ -4,11 +4,12 @@ using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Lexizing
 {
+    // todo clean up
     public abstract class TokenExtractorBase : ITokenExtractor
     {
-        private readonly Func<char, bool> _spacePredicate;
-        private readonly Func<char, bool> _lineBreakPredicate;
-        private readonly Func<char, bool> _firstCharPredicate;
+        protected Func<char, bool> SpacePredicate { get; }
+        protected Func<char, bool> LineBreakPredicate { get; }
+        protected Func<char, bool> FirstCharPredicate { get; }
 
         private string _input;
         private int _startPos;
@@ -22,16 +23,12 @@ namespace TauCode.Parsing.Lexizing
             Func<char, bool> firstCharPredicate)
         {
             // todo checks
-            _spacePredicate = spacePredicate;
-            _lineBreakPredicate = lineBreakPredicate;
-            _firstCharPredicate = firstCharPredicate;
+            SpacePredicate = spacePredicate;
+            LineBreakPredicate = lineBreakPredicate;
+            FirstCharPredicate = firstCharPredicate;
 
             _successors = new List<ITokenExtractor>();
         }
-
-        protected bool IsSpaceChar(char c) => _spacePredicate(c);
-
-        protected bool IsLineBreakChar(char c) => _lineBreakPredicate(c);
 
         protected bool IsEnd() => this.GetAbsolutePosition() == _input.Length;
 
@@ -84,7 +81,9 @@ namespace TauCode.Parsing.Lexizing
                         var token = this.ProduceResult();
                         if (token == null)
                         {
-                            throw new LexerException($"'{this.GetType().FullName}' instance produced null result.");
+                            // possible situation. e.g. in LISP '+1488' looks like as a symbol at the beginning, but at the end would appear
+                            // an integer, and symbol extractor would refuse deliver such a result as a symbol.
+                            return new TokenExtractionResult(0, null);
                         }
                         else
                         {
@@ -93,7 +92,7 @@ namespace TauCode.Parsing.Lexizing
                     }
                     else
                     {
-                        throw new LexerException("Unexpected end of input.");
+                        return new TokenExtractionResult(0, null); // this extractor didn't like end of input, maybe another one will.
                     }
                 }
 
@@ -103,7 +102,7 @@ namespace TauCode.Parsing.Lexizing
                 switch (testCharResult)
                 {
                     case TestCharResult.NotAllowed:
-                        throw new LexerException($"Char not allowed: {c}.");
+                        return new TokenExtractionResult(0, null); // this extractor failed to recognize the whole token, no problem.
 
                     case TestCharResult.Continue:
                         this.Advance();
@@ -121,7 +120,7 @@ namespace TauCode.Parsing.Lexizing
                         if (!this.IsEnd())
                         {
                             var upcomingChar = this.GetCurrentChar();
-                            if (!this.IsSpaceChar(upcomingChar))
+                            if (!this.SpacePredicate(upcomingChar))
                             {
                                 var check = this.AllowsCharAfterProduction(upcomingChar);
                                 if (!check)
@@ -174,7 +173,7 @@ namespace TauCode.Parsing.Lexizing
             return c;
         }
 
-        public bool AllowsFirstChar(char c) => _firstCharPredicate(c);
+        public virtual bool AllowsFirstChar(char c) => FirstCharPredicate(c);
 
         public void AddSuccessors(params TokenExtractorBase[] successors) => _successors.AddRange(successors);
     }

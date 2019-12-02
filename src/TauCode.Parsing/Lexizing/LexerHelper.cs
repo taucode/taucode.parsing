@@ -1,11 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Tokens;
+using TauCode.Utils.Lab;
 
 namespace TauCode.Parsing.Lexizing
 {
     public static class LexerHelper
     {
+        private static readonly HashSet<char> IntegerFirstChars;
+        private static readonly HashSet<char> Digits;
+
+        static LexerHelper()
+        {
+            var list = new List<char>
+            {
+                '+',
+                '-',
+            };
+
+            list.AddCharRange('0', '9');
+            IntegerFirstChars = new HashSet<char>(list);
+
+            var digits = new List<char>();
+            digits.AddCharRange('0', '9');
+            Digits = new HashSet<char>(digits);
+        }
+
         #region Exceptions
 
         internal static LexerException CreateUnexpectedEndOfInputException()
@@ -46,6 +67,8 @@ namespace TauCode.Parsing.Lexizing
             }
         }
 
-        public static readonly char[] StandardSpaceChars = new[] { ' ', '\r', '\n', '\t' };
+        public static bool IsIntegerFirstChar(char c) => IntegerFirstChars.Contains(c);
+
+        public static bool IsDigit(char c) => Digits.Contains(c);
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexizing;
+﻿using TauCode.Parsing.Lexizing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -21,14 +20,19 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
         protected override IToken ProduceResult()
         {
-            var res = this.ExtractResultString();
-            return new LispSymbolToken(res);
+            var str = this.ExtractResultString();
+
+            if (int.TryParse(str, out var dummy)) // todo: move this check to helper.
+            {
+                return null;
+            }
+
+            return new LispSymbolToken(str);
         }
 
         protected override TestCharResult TestCurrentChar()
         {
             var c = this.GetCurrentChar();
-            //var pos = this.GetLocalPosition();
 
             if (c.IsAcceptableSymbolNameChar())
             {
@@ -38,9 +42,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return TestCharResult.Finish;
         }
 
-        protected override bool TestEnd()
-        {
-            throw new NotImplementedException();
-        }
+        protected override bool TestEnd() => true;
     }
 }
