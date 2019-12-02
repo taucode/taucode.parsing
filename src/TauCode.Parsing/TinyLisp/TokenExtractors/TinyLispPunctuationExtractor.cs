@@ -31,7 +31,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new LispPunctuationToken(punctuation);
         }
 
-        protected override CharChallengeResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
@@ -51,6 +51,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return CharChallengeResult.Finish; // pos > 0 ==> finish no matter what.
         }
 
-        protected override bool TestEnd() => true; // end after punctuation? why not, let it be.
+        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish; // end after punctuation? why not, let it be.
     }
 }

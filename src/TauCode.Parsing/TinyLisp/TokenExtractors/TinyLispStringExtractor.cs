@@ -21,7 +21,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new StringToken(value);
         }
 
-        protected override CharChallengeResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
@@ -47,6 +47,9 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return CharChallengeResult.Continue;
         }
 
-        protected override bool TestEnd() => false; // unclosed string.
+        protected override CharChallengeResult ChallengeEnd()
+        {
+            return CharChallengeResult.Error; // unclosed string. that's my error. no other extractor can handle this.
+        }
     }
 }

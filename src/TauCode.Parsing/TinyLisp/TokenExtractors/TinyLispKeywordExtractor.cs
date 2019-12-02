@@ -21,7 +21,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new KeywordToken(res);
         }
 
-        protected override CharChallengeResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
@@ -47,6 +47,20 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return CharChallengeResult.Finish;
         }
 
-        protected override bool TestEnd() => this.GetLocalPosition() > 1;
+        protected override CharChallengeResult ChallengeEnd()
+        {
+            if (this.GetLocalPosition() > 1)
+            {
+                // consumed more than one char (0th is always ':'), so no problem here
+                return CharChallengeResult.Finish;
+                
+
+            }
+            else
+            {
+                // consumed just one char (':'), therefore error. on one other token extractor in LISP can have ':' at the beginning.
+                return CharChallengeResult.Error;
+            }
+        }
     }
 }

@@ -71,29 +71,36 @@ namespace TauCode.Parsing.Lexizing
             {
                 if (this.IsEnd())
                 {
-                    var testEndResult = this.TestEnd();
-                    if (testEndResult)
+                    var challengeEnd = this.ChallengeEnd();
+
+                    switch (challengeEnd)
                     {
-                        var token = this.ProduceResult();
-                        if (token == null)
-                        {
-                            // possible situation. e.g. in LISP '+1488' looks like as a symbol at the beginning, but at the end would appear
-                            // an integer, and symbol extractor would refuse deliver such a result as a symbol.
+                        case CharChallengeResult.Finish:
+                            var token = this.ProduceResult();
+                            if (token == null)
+                            {
+                                // possible situation. e.g. in LISP '+1488' looks like as a symbol at the beginning, but at the end would appear
+                                // an integer, and symbol extractor would refuse deliver such a result as a symbol.
+                                return new TokenExtractionResult(0, null);
+                            }
+                            else
+                            {
+                                return new TokenExtractionResult(this.GetLocalPosition(), token);
+                            }
+
+                        case CharChallengeResult.GiveUp:
                             return new TokenExtractionResult(0, null);
-                        }
-                        else
-                        {
-                            return new TokenExtractionResult(this.GetLocalPosition(), token);
-                        }
-                    }
-                    else
-                    {
-                        return new TokenExtractionResult(0, null); // this extractor didn't like end of input, maybe another one will.
+
+                        case CharChallengeResult.Error:
+                            throw new LexerException("Unexpected end of input.");
+
+                        default:
+                            throw new LexerException("Internal error."); // todo copy/paste
                     }
                 }
 
                 var c = this.GetCurrentChar();
-                var testCharResult = this.TestCurrentChar();
+                var testCharResult = this.ChallengeCurrentChar();
 
                 switch (testCharResult)
                 {
@@ -141,9 +148,9 @@ namespace TauCode.Parsing.Lexizing
             _localPos++;
         }
 
-        protected abstract CharChallengeResult TestCurrentChar();
+        protected abstract CharChallengeResult ChallengeCurrentChar();
 
-        protected abstract bool TestEnd();
+        protected abstract CharChallengeResult ChallengeEnd();
 
         protected char GetCurrentChar()
         {

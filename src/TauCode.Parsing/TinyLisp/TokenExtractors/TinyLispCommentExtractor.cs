@@ -20,7 +20,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new CommentToken(str);
         }
 
-        protected override CharChallengeResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
@@ -45,6 +45,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return CharChallengeResult.Continue;
         }
 
-        protected override bool TestEnd() => true;
+        protected override CharChallengeResult ChallengeEnd() =>
+            CharChallengeResult.Finish; // LISP comment can be terminated by the end of input, no problem.
     }
 }

@@ -22,7 +22,7 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
             return new IntegerToken(str);
         }
 
-        protected override CharChallengeResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var pos = this.GetLocalPosition();
@@ -67,14 +67,14 @@ namespace TauCode.Parsing.Lexizing.StandardTokenExtractors
             return CharChallengeResult.GiveUp;
         }
 
-        protected override bool TestEnd()
+        protected override CharChallengeResult ChallengeEnd()
         {
             var localPos = this.GetLocalPosition();
 
             if (localPos > 1)
             {
                 // we consumed more than one char, so it is guaranteed we've got a good int already
-                return true;
+                return CharChallengeResult.Finish;
             }
 
             throw new NotImplementedException();

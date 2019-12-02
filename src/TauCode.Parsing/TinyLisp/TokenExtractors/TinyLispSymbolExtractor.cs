@@ -25,7 +25,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new LispSymbolToken(str);
         }
 
-        protected override CharChallengeResult TestCurrentChar()
+        protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
@@ -37,6 +37,9 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return CharChallengeResult.Finish;
         }
 
-        protected override bool TestEnd() => true;
+        protected override CharChallengeResult ChallengeEnd()
+        {
+            return CharChallengeResult.Finish; // symbol ends with end-of-input? no problem then.
+        }
     }
 }
