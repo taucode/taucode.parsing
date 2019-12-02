@@ -32,7 +32,7 @@ namespace TauCode.Parsing.TinyLisp.Data
 
             if (list.Any(x => x == null))
             {
-                throw new ArgumentException($"'{nameof(elements)}' must not contain nulls.");
+                throw new ArgumentException($"'{nameof(elements)}' must not contain nulls.", nameof(elements));
             }
 
             _elements = list;

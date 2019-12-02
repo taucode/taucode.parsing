@@ -70,6 +70,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [TestCase("the.symbol")]
         [TestCase("symbol ")]
         [TestCase(" symbol")]
+        [TestCase("1488", Description = "Integer is not a valid symbol name.")]
         public void Create_InvalidSymbolName_ThrowsTinyLispException(string badSymbolName)
         {
             // Arrange
