@@ -666,7 +666,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         }
 
         [Test]
-        public void GetAllKeywordArguments_FirstArgumentIsNotPseudoList_ThrowsArgumentNullException()
+        public void GetAllKeywordArguments_FirstArgumentIsNotPseudoList_ThrowsArgumentException()
         {
             // Arrange
             var symbol = Symbol.Create("hello");
@@ -679,5 +679,44 @@ namespace TauCode.Parsing.Tests.TinyLisp
                 Does.StartWith("Argument is not of type 'TauCode.Parsing.TinyLisp.Data.PseudoList'."));
             Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
         }
+
+        [Test]
+        public void GetAllKeywordArguments_ArgumentIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => pseudoList.GetAllKeywordArguments(null));
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
+        }
+
+        [Test]
+        [TestCase("non-keyword")]
+        [TestCase("\"some-string\"")]
+        public void GetAllKeywordArguments_ArgumentIsNotKeyword_ThrowsArgumentException(string badKeywordName)
+        {
+            // Arrange
+            var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => pseudoList.GetAllKeywordArguments(badKeywordName));
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith($"'{badKeywordName}' is not a valid keyword."));
+            Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
+        }
+
     }
 }

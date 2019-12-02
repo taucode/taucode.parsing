@@ -117,7 +117,7 @@ namespace TauCode.Parsing.TinyLisp
 
             if (!TinyLispHelper.IsValidSymbolName(argumentName, true))
             {
-                throw new NotImplementedException();
+                throw new ArgumentException($"'{argumentName}' is not a valid keyword.", nameof(argumentName));
             }
 
             var wantedKeyword = Symbol.Create(argumentName);
