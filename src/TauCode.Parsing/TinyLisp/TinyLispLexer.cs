@@ -6,10 +6,8 @@ namespace TauCode.Parsing.TinyLisp
 {
     public class TinyLispLexer : LexerBase
     {
-        public TinyLispLexer()
-            : base(
-                LexingHelper.IsSpace,
-                LexingHelper.IsLineBreak)
+        public TinyLispLexer(ILexingEnvironment environment = null)
+            : base(environment)
         {
         }
 
@@ -36,7 +34,7 @@ namespace TauCode.Parsing.TinyLisp
             this.AddTokenExtractor(stringExtractor);
 
             // integer
-            var integerExtractor = new IntegerExtractor(LexingHelper.IsSpace, LexingHelper.IsLineBreak);
+            var integerExtractor = new IntegerExtractor(this.Environment);
             this.AddTokenExtractor(integerExtractor);
 
             // *** Links ***

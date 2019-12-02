@@ -7,8 +7,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispSymbolExtractor() 
             : base(
-                LexingHelper.IsSpace,
-                LexingHelper.IsLineBreak,
+                StandardLexingEnvironment.Instance,
                 TinyLispHelper.IsAcceptableSymbolNameChar)
         {
         }

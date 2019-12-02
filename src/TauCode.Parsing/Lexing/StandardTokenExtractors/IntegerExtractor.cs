@@ -1,17 +1,13 @@
-﻿using System;
-using TauCode.Parsing.Exceptions;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
     public class IntegerExtractor : TokenExtractorBase
     {
-        public IntegerExtractor(
-            Func<char, bool> spacePredicate,
-            Func<char, bool> lineBreakPredicate)
+        public IntegerExtractor(ILexingEnvironment environment)
             : base(
-                spacePredicate,
-                lineBreakPredicate,
+                environment,
                 LexingHelper.IsIntegerFirstChar)
         {
         }
@@ -64,7 +60,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 return CharChallengeResult.Finish;
             }
 
-            if (this.SpacePredicate(c) || char.IsWhiteSpace(c))
+            if (this.Environment.IsSpace(c) || char.IsWhiteSpace(c))
             {
                 return CharChallengeResult.Finish;
             }

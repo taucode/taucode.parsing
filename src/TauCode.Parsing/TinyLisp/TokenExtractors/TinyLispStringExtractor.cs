@@ -8,8 +8,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispStringExtractor()
             : base(
-                LexingHelper.IsSpace,
-                LexingHelper.IsLineBreak,
+                StandardLexingEnvironment.Instance,
                 x => x == '"') // todo: consider extracting delegate into TinyLispHelper.
         {
         }

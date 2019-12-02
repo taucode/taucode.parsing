@@ -8,8 +8,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispKeywordExtractor()
             : base(
-                LexingHelper.IsSpace,
-                LexingHelper.IsLineBreak,
+                StandardLexingEnvironment.Instance,
                 x => x == ':')
         {
         }
@@ -53,8 +52,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             {
                 // consumed more than one char (0th is always ':'), so no problem here
                 return CharChallengeResult.Finish;
-                
-
             }
             else
             {

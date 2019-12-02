@@ -5,8 +5,7 @@ namespace TauCode.Parsing.Tests.Parsing
 {
     public class SqlLexer : LexerBase
     {
-        public SqlLexer(Func<char, bool> spacePredicate, Func<char, bool> lineBreakPredicate)
-            : base(LexingHelper.IsSpace, LexingHelper.IsLineBreak)
+        public SqlLexer()
         {
         }
 

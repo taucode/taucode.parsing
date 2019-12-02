@@ -8,8 +8,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispCommentExtractor()
             : base(
-                LexingHelper.IsSpace,
-                LexingHelper.IsLineBreak,
+                StandardLexingEnvironment.Instance,
                 x => x == ';') // todo: consider extracting delegate into TinyLispHelper.
         {
         }
@@ -37,7 +36,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 }
             }
 
-            if (this.LineBreakPredicate(c))
+            if (this.Environment.IsLineBreak(c))
             {
                 return CharChallengeResult.Finish;
             }
