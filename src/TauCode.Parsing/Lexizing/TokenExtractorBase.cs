@@ -121,12 +121,12 @@ namespace TauCode.Parsing.Lexizing
                         if (!this.IsEnd())
                         {
                             var upcomingChar = this.GetCurrentChar();
-                            if (!this.IsSpaceChar(c))
+                            if (!this.IsSpaceChar(upcomingChar))
                             {
-                                var check = this.AllowsCharAfterProduction(c);
+                                var check = this.AllowsCharAfterProduction(upcomingChar);
                                 if (!check)
                                 {
-                                    throw new LexerException($"Unexpected token: {c}.");
+                                    throw new LexerException($"Unexpected token: '{upcomingChar}'.");
                                 }
                             }
                         }

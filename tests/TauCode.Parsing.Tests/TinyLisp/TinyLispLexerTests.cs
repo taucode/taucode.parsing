@@ -58,7 +58,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
     (:alt (:block create-table) (:block create-index))
 )
 ";
-
+            
             // Act
             ILexer lexer = new TinyLispLexer();
 
