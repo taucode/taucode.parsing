@@ -41,10 +41,6 @@ namespace TauCode.Parsing.Lexizing
 
         protected int GetAbsolutePosition() => _startPos + _localPos;
 
-        protected virtual bool AllowsEndAfterProduction() => true;
-
-        protected virtual bool AllowsSpaceAfterProduction() => true;
-
         protected virtual bool AllowsCharAfterProduction(char c)
         {
             foreach (var successor in _successors)
@@ -64,17 +60,15 @@ namespace TauCode.Parsing.Lexizing
             return str;
         }
 
-        protected char GetPreviousChar()
-        {
-            // todo range checks
-            return _input[this.GetAbsolutePosition() - 1];
-        }
-
         public TokenExtractionResult Extract(string input, int position)
         {
-            // todo checks
+            _input = input ?? throw new ArgumentNullException(nameof(input));
 
-            _input = input;
+            if (position < 0 || position >= input.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(position));
+            }
+
             _startPos = position;
             _localPos = 0;
 
@@ -90,7 +84,7 @@ namespace TauCode.Parsing.Lexizing
                         var token = this.ProduceResult();
                         if (token == null)
                         {
-                            throw new NotImplementedException();
+                            throw new LexerException($"'{this.GetType().FullName}' instance produced null result.");
                         }
                         else
                         {
@@ -103,12 +97,13 @@ namespace TauCode.Parsing.Lexizing
                     }
                 }
 
+                var c = this.GetCurrentChar();
                 var testCharResult = this.TestCurrentChar();
 
                 switch (testCharResult)
                 {
                     case TestCharResult.NotAllowed:
-                        throw new NotImplementedException();
+                        throw new LexerException($"Char not allowed: {c}.");
 
                     case TestCharResult.Continue:
                         this.Advance();
@@ -119,37 +114,19 @@ namespace TauCode.Parsing.Lexizing
 
                         if (token == null)
                         {
-                            // yes, maybe. e.g. \BeginFoo instead of \BeginBlockDefinition
-                            throw new NotImplementedException();
+                            throw new LexerException($"Internal error. Token extractor of type '{this.GetType().FullName}' produced a null token.");
                         }
 
-                        // ok, we've got result and advanced, but if everything is ok with next?
-                        if (this.IsEnd())
+                        // check if next char is ok.
+                        if (!this.IsEnd())
                         {
-                            var check = this.AllowsEndAfterProduction();
-                            if (!check)
-                            {
-                                throw new NotImplementedException();
-                            }
-                        }
-                        else
-                        {
-                            var c = this.GetCurrentChar();
-
-                            if (this.IsSpaceChar(c))
-                            {
-                                var check = this.AllowsSpaceAfterProduction();
-                                if (!check)
-                                {
-                                    throw new NotImplementedException();
-                                }
-                            }
-                            else
+                            var upcomingChar = this.GetCurrentChar();
+                            if (!this.IsSpaceChar(c))
                             {
                                 var check = this.AllowsCharAfterProduction(c);
                                 if (!check)
                                 {
-                                    throw new NotImplementedException();
+                                    throw new LexerException($"Unexpected token: {c}.");
                                 }
                             }
                         }
@@ -157,7 +134,7 @@ namespace TauCode.Parsing.Lexizing
                         return new TokenExtractionResult(this.GetLocalPosition(), token);
 
                     default:
-                        throw new ArgumentOutOfRangeException(); // todo
+                        throw new LexerException($"Internal error. Unexpected test char result: '{testCharResult}'.");
                 }
             }
         }

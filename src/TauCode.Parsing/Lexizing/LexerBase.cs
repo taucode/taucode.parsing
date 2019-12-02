@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Lexizing
 {
@@ -99,7 +100,7 @@ namespace TauCode.Parsing.Lexizing
                     var result = tokenExtractor.Extract(_input, pos);
                     nextToken = result.Token;
 
-                    if (nextToken != null) // todo: and what if null?
+                    if (nextToken != null)
                     {
                         this.Advance(result.Shift);
                         nextToken = result.Token;
@@ -109,7 +110,7 @@ namespace TauCode.Parsing.Lexizing
 
                 if (nextToken == null)
                 {
-                    throw new NotImplementedException();
+                    throw new LexerException($"Unexpected char: '{c}'.");
                 }
 
                 if (nextToken.HasPayload)
