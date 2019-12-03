@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Utils.Lab;
@@ -166,9 +165,9 @@ namespace TauCode.Parsing.TinyLisp
             return result;
         }
 
-        public static bool? GetSingleArgumentAsBool(this Element shouldPseudoBeList, string argumentName)
+        public static bool? GetSingleArgumentAsBool(this Element shouldBePseudoList, string argumentName)
         {
-            var element = shouldPseudoBeList.GetSingleKeywordArgument(argumentName, true);
+            var element = shouldBePseudoList.GetSingleKeywordArgument(argumentName, true);
             if (element == null)
             {
                 return null;
@@ -187,20 +186,30 @@ namespace TauCode.Parsing.TinyLisp
             throw new TinyLispException($"Keyword '{argumentName}' was found, but it appeared to be '{element}' instead of NIL or T.");
         }
 
-        // todo: check that '.Single()' doesn't throw.
-        public static PseudoList GetFreeArguments(this Element shouldPseudoBeList)
+        public static PseudoList GetFreeArguments(this Element shouldBePseudoList)
         {
-            return shouldPseudoBeList.GetMultipleFreeArgumentSets().Single();
-        }
-
-        public static IList<PseudoList> GetMultipleFreeArgumentSets(this Element shouldPseudoBeList)
-        {
-            if (shouldPseudoBeList == null)
+            var freeArgumentSets = shouldBePseudoList.GetMultipleFreeArgumentSets();
+            if (freeArgumentSets.Count == 0)
             {
-                throw new ArgumentNullException(nameof(shouldPseudoBeList));
+                throw new TinyLispException("Free arguments not found."); // todo ut
             }
 
-            var list = shouldPseudoBeList as PseudoList;
+            if (freeArgumentSets.Count > 1)
+            {
+                throw new TinyLispException("More than one set of free arguments was found."); // todo ut
+            }
+
+            return freeArgumentSets[0];
+        }
+
+        public static IList<PseudoList> GetMultipleFreeArgumentSets(this Element shouldBePseudoList)
+        {
+            if (shouldBePseudoList == null)
+            {
+                throw new ArgumentNullException(nameof(shouldBePseudoList));
+            }
+
+            var list = shouldBePseudoList as PseudoList;
 
             if (list == null)
             {
@@ -319,28 +328,37 @@ namespace TauCode.Parsing.TinyLisp
             return result;
         }
 
-        public static string GetCarSymbolName(this Element shouldPseudoBeList)
+        public static string GetCarSymbolName(this Element shouldBePseudoList)
         {
-            if (shouldPseudoBeList == null)
+            if (shouldBePseudoList == null)
             {
-                throw new ArgumentNullException(nameof(shouldPseudoBeList));
+                throw new ArgumentNullException(nameof(shouldBePseudoList));
             }
 
-            if (shouldPseudoBeList is PseudoList list)
+            var pseudoList = shouldBePseudoList as PseudoList;
+            if (pseudoList == null)
             {
-                if (list.Count == 0)
-                {
-                    throw new NotImplementedException();
-                }
-
-                var element = list[0];
-                if (element is Symbol symbol)
-                {
-                    return symbol.Name;
-                }
+                throw new ArgumentException(
+                    $"Argument is not of type '{typeof(PseudoList).FullName}'.",
+                    nameof(shouldBePseudoList));
             }
 
-            throw new NotImplementedException(); // todo error
+            if (pseudoList.Count == 0)
+            {
+                throw new ArgumentException(
+                    $"PseudoList is empty.",
+                    nameof(shouldBePseudoList));
+            }
+
+            var element = pseudoList[0];
+            if (element is Symbol symbol)
+            {
+                return symbol.Name;
+            }
+            else
+            {
+                throw new ArgumentException("CAR of PseudoList is not a symbol.", nameof(shouldBePseudoList));
+            }
         }
 
         public static PseudoList AsPseudoList(this Element shouldBePseudoList) =>

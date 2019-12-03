@@ -828,7 +828,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [Test]
         [TestCase("some-symbol")]
         [TestCase("\"a string\"")]
-        public void GetSingleArgumentAsBool_ItemIsOfInvalidType_ThrowsTodo(string badItem)
+        public void GetSingleArgumentAsBool_ItemIsOfInvalidType_ThrowsTinyLispException(string badItem)
         {
             // Arrange
             var formText = $"(foo one two :key {badItem} one two \"three\" :your-key \"some string\")";
@@ -843,6 +843,80 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Assert
             var wrongItem = reader.Read(lexer.Lexize(badItem)).Single().ToString();
             Assert.That(ex.Message, Is.EqualTo($"Keyword ':key' was found, but it appeared to be '{wrongItem}' instead of NIL or T."));
+        }
+
+        [Test]
+        [TestCase("(defun f (x) (* x x))", "DEFUN")]
+        [TestCase("(nil t)", "NIL")]
+        [TestCase("(t nil)", "T")]
+        public void GetCarSymbolName_HappyPath_ReturnsExpectedResult(string form, string expectedCar)
+        {
+            // Arrange
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(form);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var car = pseudoList.GetCarSymbolName();
+
+            // Assert
+            Assert.That(car, Is.EqualTo(expectedCar));
+        }
+
+        [Test]
+        public void GetCarSymbolName_ArgumentIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            PseudoList pseudoList = null;
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => pseudoList.GetCarSymbolName());
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
+
+        [Test]
+        public void GetCarSymbolName_ArgumentIsNotPseudoList_ThrowsArgumentException()
+        {
+            // Arrange
+            var element = Nil.Instance;
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => element.GetCarSymbolName());
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("Argument is not of type 'TauCode.Parsing.TinyLisp.Data.PseudoList'."));
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
+
+        [Test]
+        public void GetCarSymbolName_PseudoListIsEmpty_ThrowsArgumentException()
+        {
+            // Arrange
+            var element = new PseudoList();
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => element.GetCarSymbolName());
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("PseudoList is empty."));
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
+
+        [Test]
+        public void GetCarSymbolName_CarIsNotSymbol_ThrowsArgumentException()
+        {
+            // Arrange
+            var element = new PseudoList(new[] { new StringAtom("some string"), });
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => element.GetCarSymbolName());
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("CAR of PseudoList is not a symbol."));
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
         }
     }
 }
