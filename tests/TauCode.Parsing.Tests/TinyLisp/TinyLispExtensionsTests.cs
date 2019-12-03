@@ -773,5 +773,76 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(ex.Message, Does.StartWith($"'{badKeywordName}' is not a valid keyword."));
             Assert.That(ex.ParamName, Is.EqualTo("argumentName"));
         }
+
+        [Test]
+        public void GetSingleArgumentAsBool_ItemNotFound_ReturnsNull()
+        {
+            // Arrange
+            var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var res = pseudoList.GetSingleArgumentAsBool(":non-existing-key");
+
+            // Assert
+            Assert.That(res, Is.Null);
+        }
+
+        [Test]
+        public void GetSingleArgumentAsBool_ItemIsNil_ReturnsFalse()
+        {
+            // Arrange
+            var formText = "(foo one two :key nil one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var res = pseudoList.GetSingleArgumentAsBool(":key");
+
+            // Assert
+            Assert.That(res, Is.False);
+        }
+
+        [Test]
+        public void GetSingleArgumentAsBool_ItemIsTrue_ReturnsFalse()
+        {
+            // Arrange
+            var formText = "(foo one two :key t one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var res = pseudoList.GetSingleArgumentAsBool(":key");
+
+            // Assert
+            Assert.That(res, Is.True);
+        }
+
+        [Test]
+        [TestCase("some-symbol")]
+        [TestCase("\"a string\"")]
+        public void GetSingleArgumentAsBool_ItemIsOfInvalidType_ThrowsTodo(string badItem)
+        {
+            // Arrange
+            var formText = $"(foo one two :key {badItem} one two \"three\" :your-key \"some string\")";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(formText);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetSingleArgumentAsBool(":key"));
+
+            // Assert
+            var wrongItem = reader.Read(lexer.Lexize(badItem)).Single().ToString();
+            Assert.That(ex.Message, Is.EqualTo($"Keyword ':key' was found, but it appeared to be '{wrongItem}' instead of NIL or T."));
+        }
     }
 }

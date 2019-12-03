@@ -184,7 +184,7 @@ namespace TauCode.Parsing.TinyLisp
                 return false;
             }
 
-            throw new NotImplementedException(); // only T or NIL accepted here.
+            throw new TinyLispException($"Keyword '{argumentName}' was found, but it appeared to be '{element}' instead of NIL or T.");
         }
 
         // todo: check that '.Single()' doesn't throw.

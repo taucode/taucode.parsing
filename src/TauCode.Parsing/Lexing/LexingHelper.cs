@@ -92,7 +92,7 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsDigit(char c) => Digits.Contains(c);
 
-        public static bool IsStandardPunctuationChar(char c) => StandardPunctuationChars.Contains(c); // todo: ut this.
+        public static bool IsStandardPunctuationChar(char c) => StandardPunctuationChars.Contains(c); // todo: ut this; use c# interactive to get them all punctuations.
 
         public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
     }

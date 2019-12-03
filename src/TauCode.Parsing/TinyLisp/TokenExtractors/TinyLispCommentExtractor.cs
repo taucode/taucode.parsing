@@ -9,7 +9,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         public TinyLispCommentExtractor()
             : base(
                 StandardLexingEnvironment.Instance,
-                x => x == ';') // todo: consider extracting delegate into TinyLispHelper.
+                x => x == ';')
         {
         }
 

@@ -12,7 +12,6 @@ namespace TauCode.Parsing.Building
 
         public NodeBox(INode node, IEnumerable<string> links = null)
         {
-            // todo checks
             _node = node ?? throw new ArgumentNullException(nameof(node));
             _links = (links ?? new List<string>()).ToList();
         }
@@ -22,11 +21,14 @@ namespace TauCode.Parsing.Building
 
         public void RequestLink(NodeBox to)
         {
-            // todo checks
+            if (to == null)
+            {
+                throw new ArgumentNullException(nameof(to));
+            }
 
             if (_linksRequested)
             {
-                throw new NotImplementedException(); // error.
+                throw new InvalidOperationException("Cannot request link - links already were requested.");
             }
 
             if (_links.Any())
@@ -55,12 +57,12 @@ namespace TauCode.Parsing.Building
         {
             if (_linksRequested)
             {
-                throw new NotImplementedException();
+                throw new InvalidOperationException("Cannot demand link - links already were requested.");
             }
 
             if (_links.Any())
             {
-                throw new NotImplementedException(); // you may not demand link if there are '_links'
+                throw new InvalidOperationException("Cannot demand link if own links are present.");
             }
 
             _node.EstablishLink(to._node);
