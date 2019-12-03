@@ -918,5 +918,53 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(ex.Message, Does.StartWith("CAR of PseudoList is not a symbol."));
             Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
         }
+
+        [Test]
+        [TestCase("(form :a non-free free1 free2 :b :c non-free-2 next-free)", "((free1 free2) (next-free))")]
+        [TestCase("(form free1 :b :c non-free-2 next-free-1 next-free-2)", "((free1) (next-free-1 next-free-2))")]
+        public void GetMultipleFreeArgumentSets_HappyPath_ReturnsExpectedResult(string form, string expectedRepresentation)
+        {
+            // Arrange
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(form);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+            
+            // Act
+            var list = pseudoList.GetMultipleFreeArgumentSets();
+            var listToPseudoList = new PseudoList(list);
+
+            // Assert
+            Assert.That(listToPseudoList.ToString(), Is.EqualTo(expectedRepresentation).IgnoreCase);
+        }
+
+        [Test]
+        public void GetMultipleFreeArgumentSets_ArgumentIsNull_ThrowsArgumentNullException()
+        {
+            // Arrange
+            PseudoList pseudoList = null;
+
+            // Act
+            var ex = Assert.Throws<ArgumentNullException>(() => pseudoList.GetMultipleFreeArgumentSets());
+
+            // Assert
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
+
+        [Test]
+        public void GetMultipleFreeArgumentSets_ArgumentIsNotPseudoList_ThrowsArgumentException()
+        {
+            // Arrange
+            var element = Nil.Instance;
+
+            // Act
+            var ex = Assert.Throws<ArgumentException>(() => element.GetMultipleFreeArgumentSets());
+
+            // Assert
+            Assert.That(ex.Message, Does.StartWith("Argument is not of type 'TauCode.Parsing.TinyLisp.Data.PseudoList'."));
+            Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
+        }
+
+
     }
 }

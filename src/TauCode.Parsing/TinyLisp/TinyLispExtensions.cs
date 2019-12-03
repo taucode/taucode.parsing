@@ -209,16 +209,20 @@ namespace TauCode.Parsing.TinyLisp
                 throw new ArgumentNullException(nameof(shouldBePseudoList));
             }
 
-            var list = shouldBePseudoList as PseudoList;
+            var pseudoList = shouldBePseudoList as PseudoList;
 
-            if (list == null)
+            if (pseudoList == null)
             {
-                throw new NotImplementedException(); // error
+                throw new ArgumentException(
+                    $"Argument is not of type '{typeof(PseudoList).FullName}'.",
+                    nameof(shouldBePseudoList));
             }
 
-            if (list.Count == 0)
+            if (pseudoList.Count == 0)
             {
-                throw new NotImplementedException(); // error.
+                throw new ArgumentException(
+                    $"PseudoList is empty.",
+                    nameof(shouldBePseudoList));
             }
 
             var index = 1;
@@ -229,7 +233,7 @@ namespace TauCode.Parsing.TinyLisp
 
             while (true)
             {
-                if (index == list.Count)
+                if (index == pseudoList.Count)
                 {
                     if (startIndex == -1)
                     {
@@ -250,7 +254,7 @@ namespace TauCode.Parsing.TinyLisp
                         var freeArgsPseudoList = new PseudoList();
                         for (var i = firstArgIndex; i <= lastArgIndex; i++)
                         {
-                            freeArgsPseudoList.AddElement(list[i]);
+                            freeArgsPseudoList.AddElement(pseudoList[i]);
                         }
 
                         result.Add(freeArgsPseudoList);
@@ -259,7 +263,7 @@ namespace TauCode.Parsing.TinyLisp
                     break;
                 }
 
-                var element = list[index];
+                var element = pseudoList[index];
                 if (element is Keyword)
                 {
                     // bumped into keyword
@@ -273,9 +277,12 @@ namespace TauCode.Parsing.TinyLisp
                     {
                         // was started, let's check, maybe we can deliver pseudo-list of free args.
                         var delta = index - startIndex;
-                        if (delta == 0 || delta == 1)
+                        if (
+                            delta == 0 ||
+                            (delta == 1 && startedWithKeyword)
+                            )
                         {
-                            // got only zero or one arg, won't consider if free.
+                            // won't consider if free.
                             // reset the entire procedure.
                             startedWithKeyword = true;
                             startIndex = -1;
@@ -296,7 +303,7 @@ namespace TauCode.Parsing.TinyLisp
                             var freeArgsPseudoList = new PseudoList();
                             for (var i = firstArgIndex; i <= lastArgIndex; i++)
                             {
-                                freeArgsPseudoList.AddElement(list[i]);
+                                freeArgsPseudoList.AddElement(pseudoList[i]);
                             }
 
                             result.Add(freeArgsPseudoList);
