@@ -81,7 +81,6 @@ namespace TauCode.Parsing.TinyLisp
                 }
                 else
                 {
-                    // todo: ut.
                     throw new TinyLispException($"Could not read token of type '{token.GetType().FullName}'.");
                 }
             }

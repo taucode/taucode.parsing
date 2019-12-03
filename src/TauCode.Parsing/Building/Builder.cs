@@ -8,7 +8,6 @@ using TauCode.Parsing.TinyLisp.Data;
 
 namespace TauCode.Parsing.Building
 {
-    // todo: deal with empty blocks, alt-s, opt-s and seq-s, which is an error.
     public class Builder : IBuilder
     {
         #region Fields
@@ -50,12 +49,12 @@ namespace TauCode.Parsing.Building
 
             if (tail == null)
             {
-                throw new BuildingException("Content is empty."); // todo:ut
+                throw new BuildingException("Content is empty.");
             }
 
             if (tail.Links.Any())
             {
-                throw new BuildingException("Last item in a content must not have explicit links."); // todo ut
+                throw new BuildingException("Last item in a content must not have explicit links.");
             }
 
             var buildResult = new BuildResult(head, tail);
@@ -198,14 +197,24 @@ namespace TauCode.Parsing.Building
                 x => x.GetSingleKeywordArgument<Symbol>(":name").Name,
                 x => x.AsPseudoList());
 
-            var topBlock = _defblocks
+            var topBlocks = _defblocks
                 .Values
-                .Single(x => x.GetSingleArgumentAsBool(":is-top") == true);
+                .Where(x => x.GetSingleArgumentAsBool(":is-top") == true)
+                .ToList();
 
+            if (topBlocks.Count == 0)
+            {
+                throw new BuildingException("No top defblocks defined.");
+            }
+
+            if (topBlocks.Count > 1)
+            {
+                throw new BuildingException("More than one top defblock defined.");
+            }
+
+            var topBlock = topBlocks[0];
             var topBlockContent = topBlock.GetFreeArguments();
-
             var result = this.BuildContent(topBlockContent);
-
             return result.Head.GetNode();
         }
 
