@@ -18,20 +18,20 @@ todo3. IParser.Parse ==> List<IParsingResult>!
 
 2019-11-28
 ==========
-todo1. Enums for all symbols (+UT-s)
+x   1. Enums for all symbols (+UT-s)
 todo2. Non-advance inquire result
 x   3. Only \SpecialString and "<some_exact_special_string>" want ':Some_Class' suffix.
 
 2019-11-30
 ==========
-todo1. Clean up codebase.
-todo2. TauCode.Utils: 'FindFirstIndexOf' => takes IReadOnlyLit, not IList!
++   1. Clean up codebase.
++   2. TauCode.Utils: 'FindFirstIndexOf' => takes IReadOnlyLit, not IList!
 
 2019-12-02
 ==========
-todo1. Node factory.
++   1. Node factory.
 todo2. Symbols vs integers: +1488, +1488+, +, -, etc.
 todo3. TinyLisp: ratios and doubles.
-todo4. SQLite test lexer remastered.
-todo5. ILexingEnvironment: IsSpace, IsLineBreak
-todo6. Get rid of 'lexizing'. Use 'lexing'.
++   4. SQLite test lexer remastered.
++   5. ILexingEnvironment: IsSpace, IsLineBreak
++   6. Get rid of 'lexizing'. Use 'lexing'.

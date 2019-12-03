@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>TauCode.Parsing</id>
-    <version>3.0.2.3-dev-2019-11-28-08-38</version>
+    <version>3.0.2.3</version>
     <authors>TauCode</authors>
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -10,14 +10,14 @@
     <projectUrl>http://taucode.com/</projectUrl>
     <description>TauCode parsing library</description>
     <releaseNotes>
-      TODO: Good special string support
+      1. Completely refactored with TinyLisp.
     </releaseNotes>
     <tags>taucode parsing</tags>
     <dependencies>
       <dependency id="Microsoft.CSharp" version="4.6.0" />
       <dependency id="TauCode.Algorithms" version="3.0.1" />
       <dependency id="TauCode.Data" version="3.0.0.1" />
-      <dependency id="TauCode.Utils" version="3.0.1" />
+      <dependency id="TauCode.Utils" version="3.0.3" />
     </dependencies>
   </metadata>
   <files>
