@@ -17,12 +17,12 @@ namespace TauCode.Parsing.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new ParserException("'Inquire' should not be called for 'IdleNode'.");
+            throw new ParsingException("'Inquire' should not be called for 'IdleNode'.");
         }
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new ParserException("'Act' should not be called for 'IdleNode'.");
+            throw new ParsingException("'Act' should not be called for 'IdleNode'.");
         }
 
         #endregion

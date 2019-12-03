@@ -16,7 +16,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var str = this.ExtractResultString();
 
-            if (int.TryParse(str, out var dummy)) // todo: move this check to helper.
+            if (int.TryParse(str, out var dummy))
             {
                 return null;
             }
@@ -30,7 +30,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
             if (c.IsAcceptableSymbolNameChar())
             {
-                return CharChallengeResult.Continue; // todo: deal with integers, doubles and ratios.
+                return CharChallengeResult.Continue;
             }
 
             return CharChallengeResult.Finish;

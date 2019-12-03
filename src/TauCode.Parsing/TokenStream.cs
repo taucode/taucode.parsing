@@ -46,7 +46,7 @@ namespace TauCode.Parsing
             {
                 if (this.IsEndOfStream())
                 {
-                    throw new ParserException("End of token stream.");
+                    throw new ParsingException("End of token stream.");
                 }
 
                 var token = _tokens[_position];

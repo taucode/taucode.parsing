@@ -39,7 +39,7 @@ namespace TauCode.Parsing
                     }
                     else
                     {
-                        throw new ParserException("Unexpected end of stream.");
+                        throw new ParsingException("Unexpected end of stream.");
                     }
                 }
 
@@ -63,7 +63,7 @@ namespace TauCode.Parsing
                         case InquireResult.Skip:
                             if (gotActor)
                             {
-                                throw new ParserException("Nodes logic error. More than one node accepted the token.");
+                                throw new ParsingException("Nodes logic error. More than one node accepted the token.");
                             }
                             gotSkippers = true;
                             winners.Add(node);
@@ -72,7 +72,7 @@ namespace TauCode.Parsing
                         case InquireResult.Act:
                             if (gotActor)
                             {
-                                throw new ParserException("Nodes logic error. More than one node accepted the token.");
+                                throw new ParsingException("Nodes logic error. More than one node accepted the token.");
                             }
                             gotActor = true;
                             winners.Add(node);
@@ -97,7 +97,7 @@ namespace TauCode.Parsing
                     }
                     else
                     {
-                        throw new ParserException("Unexpected token.");
+                        throw new ParsingException("Unexpected token.");
                     }
                 }
                 else
@@ -109,7 +109,7 @@ namespace TauCode.Parsing
                         actor.Act(token, context.ResultAccumulator);
                         if (oldVersion + 1 != context.ResultAccumulator.Version)
                         {
-                            throw new ParserException("Internal error. Non sequential result accumulator versions.");
+                            throw new ParsingException("Internal error. Non sequential result accumulator versions.");
                         }
                     }
                     else
@@ -117,7 +117,7 @@ namespace TauCode.Parsing
                         // 'gotSkippers' must be true
                         if (!gotSkippers)
                         {
-                            throw new ParserException("Internal parser error.");
+                            throw new ParsingException("Internal parser error.");
                         }
                     }
 

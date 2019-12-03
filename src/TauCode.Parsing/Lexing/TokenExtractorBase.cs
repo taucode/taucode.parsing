@@ -85,7 +85,7 @@ namespace TauCode.Parsing.Lexing
         {
             if (this.IsEnd())
             {
-                throw new LexerException("Internal error: trying to get current char at the end of input.");
+                throw LexingHelper.CreateInternalErrorException();
             }
 
             var absPos = this.GetAbsolutePosition();
@@ -136,10 +136,10 @@ namespace TauCode.Parsing.Lexing
                             return new TokenExtractionResult(0, null);
 
                         case CharChallengeResult.Error:
-                            throw new LexerException("Unexpected end of input.");
+                            throw new LexingException("Unexpected end of input.");
 
                         default:
-                            throw new LexerException("Internal error."); // todo copy/paste
+                            throw LexingHelper.CreateInternalErrorException();
                     }
                 }
 
@@ -171,7 +171,7 @@ namespace TauCode.Parsing.Lexing
                                 var check = this.AllowsCharAfterProduction(upcomingChar);
                                 if (!check)
                                 {
-                                    throw new LexerException($"Unexpected token: '{upcomingChar}'.");
+                                    throw new LexingException($"Unexpected token: '{upcomingChar}'.");
                                 }
                             }
                         }
@@ -179,7 +179,7 @@ namespace TauCode.Parsing.Lexing
                         return new TokenExtractionResult(this.GetLocalPosition(), token);
 
                     default:
-                        throw new LexerException($"Internal error. Unexpected test char result: '{testCharResult}'.");
+                        throw new LexingException($"Internal error. Unexpected test char result: '{testCharResult}'.");
                 }
             }
         }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
-using TauCode.Utils.Lab;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Lexing
 {
@@ -55,6 +55,11 @@ namespace TauCode.Parsing.Lexing
                 '\\',
                 '.',
                 ',',
+                '"',
+                '\'',
+                ':',
+                ';',
+                '`',
             });
             StandardPunctuationChars = new HashSet<char>(punctList);
 
@@ -67,19 +72,19 @@ namespace TauCode.Parsing.Lexing
 
         #region Exceptions
 
-        internal static LexerException CreateUnexpectedEndOfInputException()
+        internal static LexingException CreateUnexpectedEndOfInputException()
         {
-            return new LexerException("Unexpected end of input.");
+            return new LexingException("Unexpected end of input.");
         }
 
-        internal static LexerException CreateUnexpectedCharException(char c)
+        internal static LexingException CreateUnexpectedCharException(char c)
         {
-            return new LexerException($"Unexpected char: '{c}'.");
+            return new LexingException($"Unexpected char: '{c}'.");
         }
 
-        internal static LexerException CreateEmptyTokenException()
+        internal static LexingException CreateEmptyTokenException()
         {
-            return new LexerException("Empty token.");
+            return new LexingException("Empty token.");
         }
 
         #endregion
@@ -92,8 +97,13 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsDigit(char c) => Digits.Contains(c);
 
-        public static bool IsStandardPunctuationChar(char c) => StandardPunctuationChars.Contains(c); // todo: ut this.
+        public static bool IsStandardPunctuationChar(char c) => StandardPunctuationChars.Contains(c);
 
         public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
+
+        internal static LexingException CreateInternalErrorException()
+        {
+            return new LexingException("Internal error.");
+        }
     }
 }

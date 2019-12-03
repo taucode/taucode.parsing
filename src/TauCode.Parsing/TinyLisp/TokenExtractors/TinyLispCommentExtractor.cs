@@ -9,7 +9,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         public TinyLispCommentExtractor()
             : base(
                 StandardLexingEnvironment.Instance,
-                x => x == ';') // todo: consider extracting delegate into TinyLispHelper.
+                x => x == ';')
         {
         }
 
@@ -32,7 +32,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 }
                 else
                 {
-                    throw new LexerException("Internal error."); // how on earth we could even get here? todo copy paste
+                    throw LexingHelper.CreateInternalErrorException();
                 }
             }
 

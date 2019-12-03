@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
@@ -25,7 +26,7 @@ namespace TauCode.Parsing.TinyLisp
                 {
                     if (depth > 0)
                     {
-                        throw new NotImplementedException(); // todo
+                        throw new TinyLispException("Unclosed form.");
                     }
                     else
                     {
@@ -41,7 +42,7 @@ namespace TauCode.Parsing.TinyLisp
                         case Punctuation.RightParenthesis:
                             if (depth == 0)
                             {
-                                throw new NotImplementedException();
+                                throw new TinyLispException("Unexpected ')'.");
                             }
                             else
                             {
@@ -80,7 +81,7 @@ namespace TauCode.Parsing.TinyLisp
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    throw new TinyLispException($"Could not read token of type '{token.GetType().FullName}'.");
                 }
             }
         }

@@ -48,7 +48,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 }
                 else
                 {
-                    throw new NotImplementedException(); // error, wtf.
+                    throw LexingHelper.CreateInternalErrorException();
                 }
             }
 

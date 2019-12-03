@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
-using TauCode.Utils.Lab;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing
 {
@@ -10,7 +10,7 @@ namespace TauCode.Parsing
     {
         #region Fields
 
-        private readonly Dictionary<string, INode> _namedNodes;
+        private readonly IDictionary<string, INode> _namedNodes;
         private readonly HashSet<INode> _nodes;
 
         #endregion
@@ -57,7 +57,8 @@ namespace TauCode.Parsing
                 throw new ArgumentNullException(nameof(nodeName));
             }
 
-            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new ParserException($"Node not found: '{nodeName}'.");
+            //IDictionary<string, INode> nodeNames = _namedNodes;
+            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new ParsingException($"Node not found: '{nodeName}'.");
             return node;
         }
 

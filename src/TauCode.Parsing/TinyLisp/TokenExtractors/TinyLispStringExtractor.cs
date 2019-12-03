@@ -1,5 +1,4 @@
-﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -9,7 +8,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         public TinyLispStringExtractor()
             : base(
                 StandardLexingEnvironment.Instance,
-                x => x == '"') // todo: consider extracting delegate into TinyLispHelper.
+                x => x == '"')
         {
         }
 
@@ -33,7 +32,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 }
                 else
                 {
-                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                    throw LexingHelper.CreateInternalErrorException();
                 }
             }
 
