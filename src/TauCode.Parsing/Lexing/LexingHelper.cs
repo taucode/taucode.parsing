@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
-using TauCode.Utils.Lab;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Lexing
 {

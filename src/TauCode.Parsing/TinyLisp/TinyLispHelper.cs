@@ -31,8 +31,8 @@ namespace TauCode.Parsing.TinyLisp
             '\\',
         });
 
-        private static readonly Dictionary<char, Punctuation> PunctuationsByChar;
-        private static readonly Dictionary<Punctuation, char> CharsByPunctuation;
+        private static readonly IDictionary<char, Punctuation> PunctuationsByChar;
+        private static readonly IDictionary<Punctuation, char> CharsByPunctuation;
 
         static TinyLispHelper()
         {
@@ -142,6 +142,7 @@ namespace TauCode.Parsing.TinyLisp
 
         public static char PunctuationToChar(this Punctuation punctuation)
         {
+
             var c = CharsByPunctuation.GetOrDefault(punctuation);
             if (c == default)
             {

@@ -8,11 +8,7 @@
     <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
     <PackageReference Include="TauCode.Algorithms" Version="3.0.1" />
     <PackageReference Include="TauCode.Data" Version="3.0.0.1" />
-    <PackageReference Include="TauCode.Utils" Version="3.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\taucode\TauCode.Utils.Lab\TauCode.Utils.Lab.csproj" />
+    <PackageReference Include="TauCode.Utils" Version="3.0.3" />
   </ItemGroup>
 
 </Project>

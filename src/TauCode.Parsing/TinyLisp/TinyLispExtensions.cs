@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TinyLisp.Data;
-using TauCode.Utils.Lab;
+using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.TinyLisp
 {
@@ -39,7 +39,7 @@ namespace TauCode.Parsing.TinyLisp
 
             var wantedKeyword = Symbol.Create(argumentName);
             int wantedIndex;
-            var index = list.FindFirstIndexOfLab(wantedKeyword);
+            var index = list.FindFirstIndexOf(wantedKeyword);
 
             if (index < 0)
             {
@@ -120,7 +120,7 @@ namespace TauCode.Parsing.TinyLisp
             }
 
             var wantedKeyword = Symbol.Create(argumentName);
-            var index = list.FindFirstIndexOfLab(wantedKeyword);
+            var index = list.FindFirstIndexOf(wantedKeyword);
 
             if (index == -1)
             {
