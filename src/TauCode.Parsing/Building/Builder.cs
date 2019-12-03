@@ -15,6 +15,9 @@ namespace TauCode.Parsing.Building
         private Dictionary<string, PseudoList> _defblocks;
         private INodeFactory _nodeFactory;
 
+        private int _nextUnnamedOptIndex;
+        private int _nextUnnamedAltIndex;
+        
         #endregion
 
         #region Constructor
@@ -127,19 +130,23 @@ namespace TauCode.Parsing.Building
 
             var blockEnter = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, blockName));
             var contentResult = this.BuildContent(args);
+            var blockExit = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, $"<exit of block> {blockName}"), item.GetItemLinks());
 
             blockEnter.DemandLink(contentResult.Head);
-            var result = new BuildResult(blockEnter, contentResult.Tail);
+            contentResult.Tail.RequestLink(blockExit);
+
+            var result = new BuildResult(blockEnter, blockExit);
 
             return result;
         }
 
         private BuildResult BuildAlt(Element item)
         {
+            var altName = item.GetItemName() ?? this.GetNextAltName();
             var alternatives = item.GetFreeArguments();
 
-            var altEnter = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, item.GetItemName()));
-            var altExit = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, null));
+            var altEnter = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, altName));
+            var altExit = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, $"<exit of alt> {altName}"), item.GetItemLinks());
 
             foreach (var alternative in alternatives)
             {
@@ -156,8 +163,10 @@ namespace TauCode.Parsing.Building
 
         private BuildResult BuildOpt(Element item)
         {
-            var optEnter = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, item.GetItemName()));
-            var optExit = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, null));
+            var optName = item.GetItemName() ?? this.GetNextOptName();
+
+            var optEnter = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, optName));
+            var optExit = new NodeBox(new IdleNode(_nodeFactory.NodeFamily, $"<exit of opt> {optName}"), item.GetItemLinks());
 
             // short circuit!
             optEnter.DemandLink(optExit);
@@ -178,6 +187,20 @@ namespace TauCode.Parsing.Building
             var args = item.GetFreeArguments();
             var result = this.BuildContent(args);
             return result;
+        }
+
+        private string GetNextOptName()
+        {
+            var name = $"<unnamed opt #{_nextUnnamedOptIndex}>";
+            _nextUnnamedOptIndex++;
+            return name;
+        }
+
+        private string GetNextAltName()
+        {
+            var name = $"<unnamed alt #{_nextUnnamedAltIndex}>";
+            _nextUnnamedAltIndex++;
+            return name;
         }
 
         #endregion
