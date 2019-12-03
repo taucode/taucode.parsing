@@ -53,7 +53,11 @@ namespace TauCode.Parsing.Lexing
 
         protected void Advance(int shift = 1)
         {
-            // todo checks
+            if (shift < 0 || _pos + shift > _input.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(shift));
+            }
+
             _pos += shift;
         }
 
@@ -64,7 +68,11 @@ namespace TauCode.Parsing.Lexing
 
         protected void AddTokenExtractor(ITokenExtractor tokenExtractor)
         {
-            // todo checks
+            if (tokenExtractor == null)
+            {
+                throw new ArgumentNullException(nameof(tokenExtractor));
+            }
+
             _tokenExtractors.Add(tokenExtractor);
         }
 
@@ -121,7 +129,7 @@ namespace TauCode.Parsing.Lexing
 
                 if (nextToken == null)
                 {
-                    throw new LexerException($"Unexpected char: '{c}'.");
+                    throw new LexingException($"Unexpected char: '{c}'.");
                 }
 
                 if (nextToken.HasPayload)

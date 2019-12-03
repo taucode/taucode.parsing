@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.TinyLisp.Data;
+﻿using System;
+using TauCode.Parsing.TinyLisp.Data;
 
 namespace TauCode.Parsing.TinyLisp
 {
@@ -18,8 +19,7 @@ namespace TauCode.Parsing.TinyLisp
 
         public void SetValue(Element value)
         {
-            // todo checks
-            _value = value;
+            _value = value ?? throw new ArgumentNullException(nameof(value));
         }
     }
 }

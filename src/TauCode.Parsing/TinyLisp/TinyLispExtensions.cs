@@ -191,12 +191,12 @@ namespace TauCode.Parsing.TinyLisp
             var freeArgumentSets = shouldBePseudoList.GetMultipleFreeArgumentSets();
             if (freeArgumentSets.Count == 0)
             {
-                throw new TinyLispException("Free arguments not found."); // todo ut
+                throw new TinyLispException("Free arguments not found.");
             }
 
             if (freeArgumentSets.Count > 1)
             {
-                throw new TinyLispException("More than one set of free arguments was found."); // todo ut
+                throw new TinyLispException("More than one set of free arguments was found.");
             }
 
             return freeArgumentSets[0];

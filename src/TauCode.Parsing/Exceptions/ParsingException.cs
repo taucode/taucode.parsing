@@ -3,14 +3,14 @@
 namespace TauCode.Parsing.Exceptions
 {
     [Serializable]
-    public class ParserException : Exception
+    public class ParsingException : Exception
     {
-        public ParserException(string message)
+        public ParsingException(string message)
             : base(message)
         {
         }
 
-        public ParserException(string message, Exception innerException)
+        public ParsingException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

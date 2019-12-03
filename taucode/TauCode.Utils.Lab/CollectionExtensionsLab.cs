@@ -72,7 +72,7 @@ namespace TauCode.Utils.Lab
 
         public static void AddCharRange(this List<char> list, char from, char to)
         {
-            // todo: check ranges and forth.
+            // to-do: check ranges and forth.
 
             list.AddRange(Enumerable.Range(from, to - from + 1).Select(x => (char)x));
         }

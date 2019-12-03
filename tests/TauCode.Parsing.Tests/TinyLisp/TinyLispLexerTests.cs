@@ -172,7 +172,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             // Act
             ILexer lexer = new TinyLispLexer();
-            var ex = Assert.Throws<LexerException>(() => lexer.Lexize(input));
+            var ex = Assert.Throws<LexingException>(() => lexer.Lexize(input));
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("Unexpected end of input."));

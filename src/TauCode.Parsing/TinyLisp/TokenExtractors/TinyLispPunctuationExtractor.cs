@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
@@ -20,8 +19,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
             if (result.Length != 1)
             {
-                // todo: copy-pasted exception.
-                throw new LexerException("Internal error."); // how on earth we could even get here?
+                throw LexingHelper.CreateInternalErrorException();
             }
 
             var c = result.Single();
@@ -43,7 +41,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 }
                 else
                 {
-                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                    throw LexingHelper.CreateInternalErrorException();
                 }
             }
 

@@ -1,5 +1,4 @@
-﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Tokens;
+﻿using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
@@ -37,7 +36,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 }
                 else
                 {
-                    throw new LexerException("Internal error."); // how on earth we could even get here?
+                    throw LexingHelper.CreateInternalErrorException();
                 }
             }
 
@@ -75,7 +74,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
             if (localPos == 0)
             {
-                throw new LexerException("Internal error."); // todo copy/paste
+                throw LexingHelper.CreateInternalErrorException();
             }
             else if (localPos == 1)
             {

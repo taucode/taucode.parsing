@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
@@ -8,36 +9,22 @@ using TauCode.Parsing.TinyLisp.Data;
 namespace TauCode.Parsing.Building
 {
     // todo: deal with empty blocks, alt-s, opt-s and seq-s, which is an error.
-    // todo: nice #regions.
     public class Builder : IBuilder
     {
+        #region Fields
 
         private Dictionary<string, PseudoList> _defblocks;
         private INodeFactory _nodeFactory;
 
-        public INode Build(INodeFactory nodeFactory, PseudoList defblocks)
-        {
-            if (defblocks == null)
-            {
-                throw new ArgumentNullException(nameof(defblocks));
-            }
+        #endregion
 
-            _nodeFactory = nodeFactory ?? throw new ArgumentNullException(nameof(nodeFactory));
+        #region Constructor
 
-            _defblocks = defblocks.ToDictionary(
-                x => x.GetSingleKeywordArgument<Symbol>(":name").Name,
-                x => x.AsPseudoList());
 
-            var topBlock = _defblocks
-                .Values
-                .Single(x => x.GetSingleArgumentAsBool(":is-top") == true);
 
-            var topBlockContent = topBlock.GetFreeArguments();
+        #endregion
 
-            var result = this.BuildContent(topBlockContent);
-
-            return result.Head.GetNode();
-        }
+        #region Private
 
         private BuildResult BuildContent(PseudoList content)
         {
@@ -61,11 +48,14 @@ namespace TauCode.Parsing.Building
                 }
             }
 
-            // todo: check for null (which means empty 'sequence', actually).
+            if (tail == null)
+            {
+                throw new BuildingException("Content is empty."); // todo:ut
+            }
 
             if (tail.Links.Any())
             {
-                throw new NotImplementedException();
+                throw new BuildingException("Last item in a content must not have explicit links."); // todo ut
             }
 
             var buildResult = new BuildResult(head, tail);
@@ -121,7 +111,6 @@ namespace TauCode.Parsing.Building
 
             return buildResult;
         }
-
 
         private BuildResult BuildCustomItem(Element item)
         {
@@ -191,5 +180,35 @@ namespace TauCode.Parsing.Building
             var result = this.BuildContent(args);
             return result;
         }
+
+        #endregion
+
+        #region IBuilder Members
+
+        public INode Build(INodeFactory nodeFactory, PseudoList defblocks)
+        {
+            if (defblocks == null)
+            {
+                throw new ArgumentNullException(nameof(defblocks));
+            }
+
+            _nodeFactory = nodeFactory ?? throw new ArgumentNullException(nameof(nodeFactory));
+
+            _defblocks = defblocks.ToDictionary(
+                x => x.GetSingleKeywordArgument<Symbol>(":name").Name,
+                x => x.AsPseudoList());
+
+            var topBlock = _defblocks
+                .Values
+                .Single(x => x.GetSingleArgumentAsBool(":is-top") == true);
+
+            var topBlockContent = topBlock.GetFreeArguments();
+
+            var result = this.BuildContent(topBlockContent);
+
+            return result.Head.GetNode();
+        }
+
+        #endregion
     }
 }

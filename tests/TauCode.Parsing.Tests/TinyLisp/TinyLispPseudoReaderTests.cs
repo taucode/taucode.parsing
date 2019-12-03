@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Utils.Extensions;
@@ -55,6 +56,38 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
                 Assert.That(alteredActual, Is.EqualTo(expected).IgnoreCase);
             }
+        }
+
+        [Test]
+        public void Read_UnclosedForm_ThrowsTinyLispException()
+        {
+            // Arrange
+            var form = "(unclosed (a (bit))";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(form);
+            var reader = new TinyLispPseudoReader();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() => reader.Read(tokens));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Unclosed form."));
+        }
+
+        [Test]
+        public void Read_ExtraRightParenthesis_ThrowsTinyLispException()
+        {
+            // Arrange
+            var form = "(closed too much))";
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(form);
+            var reader = new TinyLispPseudoReader();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() => reader.Read(tokens));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Unexpected ')'."));
         }
     }
 }
