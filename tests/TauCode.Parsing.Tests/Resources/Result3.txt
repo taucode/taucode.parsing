@@ -1,3 +1,0 @@
-﻿\BeginBlockDefinition(:inner, :primary_key)
-PRIMARY KEY <pk_name>\Identifier <pk_columns>\BlockReference
-\EndBlockDefinition

@@ -8,10 +8,30 @@
 
 2019-11-16
 ==========
-x   1. Get rid of 'Aide'.
++   1. Get rid of 'Aide'.
 
 2019-11-20
 ==========
-    1. Cache non-idle successor nodes for finalized nodes.
-    2. LexerBase
-    3. IParser.Parse ==> List<IParsingResult>!
+todo1. Cache non-idle successor nodes for finalized nodes.
++   2. LexerBase
+todo3. IParser.Parse ==> List<IParsingResult>!
+
+2019-11-28
+==========
+x   1. Enums for all symbols (+UT-s)
+todo2. Non-advance inquire result
+x   3. Only \SpecialString and "<some_exact_special_string>" want ':Some_Class' suffix.
+
+2019-11-30
+==========
++   1. Clean up codebase.
++   2. TauCode.Utils: 'FindFirstIndexOf' => takes IReadOnlyLit, not IList!
+
+2019-12-02
+==========
++   1. Node factory.
+todo2. Symbols vs integers: +1488, +1488+, +, -, etc.
+todo3. TinyLisp: ratios and doubles.
++   4. SQLite test lexer remastered.
++   5. ILexingEnvironment: IsSpace, IsLineBreak
++   6. Get rid of 'lexizing'. Use 'lexing'.

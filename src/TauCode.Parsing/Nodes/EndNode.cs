@@ -7,14 +7,14 @@ namespace TauCode.Parsing.Nodes
     {
         #region Static
 
-        public static EndNode Instance = new EndNode();
+        public static EndNode Instance { get; } = new EndNode();
 
         #endregion
 
         #region Constructor
 
         private EndNode()
-            : base(null, "end")
+            : base(null, "<End>")
         {
         }
 
@@ -26,23 +26,23 @@ namespace TauCode.Parsing.Nodes
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new ParserException("Cannot call 'Act' for end node.");
+            throw new ParsingException("Cannot call 'Act' for end node.");
         }
 
         public override void EstablishLink(INode node)
         {
-            throw new ParserException("Cannot add link to end node.");
+            throw new ParsingException("Cannot add link to end node.");
         }
 
         public override void ClaimLink(string nodeName)
         {
-            throw new ParserException("Cannot add link to end node.");
+            throw new ParsingException("Cannot add link to end node.");
         }
 
         public override Func<IToken, IResultAccumulator, bool> AdditionalChecker
         {
             get => null;
-            set => throw new ParserException("Cannot set 'AdditionalChecker' for end node.");
+            set => throw new ParsingException("Cannot set 'AdditionalChecker' for end node.");
         }
 
         #endregion

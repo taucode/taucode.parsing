@@ -1,3 +1,0 @@
-﻿\BeginBlockDefinition(:inner, :fk_referenced_columns)
-\( <fk_referenced_column_name>\Identifier { \,(:fk_referenced_column_name) | \) }
-\EndBlockDefinition

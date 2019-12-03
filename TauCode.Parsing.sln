@@ -18,9 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{104E58A9
 		nuget\TauCode.Parsing.nuspec = nuget\TauCode.Parsing.nuspec
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Parsing", "src\TauCode.Parsing\TauCode.Parsing.csproj", "{F45FDF86-44A9-452A-91D6-649720B36CB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Parsing", "src\TauCode.Parsing\TauCode.Parsing.csproj", "{F45FDF86-44A9-452A-91D6-649720B36CB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Parsing.Tests", "tests\TauCode.Parsing.Tests\TauCode.Parsing.Tests.csproj", "{8EA23BD2-68D8-41D4-800E-A4C04BAC0A35}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Parsing.Tests", "tests\TauCode.Parsing.Tests\TauCode.Parsing.Tests.csproj", "{8EA23BD2-68D8-41D4-800E-A4C04BAC0A35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

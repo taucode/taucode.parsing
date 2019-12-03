@@ -1,28 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
     public class StringToken : TokenBase
     {
-        #region Constructors
+        #region Constructor
 
-        public StringToken(string str)
-            : this(str, null)
+        public StringToken(
+            string value,
+            string name = null,
+            IEnumerable<KeyValuePair<string, string>> properties = null)
+            : base(name, properties)
         {
-        }
-
-        public StringToken(string str, string name)
-            : base(name)
-        {
-            this.String = str ?? throw new ArgumentNullException(nameof(str));
+            this.Value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
         #endregion
 
         #region Public
 
-        public string String { get; }
-
+        public string Value { get; }
+        
         #endregion
+
+        public override string ToString() => Value;
     }
 }

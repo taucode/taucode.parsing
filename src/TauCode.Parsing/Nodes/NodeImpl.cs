@@ -129,7 +129,7 @@ namespace TauCode.Parsing.Nodes
 
             if (_establishedLinks.Contains(node))
             {
-                throw new ParserException("This is node is already linked to.");
+                throw new ParsingException("This node is already linked to.");
             }
 
             _establishedLinks.Add(node);
