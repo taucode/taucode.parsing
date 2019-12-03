@@ -251,13 +251,16 @@ namespace TauCode.Parsing.TinyLisp
 
                         var lastArgIndex = index - 1;
 
-                        var freeArgsPseudoList = new PseudoList();
-                        for (var i = firstArgIndex; i <= lastArgIndex; i++)
+                        if (firstArgIndex <= lastArgIndex)
                         {
-                            freeArgsPseudoList.AddElement(pseudoList[i]);
-                        }
+                            var freeArgsPseudoList = new PseudoList();
+                            for (var i = firstArgIndex; i <= lastArgIndex; i++)
+                            {
+                                freeArgsPseudoList.AddElement(pseudoList[i]);
+                            }
 
-                        result.Add(freeArgsPseudoList);
+                            result.Add(freeArgsPseudoList);
+                        }
                     }
 
                     break;

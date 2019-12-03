@@ -922,6 +922,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [Test]
         [TestCase("(form :a non-free free1 free2 :b :c non-free-2 next-free)", "((free1 free2) (next-free))")]
         [TestCase("(form free1 :b :c non-free-2 next-free-1 next-free-2)", "((free1) (next-free-1 next-free-2))")]
+        [TestCase("(form free1 :b :c non-free-2)", "((free1))")]
         public void GetMultipleFreeArgumentSets_HappyPath_ReturnsExpectedResult(string form, string expectedRepresentation)
         {
             // Arrange
@@ -965,6 +966,58 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(ex.ParamName, Is.EqualTo("shouldBePseudoList"));
         }
 
+        [Test]
+        [TestCase("(form :a non-free :b :c non-free-2 next-free)", "(next-free)")]
+        [TestCase("(form free1 :b :c non-free-2)", "(free1)")]
+        public void GetFreeArguments_HappyPath_ReturnsExpectedResult(string form, string expectedRepresentation)
+        {
+            // Arrange
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(form);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
+            // Act
+            var argsPseudoList = pseudoList.GetFreeArguments();
+
+            // Assert
+            Assert.That(argsPseudoList.ToString(), Is.EqualTo(expectedRepresentation).IgnoreCase);
+        }
+
+        [Test]
+        [TestCase("(form :a non-free :b :c non-free-2)")]
+        [TestCase("(form :akka free1 :b :c non-free-2)")]
+        public void GetFreeArguments_NoFreeArgs_ThrowsTinyLispException(string form)
+        {
+            // Arrange
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(form);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetFreeArguments());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Free arguments not found."));
+        }
+
+        [Test]
+        [TestCase("(form :a non-free free1 free2 :b :c non-free-2 next-free)")]
+        [TestCase("(form free1 :b :c non-free-2 next-free-1 next-free-2)")]
+        public void GetFreeArguments_MoreThanOneFreeArgSet_ThrowsTinyLispException(string form)
+        {
+            // Arrange
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(form);
+            var reader = new TinyLispPseudoReader();
+            var pseudoList = reader.Read(tokens).Single().AsPseudoList();
+
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() => pseudoList.GetFreeArguments());
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("More than one set of free arguments was found."));
+        }
     }
 }
