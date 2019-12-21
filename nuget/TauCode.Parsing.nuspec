@@ -7,7 +7,7 @@
     <owners>TauCode</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="file">LICENSE.txt</license>
-    <projectUrl>http://taucode.com/</projectUrl>
+    <projectUrl>https://github.com/taucode/taucode.parsing</projectUrl>
     <description>TauCode parsing library</description>
     <releaseNotes>
       Moving to nuget.org
