@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TinyLisp.Data;
-using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.TinyLisp
 {

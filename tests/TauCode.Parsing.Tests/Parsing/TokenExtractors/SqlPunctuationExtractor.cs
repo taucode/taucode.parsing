@@ -1,7 +1,7 @@
 ﻿using System.Linq;
+using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
-using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Tests.Parsing.TokenExtractors
 {
