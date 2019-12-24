@@ -171,7 +171,7 @@ namespace TauCode.Parsing.Lexing
                                 var check = this.AllowsCharAfterProduction(upcomingChar);
                                 if (!check)
                                 {
-                                    throw new LexingException($"Unexpected token: '{upcomingChar}'.");
+                                    throw new LexingException($"Unexpected token: '{upcomingChar}'."); // todo: unexpected CHAR, not token!
                                 }
                             }
                         }

@@ -6,6 +6,6 @@ namespace TauCode.Parsing.Lexing
     {
         ILexingEnvironment Environment { get; }
 
-        List<IToken> Lexize(string input);
+        List<IToken> Lexize(string input); // todo: IList.
     }
 }
