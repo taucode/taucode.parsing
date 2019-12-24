@@ -3,6 +3,7 @@ using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing;
+using TauCode.Parsing.Tests.Parsing.Sql;
 using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Tests.TinyLisp

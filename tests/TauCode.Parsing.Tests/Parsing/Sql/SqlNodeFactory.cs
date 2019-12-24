@@ -5,7 +5,7 @@ using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 
-namespace TauCode.Parsing.Tests.Parsing
+namespace TauCode.Parsing.Tests.Parsing.Sql
 {
     public class SqlNodeFactory : NodeFactory
     {
