@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Linq;
+using NUnit.Framework;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lexing;
@@ -9,7 +9,7 @@ using TauCode.Parsing.Tests.Data;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tests.Parsing
+namespace TauCode.Parsing.Tests.Parsing.Sql
 {
     [TestFixture]
     public class SqlParserTests

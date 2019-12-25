@@ -3,7 +3,7 @@ using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tests.Parsing.TokenExtractors
+namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
     public class SqlIdentifierExtractor : TokenExtractorBase
     {

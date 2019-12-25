@@ -1,4 +1,6 @@
-﻿using TauCode.Parsing.Tokens;
+﻿using System;
+using TauCode.Extensions;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
@@ -20,6 +22,12 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 str = str.Substring(1);
             }
 
+            // todo: remove this check
+            if (!int.TryParse(str, out var dummy))
+            {
+                throw new NotImplementedException();
+            }
+
             return new IntegerToken(str);
         }
 
@@ -30,14 +38,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
             if (pos == 0)
             {
-                if (this.FirstCharPredicate(c))
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
+                return CharChallengeResult.Continue; // MUST be ok.
             }
 
             if (LexingHelper.IsDigit(c))
@@ -56,6 +57,12 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
             // other punctuation marks like Comma, (, ), others might delimit though...
             if (char.IsPunctuation(c))
             {
+                var gotOnlySign = this.GotOnlySign();
+                if (gotOnlySign)
+                {
+                    return CharChallengeResult.GiveUp;
+                }
+
                 return CharChallengeResult.Finish;
             }
 
@@ -66,6 +73,18 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
             // other chars like letters and stuff => not allowed.
             return CharChallengeResult.GiveUp;
+        }
+
+        private bool GotOnlySign()
+        {
+            var localPosition = this.GetLocalPosition();
+            if (localPosition == 1)
+            {
+                var firstChar = this.GetLocalChar(0);
+                return firstChar.IsIn('+', '-');
+            }
+
+            return false;
         }
 
         protected override CharChallengeResult ChallengeEnd()
