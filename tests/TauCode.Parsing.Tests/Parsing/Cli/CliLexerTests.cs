@@ -7,8 +7,13 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
     [TestFixture]
     public class CliLexerTests
     {
+        // todo: more tests. e.g. 
+        // "-" - path
+        // "." - path
+        // "--" - path
+        // etc.
         [Test]
-        public void TodoWat()
+        public void Lexize_ValidInput_ProducesValidTokens()
         {
             // Arrange
             var input = "pub -t one '{\"name\" : \"ak\"}' --repeat 88 -log c:/temp/logs --level 1a-c";
