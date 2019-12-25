@@ -40,7 +40,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
             {
                 return CharChallengeResult.Continue; // MUST be ok.
             }
-            
+
             if (LexingHelper.IsDigit(c))
             {
                 return CharChallengeResult.Continue; // digits are always welcome in an integer.
