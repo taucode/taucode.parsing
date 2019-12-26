@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             // Arrange
             var nodeFactory = new SqlNodeFactory("my-sqlite");
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
-            ILexer lexer2 = new TinyLispLexer();
+            ILexer lexer2 = new TinyLispLexer(); // todo: get rid of "...2" suffix
             var tokens = lexer2.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
