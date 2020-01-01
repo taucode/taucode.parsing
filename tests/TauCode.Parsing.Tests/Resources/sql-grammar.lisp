@@ -1,6 +1,6 @@
 ; CREATE
 (defblock :name create :is-top t
-	(exact-text :classes WORD :value "CREATE")
+	(exact-text :classes word :value "CREATE")
 	(alt (block :ref create-table) (block :ref create-index))
 	(end)
 )

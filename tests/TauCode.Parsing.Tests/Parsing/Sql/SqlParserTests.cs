@@ -26,11 +26,11 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
-            var freshRoot = builder.Build(nodeFactory, list);
+            var root = builder.Build(nodeFactory, list);
 
-            IParser freshParser = new Parser();
+            IParser parser = new Parser();
 
-            var allSqlNodes = freshRoot.FetchTree();
+            var allSqlNodes = root.FetchTree();
 
             var exactTextNodes = allSqlNodes
                 .Where(x => x is ExactTextNode)
@@ -361,7 +361,7 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act
-            var sqlResults = freshParser.Parse(freshRoot, sqlTokens);
+            var sqlResults = parser.Parse(root, sqlTokens);
 
             // Assert
             Assert.That(sqlResults, Has.Length.EqualTo(5));

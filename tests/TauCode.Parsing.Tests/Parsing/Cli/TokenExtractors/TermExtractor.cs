@@ -1,5 +1,7 @@
 ﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Tests.Parsing.Cli.Tokens;
+using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
+using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
@@ -23,7 +25,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            return new TermToken(str);
+            //return new TermToken(str);
+            var token = new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str);
+            return token;
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
