@@ -32,6 +32,8 @@ namespace TauCode.Parsing.Lexing
 
         #region Abstract
 
+        protected abstract void ResetState();
+
         protected abstract IToken ProduceResult();
 
         protected abstract CharChallengeResult ChallengeCurrentChar();
@@ -110,6 +112,8 @@ namespace TauCode.Parsing.Lexing
 
             _startPos = position;
             _localPos = 0;
+
+            this.ResetState();
 
             while (true)
             {

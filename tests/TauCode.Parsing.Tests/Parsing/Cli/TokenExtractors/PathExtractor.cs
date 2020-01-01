@@ -17,6 +17,10 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
             LexingHelper.IsLatinLetter(c) ||
             c.IsIn('\\', '/', '.', '!', '~', '$', '%', '-', '+');
 
+        protected override void ResetState()
+        {
+            // idle
+        }
 
         protected override IToken ProduceResult()
         {

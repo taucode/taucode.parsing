@@ -14,6 +14,11 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
         }
 
+        protected override void ResetState()
+        {
+            // todo: _openingDelimiter = { '\'', '"' } ?..
+        }
+
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();

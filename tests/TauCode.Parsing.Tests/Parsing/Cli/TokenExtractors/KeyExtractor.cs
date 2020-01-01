@@ -11,6 +11,11 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
         }
 
+        protected override void ResetState()
+        {
+            // todo: _openingDecorator = { "-", "--" } ?..
+        }
+
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();

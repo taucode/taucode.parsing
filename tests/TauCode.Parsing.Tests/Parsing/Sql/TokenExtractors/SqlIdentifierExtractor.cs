@@ -14,6 +14,12 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         {
         }
 
+        protected override void ResetState()
+        {
+            // idle now, but todo: _startingDelimiter = {'"', '[', '`'} ?..
+
+        }
+
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();

@@ -1,5 +1,4 @@
-﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -17,6 +16,11 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var str = this.ExtractResultString();
             return new CommentToken(str);
+        }
+
+        protected override void ResetState()
+        {
+            // idle
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

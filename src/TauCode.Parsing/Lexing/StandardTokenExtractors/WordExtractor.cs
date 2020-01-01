@@ -31,6 +31,11 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
             return StandardInnerCharPredicate(c);
         }
 
+        protected override void ResetState()
+        {
+            // idle
+        }
+
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
