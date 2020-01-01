@@ -16,7 +16,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void Read_SqlGrammar_ProducesExpectedResult()
         {
             // Arrange
-            var input = this.GetType().Assembly.GetResourceText("sql-grammar-2.lisp", true);
+            var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
             ILexer lexer = new TinyLispLexer();
 
             var tokens = lexer.Lexize(input);
