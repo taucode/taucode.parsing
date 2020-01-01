@@ -25,7 +25,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            //return new TermToken(str);
             var token = new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str);
             return token;
         }
