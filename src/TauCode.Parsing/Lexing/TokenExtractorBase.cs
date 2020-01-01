@@ -32,6 +32,8 @@ namespace TauCode.Parsing.Lexing
 
         #region Abstract
 
+        protected abstract void ResetState();
+
         protected abstract IToken ProduceResult();
 
         protected abstract CharChallengeResult ChallengeCurrentChar();
@@ -111,6 +113,8 @@ namespace TauCode.Parsing.Lexing
             _startPos = position;
             _localPos = 0;
 
+            this.ResetState();
+
             while (true)
             {
                 if (this.IsEnd())
@@ -171,7 +175,7 @@ namespace TauCode.Parsing.Lexing
                                 var check = this.AllowsCharAfterProduction(upcomingChar);
                                 if (!check)
                                 {
-                                    throw new LexingException($"Unexpected token: '{upcomingChar}'."); // todo: unexpected CHAR, not token!
+                                    throw new LexingException($"Unexpected char: '{upcomingChar}'.");
                                 }
                             }
                         }

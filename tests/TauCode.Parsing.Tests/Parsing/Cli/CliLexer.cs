@@ -27,6 +27,20 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             // path
             var pathExtractor = new PathExtractor(this.Environment);
             this.AddTokenExtractor(pathExtractor);
+
+            // equals
+            var equalsExtractor = new EqualsExtractor(this.Environment);
+            this.AddTokenExtractor(equalsExtractor);
+
+            // *** Links ***
+            keyExtractor.AddSuccessors(equalsExtractor);
+
+            equalsExtractor.AddSuccessors(
+                integerExtractor,
+                termExtractor,
+                keyExtractor,
+                stringExtractor,
+                pathExtractor);
         }
     }
 }

@@ -31,6 +31,11 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
             return new IntegerToken(str);
         }
 
+        protected override void ResetState()
+        {
+            // todo: idle now, but actually should contain things like heading sign '+', '-', etc...
+        }
+
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();

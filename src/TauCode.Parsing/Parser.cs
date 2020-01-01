@@ -104,6 +104,11 @@ namespace TauCode.Parsing
                 {
                     if (gotActor)
                     {
+                        if (winners.Count > 1)
+                        {
+                            throw new ParsingException("More than one winning node.");
+                        }
+
                         var actor = winners.Single();
                         var oldVersion = context.ResultAccumulator.Version;
                         actor.Act(token, context.ResultAccumulator);

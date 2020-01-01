@@ -41,6 +41,7 @@ namespace TauCode.Parsing.Lexing
                 '%',
                 '^',
                 '&',
+                '=',
                 '*',
                 '|',
                 '/',

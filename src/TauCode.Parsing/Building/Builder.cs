@@ -96,7 +96,7 @@ namespace TauCode.Parsing.Building
                     node = new IdleNode(
                         _nodeFactory.NodeFamily,
                         item.GetItemName());
-                    nodeBox = new NodeBox(node);
+                    nodeBox = new NodeBox(node, item.GetItemLinks());
                     buildResult = new BuildResult(nodeBox, nodeBox);
                     break;
 

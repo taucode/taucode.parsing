@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 
-namespace TauCode.Parsing.Tests.Parsing.Sql
+namespace TauCode.Parsing.Tests.Parsing.Cli
 {
-    public class SqlNodeFactory : NodeFactory
+    public class CliNodeFactory : NodeFactory
     {
-        public SqlNodeFactory(string nodeFamilyName)
+        public CliNodeFactory(string nodeFamilyName)
             : base(nodeFamilyName)
         {
         }
@@ -49,13 +50,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                         item.GetItemName());
                     break;
 
-                case "SOME-INT":
-                    node = new IntegerNode(
-                        null,
-                        this.NodeFamily,
-                        item.GetItemName());
-                    break;
-
                 default:
                     throw new NotSupportedException();
             }
@@ -84,6 +78,18 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
                     case "STRING":
                         textClass = StringTextClass.Instance;
+                        break;
+
+                    case "KEY":
+                        textClass = KeyTextClass.Instance;
+                        break;
+
+                    case "TERM":
+                        textClass = TermTextClass.Instance;
+                        break;
+
+                    case "PATH":
+                        textClass = PathTextClass.Instance;
                         break;
 
                     default:

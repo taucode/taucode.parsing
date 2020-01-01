@@ -1,6 +1,6 @@
-﻿using System;
+﻿using NUnit.Framework;
+using System;
 using System.Linq;
-using NUnit.Framework;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lexing;
@@ -20,130 +20,94 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             // Arrange
             var nodeFactory = new SqlNodeFactory("my-sqlite");
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
-            ILexer lexer2 = new TinyLispLexer(); // todo: get rid of "...2" suffix
-            var tokens = lexer2.Lexize(input);
+            ILexer lexer = new TinyLispLexer();
+            var tokens = lexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
-            var freshRoot = builder.Build(nodeFactory, list);
+            var root = builder.Build(nodeFactory, list);
 
-            IParser freshParser = new Parser();
+            IParser parser = new Parser();
 
-            var allSqlNodes = freshRoot.FetchTree();
+            var allSqlNodes = root.FetchTree();
 
-            var exactWordNodes = allSqlNodes
-                .Where(x => x is ExactWordNode)
-                .Cast<ExactWordNode>()
+            var exactTextNodes = allSqlNodes
+                .Where(x => x is ExactTextNode)
+                .Cast<ExactTextNode>()
                 .ToList();
 
-            foreach (var exactWordNode in exactWordNodes)
+            foreach (var exactTextNode in exactTextNodes)
             {
-                exactWordNode.IsCaseSensitive = false;
+                exactTextNode.IsCaseSensitive = false;
             }
 
-            var reservedWords = exactWordNodes
-                .Select(x => x.Word)
+            var reservedWords = exactTextNodes
+                .Select(x => x.ExactText)
                 .Distinct()
                 .Select(x => x.ToUpperInvariant())
                 .ToHashSet();
 
-            var identifiersAsWords = allSqlNodes
-                .Where(x =>
-                    x is WordNode wordNode &&
-                    x.Name.EndsWith("-name-word", StringComparison.InvariantCultureIgnoreCase))
-                .Cast<WordNode>()
-                .ToList();
-
             #region assign job to nodes
 
             // table
-            var createTable = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "do-create-table", StringComparison.InvariantCultureIgnoreCase));
+            var createTable = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "do-create-table", StringComparison.InvariantCultureIgnoreCase));
             createTable.Action = (token, accumulator) =>
             {
                 var tableInfo = new TableInfo();
                 accumulator.AddResult(tableInfo);
             };
 
-            var tableName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "table-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var tableName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "table-name", StringComparison.InvariantCultureIgnoreCase));
             tableName.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
-                tableInfo.Name = ((IdentifierToken) token).Identifier;
+                tableInfo.Name = ((TextToken)token).Text;
             };
 
-            var tableNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "table-name-word", StringComparison.InvariantCultureIgnoreCase));
-            tableNameWord.Action = (token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                tableInfo.Name = ((WordToken) token).Word;
-            };
-
-            var columnName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "column-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var columnName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "column-name", StringComparison.InvariantCultureIgnoreCase));
             columnName.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = new ColumnInfo
                 {
-                    Name = ((IdentifierToken) token).Identifier,
+                    Name = ((TextToken)token).Text,
                 };
                 tableInfo.Columns.Add(columnInfo);
             };
 
-            var columnNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "column-name-word", StringComparison.InvariantCultureIgnoreCase));
-            columnNameWord.Action = (token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                var columnInfo = new ColumnInfo
-                {
-                    Name = ((WordToken) token).Word,
-                };
-                tableInfo.Columns.Add(columnInfo);
-            };
-
-            var typeName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "type-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var typeName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "type-name", StringComparison.InvariantCultureIgnoreCase));
             typeName.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.TypeName = ((IdentifierToken) token).Identifier;
+                columnInfo.TypeName = ((TextToken)token).Text;
             };
 
-            var columnTypeWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "type-name-word", StringComparison.InvariantCultureIgnoreCase));
-            columnTypeWord.Action = (token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                var columnInfo = tableInfo.Columns.Last();
-                columnInfo.TypeName = ((WordToken) token).Word;
-            };
-
-            var precision = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "precision", StringComparison.InvariantCultureIgnoreCase));
+            var precision = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "precision", StringComparison.InvariantCultureIgnoreCase));
             precision.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.Precision = ((IntegerToken) token).Value.ToInt32();
+                columnInfo.Precision = ((IntegerToken)token).Value.ToInt32();
             };
 
-            var scale = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "scale", StringComparison.InvariantCultureIgnoreCase));
+            var scale = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "scale", StringComparison.InvariantCultureIgnoreCase));
             scale.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.Scale = ((IntegerToken) token).Value.ToInt32();
+                columnInfo.Scale = ((IntegerToken)token).Value.ToInt32();
             };
 
-            var nullToken = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "null", StringComparison.InvariantCultureIgnoreCase));
+            var nullToken = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "null", StringComparison.InvariantCultureIgnoreCase));
             nullToken.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
@@ -151,8 +115,8 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 columnInfo.IsNullable = true;
             };
 
-            var notNullToken = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "not-null", StringComparison.InvariantCultureIgnoreCase));
+            var notNullToken = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "not-null", StringComparison.InvariantCultureIgnoreCase));
             notNullToken.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
@@ -160,24 +124,16 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 columnInfo.IsNullable = false;
             };
 
-            var constraintName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "constraint-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var constraintName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "constraint-name", StringComparison.InvariantCultureIgnoreCase));
             constraintName.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
-                tableInfo.LastConstraintName = ((IdentifierToken) token).Identifier;
+                tableInfo.LastConstraintName = ((TextToken)token).Text;
             };
 
-            var constraintNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "constraint-name-word", StringComparison.InvariantCultureIgnoreCase));
-            constraintNameWord.Action = (token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                tableInfo.LastConstraintName = ((WordToken) token).Word;
-            };
-
-            var pk = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "do-primary-key", StringComparison.InvariantCultureIgnoreCase));
+            var pk = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "do-primary-key", StringComparison.InvariantCultureIgnoreCase));
             pk.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
@@ -187,34 +143,21 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 };
             };
 
-            var pkColumnName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "pk-column-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var pkColumnName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "pk-column-name", StringComparison.InvariantCultureIgnoreCase));
             pkColumnName.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var primaryKey = tableInfo.PrimaryKey;
                 var indexColumn = new IndexColumnInfo
                 {
-                    ColumnName = ((IdentifierToken) token).Identifier,
+                    ColumnName = ((TextToken)token).Text,
                 };
                 primaryKey.Columns.Add(indexColumn);
             };
 
-            var pkColumnNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "pk-column-name-word", StringComparison.InvariantCultureIgnoreCase));
-            pkColumnNameWord.Action = (token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                var primaryKey = tableInfo.PrimaryKey;
-                var indexColumn = new IndexColumnInfo
-                {
-                    ColumnName = ((WordToken) token).Word,
-                };
-                primaryKey.Columns.Add(indexColumn);
-            };
-
-            var pkColumnAsc = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "asc", StringComparison.InvariantCultureIgnoreCase));
+            var pkColumnAsc = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "asc", StringComparison.InvariantCultureIgnoreCase));
             pkColumnAsc.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
@@ -223,8 +166,8 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 indexColumn.SortDirection = SortDirection.Asc;
             };
 
-            var pkColumnDesc = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "desc", StringComparison.InvariantCultureIgnoreCase));
+            var pkColumnDesc = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "desc", StringComparison.InvariantCultureIgnoreCase));
             pkColumnDesc.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
@@ -233,8 +176,8 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 indexColumn.SortDirection = SortDirection.Desc;
             };
 
-            var fk = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "do-foreign-key", StringComparison.InvariantCultureIgnoreCase));
+            var fk = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "do-foreign-key", StringComparison.InvariantCultureIgnoreCase));
             fk.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
@@ -245,69 +188,39 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 tableInfo.ForeignKeys.Add(foreignKey);
             };
 
-            var fkTableName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "fk-referenced-table-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var fkTableName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "fk-referenced-table-name", StringComparison.InvariantCultureIgnoreCase));
             fkTableName.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyTableName = ((IdentifierToken) token).Identifier;
+                var foreignKeyTableName = ((TextToken)token).Text;
                 foreignKey.TableName = foreignKeyTableName;
             };
 
-            var fkTableNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "fk-referenced-table-name-word", StringComparison.InvariantCultureIgnoreCase));
-            fkTableNameWord.Action = (token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyTableName = ((WordToken) token).Word;
-                foreignKey.TableName = foreignKeyTableName;
-            };
-
-            var fkColumnName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "fk-column-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var fkColumnName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "fk-column-name", StringComparison.InvariantCultureIgnoreCase));
             fkColumnName.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyColumnName = ((IdentifierToken) token).Identifier;
+                var foreignKeyColumnName = ((TextToken)token).Text;
                 foreignKey.ColumnNames.Add(foreignKeyColumnName);
             };
 
-            var fkColumnNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "fk-column-name-word", StringComparison.InvariantCultureIgnoreCase));
-            fkColumnNameWord.Action = (token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyColumnName = ((WordToken) token).Word;
-                foreignKey.ColumnNames.Add(foreignKeyColumnName);
-            };
-
-            var fkReferencedColumnName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "fk-referenced-column-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var fkReferencedColumnName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "fk-referenced-column-name", StringComparison.InvariantCultureIgnoreCase));
             fkReferencedColumnName.Action = (token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyReferencedColumnName = ((IdentifierToken) token).Identifier;
-                foreignKey.ReferencedColumnNames.Add(foreignKeyReferencedColumnName);
-            };
-
-            var fkReferencedColumnNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "fk-referenced-column-name-word", StringComparison.InvariantCultureIgnoreCase));
-            fkReferencedColumnNameWord.Action = (token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyReferencedColumnName = ((WordToken) token).Word;
+                var foreignKeyReferencedColumnName = ((TextToken)token).Text;
                 foreignKey.ReferencedColumnNames.Add(foreignKeyReferencedColumnName);
             };
 
             // index
-            var createUniqueIndex = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "do-create-unique-index", StringComparison.InvariantCultureIgnoreCase));
+            var createUniqueIndex = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "do-create-unique-index", StringComparison.InvariantCultureIgnoreCase));
             createUniqueIndex.Action = (token, accumulator) =>
             {
                 var index = new IndexInfo
@@ -317,8 +230,8 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 accumulator.AddResult(index);
             };
 
-            var createIndex = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "do-create-index", StringComparison.InvariantCultureIgnoreCase));
+            var createIndex = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "do-create-index", StringComparison.InvariantCultureIgnoreCase));
             createIndex.Action = (token, accumulator) =>
             {
                 bool brandNewIndex;
@@ -356,64 +269,36 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 }
             };
 
-            var indexName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "index-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var indexName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "index-name", StringComparison.InvariantCultureIgnoreCase));
             indexName.Action = (token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
-                index.Name = ((IdentifierToken) token).Identifier;
+                index.Name = ((TextToken)token).Text;
             };
 
-            var indexNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "index-name-word", StringComparison.InvariantCultureIgnoreCase));
-            indexNameWord.Action = (token, accumulator) =>
-            {
-                var index = accumulator.GetLastResult<IndexInfo>();
-                index.Name = ((WordToken) token).Word;
-            };
-
-            var indexTableName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "index-table-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var indexTableName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "index-table-name", StringComparison.InvariantCultureIgnoreCase));
             indexTableName.Action = (token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
-                index.TableName = ((IdentifierToken) token).Identifier;
+                index.TableName = ((TextToken)token).Text;
             };
 
-            var indexTableNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "index-table-name-word", StringComparison.InvariantCultureIgnoreCase));
-            indexTableNameWord.Action = (token, accumulator) =>
-            {
-                var index = accumulator.GetLastResult<IndexInfo>();
-                index.TableName = ((WordToken) token).Word;
-            };
-
-            var indexColumnName = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "index-column-name-ident", StringComparison.InvariantCultureIgnoreCase));
+            var indexColumnName = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "index-column-name", StringComparison.InvariantCultureIgnoreCase));
             indexColumnName.Action = (token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
                 var columnInfo = new IndexColumnInfo
                 {
-                    ColumnName = ((IdentifierToken) token).Identifier,
+                    ColumnName = ((TextToken)token).Text,
                 };
                 index.Columns.Add(columnInfo);
             };
 
-            var indexColumnNameWord = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "index-column-name-word", StringComparison.InvariantCultureIgnoreCase));
-            indexColumnNameWord.Action = (token, accumulator) =>
-            {
-                var index = accumulator.GetLastResult<IndexInfo>();
-                var columnInfo = new IndexColumnInfo
-                {
-                    ColumnName = ((WordToken) token).Word,
-                };
-                index.Columns.Add(columnInfo);
-            };
-
-            var indexColumnAsc = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "index-column-asc", StringComparison.InvariantCultureIgnoreCase));
+            var indexColumnAsc = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "index-column-asc", StringComparison.InvariantCultureIgnoreCase));
             indexColumnAsc.Action = (token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
@@ -421,8 +306,8 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 columnInfo.SortDirection = SortDirection.Asc;
             };
 
-            var indexColumnDesc = (ActionNode) allSqlNodes.Single(x =>
-                string.Equals(x.Name, "index-column-desc", StringComparison.InvariantCultureIgnoreCase));
+            var indexColumnDesc = (ActionNode)allSqlNodes.Single(x =>
+               string.Equals(x.Name, "index-column-desc", StringComparison.InvariantCultureIgnoreCase));
             indexColumnDesc.Action = (token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
@@ -432,12 +317,19 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             #endregion
 
-            foreach (var identifiersAsWord in identifiersAsWords)
+            var objectNameTokens = allSqlNodes
+                .Where(x =>
+                    x is TextNode textNode &&
+                    x.Name.EndsWith("-name", StringComparison.InvariantCultureIgnoreCase))
+                .Cast<TextNode>()
+                .ToList();
+
+            foreach (var objectNameToken in objectNameTokens)
             {
-                identifiersAsWord.AdditionalChecker = (token, accumulator) =>
+                objectNameToken.AdditionalChecker = (token, accumulator) =>
                 {
-                    var wordToken = ((WordToken) token).Word.ToUpperInvariant();
-                    return !reservedWords.Contains(wordToken);
+                    var textToken = ((TextToken)token).Text.ToUpperInvariant();
+                    return !reservedWords.Contains(textToken);
                 };
             }
 
@@ -469,13 +361,13 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act
-            var sqlResults = freshParser.Parse(freshRoot, sqlTokens);
+            var sqlResults = parser.Parse(root, sqlTokens);
 
             // Assert
             Assert.That(sqlResults, Has.Length.EqualTo(5));
 
             // create table: my_tab
-            var createTableResult = (TableInfo) sqlResults[0];
+            var createTableResult = (TableInfo)sqlResults[0];
             Assert.That(createTableResult.Name, Is.EqualTo("my_tab"));
             var tableColumns = createTableResult.Columns;
             Assert.That(tableColumns, Has.Count.EqualTo(3));
@@ -524,17 +416,17 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             var tableForeignKey = foreignKeys[0];
             Assert.That(tableForeignKey.Name, Is.EqualTo("fk_other"));
             Assert.That(tableForeignKey.TableName, Is.EqualTo("other_table"));
-            CollectionAssert.AreEquivalent(tableForeignKey.ColumnNames, new[] {"id"});
-            CollectionAssert.AreEquivalent(tableForeignKey.ReferencedColumnNames, new[] {"otherId"});
+            CollectionAssert.AreEquivalent(tableForeignKey.ColumnNames, new[] { "id" });
+            CollectionAssert.AreEquivalent(tableForeignKey.ReferencedColumnNames, new[] { "otherId" });
 
             tableForeignKey = foreignKeys[1];
             Assert.That(tableForeignKey.Name, Is.EqualTo("fk_cool"));
             Assert.That(tableForeignKey.TableName, Is.EqualTo("other_table"));
-            CollectionAssert.AreEquivalent(tableForeignKey.ColumnNames, new[] {"id", "name"});
-            CollectionAssert.AreEquivalent(tableForeignKey.ReferencedColumnNames, new[] {"otherId", "birthday"});
+            CollectionAssert.AreEquivalent(tableForeignKey.ColumnNames, new[] { "id", "name" });
+            CollectionAssert.AreEquivalent(tableForeignKey.ReferencedColumnNames, new[] { "otherId", "birthday" });
 
             // create table: other_table
-            createTableResult = (TableInfo) sqlResults[1];
+            createTableResult = (TableInfo)sqlResults[1];
             Assert.That(createTableResult.Name, Is.EqualTo("other_table"));
             tableColumns = createTableResult.Columns;
             Assert.That(tableColumns, Has.Count.EqualTo(2));
@@ -566,7 +458,7 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             Assert.That(foreignKeys, Is.Empty);
 
             // create index: UX_name
-            var createIndexResult = (IndexInfo) sqlResults[2];
+            var createIndexResult = (IndexInfo)sqlResults[2];
             Assert.That(createIndexResult.Name, Is.EqualTo("UX_name"));
             Assert.That(createIndexResult.TableName, Is.EqualTo("my_tab"));
             Assert.That(createIndexResult.IsUnique, Is.True);
@@ -588,7 +480,7 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             Assert.That(indexColumnInfo.SortDirection, Is.EqualTo(SortDirection.Asc));
 
             // create index: IX_id
-            createIndexResult = (IndexInfo) sqlResults[3];
+            createIndexResult = (IndexInfo)sqlResults[3];
             Assert.That(createIndexResult.Name, Is.EqualTo("IX_id"));
             Assert.That(createIndexResult.TableName, Is.EqualTo("my_tab"));
             Assert.That(createIndexResult.IsUnique, Is.False);
@@ -602,7 +494,7 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             Assert.That(indexColumnInfo.SortDirection, Is.EqualTo(SortDirection.Asc));
 
             // create index: UX_name
-            createIndexResult = (IndexInfo) sqlResults[4];
+            createIndexResult = (IndexInfo)sqlResults[4];
             Assert.That(createIndexResult.Name, Is.EqualTo("IX_Salary"));
             Assert.That(createIndexResult.TableName, Is.EqualTo("my_tab"));
             Assert.That(createIndexResult.IsUnique, Is.False);

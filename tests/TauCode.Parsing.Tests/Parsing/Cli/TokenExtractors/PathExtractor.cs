@@ -1,7 +1,8 @@
-﻿using System;
-using TauCode.Extensions;
+﻿using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Tests.Parsing.Cli.Tokens;
+using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
+using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
@@ -17,13 +18,16 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
             LexingHelper.IsLatinLetter(c) ||
             c.IsIn('\\', '/', '.', '!', '~', '$', '%', '-', '+');
 
+        protected override void ResetState()
+        {
+            // idle
+        }
 
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            var token = new PathToken(str);
+            var token = new TextToken(PathTextClass.Instance, NoneTextDecoration.Instance, str);
             return token;
-
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
@@ -51,7 +55,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            return CharChallengeResult.Finish;
         }
     }
 }
