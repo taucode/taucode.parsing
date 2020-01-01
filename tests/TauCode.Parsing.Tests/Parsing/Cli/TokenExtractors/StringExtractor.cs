@@ -2,6 +2,8 @@
 using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextClasses;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
@@ -16,7 +18,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
-            return new StringToken(value);
+            return new TextToken(StringTextClass.Instance, NoneTextDecoration.Instance, value);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

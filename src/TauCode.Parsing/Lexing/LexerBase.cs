@@ -83,7 +83,7 @@ namespace TauCode.Parsing.Lexing
 
         public ILexingEnvironment Environment { get; }
 
-        public List<IToken> Lexize(string input)
+        public IList<IToken> Lexize(string input)
         {
             if (!_tokenExtractorsInited)
             {

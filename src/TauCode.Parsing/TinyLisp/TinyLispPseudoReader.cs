@@ -4,12 +4,13 @@ using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextClasses;
 
 namespace TauCode.Parsing.TinyLisp
 {
     public class TinyLispPseudoReader
     {
-        public PseudoList Read(IReadOnlyList<IToken> tokens)
+        public PseudoList Read(IList<IToken> tokens)
         {
             var list = new PseudoList();
             var pos = 0;
@@ -18,7 +19,7 @@ namespace TauCode.Parsing.TinyLisp
             return list;
         }
 
-        private void ReadPseudoListContent(PseudoList list, IReadOnlyList<IToken> tokens, ref int pos, int depth)
+        private void ReadPseudoListContent(PseudoList list, IList<IToken> tokens, ref int pos, int depth)
         {
             while (true)
             {
@@ -73,9 +74,9 @@ namespace TauCode.Parsing.TinyLisp
                     list.AddElement(element);
                     pos++;
                 }
-                else if (token is StringToken stringToken)
+                else if (token is TextToken textToken && textToken.Class is StringTextClass)
                 {
-                    var element = new StringAtom(stringToken.Value);
+                    var element = new StringAtom(textToken.Text);
                     list.AddElement(element);
                     pos++;
                 }

@@ -1,5 +1,7 @@
 ﻿using System;
 using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextClasses;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
@@ -32,7 +34,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            return new WordToken(str);
+            return new TextToken(WordTextClass.Instance, NoneTextDecoration.Instance, str);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

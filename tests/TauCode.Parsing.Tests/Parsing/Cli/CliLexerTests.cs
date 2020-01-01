@@ -39,8 +39,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             Assert.That(termToken.Value, Is.EqualTo("one"));
 
             // '{\"name\" : \"ak\"}'
-            var stringToken = (StringToken)tokens[3];
-            Assert.That(stringToken.Value, Is.EqualTo("{\"name\" : \"ak\"}"));
+            var stringToken = (TextToken)tokens[3];
+            Assert.That(stringToken.Text, Is.EqualTo("{\"name\" : \"ak\"}"));
 
             // --repeat
             keyToken = (KeyToken)tokens[4];

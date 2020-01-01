@@ -82,7 +82,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             Assert.That(tokens[4] as KeywordToken, Has.Property(nameof(KeywordToken.Keyword)).EqualTo(":word"));
 
-            Assert.That(tokens[5] as StringToken, Has.Property(nameof(StringToken.Value)).EqualTo("CREATE"));
+            Assert.That(tokens[5] as TextToken, Has.Property(nameof(TextToken.Text)).EqualTo("CREATE"));
 
             Assert.That(
                 tokens[6] as LispPunctuationToken,
@@ -182,7 +182,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [TestCase("symbol at end", typeof(LispSymbolToken))]
         [TestCase("keyword at :end", typeof(KeywordToken))]
         [TestCase("integer at end 1488", typeof(IntegerToken))]
-        [TestCase("string at \"end\"", typeof(StringToken))]
+        [TestCase("string at \"end\"", typeof(TextToken))]
         [TestCase("( punctuation at end )", typeof(LispPunctuationToken))]
         [TestCase("comment :somma ;end", typeof(KeywordToken))]
         public void Lexize_TokenAtEnd_LexizedCorrectly(string input, Type lastTokenExpectedType)
