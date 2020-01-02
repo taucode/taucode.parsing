@@ -17,7 +17,7 @@ namespace TauCode.Parsing.Building
 
         private int _nextUnnamedOptIndex;
         private int _nextUnnamedAltIndex;
-        
+
         #endregion
 
         #region Constructor
@@ -117,9 +117,22 @@ namespace TauCode.Parsing.Building
         private BuildResult BuildCustomItem(Element item)
         {
             var links = item.GetItemLinks();
-            var node = _nodeFactory.CreateNode(item.AsPseudoList());
-            var nodeBox = new NodeBox(node, links);
-            return new BuildResult(nodeBox, nodeBox);
+            var headNode = _nodeFactory.CreateNode(item.AsPseudoList());
+            var tree = headNode.FetchTree();
+            if (tree.Count == 1)
+            {
+                var nodeBox = new NodeBox(headNode, links);
+                return new BuildResult(nodeBox, nodeBox);
+            }
+            else
+            {
+                var headNodeBox = new NodeBox(headNode);
+
+                var tailNode = tree.Single(x => x.EstablishedLinks.Count == 0);
+                var tailNodeBox = new NodeBox(tailNode, links);
+
+                return new BuildResult(headNodeBox, tailNodeBox);
+            }
         }
 
         private BuildResult BuildBlock(Element item)
