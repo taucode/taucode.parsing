@@ -8,9 +8,10 @@ namespace TauCode.Parsing.Nodes
     {
         public ExactPunctuationNode(
             char c,
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
-            string name) : base(action, family, name)
+            string name)
+            : base(action, family, name)
         {
             if (!LexingHelper.IsStandardPunctuationChar(c))
             {

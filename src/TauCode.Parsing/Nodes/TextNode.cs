@@ -11,7 +11,7 @@ namespace TauCode.Parsing.Nodes
 
         public TextNode(
             IEnumerable<ITextClass> textClasses,
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)
@@ -22,7 +22,7 @@ namespace TauCode.Parsing.Nodes
 
         public TextNode(
             ITextClass textClass,
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : this(new[] { textClass }, action, family, name)

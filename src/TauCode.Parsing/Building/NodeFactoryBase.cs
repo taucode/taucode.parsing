@@ -2,9 +2,9 @@
 
 namespace TauCode.Parsing.Building
 {
-    public abstract class NodeFactory : INodeFactory
+    public abstract class NodeFactoryBase : INodeFactory
     {
-        protected NodeFactory(string nodeFamilyName)
+        protected NodeFactoryBase(string nodeFamilyName)
         {
             this.NodeFamily = new NodeFamily(nodeFamilyName);
         }

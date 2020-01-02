@@ -8,7 +8,7 @@ namespace TauCode.Parsing.Nodes
         #region Constructor
 
         protected ActionNode(
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(family, name)
@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Nodes
                 throw new ParsingException("'Act' should not be called if 'Action' is null.");
             }
 
-            this.Action(token, resultAccumulator);
+            this.Action(this, token, resultAccumulator);
             resultAccumulator.Modify();
         }
 
@@ -36,7 +36,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Public
 
-        public Action<IToken, IResultAccumulator> Action { get; set; }
+        public Action<ActionNode, IToken, IResultAccumulator> Action { get; set; }
 
         #endregion
     }

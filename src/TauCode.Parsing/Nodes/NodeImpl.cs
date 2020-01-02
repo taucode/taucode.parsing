@@ -13,6 +13,7 @@ namespace TauCode.Parsing.Nodes
         private readonly HashSet<INode> _establishedLinks;
         private readonly HashSet<string> _claimedLinkNames;
         private Func<IToken, IResultAccumulator, bool> _additionalChecker;
+        private readonly IDictionary<string, string> _properties;
 
         #endregion
 
@@ -39,6 +40,7 @@ namespace TauCode.Parsing.Nodes
 
             _establishedLinks = new HashSet<INode>();
             _claimedLinkNames = new HashSet<string>();
+            _properties = new Dictionary<string, string>();
         }
 
         #endregion
@@ -168,6 +170,8 @@ namespace TauCode.Parsing.Nodes
 
             return _establishedLinks;
         }
+
+        public IDictionary<string, string> Properties => _properties;
 
         #endregion
     }

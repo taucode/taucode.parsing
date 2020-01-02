@@ -11,7 +11,7 @@ using TauCode.Parsing.Tokens.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
-    public class CliNodeFactory : NodeFactory
+    public class CliNodeFactory : NodeFactoryBase
     {
         public CliNodeFactory(string nodeFamilyName)
             : base(nodeFamilyName)

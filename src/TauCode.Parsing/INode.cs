@@ -13,5 +13,6 @@ namespace TauCode.Parsing
         IReadOnlyCollection<INode> EstablishedLinks { get; }
         IReadOnlyCollection<string> ClaimedLinkNames { get; }
         IReadOnlyCollection<INode> ResolveLinks();
+        IDictionary<string, string> Properties { get; }
     }
 }

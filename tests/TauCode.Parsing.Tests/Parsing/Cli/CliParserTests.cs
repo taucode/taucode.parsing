@@ -37,13 +37,13 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             var mm = (ActionNode)allNodes.Single(x =>
                 string.Equals(x.Name, "command-mm", StringComparison.InvariantCultureIgnoreCase));
-            mm.Action = (token, accumulator) =>
+            mm.Action = (node, token, accumulator) =>
             {
                 var command = new MmCommand();
                 accumulator.AddResult(command);
             };
 
-            void AddKey(IToken token, IResultAccumulator accumulator)
+            void AddKey(ActionNode actionNode, IToken token, IResultAccumulator accumulator)
             {
                 var command = accumulator.GetLastResult<MmCommand>();
                 command.Entries.Add(new MmCommandEntry());
@@ -52,7 +52,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 entry.Key = ((TextToken)token).Text;
             }
 
-            void AddValue(IToken token, IResultAccumulator accumulator)
+            void AddValue(ActionNode actionNode, IToken token, IResultAccumulator accumulator)
             {
                 var command = accumulator.GetLastResult<MmCommand>();
                 var entry = command.Entries.Last();

@@ -53,7 +53,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             // table
             var createTable = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "do-create-table", StringComparison.InvariantCultureIgnoreCase));
-            createTable.Action = (token, accumulator) =>
+            createTable.Action = (node, token, accumulator) =>
             {
                 var tableInfo = new TableInfo();
                 accumulator.AddResult(tableInfo);
@@ -61,7 +61,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var tableName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "table-name", StringComparison.InvariantCultureIgnoreCase));
-            tableName.Action = (token, accumulator) =>
+            tableName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 tableInfo.Name = ((TextToken)token).Text;
@@ -69,7 +69,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var columnName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "column-name", StringComparison.InvariantCultureIgnoreCase));
-            columnName.Action = (token, accumulator) =>
+            columnName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = new ColumnInfo
@@ -81,7 +81,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var typeName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "type-name", StringComparison.InvariantCultureIgnoreCase));
-            typeName.Action = (token, accumulator) =>
+            typeName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
@@ -90,7 +90,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var precision = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "precision", StringComparison.InvariantCultureIgnoreCase));
-            precision.Action = (token, accumulator) =>
+            precision.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
@@ -99,7 +99,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var scale = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "scale", StringComparison.InvariantCultureIgnoreCase));
-            scale.Action = (token, accumulator) =>
+            scale.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
@@ -108,7 +108,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var nullToken = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "null", StringComparison.InvariantCultureIgnoreCase));
-            nullToken.Action = (token, accumulator) =>
+            nullToken.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
@@ -117,7 +117,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var notNullToken = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "not-null", StringComparison.InvariantCultureIgnoreCase));
-            notNullToken.Action = (token, accumulator) =>
+            notNullToken.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
@@ -126,7 +126,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var constraintName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "constraint-name", StringComparison.InvariantCultureIgnoreCase));
-            constraintName.Action = (token, accumulator) =>
+            constraintName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 tableInfo.LastConstraintName = ((TextToken)token).Text;
@@ -134,7 +134,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var pk = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "do-primary-key", StringComparison.InvariantCultureIgnoreCase));
-            pk.Action = (token, accumulator) =>
+            pk.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 tableInfo.PrimaryKey = new PrimaryKeyInfo
@@ -145,7 +145,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var pkColumnName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "pk-column-name", StringComparison.InvariantCultureIgnoreCase));
-            pkColumnName.Action = (token, accumulator) =>
+            pkColumnName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var primaryKey = tableInfo.PrimaryKey;
@@ -158,7 +158,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var pkColumnAsc = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "asc", StringComparison.InvariantCultureIgnoreCase));
-            pkColumnAsc.Action = (token, accumulator) =>
+            pkColumnAsc.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var primaryKey = tableInfo.PrimaryKey;
@@ -168,7 +168,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var pkColumnDesc = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "desc", StringComparison.InvariantCultureIgnoreCase));
-            pkColumnDesc.Action = (token, accumulator) =>
+            pkColumnDesc.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var primaryKey = tableInfo.PrimaryKey;
@@ -178,7 +178,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var fk = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "do-foreign-key", StringComparison.InvariantCultureIgnoreCase));
-            fk.Action = (token, accumulator) =>
+            fk.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = new ForeignKeyInfo
@@ -190,7 +190,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var fkTableName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "fk-referenced-table-name", StringComparison.InvariantCultureIgnoreCase));
-            fkTableName.Action = (token, accumulator) =>
+            fkTableName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
@@ -200,7 +200,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var fkColumnName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "fk-column-name", StringComparison.InvariantCultureIgnoreCase));
-            fkColumnName.Action = (token, accumulator) =>
+            fkColumnName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
@@ -210,7 +210,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var fkReferencedColumnName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "fk-referenced-column-name", StringComparison.InvariantCultureIgnoreCase));
-            fkReferencedColumnName.Action = (token, accumulator) =>
+            fkReferencedColumnName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
@@ -221,7 +221,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             // index
             var createUniqueIndex = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "do-create-unique-index", StringComparison.InvariantCultureIgnoreCase));
-            createUniqueIndex.Action = (token, accumulator) =>
+            createUniqueIndex.Action = (node, token, accumulator) =>
             {
                 var index = new IndexInfo
                 {
@@ -232,7 +232,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var createIndex = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "do-create-index", StringComparison.InvariantCultureIgnoreCase));
-            createIndex.Action = (token, accumulator) =>
+            createIndex.Action = (node, token, accumulator) =>
             {
                 bool brandNewIndex;
 
@@ -271,7 +271,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var indexName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "index-name", StringComparison.InvariantCultureIgnoreCase));
-            indexName.Action = (token, accumulator) =>
+            indexName.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
                 index.Name = ((TextToken)token).Text;
@@ -279,7 +279,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var indexTableName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "index-table-name", StringComparison.InvariantCultureIgnoreCase));
-            indexTableName.Action = (token, accumulator) =>
+            indexTableName.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
                 index.TableName = ((TextToken)token).Text;
@@ -287,7 +287,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var indexColumnName = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "index-column-name", StringComparison.InvariantCultureIgnoreCase));
-            indexColumnName.Action = (token, accumulator) =>
+            indexColumnName.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
                 var columnInfo = new IndexColumnInfo
@@ -299,7 +299,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var indexColumnAsc = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "index-column-asc", StringComparison.InvariantCultureIgnoreCase));
-            indexColumnAsc.Action = (token, accumulator) =>
+            indexColumnAsc.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
                 var columnInfo = index.Columns.Last();
@@ -308,7 +308,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var indexColumnDesc = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "index-column-desc", StringComparison.InvariantCultureIgnoreCase));
-            indexColumnDesc.Action = (token, accumulator) =>
+            indexColumnDesc.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
                 var columnInfo = index.Columns.Last();

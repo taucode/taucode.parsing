@@ -12,7 +12,7 @@ namespace TauCode.Parsing.Nodes
         public ExactTextNode(
             string exactText,
             IEnumerable<ITextClass> textClasses,
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)
@@ -26,7 +26,7 @@ namespace TauCode.Parsing.Nodes
         public ExactTextNode(
             string exactText,
             ITextClass textClass,
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : this(exactText, new[] { textClass }, action, family, name)

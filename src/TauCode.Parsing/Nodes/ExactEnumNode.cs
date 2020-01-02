@@ -9,7 +9,7 @@ namespace TauCode.Parsing.Nodes
 
         public ExactEnumNode(
             TEnum value,
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)

@@ -10,7 +10,7 @@ using TauCode.Parsing.Tokens.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql
 {
-    public class SqlNodeFactory : NodeFactory
+    public class SqlNodeFactory : NodeFactoryBase
     {
         public SqlNodeFactory(string nodeFamilyName)
             : base(nodeFamilyName)

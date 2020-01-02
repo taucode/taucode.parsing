@@ -8,7 +8,7 @@ namespace TauCode.Parsing.Nodes
         #region Constructor
 
         public IntegerNode(
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)
