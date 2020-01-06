@@ -8,6 +8,22 @@ namespace TauCode.Parsing.Lexing
     // todo: clean up
     public abstract class LexerBase : ILexer
     {
+        #region Nested
+
+        private struct NewLinesSkipResult
+        {
+            public NewLinesSkipResult(int charsSkipped, int linesSkipped)
+            {
+                this.CharsSkipped = charsSkipped;
+                this.LinesSkipped = linesSkipped;
+            }
+
+            public int CharsSkipped { get; }
+            public int LinesSkipped { get; }
+        }
+
+        #endregion
+
         #region Fields
 
         private string _input;
@@ -135,7 +151,12 @@ namespace TauCode.Parsing.Lexing
 
                 if (LexingHelper.IsCaretControl(c))
                 {
-                    throw new NotImplementedException();
+                    var newLinesSkipResult = this.SkipNewLines();
+                    this.Advance(newLinesSkipResult.CharsSkipped);
+                    this.CurrentLine += newLinesSkipResult.LinesSkipped;
+                    this.CurrentColumn = 0;
+
+                    continue;
                 }
 
                 var tokenExtractors = this.GetSuitableTokenExtractors(c);
@@ -168,6 +189,74 @@ namespace TauCode.Parsing.Lexing
                     list.Add(nextToken);
                 }
             }
+        }
+
+        protected char? GetNextChar()
+        {
+            if (this.IsEnd())
+            {
+                throw new NotImplementedException(); // todo error, why are we here?
+            }
+
+            var wantedIndex = this.CurrentCharIndex + 1;
+            if (wantedIndex == _input.Length)
+            {
+                return null;
+            }
+
+            return _input[wantedIndex];
+        }
+
+        private NewLinesSkipResult SkipNewLines()
+        {
+            var charsSkipped = 0;
+            var linesSkipped = 0;
+            
+
+            while (true)
+            {
+                if (this.IsEnd())
+                {
+                    break;
+                }
+
+                var c = this.GetCurrentChar();
+
+                if (c == '\r')
+                {
+                    var nextChar = this.GetNextChar();
+                    if (nextChar.HasValue)
+                    {
+                        if (nextChar.Value == '\n')
+                        {
+                            // got CRLF
+                            this.Advance(2);
+                            linesSkipped++;
+                        }
+                        else
+                        {
+                            // end of input, let's get out here.
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        this.Advance();
+                        throw new NotImplementedException();
+                    }
+                }
+                else if (c == '\n')
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    // no line-breaks; let's get out of this loop.
+                    break;
+                }
+            }
+
+            return new NewLinesSkipResult(charsSkipped, linesSkipped);
         }
 
         #endregion

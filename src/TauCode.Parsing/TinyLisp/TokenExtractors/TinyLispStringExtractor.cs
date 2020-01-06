@@ -24,39 +24,40 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
             return new TextToken(
                 StringTextClass.Instance,
                 DoubleQuoteTextDecoration.Instance,
                 value,
-                Position.TodoErrorPosition,
-                LexingHelper.TodoErrorConsumedLength);
+                position,
+                consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            throw new NotImplementedException();
-            //var pos = this.GetLocalPosition();
+            var pos = this.LocalCharIndex;
 
-            //if (pos == 0)
-            //{
-            //    if (c == '"')
-            //    {
-            //        return CharChallengeResult.Continue;
-            //    }
-            //    else
-            //    {
-            //        throw LexingHelper.CreateInternalErrorException();
-            //    }
-            //}
+            if (pos == 0)
+            {
+                return CharChallengeResult.Continue;
+            }
 
-            //if (c == '"')
-            //{
-            //    this.Advance();
-            //    return CharChallengeResult.Finish;
-            //}
+            if (LexingHelper.IsCaretControl(c))
+            {
+                throw new NotImplementedException(); // newline in string. todo.
+            }
 
-            //return CharChallengeResult.Continue;
+            if (c == '"')
+            {
+                this.Advance();
+                return CharChallengeResult.Finish;
+            }
+
+            return CharChallengeResult.Continue;
         }
 
         protected override CharChallengeResult ChallengeEnd()

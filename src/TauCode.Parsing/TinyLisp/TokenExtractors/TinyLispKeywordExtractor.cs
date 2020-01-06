@@ -4,6 +4,7 @@ using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
+    // todo clean up
     public class TinyLispKeywordExtractor : TokenExtractorBase
     {
         public TinyLispKeywordExtractor()
@@ -22,34 +23,29 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var res = this.ExtractResultString();
 
-            return new KeywordToken(res, Position.TodoErrorPosition, LexingHelper.TodoErrorConsumedLength);
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new KeywordToken(res, position, consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            throw new NotImplementedException();
-            //var pos = this.GetLocalPosition();
+            var pos = this.LocalCharIndex;
 
-            //if (pos == 0)
-            //{
-            //    if (c == ':')
-            //    {
-            //        return CharChallengeResult.Continue;
-            //    }
-            //    else
-            //    {
-            //        throw LexingHelper.CreateInternalErrorException();
-            //    }
-            //}
+            if (pos == 0)
+            {
+                return CharChallengeResult.Continue; // 0th char is always ok
+            }
 
-            //var isMine = c.IsAcceptableSymbolNameChar();
-            //if (isMine)
-            //{
-            //    return CharChallengeResult.Continue;
-            //}
+            var isMine = c.IsAcceptableSymbolNameChar();
+            if (isMine)
+            {
+                return CharChallengeResult.Continue;
+            }
 
-            //return CharChallengeResult.Finish;
+            return CharChallengeResult.Finish;
         }
 
         protected override CharChallengeResult ChallengeEnd()
