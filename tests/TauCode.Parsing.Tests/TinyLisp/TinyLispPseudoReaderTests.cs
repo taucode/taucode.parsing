@@ -99,16 +99,15 @@ namespace TauCode.Parsing.Tests.TinyLisp
             ILexer lexer = new TinyLispLexer();
             var tokens = lexer.Lexize(form);
 
-            throw new NotImplementedException();
-            //var badToken = new EnumToken<int>(1488);
-            //tokens.Insert(1, badToken);
-            //var reader = new TinyLispPseudoReader();
+            var badToken = new EnumToken<int>(1488, Position.Zero, 4);
+            tokens.Insert(1, badToken);
+            var reader = new TinyLispPseudoReader();
 
-            //// Act
-            //var ex = Assert.Throws<TinyLispException>(() => reader.Read(tokens));
+            // Act
+            var ex = Assert.Throws<TinyLispException>(() => reader.Read(tokens));
 
-            //// Assert
-            //Assert.That(ex.Message, Is.EqualTo($"Could not read token of type '{badToken.GetType().FullName}'."));
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo($"Could not read token of type '{badToken.GetType().FullName}'."));
         }
     }
 }

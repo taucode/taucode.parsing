@@ -6,7 +6,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
     // todo clean up
     public class IntegerExtractor : TokenExtractorBase
     {
-        public IntegerExtractor(/*ILexingEnvironment environment*/)
+        public IntegerExtractor( /*ILexingEnvironment environment*/)
             : base(
                 //environment,
                 LexingHelper.IsIntegerFirstChar)
@@ -108,30 +108,31 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
-            //var localPos = this.GetLocalPosition();
+            var localPos = this.LocalCharIndex;
 
-            //if (localPos == 0)
-            //{
-            //    throw LexingHelper.CreateInternalErrorException();
-            //}
-            //else if (localPos == 1)
-            //{
-            //    var c = this.GetLocalChar(0);
-            //    if (LexingHelper.IsDigit(c))
-            //    {
-            //        return CharChallengeResult.Finish; // int consisting of a single digit - no problem.
-            //    }
-            //    else
-            //    {
-            //        return CharChallengeResult.GiveUp; // not an int. let some another extractor deal with it.
-            //    }
-            //}
-            //else
-            //{
-            //    // we consumed more than one char, so it is guaranteed we've got a good int already
-            //    return CharChallengeResult.Finish;
-            //}
+            if (localPos == 0)
+            {
+                throw LexingHelper.CreateInternalErrorLexingException(
+                    this.GetCurrentAbsolutePosition()); // how could we get to end if we are actually at the start (localPos == 0)?!
+            }
+            else if (localPos == 1)
+            {
+                //var c = this.GetLocalChar(0);
+                var c = this.GetLocalChar(0);
+                if (LexingHelper.IsDigit(c))
+                {
+                    return CharChallengeResult.Finish; // int consisting of a single digit - no problem.
+                }
+                else
+                {
+                    return CharChallengeResult.GiveUp; // not an int. let some another extractor deal with it.
+                }
+            }
+            else
+            {
+                // we consumed more than one char, so it is guaranteed we've got a good int already
+                return CharChallengeResult.Finish;
+            }
         }
     }
 }

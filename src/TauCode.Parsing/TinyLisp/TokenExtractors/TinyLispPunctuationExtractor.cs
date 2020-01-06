@@ -25,7 +25,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
             if (result.Length != 1)
             {
-                throw LexingHelper.CreateInternalErrorException();
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
             }
 
             var c = result.Single();

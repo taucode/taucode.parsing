@@ -4,7 +4,7 @@ using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Lexing
 {
-    // todo clean up
+    // todo clean up; groom #regions.
     public abstract class TokenExtractorBase : ITokenExtractor
     {
         #region Fields
@@ -65,12 +65,12 @@ namespace TauCode.Parsing.Lexing
         //protected int GetLocalCharIndex() => _localPos;
 
         //protected int GetAbsolutePosition() => _startPos + _localPos;
-        protected int GetAbsolutePosition() => this.StartingAbsoluteCharIndex + this.LocalCharIndex;
+        protected int GetAbsoluteCharIndex() => this.StartingAbsoluteCharIndex + this.LocalCharIndex;
 
-        //protected char GetLocalChar(int localPosition)
-        //{
-        //    return _input[_startPos + localPosition];
-        //}
+        protected char GetLocalChar(int localIndex)
+        {
+            return _input[this.StartingAbsoluteCharIndex + localIndex];
+        }
 
         protected virtual bool AllowsCharAfterProduction(char c)
         {
@@ -131,7 +131,7 @@ namespace TauCode.Parsing.Lexing
             else
             {
                 // how on earth did we get here?
-                throw LexingHelper.CreateInternalErrorException(); // todo: 'CreateInternalError_Lexing_Exception'
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
             }
 
             this.LocalCharIndex += indexShift;
@@ -143,10 +143,10 @@ namespace TauCode.Parsing.Lexing
         {
             if (this.IsEnd())
             {
-                throw LexingHelper.CreateInternalErrorException();
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
             }
 
-            var absPos = this.GetAbsolutePosition();
+            var absPos = this.GetAbsoluteCharIndex();
             var c = _input[absPos];
             return c;
         }
@@ -155,7 +155,7 @@ namespace TauCode.Parsing.Lexing
         {
             if (this.IsEnd())
             {
-                throw LexingHelper.CreateInternalErrorException();
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
             }
 
             var absIndex = this.StartingAbsoluteCharIndex + this.LocalCharIndex + 1;
@@ -166,6 +166,21 @@ namespace TauCode.Parsing.Lexing
 
             var c = _input[absIndex];
             return c;
+        }
+
+        protected Position GetStartingAbsolutePosition()
+        {
+            var line = this.StartingLine;
+            var column = this.StartingColumn;
+            return new Position(line, column);
+        }
+
+        protected Position GetCurrentAbsolutePosition()
+        {
+            var line = this.StartingLine + this.LineShift;
+            var column = this.CurrentColumn;
+
+            return new Position(line, column);
         }
 
         public void AddSuccessors(params TokenExtractorBase[] successors) => _successors.AddRange(successors);
@@ -212,7 +227,7 @@ namespace TauCode.Parsing.Lexing
                             {
                                 // possible situation. e.g. in LISP '+1488' looks like as a symbol at the beginning, but at the end would appear
                                 // an integer, and symbol extractor would refuse deliver such a result as a symbol.
-                                throw new NotImplementedException();
+                                return new TokenExtractionResult(null, 0, 0, null);
                                 //return new TokenExtractionResult(0, null);
                             }
                             else
@@ -225,11 +240,12 @@ namespace TauCode.Parsing.Lexing
                             throw new NotImplementedException();
                         //return new TokenExtractionResult(0, null);
 
-                        case CharChallengeResult.Error:
-                            throw new LexingException("Unexpected end of input.");
+                        //case CharChallengeResult.Error:
+                        //    throw new LexingException("Unexpected end of input.");
 
                         default:
-                            throw LexingHelper.CreateInternalErrorException();
+                            // should never happen. this is an enum, after all.
+                            throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
                     }
                 }
 
@@ -263,7 +279,7 @@ namespace TauCode.Parsing.Lexing
                                 var check = this.AllowsCharAfterProduction(upcomingChar);
                                 if (!check)
                                 {
-                                    throw new LexingException($"Unexpected char: '{upcomingChar}'.");
+                                    throw new LexingException($"Unexpected char: '{upcomingChar}'.", this.GetCurrentAbsolutePosition());
                                 }
                             }
                         }
@@ -272,7 +288,7 @@ namespace TauCode.Parsing.Lexing
                         return new TokenExtractionResult(token, this.LocalCharIndex, this.LineShift, this.CurrentColumn);
 
                     default:
-                        throw new LexingException($"Internal error. Unexpected test char result: '{testCharResult}'.");
+                        throw new LexingException($"Internal error. Unexpected test char result: '{testCharResult}'.", this.GetCurrentAbsolutePosition());
                 }
             }
         }

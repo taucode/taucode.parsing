@@ -241,17 +241,37 @@ namespace TauCode.Parsing.Tests.TinyLisp
         }
 
         [Test]
-        public void Lexize_UnexpectedEnd_ThrowsLexerException()
+        [TestCase("\r \n \r\n \n\r   \"not close", 5, 3, Description = "Not closed string 'not close'")]
+        public void Lexize_UnexpectedEnd_ThrowsLexerException(string notClosedString, int line, int column)
         {
             // Arrange
-            var input = "\"not close";
+            var input = notClosedString;
 
             // Act
             ILexer lexer = new TinyLispLexer();
             var ex = Assert.Throws<LexingException>(() => lexer.Lexize(input));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Unexpected end of input."));
+            Assert.That(ex.Message, Is.EqualTo("Unclosed string."));
+            Assert.That(ex.Position, Is.EqualTo(new Position(line, column)));
+        }
+
+        [Test]
+        [TestCase("\n \r\"broken\n", 2, 7, Description = "Not closed string 'not close' interrupted with \\n")]
+        [TestCase("\n \r \"broken\r", 2, 8, Description = "Not closed string 'not close' interrupted with \\r")]
+        [TestCase("\n \r  \"broken\r\n", 2, 9, Description = "Not closed string 'not close' interrupted with \\r\\n")]
+        public void Lexize_NewLineInString_ThrowsLexerException(string notClosedString, int line, int column)
+        {
+            // Arrange
+            var input = notClosedString;
+
+            // Act
+            ILexer lexer = new TinyLispLexer();
+            var ex = Assert.Throws<LexingException>(() => lexer.Lexize(input));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Newline in string."));
+            Assert.That(ex.Position, Is.EqualTo(new Position(line, column)));
         }
 
         [Test]

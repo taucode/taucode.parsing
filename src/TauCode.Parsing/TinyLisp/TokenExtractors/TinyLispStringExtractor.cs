@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
@@ -48,7 +48,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
             if (LexingHelper.IsCaretControl(c))
             {
-                throw new NotImplementedException(); // newline in string. todo.
+                throw new LexingException("Newline in string.", this.GetCurrentAbsolutePosition());
             }
 
             if (c == '"')
@@ -62,7 +62,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            return CharChallengeResult.Error; // unclosed string. that's my error. no other extractor can handle this.
+            throw new LexingException("Unclosed string.", this.GetStartingAbsolutePosition());
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace TauCode.Parsing.Exceptions
 {
+    // todo: consider renaming it into ~'ParseFailedException'
     [Serializable]
     public class ParsingException : Exception
     {

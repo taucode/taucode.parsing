@@ -10,10 +10,20 @@ namespace TauCode.Parsing.Lexing
     {
         #region Nested
 
-        private struct NewLinesSkipResult
+        private struct CaretControlCharsSkipResult
         {
-            public NewLinesSkipResult(int charsSkipped, int linesSkipped)
+            public CaretControlCharsSkipResult(int charsSkipped, int linesSkipped)
             {
+                if (charsSkipped <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(charsSkipped));
+                }
+
+                if (linesSkipped <= 0)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(linesSkipped));
+                }
+
                 this.CharsSkipped = charsSkipped;
                 this.LinesSkipped = linesSkipped;
             }
@@ -37,6 +47,7 @@ namespace TauCode.Parsing.Lexing
         //private int _currentLine;
 
         private readonly List<ITokenExtractor> _tokenExtractors;
+
         private bool _tokenExtractorsInited;
 
         #endregion
@@ -44,7 +55,7 @@ namespace TauCode.Parsing.Lexing
         #region Constructor
 
         // todo clean up
-        protected LexerBase(/*ILexingEnvironment environment = null*/)
+        protected LexerBase( /*ILexingEnvironment environment = null*/)
         {
             //this.Environment = environment ?? StandardLexingEnvironment.Instance;
             _tokenExtractors = new List<ITokenExtractor>();
@@ -66,13 +77,39 @@ namespace TauCode.Parsing.Lexing
         protected int CurrentColumn { get; private set; }
 
         //protected bool IsEnd() => _currentPosition == _input.Length;
-        protected bool IsEnd() => this.CurrentCharIndex == _input.Length;
+
+        protected bool IsEndAtIndex(int index)
+        {
+            if (index > _input.Length)
+            {
+                // no one should ever query such a thing.
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentPosition());
+            }
+
+            if (index == _input.Length)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        //protected bool IsEnd() => this.CurrentCharIndex == _input.Length;
+        protected bool IsEnd() => this.IsEndAtIndex(this.CurrentCharIndex);
+
+        protected Position GetCurrentPosition()
+        {
+            var line = this.CurrentLine;
+            var column = this.CurrentColumn;
+
+            return new Position(line, column);
+        }
 
         protected char GetCurrentChar()
         {
             if (this.IsEnd())
             {
-                throw LexingHelper.CreateUnexpectedEndOfInputException();
+                throw LexingHelper.CreateUnexpectedEndOfInputException(this.GetCurrentPosition());
             }
 
             //return _input[_currentPosition];
@@ -83,7 +120,7 @@ namespace TauCode.Parsing.Lexing
 
         protected void Advance(int shift = 1)
         {
-            if (shift < 0 || /*_currentPosition*/ this.CurrentCharIndex + shift > _input.Length)
+            if (shift <= 0 || /*_currentPosition*/ this.CurrentCharIndex + shift > _input.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(shift));
             }
@@ -151,9 +188,9 @@ namespace TauCode.Parsing.Lexing
 
                 if (LexingHelper.IsCaretControl(c))
                 {
-                    var newLinesSkipResult = this.SkipNewLines();
-                    this.Advance(newLinesSkipResult.CharsSkipped);
-                    this.CurrentLine += newLinesSkipResult.LinesSkipped;
+                    var caretControlCharsSkipResult = this.SkipCaretControlChars();
+                    this.Advance(caretControlCharsSkipResult.CharsSkipped);
+                    this.CurrentLine += caretControlCharsSkipResult.LinesSkipped;
                     this.CurrentColumn = 0;
 
                     continue;
@@ -164,7 +201,8 @@ namespace TauCode.Parsing.Lexing
 
                 foreach (var tokenExtractor in tokenExtractors)
                 {
-                    var result = tokenExtractor.Extract(_input, this.CurrentCharIndex, this.CurrentLine, this.CurrentColumn);
+                    var result = tokenExtractor.Extract(_input, this.CurrentCharIndex, this.CurrentLine,
+                        this.CurrentColumn);
                     nextToken = result.Token;
 
                     if (nextToken != null)
@@ -181,7 +219,8 @@ namespace TauCode.Parsing.Lexing
 
                 if (nextToken == null)
                 {
-                    throw new LexingException($"Unexpected char: '{c}'.");
+                    throw new LexingException($"Unexpected char: '{c}'.",
+                        this.GetCurrentPosition()); // todo: ut this, and all LexingException-s/CreateInternalErrorLexingException-s.
                 }
 
                 if (nextToken.HasPayload)
@@ -191,11 +230,37 @@ namespace TauCode.Parsing.Lexing
             }
         }
 
-        protected char? GetNextChar()
+        //protected char? GetNextChar()
+        //{
+        //    if (this.IsEnd())
+        //    {
+        //        throw new NotImplementedException(); // todo error, why are we here?
+        //    }
+
+        //    var wantedIndex = this.CurrentCharIndex + 1;
+        //    if (wantedIndex == _input.Length)
+        //    {
+        //        return null;
+        //    }
+
+        //    return _input[wantedIndex];
+        //}
+
+        protected char GetCharAtIndex(int index)
         {
-            if (this.IsEnd())
+            if (this.IsEndAtIndex(index))
             {
-                throw new NotImplementedException(); // todo error, why are we here?
+                throw new NotImplementedException(); // error todo
+            }
+
+            return _input[index];
+        }
+
+        protected char? TryGetCharAtIndex(int index)
+        {
+            if (this.IsEndAtIndex(index))
+            {
+                throw new NotImplementedException(); // todo error we should not query such a thing.
             }
 
             var wantedIndex = this.CurrentCharIndex + 1;
@@ -207,47 +272,61 @@ namespace TauCode.Parsing.Lexing
             return _input[wantedIndex];
         }
 
-        private NewLinesSkipResult SkipNewLines()
+        private CaretControlCharsSkipResult SkipCaretControlChars()
         {
-            var charsSkipped = 0;
-            var linesSkipped = 0;
-            
+            //var totalCharsSkipped = 0;
+            var totalLinesSkipped = 0;
+
+            //int delta;
+
+            var startIndex = this.CurrentCharIndex;
+            var index = startIndex;
 
             while (true)
             {
-                if (this.IsEnd())
+                if (this.IsEndAtIndex(index))
                 {
                     break;
                 }
 
-                var c = this.GetCurrentChar();
+                //var c = this.GetCurrentChar();
+                var c = this.GetCharAtIndex(index);
 
                 if (c == '\r')
                 {
-                    var nextChar = this.GetNextChar();
+                    var nextChar = this.TryGetCharAtIndex(index + 1);
                     if (nextChar.HasValue)
                     {
                         if (nextChar.Value == '\n')
                         {
                             // got CRLF
-                            this.Advance(2);
-                            linesSkipped++;
+                            index += 2;
+                            totalLinesSkipped++;
+
+                            //throw new NotImplementedException();
+                            //delta = 2; // \r, \n
+                            //totalCharsSkipped += delta;
+                            //this.Advance(delta);
+                            //totalLinesSkipped++;
                         }
                         else
                         {
-                            // end of input, let's get out here.
-                            break;
+                            // got CR only
+                            index += 1;
+                            totalLinesSkipped++;
                         }
                     }
                     else
                     {
-                        this.Advance();
+                        //this.Advance();
                         throw new NotImplementedException();
                     }
                 }
                 else if (c == '\n')
                 {
-                    throw new NotImplementedException();
+                    // got LF
+                    index++;
+                    totalLinesSkipped++;
                 }
                 else
                 {
@@ -256,7 +335,9 @@ namespace TauCode.Parsing.Lexing
                 }
             }
 
-            return new NewLinesSkipResult(charsSkipped, linesSkipped);
+            var totalDelta = index - startIndex;
+
+            return new CaretControlCharsSkipResult(totalDelta, totalLinesSkipped);
         }
 
         #endregion

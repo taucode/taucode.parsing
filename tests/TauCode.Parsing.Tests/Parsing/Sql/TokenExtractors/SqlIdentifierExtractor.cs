@@ -82,6 +82,10 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             }
         }
 
-        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Error; // met end while extracting identifier.
+        protected override CharChallengeResult ChallengeEnd()
+        {
+            //return CharChallengeResult.Error; // met end while extracting identifier.
+            throw new NotImplementedException(); // todo: error. see comment above.
+        }
     }
 }

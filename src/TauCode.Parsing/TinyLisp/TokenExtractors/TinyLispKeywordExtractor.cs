@@ -50,17 +50,16 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
-            //if (this.GetLocalPosition() > 1)
-            //{
-            //    // consumed more than one char (0th is always ':'), so no problem here
-            //    return CharChallengeResult.Finish;
-            //}
-            //else
-            //{
-            //    // consumed just one char (':'), therefore error. on one other token extractor in LISP can have ':' at the beginning.
-            //    return CharChallengeResult.Error;
-            //}
+            if (this.LocalCharIndex > 1)
+            {
+                // consumed more than one char (0th is always ':'), so no problem here
+                return CharChallengeResult.Finish;
+            }
+            else
+            {
+                // consumed just one char (':'), therefore error. No one other token extractor in LISP can have ':' at the beginning.
+                throw new NotImplementedException(); // todo: error. see comment above.
+            }
         }
     }
 }

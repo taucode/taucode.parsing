@@ -76,20 +76,20 @@ namespace TauCode.Parsing.Lexing
 
         #region Exceptions
 
-        internal static LexingException CreateUnexpectedEndOfInputException()
+        internal static LexingException CreateUnexpectedEndOfInputException(Position position)
         {
-            return new LexingException("Unexpected end of input.");
+            return new LexingException("Unexpected end of input.", position);
         }
 
-        internal static LexingException CreateUnexpectedCharException(char c)
-        {
-            return new LexingException($"Unexpected char: '{c}'.");
-        }
+        //internal static LexingException CreateUnexpectedCharException(char c, Position position)
+        //{
+        //    return new LexingException($"Unexpected char: '{c}'.", position);
+        //}
 
-        internal static LexingException CreateEmptyTokenException()
-        {
-            return new LexingException("Empty token.");
-        }
+        //internal static LexingException CreateEmptyTokenException()
+        //{
+        //    return new LexingException("Empty token.");
+        //}
 
         #endregion
 
@@ -105,9 +105,9 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
 
-        internal static LexingException CreateInternalErrorException()
+        internal static LexingException CreateInternalErrorLexingException(Position position)
         {
-            return new LexingException("Internal error.");
+            return new LexingException("Internal error.", position);
         }
 
         public static bool IsInlineWhiteSpace(char c) => c.IsIn(' ', '\t');
