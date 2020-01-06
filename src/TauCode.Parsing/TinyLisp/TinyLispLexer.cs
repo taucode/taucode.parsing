@@ -4,10 +4,11 @@ using TauCode.Parsing.TinyLisp.TokenExtractors;
 
 namespace TauCode.Parsing.TinyLisp
 {
+    // todo clean up; ctor not needed
     public class TinyLispLexer : LexerBase
     {
-        public TinyLispLexer(ILexingEnvironment environment = null)
-            : base(environment)
+        public TinyLispLexer(/*ILexingEnvironment environment = null*/)
+            : base(/*environment*/)
         {
         }
 
@@ -34,7 +35,7 @@ namespace TauCode.Parsing.TinyLisp
             this.AddTokenExtractor(stringExtractor);
 
             // integer
-            var integerExtractor = new IntegerExtractor(this.Environment);
+            var integerExtractor = new IntegerExtractor();
             this.AddTokenExtractor(integerExtractor);
 
             // *** Links ***

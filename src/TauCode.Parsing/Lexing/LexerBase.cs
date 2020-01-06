@@ -10,19 +10,26 @@ namespace TauCode.Parsing.Lexing
         #region Fields
 
         private string _input;
-        private int _pos;
+
+        /// <summary>
+        /// Index of current char, regardless line feeds, tabs etc.
+        /// </summary>
+        private int _currentPosition;
+
+        private int _currentColumn;
+        private int _currentLine;
 
         private readonly List<ITokenExtractor> _tokenExtractors;
         private bool _tokenExtractorsInited;
-
 
         #endregion
 
         #region Constructor
 
-        protected LexerBase(ILexingEnvironment environment = null)
+        // todo clean up
+        protected LexerBase(/*ILexingEnvironment environment = null*/)
         {
-            this.Environment = environment ?? StandardLexingEnvironment.Instance;
+            //this.Environment = environment ?? StandardLexingEnvironment.Instance;
             _tokenExtractors = new List<ITokenExtractor>();
         }
 
@@ -37,7 +44,7 @@ namespace TauCode.Parsing.Lexing
 
         #region Protected
 
-        protected bool IsEnd() => _pos == _input.Length;
+        protected bool IsEnd() => _currentPosition == _input.Length;
 
         protected char GetCurrentChar()
         {
@@ -46,19 +53,19 @@ namespace TauCode.Parsing.Lexing
                 throw LexingHelper.CreateUnexpectedEndOfInputException();
             }
 
-            return _input[_pos];
+            return _input[_currentPosition];
         }
 
-        protected int GetCurrentPosition() => _pos;
+        protected int GetCurrentPosition() => _currentPosition;
 
         protected void Advance(int shift = 1)
         {
-            if (shift < 0 || _pos + shift > _input.Length)
+            if (shift < 0 || _currentPosition + shift > _input.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(shift));
             }
 
-            _pos += shift;
+            _currentPosition += shift;
         }
 
         protected List<ITokenExtractor> GetSuitableTokenExtractors(char firstChar)
@@ -81,7 +88,7 @@ namespace TauCode.Parsing.Lexing
 
         #region ILexer Members
 
-        public ILexingEnvironment Environment { get; }
+        //public ILexingEnvironment Environment { get; }
 
         public IList<IToken> Lexize(string input)
         {
@@ -92,7 +99,10 @@ namespace TauCode.Parsing.Lexing
             }
 
             _input = input ?? throw new ArgumentNullException(nameof(input));
-            _pos = 0;
+            _currentPosition = 0;
+            _currentLine = 0;
+            _currentColumn = 0;
+
             var list = new List<IToken>();
 
             while (true)
@@ -105,37 +115,39 @@ namespace TauCode.Parsing.Lexing
                 var c = this.GetCurrentChar();
                 var pos = this.GetCurrentPosition();
 
-                if (this.Environment.IsSpace(c))
-                {
-                    this.Advance();
-                    continue;
-                }
+                throw new NotImplementedException();
 
-                var tokenExtractors = this.GetSuitableTokenExtractors(c);
-                IToken nextToken = null;
+                //if (this.Environment.IsSpace(c))
+                //{
+                //    this.Advance();
+                //    continue;
+                //}
 
-                foreach (var tokenExtractor in tokenExtractors)
-                {
-                    var result = tokenExtractor.Extract(_input, pos);
-                    nextToken = result.Token;
+                //var tokenExtractors = this.GetSuitableTokenExtractors(c);
+                //IToken nextToken = null;
 
-                    if (nextToken != null)
-                    {
-                        this.Advance(result.Shift);
-                        nextToken = result.Token;
-                        break;
-                    }
-                }
+                //foreach (var tokenExtractor in tokenExtractors)
+                //{
+                //    var result = tokenExtractor.Extract(_input, pos);
+                //    nextToken = result.Token;
 
-                if (nextToken == null)
-                {
-                    throw new LexingException($"Unexpected char: '{c}'.");
-                }
+                //    if (nextToken != null)
+                //    {
+                //        this.Advance(result.Shift);
+                //        nextToken = result.Token;
+                //        break;
+                //    }
+                //}
 
-                if (nextToken.HasPayload)
-                {
-                    list.Add(nextToken);
-                }
+                //if (nextToken == null)
+                //{
+                //    throw new LexingException($"Unexpected char: '{c}'.");
+                //}
+
+                //if (nextToken.HasPayload)
+                //{
+                //    list.Add(nextToken);
+                //}
             }
         }
 

@@ -1,18 +1,18 @@
 ﻿using System;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tests.Parsing.Cli.TextDecorations;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
+    // todo clean up
     public class KeyExtractor : TokenExtractorBase
     {
         private ITextDecoration _textDecoration;
         private int? _skip;
 
-        public KeyExtractor(ILexingEnvironment environment)
-            : base(environment, c => c == '-')
+        public KeyExtractor(/*ILexingEnvironment environment*/)
+            : base(/*environment,*/ c => c == '-')
         {
         }
 
@@ -25,8 +25,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString().Substring(_skip.Value);
-            var token = new TextToken(KeyTextClass.Instance, _textDecoration, str);
-            return token;
+            throw new NotImplementedException();
+            //var token = new TextToken(KeyTextClass.Instance, _textDecoration, str);
+            //return token;
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
@@ -70,12 +71,13 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
             }
 
             // todo: test keys "-", "--", "---", "--fo-", "-fo-", "---foo" etc.
-            if (this.Environment.IsSpace(c) || c == '=')
-            {
-                return CharChallengeResult.Finish;
-            }
+            throw new NotImplementedException();
+            //if (this.Environment.IsSpace(c) || c == '=')
+            //{
+            //    return CharChallengeResult.Finish;
+            //}
 
-            return CharChallengeResult.GiveUp;
+            //return CharChallengeResult.GiveUp;
         }
 
         protected override CharChallengeResult ChallengeEnd()

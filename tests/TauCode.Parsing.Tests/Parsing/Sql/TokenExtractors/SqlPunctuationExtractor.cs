@@ -1,7 +1,6 @@
-﻿using System.Linq;
+﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
@@ -9,7 +8,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
     public class SqlPunctuationExtractor : TokenExtractorBase
     {
         public SqlPunctuationExtractor()
-            : base(StandardLexingEnvironment.Instance, SqlPunctuationFirstCharPredicate)
+            : base(SqlPunctuationFirstCharPredicate)
         {
         }
 
@@ -27,7 +26,8 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         {
             var str = this.ExtractResultString();
 
-            return new PunctuationToken(str.Single());
+            throw new NotImplementedException();
+            //return new PunctuationToken(str.Single());
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

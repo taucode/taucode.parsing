@@ -7,7 +7,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispSymbolExtractor() 
             : base(
-                StandardLexingEnvironment.Instance,
+                //StandardLexingEnvironment.Instance,
                 TinyLispHelper.IsAcceptableSymbolNameChar)
         {
         }
@@ -26,7 +26,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 return null;
             }
 
-            return new LispSymbolToken(str);
+            return new LispSymbolToken(str, Position.TodoErrorPosition, LexingHelper.TodoErrorConsumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

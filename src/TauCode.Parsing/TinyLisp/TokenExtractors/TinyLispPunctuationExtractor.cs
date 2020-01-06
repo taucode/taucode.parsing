@@ -1,14 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
+    // todo clean up
     public class TinyLispPunctuationExtractor : TokenExtractorBase
     {
         public TinyLispPunctuationExtractor()
             : base(
-                StandardLexingEnvironment.Instance,
+                //StandardLexingEnvironment.Instance,
                 TinyLispHelper.IsPunctuation)
         {
         }
@@ -30,7 +32,9 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             var c = result.Single();
             var punctuation = TinyLispHelper.CharToPunctuation(c);
 
-            return new LispPunctuationToken(punctuation);
+            throw new NotImplementedException();
+
+            //return new LispPunctuationToken(punctuation);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

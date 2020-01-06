@@ -5,12 +5,13 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
+    // todo clean up
     public class WordExtractor : TokenExtractorBase
     {
         public WordExtractor(
-            ILexingEnvironment environment,
+            //ILexingEnvironment environment,
             Func<char, bool> firstCharPredicate = null)
-            : base(environment, firstCharPredicate ?? StandardFirstCharPredicate)
+            : base(/*environment,*/ firstCharPredicate ?? StandardFirstCharPredicate)
         {
         }
 
@@ -39,7 +40,12 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            return new TextToken(WordTextClass.Instance, NoneTextDecoration.Instance, str);
+            return new TextToken(
+                WordTextClass.Instance,
+                NoneTextDecoration.Instance,
+                str,
+                Position.TodoErrorPosition,
+                LexingHelper.TodoErrorConsumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
@@ -59,20 +65,21 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 }
             }
 
-            if (
-                this.Environment.IsSpace(c) ||
-                LexingHelper.IsStandardPunctuationChar(c))
-            {
-                return CharChallengeResult.Finish;
-            }
+            throw new NotImplementedException();
+            //if (
+            //    this.Environment.IsSpace(c) ||
+            //    LexingHelper.IsStandardPunctuationChar(c))
+            //{
+            //    return CharChallengeResult.Finish;
+            //}
 
-            if (this.AllowsInnerChar(c))
-            {
-                return CharChallengeResult.Continue;
-            }
+            //if (this.AllowsInnerChar(c))
+            //{
+            //    return CharChallengeResult.Continue;
+            //}
 
-            // I don't want this char inside my word.
-            return CharChallengeResult.GiveUp;
+            //// I don't want this char inside my word.
+            //return CharChallengeResult.GiveUp;
         }
 
         protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish; // word ended with end-of-input? no problem.

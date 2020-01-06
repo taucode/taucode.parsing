@@ -1,9 +1,6 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
-using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
@@ -11,8 +8,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
     {
         private char? _startingDelimiter;
 
-        public StringExtractor(ILexingEnvironment environment)
-            : base(environment, c => c.IsIn('\'', '"'))
+        public StringExtractor()
+            : base(c => c.IsIn('\'', '"'))
         {
         }
 
@@ -25,12 +22,13 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
-            return new TextToken(
-                StringTextClass.Instance,
-                _startingDelimiter.Value == '"'
-                    ? (ITextDecoration)DoubleQuoteTextDecoration.Instance
-                    : (ITextDecoration)SingleQuoteTextDecoration.Instance,
-                value);
+            throw new NotImplementedException();
+            //return new TextToken(
+            //    StringTextClass.Instance,
+            //    _startingDelimiter.Value == '"'
+            //        ? (ITextDecoration)DoubleQuoteTextDecoration.Instance
+            //        : (ITextDecoration)SingleQuoteTextDecoration.Instance,
+            //    value);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
@@ -44,23 +42,25 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
-            if (this.Environment.IsLineBreak(c))
-            {
-                return CharChallengeResult.Error;
-            }
+            throw new NotImplementedException();
 
-            if (c == '\'' || c == '"')
-            {
-                if (c == _startingDelimiter.Value)
-                {
-                    this.Advance();
-                    return CharChallengeResult.Finish;
-                }
+            //if (this.Environment.IsLineBreak(c))
+            //{
+            //    return CharChallengeResult.Error;
+            //}
 
-                return CharChallengeResult.Continue;
-            }
+            //if (c == '\'' || c == '"')
+            //{
+            //    if (c == _startingDelimiter.Value)
+            //    {
+            //        this.Advance();
+            //        return CharChallengeResult.Finish;
+            //    }
 
-            return CharChallengeResult.Continue;
+            //    return CharChallengeResult.Continue;
+            //}
+
+            //return CharChallengeResult.Continue;
         }
 
         //private char GetStartingDelimiter()

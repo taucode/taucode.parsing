@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 
@@ -6,8 +7,8 @@ namespace TauCode.Parsing.Lexing
 {
     public static class LexingHelper
     {
-        internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
-        internal static readonly HashSet<char> LineBreakChars = new HashSet<char>(new[] { '\r', '\n' });
+        //internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
+        //internal static readonly HashSet<char> LineBreakChars = new HashSet<char>(new[] { '\r', '\n' });
 
         private static readonly HashSet<char> IntegerFirstChars;
         private static readonly HashSet<char> Digits;
@@ -71,6 +72,8 @@ namespace TauCode.Parsing.Lexing
             LatinLetters = new HashSet<char>(latinLetters);
         }
 
+        public static int TodoErrorConsumedLength => throw new NotImplementedException();
+
         #region Exceptions
 
         internal static LexingException CreateUnexpectedEndOfInputException()
@@ -90,9 +93,9 @@ namespace TauCode.Parsing.Lexing
 
         #endregion
 
-        public static bool IsSpace(char c) => SpaceChars.Contains(c);
+        //public static bool IsSpace(char c) => SpaceChars.Contains(c);
 
-        public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
+        //public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
         
         public static bool IsIntegerFirstChar(char c) => IntegerFirstChars.Contains(c);
 

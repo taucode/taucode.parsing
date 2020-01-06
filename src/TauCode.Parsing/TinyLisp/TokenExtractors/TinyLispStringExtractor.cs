@@ -9,7 +9,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispStringExtractor()
             : base(
-                StandardLexingEnvironment.Instance,
+                //StandardLexingEnvironment.Instance,
                 x => x == '"')
         {
         }
@@ -23,7 +23,12 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
-            return new TextToken(StringTextClass.Instance, DoubleQuoteTextDecoration.Instance, value);
+            return new TextToken(
+                StringTextClass.Instance,
+                DoubleQuoteTextDecoration.Instance,
+                value,
+                Position.TodoErrorPosition,
+                LexingHelper.TodoErrorConsumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

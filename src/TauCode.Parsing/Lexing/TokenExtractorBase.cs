@@ -18,11 +18,11 @@ namespace TauCode.Parsing.Lexing
         #region Constructor
 
         protected TokenExtractorBase(
-            ILexingEnvironment environment,
+            //ILexingEnvironment environment,
             Func<char, bool> firstCharPredicate)
         {
 
-            Environment = environment ?? throw new ArgumentNullException(nameof(environment));
+            //Environment = environment ?? throw new ArgumentNullException(nameof(environment));
             FirstCharPredicate = firstCharPredicate ?? throw new ArgumentNullException(nameof(firstCharPredicate));
 
             _successors = new List<ITokenExtractor>();
@@ -44,7 +44,7 @@ namespace TauCode.Parsing.Lexing
 
         #region Protected
 
-        protected readonly ILexingEnvironment Environment;
+        //protected readonly ILexingEnvironment Environment;
 
         protected Func<char, bool> FirstCharPredicate { get; }
 
@@ -169,15 +169,16 @@ namespace TauCode.Parsing.Lexing
                         // check if next char is ok.
                         if (!this.IsEnd())
                         {
-                            var upcomingChar = this.GetCurrentChar();
-                            if (!Environment.IsSpace(upcomingChar))
-                            {
-                                var check = this.AllowsCharAfterProduction(upcomingChar);
-                                if (!check)
-                                {
-                                    throw new LexingException($"Unexpected char: '{upcomingChar}'.");
-                                }
-                            }
+                            throw new NotImplementedException();
+                            //var upcomingChar = this.GetCurrentChar();
+                            //if (!Environment.IsSpace(upcomingChar))
+                            //{
+                            //    var check = this.AllowsCharAfterProduction(upcomingChar);
+                            //    if (!check)
+                            //    {
+                            //        throw new LexingException($"Unexpected char: '{upcomingChar}'.");
+                            //    }
+                            //}
                         }
 
                         return new TokenExtractionResult(this.GetLocalPosition(), token);

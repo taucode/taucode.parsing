@@ -1,4 +1,5 @@
-﻿using TauCode.Extensions;
+﻿using System;
+using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.Tokens;
@@ -10,7 +11,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
     public class SqlIdentifierExtractor : TokenExtractorBase
     {
         public SqlIdentifierExtractor()
-            : base(StandardLexingEnvironment.Instance, x => x.IsIn('[', '`', '"'))
+            : base(x => x.IsIn('[', '`', '"'))
         {
         }
 
@@ -29,10 +30,11 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             }
 
             var identifier = str.Substring(1, str.Length - 2);
-            return new TextToken(
-                IdentifierTextClass.Instance,
-                NoneTextDecoration.Instance,
-                identifier);
+            throw new NotImplementedException();
+            //return new TextToken(
+            //    IdentifierTextClass.Instance,
+            //    NoneTextDecoration.Instance,
+            //    identifier);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

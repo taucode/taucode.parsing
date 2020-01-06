@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using System;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -7,7 +8,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispCommentExtractor()
             : base(
-                StandardLexingEnvironment.Instance,
+                //StandardLexingEnvironment.Instance,
                 x => x == ';')
         {
         }
@@ -15,7 +16,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            return new CommentToken(str);
+            return new CommentToken(str, Position.TodoErrorPosition, LexingHelper.TodoErrorConsumedLength);
         }
 
         protected override void ResetState()
@@ -40,12 +41,14 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 }
             }
 
-            if (this.Environment.IsLineBreak(c))
-            {
-                return CharChallengeResult.Finish;
-            }
+            throw new NotImplementedException();
 
-            return CharChallengeResult.Continue;
+            //if (this.Environment.IsLineBreak(c))
+            //{
+            //    return CharChallengeResult.Finish;
+            //}
+
+            //return CharChallengeResult.Continue;
         }
 
         protected override CharChallengeResult ChallengeEnd() =>

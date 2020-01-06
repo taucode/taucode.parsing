@@ -1,13 +1,13 @@
 ﻿using System;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
+    // todo clean up
     public class EqualsExtractor : TokenExtractorBase
     {
-        public EqualsExtractor(ILexingEnvironment environment)
-            : base(environment, c => c == '=')
+        public EqualsExtractor(/*ILexingEnvironment environment*/)
+            : base(/*environment,*/ c => c == '=')
         {
         }
 
@@ -18,7 +18,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override IToken ProduceResult()
         {
-            return new PunctuationToken('=');
+            throw new NotImplementedException();
+            //return new PunctuationToken('=');
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

@@ -1,14 +1,12 @@
-﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
-using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextDecorations;
+﻿using System;
+using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
     public class TermExtractor : TokenExtractorBase
     {
-        public TermExtractor(ILexingEnvironment environment)
-            : base(environment, IsTermFirstChar)
+        public TermExtractor()
+            : base(IsTermFirstChar)
         {
         }
 
@@ -25,8 +23,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            var token = new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str);
-            return token;
+            throw new NotImplementedException();
+            //var token = new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str);
+            //return token;
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
@@ -54,19 +53,21 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.Continue;
             }
 
-            if (this.Environment.IsSpace(c))
-            {
-                if (this.GetPreviousChar() == '-')
-                {
-                    return CharChallengeResult.GiveUp; // term cannot end with '-'
-                }
-                else
-                {
-                    return CharChallengeResult.Finish;
-                }
-            }
+            throw new NotImplementedException();
 
-            return CharChallengeResult.GiveUp;
+            //if (this.Environment.IsSpace(c))
+            //{
+            //    if (this.GetPreviousChar() == '-')
+            //    {
+            //        return CharChallengeResult.GiveUp; // term cannot end with '-'
+            //    }
+            //    else
+            //    {
+            //        return CharChallengeResult.Finish;
+            //    }
+            //}
+
+            //return CharChallengeResult.GiveUp;
         }
 
         private char GetPreviousChar()

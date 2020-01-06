@@ -6,9 +6,9 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
     public class IntegerExtractor : TokenExtractorBase
     {
-        public IntegerExtractor(ILexingEnvironment environment)
+        public IntegerExtractor(/*ILexingEnvironment environment*/)
             : base(
-                environment,
+                //environment,
                 LexingHelper.IsIntegerFirstChar)
         {
         }
@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 throw new NotImplementedException();
             }
 
-            return new IntegerToken(str);
+            return new IntegerToken(str, Position.TodoErrorPosition, LexingHelper.TodoErrorConsumedLength);
         }
 
         protected override void ResetState()
@@ -71,13 +71,15 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 return CharChallengeResult.Finish;
             }
 
-            if (this.Environment.IsSpace(c) || char.IsWhiteSpace(c))
-            {
-                return CharChallengeResult.Finish;
-            }
+            throw new NotImplementedException();
 
-            // other chars like letters and stuff => not allowed.
-            return CharChallengeResult.GiveUp;
+            //if (this.Environment.IsSpace(c) || char.IsWhiteSpace(c))
+            //{
+            //    return CharChallengeResult.Finish;
+            //}
+
+            //// other chars like letters and stuff => not allowed.
+            //return CharChallengeResult.GiveUp;
         }
 
         private bool GotOnlySign()

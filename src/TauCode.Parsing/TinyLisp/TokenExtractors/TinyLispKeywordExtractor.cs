@@ -7,7 +7,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         public TinyLispKeywordExtractor()
             : base(
-                StandardLexingEnvironment.Instance,
+                //StandardLexingEnvironment.Instance,
                 x => x == ':')
         {
         }
@@ -21,7 +21,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var res = this.ExtractResultString();
 
-            return new KeywordToken(res);
+            return new KeywordToken(res, Position.TodoErrorPosition, LexingHelper.TodoErrorConsumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

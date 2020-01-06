@@ -1,15 +1,13 @@
-﻿using TauCode.Extensions;
+﻿using System;
+using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
-using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
     public class PathExtractor : TokenExtractorBase
     {
-        public PathExtractor(ILexingEnvironment environment)
-            : base(environment, IsPathFirstChar)
+        public PathExtractor()
+            : base(IsPathFirstChar)
         {
         }
 
@@ -26,8 +24,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            var token = new TextToken(PathTextClass.Instance, NoneTextDecoration.Instance, str);
-            return token;
+            throw new NotImplementedException();
+            //var token = new TextToken(PathTextClass.Instance, NoneTextDecoration.Instance, str);
+            //return token;
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
@@ -45,12 +44,14 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.Continue;
             }
 
-            if (this.Environment.IsSpace(c))
-            {
-                return CharChallengeResult.Finish;
-            }
+            throw new NotImplementedException();
 
-            return CharChallengeResult.GiveUp;
+            //if (this.Environment.IsSpace(c))
+            //{
+            //    return CharChallengeResult.Finish;
+            //}
+
+            //return CharChallengeResult.GiveUp;
         }
 
         protected override CharChallengeResult ChallengeEnd()

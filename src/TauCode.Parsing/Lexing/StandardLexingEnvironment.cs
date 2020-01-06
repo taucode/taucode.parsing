@@ -1,15 +1,17 @@
-﻿namespace TauCode.Parsing.Lexing
-{
-    public class StandardLexingEnvironment : ILexingEnvironment
-    {
-        public static ILexingEnvironment Instance { get; } = new StandardLexingEnvironment();
+﻿//namespace TauCode.Parsing.Lexing
+//{
+//    public class StandardLexingEnvironment : ILexingEnvironment
+//    {
+//        public static ILexingEnvironment Instance { get; } = new StandardLexingEnvironment();
 
-        private StandardLexingEnvironment()
-        {   
-        }
+//        private StandardLexingEnvironment()
+//        {   
+//        }
 
-        public bool IsSpace(char c) => LexingHelper.IsSpace(c);
+//        public bool IsSpace(char c) => LexingHelper.IsSpace(c);
 
-        public bool IsLineBreak(char c) => LexingHelper.IsLineBreak(c);
-    }
-}
+//        public bool IsLineBreak(char c) => LexingHelper.IsLineBreak(c);
+//    }
+//}
+
+// todo clean up

@@ -4,7 +4,7 @@ namespace TauCode.Parsing.Lexing
 {
     public interface ILexer
     {
-        ILexingEnvironment Environment { get; }
+        //ILexingEnvironment Environment { get; }
 
         IList<IToken> Lexize(string input);
     }

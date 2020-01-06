@@ -13,7 +13,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
         protected override void InitTokenExtractors()
         {
             // word
-            var wordExtractor = new WordExtractor(this.Environment);
+            var wordExtractor = new WordExtractor();
             this.AddTokenExtractor(wordExtractor);
 
             // punctuation
@@ -21,7 +21,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             this.AddTokenExtractor(punctuationExtractor);
 
             // integer
-            var integerExtractor = new IntegerExtractor(this.Environment);
+            var integerExtractor = new IntegerExtractor();
             this.AddTokenExtractor(integerExtractor);
 
             // identifier

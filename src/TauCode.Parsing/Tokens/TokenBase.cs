@@ -14,9 +14,19 @@ namespace TauCode.Parsing.Tokens
         #region Constructor
 
         protected TokenBase(
+            Position position,
+            int consumedLength,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
         {
+            this.Position = position;
+            if (consumedLength <= 0)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            this.ConsumedLength = consumedLength;
+
             this.Name = name;
             _properties = new Dictionary<string, string>();
             if (properties != null)
@@ -37,6 +47,8 @@ namespace TauCode.Parsing.Tokens
 
         public string Name { get; }
         public virtual bool HasPayload => true;
+        public Position Position { get; }
+        public int ConsumedLength { get; }
         public IReadOnlyDictionary<string, string> Properties => _properties;
 
         #endregion

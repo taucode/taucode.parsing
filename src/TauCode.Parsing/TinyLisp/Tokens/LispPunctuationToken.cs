@@ -9,9 +9,11 @@ namespace TauCode.Parsing.TinyLisp.Tokens
     {
         public LispPunctuationToken(
             Punctuation value,
+            Position position,
+            int consumedLength,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(value, name, properties)
+            : base(value, position, consumedLength, name, properties)
         {
         }
 
