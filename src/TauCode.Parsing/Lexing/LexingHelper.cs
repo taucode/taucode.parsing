@@ -109,5 +109,11 @@ namespace TauCode.Parsing.Lexing
         {
             return new LexingException("Internal error.");
         }
+
+        public static bool IsInlineWhiteSpace(char c) => c.IsIn(' ', '\t');
+
+        public static bool IsCaretControl(char c) => c.IsIn('\r', '\n');
+
+        public static bool IsInlineWhiteSpaceOrCaretControl(char c) => IsInlineWhiteSpace(c) || IsCaretControl(c);
     }
 }

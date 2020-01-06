@@ -34,15 +34,18 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
-
-            if (pos == 0)
-            {
-                _startingDelimiter = c;
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
-            }
 
             throw new NotImplementedException();
+
+            //var pos = this.GetLocalPosition();
+
+            //if (pos == 0)
+            //{
+            //    _startingDelimiter = c;
+            //    return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+            //}
+
+            
 
             //if (this.Environment.IsLineBreak(c))
             //{

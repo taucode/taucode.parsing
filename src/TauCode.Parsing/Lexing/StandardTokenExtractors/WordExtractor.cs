@@ -51,21 +51,23 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
-
-            if (pos == 0)
-            {
-                if (this.AllowsFirstChar(c))
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
-            }
 
             throw new NotImplementedException();
+            //var pos = this.GetLocalPosition();
+
+            //if (pos == 0)
+            //{
+            //    if (this.AllowsFirstChar(c))
+            //    {
+            //        return CharChallengeResult.Continue;
+            //    }
+            //    else
+            //    {
+            //        throw LexingHelper.CreateInternalErrorException();
+            //    }
+            //}
+
+            
             //if (
             //    this.Environment.IsSpace(c) ||
             //    LexingHelper.IsStandardPunctuationChar(c))

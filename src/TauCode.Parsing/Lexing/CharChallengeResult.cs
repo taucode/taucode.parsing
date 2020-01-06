@@ -21,6 +21,6 @@
         /// <summary>
         /// Character cannot be part of token and should produce lexer error. Example: newline in string constant.
         /// </summary>
-        Error,
+        Error, // todo: get rid of this. throw an exception within the token extractor.
     }
 }

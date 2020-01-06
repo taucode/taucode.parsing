@@ -34,7 +34,9 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void Lexize_HasComments_OmitsComments()
         {
             // Arrange
-            var input = @"();wat";
+            var input =
+@"();wat
+-1599 -1599-";
 
             // Act
             ILexer lexer = new TinyLispLexer();
@@ -42,10 +44,27 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var tokens = lexer.Lexize(input);
 
             // Assert
-            Assert.That(tokens, Has.Count.EqualTo(2));
+            Assert.That(tokens, Has.Count.EqualTo(4));
 
-            Assert.That(tokens[0] as LispPunctuationToken, Has.Property("Value").EqualTo(Punctuation.LeftParenthesis));
-            Assert.That(tokens[1] as LispPunctuationToken, Has.Property("Value").EqualTo(Punctuation.RightParenthesis));
+            var punctuationToken = (LispPunctuationToken)tokens[0];
+            Assert.That(punctuationToken.Position, Is.EqualTo(new Position(0, 0)));
+            Assert.That(punctuationToken.ConsumedLength, Is.EqualTo(1));
+            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.LeftParenthesis));
+
+            punctuationToken = (LispPunctuationToken)tokens[1];
+            Assert.That(punctuationToken.Position, Is.EqualTo(new Position(0, 1)));
+            Assert.That(punctuationToken.ConsumedLength, Is.EqualTo(1));
+            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.RightParenthesis));
+
+            var integerToken = (IntegerToken)tokens[2];
+            Assert.That(integerToken.Position, Is.EqualTo(new Position(1, 0)));
+            Assert.That(integerToken.ConsumedLength, Is.EqualTo(5));
+            Assert.That(integerToken.Value, Is.EqualTo("-1599"));
+
+            var symbolToken = (LispSymbolToken) tokens[3];
+            Assert.That(symbolToken.Position, Is.EqualTo(new Position(1, 6)));
+            Assert.That(symbolToken.ConsumedLength, Is.EqualTo(6));
+            Assert.That(symbolToken.SymbolName, Is.EqualTo("-1599-"));
         }
 
         [Test]
@@ -60,7 +79,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
     (:alt (:block create-table) (:block create-index))
 )
 ";
-            
+
             // Act
             ILexer lexer = new TinyLispLexer();
 
@@ -188,7 +207,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void Lexize_TokenAtEnd_LexizedCorrectly(string input, Type lastTokenExpectedType)
         {
             // Arrange
-            
+
             // Act
             ILexer lexer = new TinyLispLexer();
             var tokens = lexer.Lexize(input);

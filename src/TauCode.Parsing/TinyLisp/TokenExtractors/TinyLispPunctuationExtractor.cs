@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
@@ -32,26 +31,34 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             var c = result.Single();
             var punctuation = TinyLispHelper.CharToPunctuation(c);
 
-            throw new NotImplementedException();
+            var position = new Position(
+                this.StartingLine,
+                this.StartingColumn);
 
-            //return new LispPunctuationToken(punctuation);
+            return new LispPunctuationToken(punctuation, position, this.LocalCharIndex);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
-            var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            //var c = this.GetCurrentChar();
+            //var pos = this.GetLocalPosition();
+            //var pos = this.LocalCharIndex;
 
-            if (pos == 0)
+            //if (pos == 0)
+            //{
+            //    if (TinyLispHelper.PunctuationChars.Contains(c))
+            //    {
+            //        return CharChallengeResult.Continue;
+            //    }
+            //    else
+            //    {
+            //        throw LexingHelper.CreateInternalErrorException();
+            //    }
+            //}
+
+            if (this.LocalCharIndex == 0)
             {
-                if (TinyLispHelper.PunctuationChars.Contains(c))
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
+                return CharChallengeResult.Continue; // local char MUST accepted since it was accepted by 'TinyLispHelper.IsPunctuation'
             }
 
             return CharChallengeResult.Finish; // pos > 0 ==> finish no matter what.

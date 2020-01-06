@@ -26,7 +26,10 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 return null;
             }
 
-            return new LispSymbolToken(str, Position.TodoErrorPosition, LexingHelper.TodoErrorConsumedLength);
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new LispSymbolToken(str, position, consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()

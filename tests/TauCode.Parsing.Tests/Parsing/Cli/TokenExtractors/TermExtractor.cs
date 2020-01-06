@@ -3,6 +3,7 @@ using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
+    // todo clean up
     public class TermExtractor : TokenExtractorBase
     {
         public TermExtractor()
@@ -31,9 +32,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            //var pos = this.GetLocalPosition();
 
-            if (pos == 0)
+            if (this.LocalCharIndex == 0)
             {
                 return CharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
@@ -72,7 +73,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         private char GetPreviousChar()
         {
-            return this.GetLocalChar(this.GetLocalPosition() - 1);
+            throw new NotImplementedException();
+            //return this.GetLocalChar(this.GetLocalPosition() - 1);
         }
 
         protected override CharChallengeResult ChallengeEnd()

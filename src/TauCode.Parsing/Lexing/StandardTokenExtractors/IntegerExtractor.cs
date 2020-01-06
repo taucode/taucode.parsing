@@ -1,9 +1,9 @@
 ﻿using System;
-using TauCode.Extensions;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
+    // todo clean up
     public class IntegerExtractor : TokenExtractorBase
     {
         public IntegerExtractor(/*ILexingEnvironment environment*/)
@@ -28,7 +28,11 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 throw new NotImplementedException();
             }
 
-            return new IntegerToken(str, Position.TodoErrorPosition, LexingHelper.TodoErrorConsumedLength);
+            // todo: these two lines below are copy/pasted
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new IntegerToken(str, position, consumedLength);
         }
 
         protected override void ResetState()
@@ -39,7 +43,10 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+
+            //throw new NotImplementedException();
+
+            var pos = this.LocalCharIndex;
 
             if (pos == 0)
             {
@@ -71,54 +78,60 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 return CharChallengeResult.Finish;
             }
 
-            throw new NotImplementedException();
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                return CharChallengeResult.Finish;
+            }
 
             //if (this.Environment.IsSpace(c) || char.IsWhiteSpace(c))
             //{
             //    return CharChallengeResult.Finish;
             //}
 
-            //// other chars like letters and stuff => not allowed.
-            //return CharChallengeResult.GiveUp;
+            // other chars like letters and stuff => not allowed.
+            return CharChallengeResult.GiveUp;
         }
 
         private bool GotOnlySign()
         {
-            var localPosition = this.GetLocalPosition();
-            if (localPosition == 1)
-            {
-                var firstChar = this.GetLocalChar(0);
-                return firstChar.IsIn('+', '-');
-            }
+            throw new NotImplementedException();
 
-            return false;
+            //var localPosition = this.GetLocalPosition();
+            //if (localPosition == 1)
+            //{
+            //    var firstChar = this.GetLocalChar(0);
+            //    return firstChar.IsIn('+', '-');
+            //}
+
+            //return false;
         }
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            var localPos = this.GetLocalPosition();
+            throw new NotImplementedException();
+            //var localPos = this.GetLocalPosition();
 
-            if (localPos == 0)
-            {
-                throw LexingHelper.CreateInternalErrorException();
-            }
-            else if (localPos == 1)
-            {
-                var c = this.GetLocalChar(0);
-                if (LexingHelper.IsDigit(c))
-                {
-                    return CharChallengeResult.Finish; // int consisting of a single digit - no problem.
-                }
-                else
-                {
-                    return CharChallengeResult.GiveUp; // not an int. let some another extractor deal with it.
-                }
-            }
-            else
-            {
-                // we consumed more than one char, so it is guaranteed we've got a good int already
-                return CharChallengeResult.Finish;
-            }
+            //if (localPos == 0)
+            //{
+            //    throw LexingHelper.CreateInternalErrorException();
+            //}
+            //else if (localPos == 1)
+            //{
+            //    var c = this.GetLocalChar(0);
+            //    if (LexingHelper.IsDigit(c))
+            //    {
+            //        return CharChallengeResult.Finish; // int consisting of a single digit - no problem.
+            //    }
+            //    else
+            //    {
+            //        return CharChallengeResult.GiveUp; // not an int. let some another extractor deal with it.
+            //    }
+            //}
+            //else
+            //{
+            //    // we consumed more than one char, so it is guaranteed we've got a good int already
+            //    return CharChallengeResult.Finish;
+            //}
         }
     }
 }

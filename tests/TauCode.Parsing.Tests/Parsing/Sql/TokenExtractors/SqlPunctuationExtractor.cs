@@ -33,14 +33,15 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            throw new NotImplementedException();
+            //var pos = this.GetLocalPosition();
 
-            if (pos == 0)
-            {
-                return CharChallengeResult.Continue;
-            }
+            //if (pos == 0)
+            //{
+            //    return CharChallengeResult.Continue;
+            //}
 
-            return CharChallengeResult.Finish; // whatever it is - it's a single-char token extractor.
+            //return CharChallengeResult.Finish; // whatever it is - it's a single-char token extractor.
         }
 
         protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish;

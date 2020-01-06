@@ -5,6 +5,7 @@ using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Lexing
 {
+    // todo: clean up
     public abstract class LexerBase : ILexer
     {
         #region Fields
@@ -14,10 +15,10 @@ namespace TauCode.Parsing.Lexing
         /// <summary>
         /// Index of current char, regardless line feeds, tabs etc.
         /// </summary>
-        private int _currentPosition;
+        //private int _currentPosition;
 
-        private int _currentColumn;
-        private int _currentLine;
+        //private int _currentColumn;
+        //private int _currentLine;
 
         private readonly List<ITokenExtractor> _tokenExtractors;
         private bool _tokenExtractorsInited;
@@ -44,7 +45,12 @@ namespace TauCode.Parsing.Lexing
 
         #region Protected
 
-        protected bool IsEnd() => _currentPosition == _input.Length;
+        protected int CurrentCharIndex { get; private set; }
+        protected int CurrentLine { get; private set; }
+        protected int CurrentColumn { get; private set; }
+
+        //protected bool IsEnd() => _currentPosition == _input.Length;
+        protected bool IsEnd() => this.CurrentCharIndex == _input.Length;
 
         protected char GetCurrentChar()
         {
@@ -53,19 +59,22 @@ namespace TauCode.Parsing.Lexing
                 throw LexingHelper.CreateUnexpectedEndOfInputException();
             }
 
-            return _input[_currentPosition];
+            //return _input[_currentPosition];
+            return _input[this.CurrentCharIndex];
         }
 
-        protected int GetCurrentPosition() => _currentPosition;
+        //protected int GetCurrentPosition() => _currentPosition;
 
         protected void Advance(int shift = 1)
         {
-            if (shift < 0 || _currentPosition + shift > _input.Length)
+            if (shift < 0 || /*_currentPosition*/ this.CurrentCharIndex + shift > _input.Length)
             {
                 throw new ArgumentOutOfRangeException(nameof(shift));
             }
 
-            _currentPosition += shift;
+            //_currentPosition += shift;
+            this.CurrentCharIndex += shift;
+            this.CurrentColumn += shift;
         }
 
         protected List<ITokenExtractor> GetSuitableTokenExtractors(char firstChar)
@@ -99,9 +108,12 @@ namespace TauCode.Parsing.Lexing
             }
 
             _input = input ?? throw new ArgumentNullException(nameof(input));
-            _currentPosition = 0;
-            _currentLine = 0;
-            _currentColumn = 0;
+            //_currentPosition = 0;
+            //_currentLine = 0;
+            //_currentColumn = 0;
+            this.CurrentCharIndex = 0;
+            this.CurrentLine = 0;
+            this.CurrentColumn = 0;
 
             var list = new List<IToken>();
 
@@ -113,41 +125,48 @@ namespace TauCode.Parsing.Lexing
                 }
 
                 var c = this.GetCurrentChar();
-                var pos = this.GetCurrentPosition();
+                //var pos = this.GetCurrentPosition();
 
-                throw new NotImplementedException();
+                if (LexingHelper.IsInlineWhiteSpace(c))
+                {
+                    this.Advance();
+                    continue;
+                }
 
-                //if (this.Environment.IsSpace(c))
-                //{
-                //    this.Advance();
-                //    continue;
-                //}
+                if (LexingHelper.IsCaretControl(c))
+                {
+                    throw new NotImplementedException();
+                }
 
-                //var tokenExtractors = this.GetSuitableTokenExtractors(c);
-                //IToken nextToken = null;
+                var tokenExtractors = this.GetSuitableTokenExtractors(c);
+                IToken nextToken = null;
 
-                //foreach (var tokenExtractor in tokenExtractors)
-                //{
-                //    var result = tokenExtractor.Extract(_input, pos);
-                //    nextToken = result.Token;
+                foreach (var tokenExtractor in tokenExtractors)
+                {
+                    var result = tokenExtractor.Extract(_input, this.CurrentCharIndex, this.CurrentLine, this.CurrentColumn);
+                    nextToken = result.Token;
 
-                //    if (nextToken != null)
-                //    {
-                //        this.Advance(result.Shift);
-                //        nextToken = result.Token;
-                //        break;
-                //    }
-                //}
+                    if (nextToken != null)
+                    {
+                        this.Advance(result.PositionShift);
 
-                //if (nextToken == null)
-                //{
-                //    throw new LexingException($"Unexpected char: '{c}'.");
-                //}
+                        this.CurrentLine += result.LineShift;
+                        this.CurrentColumn = result.CurrentColumn.Value;
 
-                //if (nextToken.HasPayload)
-                //{
-                //    list.Add(nextToken);
-                //}
+                        nextToken = result.Token;
+                        break;
+                    }
+                }
+
+                if (nextToken == null)
+                {
+                    throw new LexingException($"Unexpected char: '{c}'.");
+                }
+
+                if (nextToken.HasPayload)
+                {
+                    list.Add(nextToken);
+                }
             }
         }
 

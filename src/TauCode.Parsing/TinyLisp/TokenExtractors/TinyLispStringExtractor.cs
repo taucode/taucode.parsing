@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using System;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
@@ -34,27 +35,28 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            throw new NotImplementedException();
+            //var pos = this.GetLocalPosition();
 
-            if (pos == 0)
-            {
-                if (c == '"')
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
-            }
+            //if (pos == 0)
+            //{
+            //    if (c == '"')
+            //    {
+            //        return CharChallengeResult.Continue;
+            //    }
+            //    else
+            //    {
+            //        throw LexingHelper.CreateInternalErrorException();
+            //    }
+            //}
 
-            if (c == '"')
-            {
-                this.Advance();
-                return CharChallengeResult.Finish;
-            }
+            //if (c == '"')
+            //{
+            //    this.Advance();
+            //    return CharChallengeResult.Finish;
+            //}
 
-            return CharChallengeResult.Continue;
+            //return CharChallengeResult.Continue;
         }
 
         protected override CharChallengeResult ChallengeEnd()

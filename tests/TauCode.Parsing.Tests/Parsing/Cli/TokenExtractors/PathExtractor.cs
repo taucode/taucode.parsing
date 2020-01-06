@@ -32,19 +32,20 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
-
-            if (pos == 0)
-            {
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
-            }
-
-            if (IsPathFirstChar(c) || c == ':')
-            {
-                return CharChallengeResult.Continue;
-            }
-
             throw new NotImplementedException();
+            //var pos = this.GetLocalPosition();
+
+            //if (pos == 0)
+            //{
+            //    return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+            //}
+
+            //if (IsPathFirstChar(c) || c == ':')
+            //{
+            //    return CharChallengeResult.Continue;
+            //}
+
+            
 
             //if (this.Environment.IsSpace(c))
             //{

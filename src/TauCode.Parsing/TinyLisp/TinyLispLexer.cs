@@ -39,6 +39,14 @@ namespace TauCode.Parsing.TinyLisp
             this.AddTokenExtractor(integerExtractor);
 
             // *** Links ***
+            commentExtractor.AddSuccessors(
+                commentExtractor,
+                punctuationExtractor,
+                keywordExtractor,
+                symbolExtractor,
+                stringExtractor,
+                integerExtractor);
+
             punctuationExtractor.AddSuccessors(
                 commentExtractor,
                 punctuationExtractor,
@@ -65,6 +73,7 @@ namespace TauCode.Parsing.TinyLisp
                 integerExtractor);
 
             integerExtractor.AddSuccessors(
+                commentExtractor,
                 punctuationExtractor,
                 stringExtractor);
         }

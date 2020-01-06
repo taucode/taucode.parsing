@@ -1,9 +1,9 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
+    // todo: clean up
     public class TinyLispCommentExtractor : TokenExtractorBase
     {
         public TinyLispCommentExtractor()
@@ -16,7 +16,9 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            return new CommentToken(str, Position.TodoErrorPosition, LexingHelper.TodoErrorConsumedLength);
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+            return new CommentToken(str, position, consumedLength);
         }
 
         protected override void ResetState()
@@ -27,21 +29,33 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
 
-            if (pos == 0)
+            //var pos = this.GetLocalPosition();
+
+            if (this.LocalCharIndex == 0)
             {
-                if (c == ';')
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
+                // 0th char is always accepted by 'firstCharPredicate'
+                return CharChallengeResult.Continue;
+
+                //if (c == ';')
+                //{
+                //    return CharChallengeResult.Continue;
+                //}
+                //else
+                //{
+                //    throw LexingHelper.CreateInternalErrorException();
+                //}
             }
 
-            throw new NotImplementedException();
+            if (LexingHelper.IsCaretControl(c))
+            {
+                this.SkipSingleLineBreak();
+                return CharChallengeResult.Finish;
+            }
+
+            return CharChallengeResult.Continue; // comment is going on.
+
+
 
             //if (this.Environment.IsLineBreak(c))
             //{

@@ -6,10 +6,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 {
     public class SqlLexer : LexerBase
     {
-        public SqlLexer()
-        {
-        }
-
         protected override void InitTokenExtractors()
         {
             // word

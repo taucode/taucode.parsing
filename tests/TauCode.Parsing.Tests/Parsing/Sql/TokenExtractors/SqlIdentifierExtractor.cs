@@ -1,10 +1,6 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
-using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
-using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
@@ -40,29 +36,32 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
 
-            if (pos == 0)
-            {
-                return CharChallengeResult.Continue; // how else?
-            }
+            throw new NotImplementedException();
 
-            if (WordExtractor.StandardInnerCharPredicate(c))
-            {
-                return CharChallengeResult.Continue;
-            }
+            //var pos = this.GetLocalPosition();
 
-            if (c.IsIn(']', '`', '"'))
-            {
-                var openingDelimiter = this.GetLocalChar(0);
-                if (GetClosingDelimiter(openingDelimiter) == c)
-                {
-                    this.Advance();
-                    return CharChallengeResult.Finish;
-                }
-            }
+            //if (pos == 0)
+            //{
+            //    return CharChallengeResult.Continue; // how else?
+            //}
 
-            return CharChallengeResult.Error; // unexpected char within identifier.
+            //if (WordExtractor.StandardInnerCharPredicate(c))
+            //{
+            //    return CharChallengeResult.Continue;
+            //}
+
+            //if (c.IsIn(']', '`', '"'))
+            //{
+            //    var openingDelimiter = this.GetLocalChar(0);
+            //    if (GetClosingDelimiter(openingDelimiter) == c)
+            //    {
+            //        this.Advance();
+            //        return CharChallengeResult.Finish;
+            //    }
+            //}
+
+            //return CharChallengeResult.Error; // unexpected char within identifier.
         }
 
         private char GetClosingDelimiter(char openingDelimiter)
