@@ -1,6 +1,9 @@
-﻿namespace TauCode.Parsing.Exceptions
+﻿using System;
+
+namespace TauCode.Parsing.Exceptions
 {
-    public class InternalParsingLogicException : ParsingException
+    [Serializable]
+    public class InternalParsingLogicException : ParsingExceptionBase
     {
         public InternalParsingLogicException(string message)
             : base(message)

@@ -2,7 +2,8 @@
 
 namespace TauCode.Parsing.Exceptions
 {
-    public class ParseClauseFailedException : ParsingException
+    [Serializable]
+    public class ParseClauseFailedException : ParsingExceptionBase
     {
         protected ParseClauseFailedException(string message, object[] partialParsingResults)
             : base(message)

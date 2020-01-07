@@ -1,5 +1,8 @@
-﻿namespace TauCode.Parsing.Exceptions
+﻿using System;
+
+namespace TauCode.Parsing.Exceptions
 {
+    [Serializable]
     public class UnexpectedEndOfClauseException : ParseClauseFailedException
     {
         public UnexpectedEndOfClauseException(object[] partialParsingResults)
