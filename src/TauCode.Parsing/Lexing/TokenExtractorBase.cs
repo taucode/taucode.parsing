@@ -69,6 +69,11 @@ namespace TauCode.Parsing.Lexing
 
         protected char GetLocalChar(int localIndex)
         {
+            if (localIndex < 0)
+            {
+                throw new NotImplementedException(); // todo: you shouldn't. error.
+            }
+
             return _input[this.StartingAbsoluteCharIndex + localIndex];
         }
 
@@ -168,6 +173,16 @@ namespace TauCode.Parsing.Lexing
             return c;
         }
 
+        protected char GetPreviousChar()
+        {
+            if (this.LocalCharIndex <= 0)
+            {
+                throw new NotImplementedException(); // you shouldn't have requested it.
+            }
+
+            return this.GetLocalChar(this.LocalCharIndex - 1);
+        }
+
         protected Position GetStartingAbsolutePosition()
         {
             var line = this.StartingLine;
@@ -254,8 +269,8 @@ namespace TauCode.Parsing.Lexing
                 switch (testCharResult)
                 {
                     case CharChallengeResult.GiveUp:
-                        throw new NotImplementedException();
-                    //return new TokenExtractionResult(0, null); // this extractor failed to recognize the whole token, no problem.
+                        // this extractor failed to recognize the whole token, no problem.
+                        return new TokenExtractionResult(null, 0, 0, null);
 
                     case CharChallengeResult.Continue:
                         this.Advance(); // todo: deal with line breaks?

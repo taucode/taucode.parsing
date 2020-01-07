@@ -1,5 +1,7 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
+using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
@@ -19,14 +21,20 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
             // idle
         }
-
-
+        
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            throw new NotImplementedException();
-            //var token = new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str);
-            //return token;
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+            var token = new TextToken(
+                TermTextClass.Instance,
+                NoneTextDecoration.Instance,
+                str,
+                position,
+                consumedLength);
+
+            return token;
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
@@ -41,8 +49,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
             if (c == '-')
             {
-                if (this.GetPreviousChar() == '-') // todo: move to parsing lib of taucode
+                if (this.GetPreviousChar() == '-')
                 {
+                    // two '-' cannot go in a row within a <term>.
                     return CharChallengeResult.GiveUp;
                 }
 
@@ -54,28 +63,41 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.Continue;
             }
 
-            throw new NotImplementedException();
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                var previousChar = this.GetPreviousChar();
+
+                if (previousChar == '-')
+                {
+                    return CharChallengeResult.GiveUp; // term cannot end with '-'.
+                }
+                else
+                {
+                    return CharChallengeResult.Finish;
+                }
+            }
 
             //if (this.Environment.IsSpace(c))
-            //{
-            //    if (this.GetPreviousChar() == '-')
-            //    {
-            //        return CharChallengeResult.GiveUp; // term cannot end with '-'
-            //    }
-            //    else
-            //    {
-            //        return CharChallengeResult.Finish;
-            //    }
-            //}
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                if (this.GetPreviousChar() == '-')
+                {
+                    return CharChallengeResult.GiveUp; // term cannot end with '-'
+                }
+                else
+                {
+                    return CharChallengeResult.Finish;
+                }
+            }
 
-            //return CharChallengeResult.GiveUp;
+            return CharChallengeResult.GiveUp;
         }
 
-        private char GetPreviousChar()
-        {
-            throw new NotImplementedException();
-            //return this.GetLocalChar(this.GetLocalPosition() - 1);
-        }
+        //private char GetPreviousChar()
+        //{
+        //    throw new NotImplementedException();
+        //    //return this.GetLocalChar(this.GetLocalPosition() - 1);
+        //}
 
         protected override CharChallengeResult ChallengeEnd()
         {

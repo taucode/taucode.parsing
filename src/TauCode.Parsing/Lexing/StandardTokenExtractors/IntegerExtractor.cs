@@ -1,4 +1,5 @@
 ﻿using System;
+using TauCode.Extensions;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
@@ -94,16 +95,14 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
         private bool GotOnlySign()
         {
-            throw new NotImplementedException();
-
             //var localPosition = this.GetLocalPosition();
-            //if (localPosition == 1)
-            //{
-            //    var firstChar = this.GetLocalChar(0);
-            //    return firstChar.IsIn('+', '-');
-            //}
+            if (this.LocalCharIndex == 1)
+            {
+                var firstChar = this.GetLocalChar(0);
+                return firstChar.IsIn('+', '-');
+            }
 
-            //return false;
+            return false;
         }
 
         protected override CharChallengeResult ChallengeEnd()

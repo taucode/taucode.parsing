@@ -1,9 +1,12 @@
-﻿using System;
-using TauCode.Extensions;
+﻿using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
+using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
+    // todo: clean up
     public class PathExtractor : TokenExtractorBase
     {
         public PathExtractor()
@@ -24,35 +27,42 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            throw new NotImplementedException();
-            //var token = new TextToken(PathTextClass.Instance, NoneTextDecoration.Instance, str);
-            //return token;
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            var token = new TextToken(
+                PathTextClass.Instance,
+                NoneTextDecoration.Instance,
+                str,
+                position,
+                consumedLength);
+
+            return token;
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            throw new NotImplementedException();
-            //var pos = this.GetLocalPosition();
+            var pos = this.LocalCharIndex;
 
-            //if (pos == 0)
-            //{
-            //    return CharChallengeResult.Continue; // 0th char MUST have been accepted.
-            //}
+            if (pos == 0)
+            {
+                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+            }
 
-            //if (IsPathFirstChar(c) || c == ':')
-            //{
-            //    return CharChallengeResult.Continue;
-            //}
-
-            
+            if (IsPathFirstChar(c) || c == ':')
+            {
+                return CharChallengeResult.Continue;
+            }
 
             //if (this.Environment.IsSpace(c))
-            //{
-            //    return CharChallengeResult.Finish;
-            //}
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                return CharChallengeResult.Finish;
+            }
 
-            //return CharChallengeResult.GiveUp;
+            return CharChallengeResult.GiveUp;
         }
 
         protected override CharChallengeResult ChallengeEnd()

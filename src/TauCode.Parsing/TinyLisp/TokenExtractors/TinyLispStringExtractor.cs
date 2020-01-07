@@ -6,6 +6,7 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
+    // todo: clean up
     public class TinyLispStringExtractor : TokenExtractorBase
     {
         public TinyLispStringExtractor()
