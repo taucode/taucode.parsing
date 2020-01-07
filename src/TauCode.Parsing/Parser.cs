@@ -66,9 +66,9 @@ namespace TauCode.Parsing
                             if (gotActor)
                             {
                                 throw new NodeConcurrencyException(
-                                    context.ResultAccumulator.ToArray(),
                                     token,
-                                    BuildRivalNodes(winners, node));
+                                    BuildRivalNodes(winners, node),
+                                    context.ResultAccumulator.ToArray());
                             }
                             gotSkippers = true;
                             winners.Add(node);
@@ -78,9 +78,9 @@ namespace TauCode.Parsing
                             if (gotActor)
                             {
                                 throw new NodeConcurrencyException(
-                                    context.ResultAccumulator.ToArray(),
                                     token,
-                                    BuildRivalNodes(winners, node));
+                                    BuildRivalNodes(winners, node),
+                                    context.ResultAccumulator.ToArray());
                             }
                             gotActor = true;
                             winners.Add(node);
@@ -121,9 +121,9 @@ namespace TauCode.Parsing
                         if (winners.Count > 1)
                         {
                             throw new NodeConcurrencyException(
-                                context.ResultAccumulator.ToArray(),
                                 token,
-                                winners.ToArray());
+                                winners.ToArray(),
+                                context.ResultAccumulator.ToArray());
                         }
 
                         var actor = winners.Single();
@@ -157,7 +157,10 @@ namespace TauCode.Parsing
 
         private INode[] BuildRivalNodes(List<INode> rivalNodes, INode oneMoreRivalNode)
         {
-            throw new NotImplementedException();
+            var allRivalNodes = new List<INode>();
+            allRivalNodes.AddRange(rivalNodes);
+            allRivalNodes.Add(oneMoreRivalNode);
+            return allRivalNodes.ToArray();
         }
     }
 }
