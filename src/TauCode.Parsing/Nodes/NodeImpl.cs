@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
-using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Nodes
 {
@@ -131,7 +130,7 @@ namespace TauCode.Parsing.Nodes
 
             if (_establishedLinks.Contains(node))
             {
-                throw new ParsingException("This node is already linked to.");
+                throw new InvalidOperationException("This node is already linked to.");
             }
 
             _establishedLinks.Add(node);

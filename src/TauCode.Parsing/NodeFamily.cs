@@ -57,8 +57,7 @@ namespace TauCode.Parsing
                 throw new ArgumentNullException(nameof(nodeName));
             }
 
-            //IDictionary<string, INode> nodeNames = _namedNodes;
-            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new ParsingException($"Node not found: '{nodeName}'.");
+            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new KeyNotFoundException($"Node not found: '{nodeName}'.");
             return node;
         }
 
