@@ -53,7 +53,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
             if (pos == 2 && c == '-')
             {
-                return CharChallengeResult.GiveUp; // 3 hyphens cannot be.
+                return CharChallengeResult.GiveUp; // 3 hyphens cannot be. // todo: wat about '-a-b' ? it is a valid key. ut it!
             }
 
             if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))

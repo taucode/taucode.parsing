@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
+using TauCode.Parsing.Tests.Parsing.Cli.Exceptions;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
@@ -49,7 +49,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                     break;
 
                 default:
-                    throw new NotImplementedException();
+                    throw new CliException($"Unexpected symbol: '{car}'");
             }
 
             return node;
@@ -87,7 +87,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var keyNames = item
                 .GetAllKeywordArguments(":key-names")
                 .Select(x => ((StringAtom)x).Value)
-                .ToList(); // todo: may throw
+                .ToList();
 
             var node = new MultiTextRepresentationNode(
                 keyNames,
@@ -108,7 +108,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var keyNames = item
                 .GetAllKeywordArguments(":key-names")
                 .Select(x => ((StringAtom)x).Value)
-                .ToList(); // todo: may throw
+                .ToList();
 
             ActionNode keyNameNode = new MultiTextRepresentationNode(
                 keyNames,
@@ -135,7 +135,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var keyNames = item
                 .GetAllKeywordArguments(":key-names")
                 .Select(x => ((StringAtom)x).Value)
-                .ToList(); // todo: may throw
+                .ToList();
 
             ActionNode keyNameNode = new MultiTextRepresentationNode(
                 keyNames,
@@ -158,7 +158,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var keyValuesSubform = item.GetSingleKeywordArgument(":key-values");
             if (keyValuesSubform.GetCarSymbolName() != "CHOICE")
             {
-                throw new NotImplementedException();
+                throw new CliException("'CHOICE' symbol expected.");
             }
 
             var classes = keyValuesSubform.GetAllKeywordArguments(":classes").ToList();
@@ -173,7 +173,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             }
             else
             {
-                textValues = values.Select(x => ((StringAtom)x).Value).ToArray(); // todo: try/catch.
+                textValues = values.Select(x => ((StringAtom)x).Value).ToArray();
             }
 
             var classTypes = classes.Select(x => this.ParseTextClass(((Symbol)x).Name));
@@ -249,7 +249,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                     return PathTextClass.Instance;
 
                 default:
-                    throw new NotImplementedException();
+                    throw new CliException($"Unexpected text class designating symbol: '{textClassSymbolName}'.");
             }
         }
 

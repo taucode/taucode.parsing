@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
@@ -39,7 +38,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            return CharChallengeResult.Finish; // exactly one char is guaranteed to be consumed; no problem with end of input.
         }
     }
 }

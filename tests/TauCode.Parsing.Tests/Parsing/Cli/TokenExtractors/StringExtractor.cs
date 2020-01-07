@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Extensions;
+﻿using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
@@ -74,7 +73,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            throw new LexingException("Unclosed string.", this.GetCurrentAbsolutePosition());
         }
     }
 }
