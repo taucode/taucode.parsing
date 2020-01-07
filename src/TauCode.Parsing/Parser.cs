@@ -8,7 +8,7 @@ namespace TauCode.Parsing
 {
     public class Parser : IParser
     {
-        protected virtual bool WantsOnlyOneResult => false;
+        public bool WantsOnlyOneResult { get; set; }
 
         public object[] Parse(INode root, IEnumerable<IToken> tokens)
         {
