@@ -29,9 +29,9 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.LocalCharIndex;
+            var index = this.LocalCharIndex;
 
-            if (pos == 0)
+            if (index == 0)
             {
                 return CharChallengeResult.Continue; // 0th char is always ok
             }
