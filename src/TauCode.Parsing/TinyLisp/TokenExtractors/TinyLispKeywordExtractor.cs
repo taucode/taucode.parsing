@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
@@ -49,14 +49,12 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             if (this.LocalCharIndex > 1)
             {
-                // todo: what about '::' ?
-
                 // consumed more than one char (0th is always ':'), so no problem here
                 return CharChallengeResult.Finish;
             }
             else
             {
-                throw new NotImplementedException(); // todo: error. consumed just one char (':'), therefore error. No one other token extractor in LISP can have ':' at the beginning.
+                throw new LexingException("Invalid symbol name.", this.GetCurrentAbsolutePosition());
             }
         }
     }

@@ -99,12 +99,12 @@ namespace TauCode.Parsing.Lexing
             var c = this.GetCurrentChar();
             int indexShift;
             
-            if (c == '\r') // todo constant
+            if (c == LexingHelper.Cr)
             {
                 var nextChar = this.GetNextChar();
                 if (nextChar.HasValue)
                 {
-                    if (nextChar.Value == '\n')
+                    if (nextChar.Value == LexingHelper.Lf)
                     {
                         indexShift = 2; // got CRLF
                     }
@@ -118,7 +118,7 @@ namespace TauCode.Parsing.Lexing
                     throw new NotImplementedException();
                 }
             }
-            else if (c == '\n') // todo constant
+            else if (c == LexingHelper.Lf)
             {
                 throw new NotImplementedException();
             }
@@ -166,7 +166,7 @@ namespace TauCode.Parsing.Lexing
         {
             if (this.LocalCharIndex <= 0)
             {
-                throw new NotImplementedException(); // you shouldn't have requested it.
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
             }
 
             return this.GetLocalChar(this.LocalCharIndex - 1);

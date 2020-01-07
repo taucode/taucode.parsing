@@ -15,6 +15,14 @@ namespace TauCode.Parsing.Tests.TinyLisp
     [TestFixture]
     public class TinyLispLexerTests
     {
+        private ILexer _lexer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _lexer = new TinyLispLexer();
+        }
+
         [Test]
         public void Lexize_OnlyComments_EmptyOutput()
         {
@@ -25,8 +33,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 ; second comment";
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(0)); // comments will not be added as tokens.
@@ -41,9 +48,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 -1599 -1599-";
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(4));
@@ -83,9 +88,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 ";
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(19));
@@ -214,8 +217,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             // Assert
             // passed
@@ -228,8 +230,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var input = "(a . b)";
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(5));
@@ -248,8 +249,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var input = notClosedString;
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-            var ex = Assert.Throws<LexingException>(() => lexer.Lexize(input));
+            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("Unclosed string."));
@@ -266,8 +266,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var input = notClosedString;
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-            var ex = Assert.Throws<LexingException>(() => lexer.Lexize(input));
+            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("Newline in string."));
@@ -286,8 +285,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Arrange
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             // Assert
             Assert.That(tokens.Last(), Is.TypeOf(lastTokenExpectedType));
@@ -307,15 +305,14 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var input8 = "1-";
 
             // Act
-            ILexer lexer = new TinyLispLexer();
-            var token1 = lexer.Lexize(input1).Single();
-            var token2 = lexer.Lexize(input2).Single();
-            var token3 = lexer.Lexize(input3).Single();
-            var token4 = lexer.Lexize(input4).Single();
-            var token5 = lexer.Lexize(input5).Single();
-            var token6 = lexer.Lexize(input6).Single();
-            var token7 = lexer.Lexize(input7).Single();
-            var token8 = lexer.Lexize(input8).Single();
+            var token1 = _lexer.Lexize(input1).Single();
+            var token2 = _lexer.Lexize(input2).Single();
+            var token3 = _lexer.Lexize(input3).Single();
+            var token4 = _lexer.Lexize(input4).Single();
+            var token5 = _lexer.Lexize(input5).Single();
+            var token6 = _lexer.Lexize(input6).Single();
+            var token7 = _lexer.Lexize(input7).Single();
+            var token8 = _lexer.Lexize(input8).Single();
 
             // Assert
             Assert.That(token1 as IntegerToken, Has.Property("Value").EqualTo("1"));
@@ -326,6 +323,20 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(token6 as LispSymbolToken, Has.Property("SymbolName").EqualTo("+"));
             Assert.That(token7 as LispSymbolToken, Has.Property("SymbolName").EqualTo("-"));
             Assert.That(token8 as LispSymbolToken, Has.Property("SymbolName").EqualTo("1-"));
+        }
+
+        [Test]
+        public void Lexize_CrAtInputEnd_LexizedCorrectly()
+        {
+            // Arrange
+            var input = "a\r";
+
+            // Act
+            var tokens = _lexer.Lexize(input);
+
+            // Assert
+            var token = (LispSymbolToken)tokens.Single();
+            Assert.That(token.SymbolName, Is.EqualTo("a"));
         }
     }
 }
