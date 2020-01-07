@@ -6,16 +6,16 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     public class TinyLispCommentExtractor : TokenExtractorBase
     {
         public TinyLispCommentExtractor()
-            : base(
-                StandardLexingEnvironment.Instance,
-                x => x == ';')
+            : base(x => x == ';')
         {
         }
 
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            return new CommentToken(str);
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+            return new CommentToken(str, position, consumedLength);
         }
 
         protected override void ResetState()
@@ -26,26 +26,20 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
 
-            if (pos == 0)
+            if (this.LocalCharIndex == 0)
             {
-                if (c == ';')
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
+                // 0th char is always accepted by 'firstCharPredicate'
+                return CharChallengeResult.Continue;
             }
 
-            if (this.Environment.IsLineBreak(c))
+            if (LexingHelper.IsCaretControl(c))
             {
+                this.SkipSingleLineBreak();
                 return CharChallengeResult.Finish;
             }
 
-            return CharChallengeResult.Continue;
+            return CharChallengeResult.Continue; // comment is going on.
         }
 
         protected override CharChallengeResult ChallengeEnd() =>

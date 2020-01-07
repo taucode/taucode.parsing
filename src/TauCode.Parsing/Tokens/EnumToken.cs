@@ -8,9 +8,11 @@ namespace TauCode.Parsing.Tokens
 
         public EnumToken(
             TEnum value,
+            Position position,
+            int consumedLength,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(name, properties)
+            : base(position, consumedLength, name, properties)
         {
             this.Value = value;
         }

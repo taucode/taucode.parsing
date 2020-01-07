@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes;
 
 namespace TauCode.Parsing
@@ -27,7 +26,7 @@ namespace TauCode.Parsing
 
             if (tokenStream.IsEndOfStream())
             {
-                throw new ParsingException($"'{nameof(tokenStream)}' is at the end. Cannot advance.");
+                throw new InvalidOperationException($"'{nameof(tokenStream)}' is at the end. Cannot advance.");
             }
 
             tokenStream.Position++;
@@ -73,6 +72,7 @@ namespace TauCode.Parsing
             }
         }
 
+        // todo not used
         public static void AddLinksByNames(this INode node, params string[] names)
         {
             if (node == null)
@@ -91,6 +91,7 @@ namespace TauCode.Parsing
             }
         }
 
+        // todo not used
         public static void DrawLinkFromNodes(this INode node, params INode[] drawFromNodes)
         {
             if (node == null)
@@ -118,7 +119,7 @@ namespace TauCode.Parsing
 
             if (accumulator.Count == 0)
             {
-                throw new ParsingException("Result accumulator is empty.");
+                throw new InvalidOperationException("Result accumulator is empty.");
             }
 
             var index = accumulator.Count - 1;
@@ -126,18 +127,19 @@ namespace TauCode.Parsing
 
             if (result == null)
             {
-                throw new ParsingException($"Last result is null.");
+                throw new NullReferenceException($"Last result is null.");
             }
 
             if (result.GetType() != typeof(T))
             {
-                throw new ParsingException(
+                throw new InvalidCastException(
                     $"Last result expected to be of type '{typeof(T).FullName}', but is of type '{result.GetType().FullName}'.");
             }
 
             return (T)result;
         }
 
+        // todo not used
         public static IReadOnlyCollection<INode> GetNonIdleLinks(this INode node) => GetNonIdleNodes(node.ResolveLinks());
 
         public static IReadOnlyCollection<INode> FetchTree(this INode root)

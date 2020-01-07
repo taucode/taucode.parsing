@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TauCode.Parsing.Tests.Data
+namespace TauCode.Parsing.Tests.Parsing.Sql.Data
 {
     public class ForeignKeyInfo
     {

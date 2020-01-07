@@ -7,9 +7,11 @@ namespace TauCode.Parsing.Tokens
     {
         public CommentToken(
             string comment,
+            Position position,
+            int consumedLength,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(name, properties)
+            : base(position, consumedLength, name, properties)
         {
             this.Comment = comment ?? throw new ArgumentNullException(nameof(comment));
         }

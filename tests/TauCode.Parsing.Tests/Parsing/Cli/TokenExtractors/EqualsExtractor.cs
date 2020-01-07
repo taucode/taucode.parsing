@@ -6,8 +6,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
     public class EqualsExtractor : TokenExtractorBase
     {
-        public EqualsExtractor(ILexingEnvironment environment)
-            : base(environment, c => c == '=')
+        public EqualsExtractor()
+            : base(c => c == '=')
         {
         }
 
@@ -18,14 +18,17 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override IToken ProduceResult()
         {
-            return new PunctuationToken('=');
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new PunctuationToken('=', position, consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
-            var pos = this.GetLocalPosition();
+            var index = this.LocalCharIndex;
 
-            if (pos == 0)
+            if (index == 0)
             {
                 // 0th is always accepted.
                 return CharChallengeResult.Continue;

@@ -98,7 +98,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var form = "(some good form)";
             ILexer lexer = new TinyLispLexer();
             var tokens = lexer.Lexize(form);
-            var badToken = new EnumToken<int>(1488);
+
+            var badToken = new EnumToken<int>(1488, Position.Zero, 4);
             tokens.Insert(1, badToken);
             var reader = new TinyLispPseudoReader();
 

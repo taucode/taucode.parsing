@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
@@ -8,9 +9,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     public class TinyLispStringExtractor : TokenExtractorBase
     {
         public TinyLispStringExtractor()
-            : base(
-                StandardLexingEnvironment.Instance,
-                x => x == '"')
+            : base(x => x == '"')
         {
         }
 
@@ -23,24 +22,31 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
-            return new TextToken(StringTextClass.Instance, DoubleQuoteTextDecoration.Instance, value);
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new TextToken(
+                StringTextClass.Instance,
+                DoubleQuoteTextDecoration.Instance,
+                value,
+                position,
+                consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            var pos = this.LocalCharIndex;
 
             if (pos == 0)
             {
-                if (c == '"')
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
+                return CharChallengeResult.Continue;
+            }
+
+            if (LexingHelper.IsCaretControl(c))
+            {
+                throw new LexingException("Newline in string.", this.GetCurrentAbsolutePosition());
             }
 
             if (c == '"')
@@ -54,7 +60,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            return CharChallengeResult.Error; // unclosed string. that's my error. no other extractor can handle this.
+            throw new LexingException("Unclosed string.", this.GetStartingAbsolutePosition());
         }
     }
 }

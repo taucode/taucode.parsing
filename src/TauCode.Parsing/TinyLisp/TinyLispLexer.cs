@@ -6,11 +6,6 @@ namespace TauCode.Parsing.TinyLisp
 {
     public class TinyLispLexer : LexerBase
     {
-        public TinyLispLexer(ILexingEnvironment environment = null)
-            : base(environment)
-        {
-        }
-
         protected override void InitTokenExtractors()
         {
             // comment
@@ -34,10 +29,18 @@ namespace TauCode.Parsing.TinyLisp
             this.AddTokenExtractor(stringExtractor);
 
             // integer
-            var integerExtractor = new IntegerExtractor(this.Environment);
+            var integerExtractor = new IntegerExtractor();
             this.AddTokenExtractor(integerExtractor);
 
             // *** Links ***
+            commentExtractor.AddSuccessors(
+                commentExtractor,
+                punctuationExtractor,
+                keywordExtractor,
+                symbolExtractor,
+                stringExtractor,
+                integerExtractor);
+
             punctuationExtractor.AddSuccessors(
                 commentExtractor,
                 punctuationExtractor,
@@ -64,6 +67,7 @@ namespace TauCode.Parsing.TinyLisp
                 integerExtractor);
 
             integerExtractor.AddSuccessors(
+                commentExtractor,
                 punctuationExtractor,
                 stringExtractor);
         }

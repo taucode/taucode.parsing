@@ -7,9 +7,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     public class TinyLispPunctuationExtractor : TokenExtractorBase
     {
         public TinyLispPunctuationExtractor()
-            : base(
-                StandardLexingEnvironment.Instance,
-                TinyLispHelper.IsPunctuation)
+            : base(TinyLispHelper.IsPunctuation)
         {
         }
 
@@ -24,30 +22,24 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
             if (result.Length != 1)
             {
-                throw LexingHelper.CreateInternalErrorException();
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
             }
 
             var c = result.Single();
             var punctuation = TinyLispHelper.CharToPunctuation(c);
 
-            return new LispPunctuationToken(punctuation);
+            var position = new Position(
+                this.StartingLine,
+                this.StartingColumn);
+
+            return new LispPunctuationToken(punctuation, position, this.LocalCharIndex);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
-            var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
-
-            if (pos == 0)
+            if (this.LocalCharIndex == 0)
             {
-                if (TinyLispHelper.PunctuationChars.Contains(c))
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
+                return CharChallengeResult.Continue; // local char MUST accepted since it was accepted by 'TinyLispHelper.IsPunctuation'
             }
 
             return CharChallengeResult.Finish; // pos > 0 ==> finish no matter what.

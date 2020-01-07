@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 
@@ -6,8 +7,8 @@ namespace TauCode.Parsing.Lexing
 {
     public static class LexingHelper
     {
-        internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
-        internal static readonly HashSet<char> LineBreakChars = new HashSet<char>(new[] { '\r', '\n' });
+        //internal static readonly HashSet<char> SpaceChars = new HashSet<char>(new[] { ' ', '\t', '\r', '\n' });
+        //internal static readonly HashSet<char> LineBreakChars = new HashSet<char>(new[] { '\r', '\n' });
 
         private static readonly HashSet<char> IntegerFirstChars;
         private static readonly HashSet<char> Digits;
@@ -71,28 +72,30 @@ namespace TauCode.Parsing.Lexing
             LatinLetters = new HashSet<char>(latinLetters);
         }
 
+        public static int TodoErrorConsumedLength => throw new NotImplementedException();
+
         #region Exceptions
 
-        internal static LexingException CreateUnexpectedEndOfInputException()
+        internal static LexingException CreateUnexpectedEndOfInputException(Position position)
         {
-            return new LexingException("Unexpected end of input.");
+            return new LexingException("Unexpected end of input.", position);
         }
 
-        internal static LexingException CreateUnexpectedCharException(char c)
-        {
-            return new LexingException($"Unexpected char: '{c}'.");
-        }
+        //internal static LexingException CreateUnexpectedCharException(char c, Position position)
+        //{
+        //    return new LexingException($"Unexpected char: '{c}'.", position);
+        //}
 
-        internal static LexingException CreateEmptyTokenException()
-        {
-            return new LexingException("Empty token.");
-        }
+        //internal static LexingException CreateEmptyTokenException()
+        //{
+        //    return new LexingException("Empty token.");
+        //}
 
         #endregion
 
-        public static bool IsSpace(char c) => SpaceChars.Contains(c);
+        //public static bool IsSpace(char c) => SpaceChars.Contains(c);
 
-        public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
+        //public static bool IsLineBreak(char c) => LineBreakChars.Contains(c);
         
         public static bool IsIntegerFirstChar(char c) => IntegerFirstChars.Contains(c);
 
@@ -102,9 +105,15 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
 
-        internal static LexingException CreateInternalErrorException()
+        internal static LexingException CreateInternalErrorLexingException(Position position)
         {
-            return new LexingException("Internal error.");
+            return new LexingException("Internal error.", position);
         }
+
+        public static bool IsInlineWhiteSpace(char c) => c.IsIn(' ', '\t');
+
+        public static bool IsCaretControl(char c) => c.IsIn('\r', '\n');
+
+        public static bool IsInlineWhiteSpaceOrCaretControl(char c) => IsInlineWhiteSpace(c) || IsCaretControl(c);
     }
 }

@@ -9,7 +9,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
     public class SqlPunctuationExtractor : TokenExtractorBase
     {
         public SqlPunctuationExtractor()
-            : base(StandardLexingEnvironment.Instance, SqlPunctuationFirstCharPredicate)
+            : base(SqlPunctuationFirstCharPredicate)
         {
         }
 
@@ -27,15 +27,18 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         {
             var str = this.ExtractResultString();
 
-            return new PunctuationToken(str.Single());
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new PunctuationToken(str.Single(), position, consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
-            var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            //var c = this.GetCurrentChar();
+            var index = this.LocalCharIndex;
 
-            if (pos == 0)
+            if (index == 0)
             {
                 return CharChallengeResult.Continue;
             }

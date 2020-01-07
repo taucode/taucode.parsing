@@ -8,6 +8,8 @@ namespace TauCode.Parsing
 {
     public class Parser : IParser
     {
+        protected virtual bool WantsOnlyOneResult => false;
+
         public object[] Parse(INode root, IEnumerable<IToken> tokens)
         {
             if (root == null)
@@ -39,7 +41,7 @@ namespace TauCode.Parsing
                     }
                     else
                     {
-                        throw new ParsingException("Unexpected end of stream.");
+                        throw new UnexpectedEndOfClauseException(context.ResultAccumulator.ToArray());
                     }
                 }
 
@@ -63,7 +65,10 @@ namespace TauCode.Parsing
                         case InquireResult.Skip:
                             if (gotActor)
                             {
-                                throw new ParsingException("Nodes logic error. More than one node accepted the token.");
+                                throw new NodeConcurrencyException(
+                                    context.ResultAccumulator.ToArray(),
+                                    token,
+                                    BuildRivalNodes(winners, node));
                             }
                             gotSkippers = true;
                             winners.Add(node);
@@ -72,7 +77,10 @@ namespace TauCode.Parsing
                         case InquireResult.Act:
                             if (gotActor)
                             {
-                                throw new ParsingException("Nodes logic error. More than one node accepted the token.");
+                                throw new NodeConcurrencyException(
+                                    context.ResultAccumulator.ToArray(),
+                                    token,
+                                    BuildRivalNodes(winners, node));
                             }
                             gotActor = true;
                             winners.Add(node);
@@ -92,12 +100,18 @@ namespace TauCode.Parsing
                 {
                     if (gotEnd)
                     {
+                        if (this.WantsOnlyOneResult)
+                        {
+                            // error. stream has more tokens, but we won't want'em.
+                            throw new UnexpectedTokenException(token, context.ResultAccumulator.ToArray());
+                        }
+
                         // fine, got to end, start over.
                         context.SetNodes(initialNodes);
                     }
                     else
                     {
-                        throw new ParsingException("Unexpected token.");
+                        throw new UnexpectedTokenException(token, context.ResultAccumulator.ToArray());
                     }
                 }
                 else
@@ -106,7 +120,10 @@ namespace TauCode.Parsing
                     {
                         if (winners.Count > 1)
                         {
-                            throw new ParsingException("More than one winning node.");
+                            throw new NodeConcurrencyException(
+                                context.ResultAccumulator.ToArray(),
+                                token,
+                                winners.ToArray());
                         }
 
                         var actor = winners.Single();
@@ -114,7 +131,7 @@ namespace TauCode.Parsing
                         actor.Act(token, context.ResultAccumulator);
                         if (oldVersion + 1 != context.ResultAccumulator.Version)
                         {
-                            throw new ParsingException("Internal error. Non sequential result accumulator versions.");
+                            throw new InternalParsingLogicException("Internal error. Non sequential result accumulator versions.");
                         }
                     }
                     else
@@ -122,7 +139,7 @@ namespace TauCode.Parsing
                         // 'gotSkippers' must be true
                         if (!gotSkippers)
                         {
-                            throw new ParsingException("Internal parser error.");
+                            throw new InternalParsingLogicException("Internal parser error.");
                         }
                     }
 
@@ -136,6 +153,11 @@ namespace TauCode.Parsing
                     context.SetNodes(nonIdleSuccessors);
                 }
             }
+        }
+
+        private INode[] BuildRivalNodes(List<INode> rivalNodes, INode oneMoreRivalNode)
+        {
+            throw new NotImplementedException();
         }
     }
 }

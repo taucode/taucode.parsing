@@ -6,10 +6,8 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
     public class IntegerExtractor : TokenExtractorBase
     {
-        public IntegerExtractor(ILexingEnvironment environment)
-            : base(
-                environment,
-                LexingHelper.IsIntegerFirstChar)
+        public IntegerExtractor()
+            : base(LexingHelper.IsIntegerFirstChar)
         {
         }
 
@@ -28,7 +26,10 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 throw new NotImplementedException();
             }
 
-            return new IntegerToken(str);
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new IntegerToken(str, position, consumedLength);
         }
 
         protected override void ResetState()
@@ -39,7 +40,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            var pos = this.LocalCharIndex;
 
             if (pos == 0)
             {
@@ -71,7 +72,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 return CharChallengeResult.Finish;
             }
 
-            if (this.Environment.IsSpace(c) || char.IsWhiteSpace(c))
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
                 return CharChallengeResult.Finish;
             }
@@ -82,8 +83,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
         private bool GotOnlySign()
         {
-            var localPosition = this.GetLocalPosition();
-            if (localPosition == 1)
+            if (this.LocalCharIndex == 1)
             {
                 var firstChar = this.GetLocalChar(0);
                 return firstChar.IsIn('+', '-');
@@ -94,11 +94,12 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            var localPos = this.GetLocalPosition();
+            var localPos = this.LocalCharIndex;
 
             if (localPos == 0)
             {
-                throw LexingHelper.CreateInternalErrorException();
+                throw LexingHelper.CreateInternalErrorLexingException(
+                    this.GetCurrentAbsolutePosition()); // how could we get to end if we are actually at the start (localPos == 0)?!
             }
             else if (localPos == 1)
             {

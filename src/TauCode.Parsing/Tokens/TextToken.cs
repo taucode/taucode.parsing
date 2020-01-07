@@ -9,9 +9,11 @@ namespace TauCode.Parsing.Tokens
             ITextClass @class,
             ITextDecoration decoration,
             string text,
+            Position position,
+            int consumedLength,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(name, properties)
+            : base(position, consumedLength, name, properties)
         {
             this.Class = @class ?? throw new ArgumentNullException(nameof(@class));
             this.Decoration = decoration ?? throw new ArgumentNullException(nameof(decoration));

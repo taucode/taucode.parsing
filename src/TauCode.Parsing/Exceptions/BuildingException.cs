@@ -3,7 +3,7 @@
 namespace TauCode.Parsing.Exceptions
 {
     [Serializable]
-    public class BuildingException : Exception
+    public class BuildingException : ParsingExceptionBase
     {
         public BuildingException(string message)
             : base(message)

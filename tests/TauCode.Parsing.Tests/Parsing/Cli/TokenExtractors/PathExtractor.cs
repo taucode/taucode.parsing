@@ -8,8 +8,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
     public class PathExtractor : TokenExtractorBase
     {
-        public PathExtractor(ILexingEnvironment environment)
-            : base(environment, IsPathFirstChar)
+        public PathExtractor()
+            : base(IsPathFirstChar)
         {
         }
 
@@ -26,14 +26,24 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            var token = new TextToken(PathTextClass.Instance, NoneTextDecoration.Instance, str);
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            var token = new TextToken(
+                PathTextClass.Instance,
+                NoneTextDecoration.Instance,
+                str,
+                position,
+                consumedLength);
+
             return token;
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            var pos = this.LocalCharIndex;
 
             if (pos == 0)
             {
@@ -45,7 +55,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.Continue;
             }
 
-            if (this.Environment.IsSpace(c))
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
                 return CharChallengeResult.Finish;
             }

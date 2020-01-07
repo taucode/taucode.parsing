@@ -7,10 +7,8 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
     public class WordExtractor : TokenExtractorBase
     {
-        public WordExtractor(
-            ILexingEnvironment environment,
-            Func<char, bool> firstCharPredicate = null)
-            : base(environment, firstCharPredicate ?? StandardFirstCharPredicate)
+        public WordExtractor(Func<char, bool> firstCharPredicate = null)
+            : base(firstCharPredicate ?? StandardFirstCharPredicate)
         {
         }
 
@@ -39,28 +37,31 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            return new TextToken(WordTextClass.Instance, NoneTextDecoration.Instance, str);
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new TextToken(
+                WordTextClass.Instance,
+                NoneTextDecoration.Instance,
+                str,
+                position,
+                consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
 
-            if (pos == 0)
+            var index = this.LocalCharIndex; // todo: rename all 'var pos =' to avoid confusion with the Position structure.
+
+            if (index == 0)
             {
-                if (this.AllowsFirstChar(c))
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
+                return CharChallengeResult.Continue; // MUST be accepted in accordance with design.
             }
 
             if (
-                this.Environment.IsSpace(c) ||
+                LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) ||
                 LexingHelper.IsStandardPunctuationChar(c))
             {
                 return CharChallengeResult.Finish;

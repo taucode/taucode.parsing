@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using System;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -6,9 +7,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     public class TinyLispKeywordExtractor : TokenExtractorBase
     {
         public TinyLispKeywordExtractor()
-            : base(
-                StandardLexingEnvironment.Instance,
-                x => x == ':')
+            : base(x => x == ':')
         {
         }
 
@@ -21,24 +20,20 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var res = this.ExtractResultString();
 
-            return new KeywordToken(res);
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new KeywordToken(res, position, consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+            var pos = this.LocalCharIndex;
 
             if (pos == 0)
             {
-                if (c == ':')
-                {
-                    return CharChallengeResult.Continue;
-                }
-                else
-                {
-                    throw LexingHelper.CreateInternalErrorException();
-                }
+                return CharChallengeResult.Continue; // 0th char is always ok
             }
 
             var isMine = c.IsAcceptableSymbolNameChar();
@@ -52,15 +47,16 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            if (this.GetLocalPosition() > 1)
+            if (this.LocalCharIndex > 1)
             {
+                // todo: what about '::' ?
+
                 // consumed more than one char (0th is always ':'), so no problem here
                 return CharChallengeResult.Finish;
             }
             else
             {
-                // consumed just one char (':'), therefore error. on one other token extractor in LISP can have ':' at the beginning.
-                return CharChallengeResult.Error;
+                throw new NotImplementedException(); // todo: error. consumed just one char (':'), therefore error. No one other token extractor in LISP can have ':' at the beginning.
             }
         }
     }

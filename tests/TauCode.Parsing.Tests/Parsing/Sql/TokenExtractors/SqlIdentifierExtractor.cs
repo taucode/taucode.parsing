@@ -1,4 +1,6 @@
-﻿using TauCode.Extensions;
+﻿using System;
+using TauCode.Extensions;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.Tokens;
@@ -10,14 +12,12 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
     public class SqlIdentifierExtractor : TokenExtractorBase
     {
         public SqlIdentifierExtractor()
-            : base(StandardLexingEnvironment.Instance, x => x.IsIn('[', '`', '"'))
+            : base(x => x.IsIn('[', '`', '"'))
         {
         }
 
         protected override void ResetState()
         {
-            // idle now, but todo: _startingDelimiter = {'"', '[', '`'} ?..
-
         }
 
         protected override IToken ProduceResult()
@@ -29,18 +29,25 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             }
 
             var identifier = str.Substring(1, str.Length - 2);
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
             return new TextToken(
                 IdentifierTextClass.Instance,
                 NoneTextDecoration.Instance,
-                identifier);
+                identifier,
+                position,
+                consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
 
-            if (pos == 0)
+            var index = this.LocalCharIndex;
+
+            if (index == 0)
             {
                 return CharChallengeResult.Continue; // how else?
             }
@@ -60,7 +67,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
                 }
             }
 
-            return CharChallengeResult.Error; // unexpected char within identifier.
+            throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
         }
 
         private char GetClosingDelimiter(char openingDelimiter)
@@ -81,6 +88,9 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             }
         }
 
-        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Error; // met end while extracting identifier.
+        protected override CharChallengeResult ChallengeEnd()
+        {
+            throw new NotImplementedException(); // todo: error. met end while extracting identifier.
+        }
     }
 }

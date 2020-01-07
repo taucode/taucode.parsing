@@ -1,5 +1,6 @@
 ﻿using System;
 using TauCode.Extensions;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
@@ -11,8 +12,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
     {
         private char? _startingDelimiter;
 
-        public StringExtractor(ILexingEnvironment environment)
-            : base(environment, c => c.IsIn('\'', '"'))
+        public StringExtractor()
+            : base(c => c.IsIn('\'', '"'))
         {
         }
 
@@ -25,18 +26,26 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
             return new TextToken(
                 StringTextClass.Instance,
                 _startingDelimiter.Value == '"'
                     ? (ITextDecoration)DoubleQuoteTextDecoration.Instance
                     : (ITextDecoration)SingleQuoteTextDecoration.Instance,
-                value);
+                value,
+                position,
+                consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
+
+
+            var pos = this.LocalCharIndex;
 
             if (pos == 0)
             {
@@ -44,9 +53,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
-            if (this.Environment.IsLineBreak(c))
+            if (LexingHelper.IsCaretControl(c))
             {
-                return CharChallengeResult.Error;
+                throw new LexingException("Newline in string.", this.GetCurrentAbsolutePosition());
             }
 
             if (c == '\'' || c == '"')
@@ -62,11 +71,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
             return CharChallengeResult.Continue;
         }
-
-        //private char GetStartingDelimiter()
-        //{
-        //    return this.GetLocalChar(0);
-        //}
 
         protected override CharChallengeResult ChallengeEnd()
         {

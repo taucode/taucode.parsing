@@ -7,8 +7,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
     public class TermExtractor : TokenExtractorBase
     {
-        public TermExtractor(ILexingEnvironment environment)
-            : base(environment, IsTermFirstChar)
+        public TermExtractor()
+            : base(IsTermFirstChar)
         {
         }
 
@@ -20,29 +20,36 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
             // idle
         }
-
-
+        
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            var token = new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str);
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+            var token = new TextToken(
+                TermTextClass.Instance,
+                NoneTextDecoration.Instance,
+                str,
+                position,
+                consumedLength);
+
             return token;
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.GetLocalPosition();
 
-            if (pos == 0)
+            if (this.LocalCharIndex == 0)
             {
                 return CharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
             if (c == '-')
             {
-                if (this.GetPreviousChar() == '-') // todo: move to parsing lib of taucode
+                if (this.GetPreviousChar() == '-')
                 {
+                    // two '-' cannot go in a row within a <term>.
                     return CharChallengeResult.GiveUp;
                 }
 
@@ -54,7 +61,21 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.Continue;
             }
 
-            if (this.Environment.IsSpace(c))
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                var previousChar = this.GetPreviousChar();
+
+                if (previousChar == '-')
+                {
+                    return CharChallengeResult.GiveUp; // term cannot end with '-'.
+                }
+                else
+                {
+                    return CharChallengeResult.Finish;
+                }
+            }
+
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
                 if (this.GetPreviousChar() == '-')
                 {
@@ -67,11 +88,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
             }
 
             return CharChallengeResult.GiveUp;
-        }
-
-        private char GetPreviousChar()
-        {
-            return this.GetLocalChar(this.GetLocalPosition() - 1);
         }
 
         protected override CharChallengeResult ChallengeEnd()

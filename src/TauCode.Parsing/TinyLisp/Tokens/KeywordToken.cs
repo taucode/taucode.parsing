@@ -10,9 +10,11 @@ namespace TauCode.Parsing.TinyLisp.Tokens
     {
         public KeywordToken(
             string keyword,
+            Position position,
+            int consumedLength,
             string name = null,
             IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(name, properties)
+            : base(position, consumedLength, name, properties)
         {
             this.Keyword = keyword ?? throw new ArgumentNullException(nameof(keyword));
         }
