@@ -4,14 +4,8 @@ using TauCode.Parsing.TinyLisp.TokenExtractors;
 
 namespace TauCode.Parsing.TinyLisp
 {
-    // todo clean up; ctor not needed
     public class TinyLispLexer : LexerBase
     {
-        public TinyLispLexer(/*ILexingEnvironment environment = null*/)
-            : base(/*environment*/)
-        {
-        }
-
         protected override void InitTokenExtractors()
         {
             // comment
