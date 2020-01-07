@@ -7,16 +7,16 @@ namespace TauCode.Parsing.Exceptions
     {
         public NodeConcurrencyException(
             IToken token,
-            INode[] rivalNodes,
+            INode[] concurrentNodes,
             object[] partialParsingResults)
             : base("More than one node accepted the token.", partialParsingResults)
         {
             this.Token = token;
-            this.RivalNodes = rivalNodes;
+            this.ConcurrentNodes = concurrentNodes;
         }
 
         public IToken Token { get; }
 
-        public INode[] RivalNodes { get; }
+        public INode[] ConcurrentNodes { get; }
     }
 }

@@ -51,9 +51,9 @@ namespace TauCode.Parsing.Tests.Parsing
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("More than one node accepted the token."));
-            Assert.That(ex.RivalNodes, Has.Length.EqualTo(2));
-            Assert.That(ex.RivalNodes, Does.Contain(exactText));
-            Assert.That(ex.RivalNodes, Does.Contain(someText));
+            Assert.That(ex.ConcurrentNodes, Has.Length.EqualTo(2));
+            Assert.That(ex.ConcurrentNodes, Does.Contain(exactText));
+            Assert.That(ex.ConcurrentNodes, Does.Contain(someText));
             Assert.That(ex.Token, Is.SameAs(tokens.Single()));
         }
     }

@@ -67,7 +67,7 @@ namespace TauCode.Parsing
                             {
                                 throw new NodeConcurrencyException(
                                     token,
-                                    BuildRivalNodes(winners, node),
+                                    BuildConcurrentNodes(winners, node),
                                     context.ResultAccumulator.ToArray());
                             }
                             gotSkippers = true;
@@ -79,7 +79,7 @@ namespace TauCode.Parsing
                             {
                                 throw new NodeConcurrencyException(
                                     token,
-                                    BuildRivalNodes(winners, node),
+                                    BuildConcurrentNodes(winners, node),
                                     context.ResultAccumulator.ToArray());
                             }
                             gotActor = true;
@@ -155,12 +155,12 @@ namespace TauCode.Parsing
             }
         }
 
-        private INode[] BuildRivalNodes(List<INode> rivalNodes, INode oneMoreRivalNode)
+        private INode[] BuildConcurrentNodes(List<INode> concurrentNodes, INode oneMoreConcurrentNode)
         {
-            var allRivalNodes = new List<INode>();
-            allRivalNodes.AddRange(rivalNodes);
-            allRivalNodes.Add(oneMoreRivalNode);
-            return allRivalNodes.ToArray();
+            var allConcurrentNodes = new List<INode>();
+            allConcurrentNodes.AddRange(concurrentNodes);
+            allConcurrentNodes.Add(oneMoreConcurrentNode);
+            return allConcurrentNodes.ToArray();
         }
     }
 }
