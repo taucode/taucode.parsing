@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextDecorations;
@@ -53,15 +52,18 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
             if (index == 2 && c == '-')
             {
-                return CharChallengeResult.GiveUp; // 3 hyphens cannot be. // todo: wat about '-a-b' ? it is a valid key. ut it!
+                if (this.GetPreviousChar() == '-')
+                {
+                    return CharChallengeResult.GiveUp; // 3 hyphens cannot be.
+                }
+
+                return CharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))
             {
                 return CharChallengeResult.Continue;
             }
-
-            // todo: test keys "-", "--", "---", "--fo-", "-fo-", "---foo" etc.
 
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) || c == '=')
             
@@ -74,7 +76,12 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            if (this.GetPreviousChar() == '-')
+            {
+                return CharChallengeResult.GiveUp;
+            }
+
+            return CharChallengeResult.Finish;
         }
     }
 }

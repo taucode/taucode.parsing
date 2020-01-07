@@ -82,7 +82,6 @@ namespace TauCode.Parsing.Lexing
 
         protected string ExtractResultString()
         {
-            //var str = _input.Substring(_startPos, _localPos);
             var str = _input.Substring(this.StartingAbsoluteCharIndex, this.LocalCharIndex);
             return str;
         }
@@ -91,8 +90,6 @@ namespace TauCode.Parsing.Lexing
         {
             this.LocalCharIndex++;
             this.CurrentColumn++;
-
-            //_localPos++;
         }
 
         protected void SkipSingleLineBreak()
@@ -111,17 +108,18 @@ namespace TauCode.Parsing.Lexing
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        indexShift = 1;
                     }
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    // no more chars.
+                    indexShift = 1;
                 }
             }
             else if (c == LexingHelper.Lf)
             {
-                throw new NotImplementedException();
+                indexShift = 1;
             }
             else
             {
@@ -241,10 +239,10 @@ namespace TauCode.Parsing.Lexing
                             }
 
                         case CharChallengeResult.GiveUp:
-                            throw new NotImplementedException();
+                            return new TokenExtractionResult(null, 0, 0, null);
 
                         default:
-                            // should never happen. this is an enum, after all.
+                            // should never happen. check your token extractor, it has error(s).
                             throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
                     }
                 }
@@ -258,7 +256,7 @@ namespace TauCode.Parsing.Lexing
                         return new TokenExtractionResult(null, 0, 0, null);
 
                     case CharChallengeResult.Continue:
-                        this.Advance(); // todo: deal with line breaks?
+                        this.Advance();
                         break;
 
                     case CharChallengeResult.Finish:

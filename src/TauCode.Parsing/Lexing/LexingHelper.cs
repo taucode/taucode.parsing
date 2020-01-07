@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 
@@ -71,8 +70,6 @@ namespace TauCode.Parsing.Lexing
 
             LatinLetters = new HashSet<char>(latinLetters);
         }
-
-        public static int TodoErrorConsumedLength => throw new NotImplementedException();
 
         public static bool IsIntegerFirstChar(char c) => IntegerFirstChars.Contains(c);
 

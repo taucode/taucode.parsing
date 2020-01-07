@@ -271,7 +271,7 @@ namespace TauCode.Parsing.Lexing
                 if (nextToken == null)
                 {
                     throw new LexingException($"Unexpected char: '{c}'.",
-                        this.GetCurrentPosition()); // todo: ut this, and all LexingException-s/CreateInternalErrorLexingException-s.
+                        this.GetCurrentPosition());
                 }
 
                 if (nextToken.HasPayload)

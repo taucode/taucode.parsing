@@ -1,5 +1,7 @@
 ﻿using NUnit.Framework;
-using System;
+using System.Linq;
+using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
@@ -10,20 +12,22 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
     [TestFixture]
     public class CliLexerTests
     {
-        // todo: more tests. e.g. 
-        // "-" - path
-        // "." - path
-        // "--" - path
-        // etc.
+        private ILexer _lexer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _lexer = new CliLexer();
+        }
+
         [Test]
         public void Lexize_ValidInput_ProducesValidTokens()
         {
             // Arrange
             var input = "pub -t one '{\"name\" : \"ak\"}' --repeat 88 -log c:/temp/logs --level 1a-c";
-            var lexer = new CliLexer();
 
             // Act
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(10));
@@ -105,6 +109,62 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             Assert.That(termToken.Text, Is.EqualTo("1a-c"));
             Assert.That(termToken.Position, Is.EqualTo(new Position(0, 67)));
             Assert.That(termToken.ConsumedLength, Is.EqualTo(4));
+        }
+
+        [Test]
+        [TestCase("-a-b")]
+        public void Lexize_KeyWithHyphen_LexizesCorrectly(string input)
+        {
+            // Arrange
+
+            // Act
+            var tokens = _lexer.Lexize(input);
+
+            // Assert
+            Assert.That(tokens, Has.Count.EqualTo(1));
+            var textToken = (TextToken)tokens.Single();
+            Assert.That(textToken.Class, Is.SameAs(KeyTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.EqualTo(NoneTextDecoration.Instance));
+            Assert.That(textToken.Text, Is.EqualTo("-a-b"));
+        }
+
+        [Test]
+        [TestCase(".")]
+        [TestCase("..")]
+        [TestCase("-")]
+        [TestCase("--")]
+        [TestCase("---")]
+        [TestCase("--fo-")]
+        [TestCase("-fo-")]
+        [TestCase("---foo")]
+        public void Lexize_StrangePath_LexizesAsPath(string input)
+        {
+            // Arrange
+
+            // Act
+            var tokens = _lexer.Lexize(input);
+
+            // Assert
+            Assert.That(tokens, Has.Count.EqualTo(1));
+            var textToken = (TextToken)tokens.Single();
+            Assert.That(textToken.Class, Is.SameAs(PathTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.EqualTo(NoneTextDecoration.Instance));
+            Assert.That(textToken.Text, Is.EqualTo(input));
+        }
+
+        [Test]
+        [TestCase("я")]
+        public void Lexize_UnexpectedSymbol_ThrowsLexingException(string input)
+        {
+            // Arrange
+
+            // Act
+            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
+            
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo($"Unexpected char: '{input[0]}'."));
+            Assert.That(ex.Position, Is.EqualTo(Position.Zero));
         }
     }
 }

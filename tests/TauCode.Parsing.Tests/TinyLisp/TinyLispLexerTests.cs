@@ -338,5 +338,24 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var token = (LispSymbolToken)tokens.Single();
             Assert.That(token.SymbolName, Is.EqualTo("a"));
         }
+
+        [Test]
+        [TestCase(" ;comment\r")]
+        [TestCase(" ;comment\r ")]
+        [TestCase(" ;comment\n")]
+        [TestCase(" ;comment\n ")]
+        [TestCase(" ;comment\r\n")]
+        [TestCase(" ;comment\n\r")]
+        public void Lexize_CommentWithLineEndings_LexizedCorrectly(string input)
+        {
+            // Arrange
+
+            // Act
+            var tokens = _lexer.Lexize(input);
+
+            // Assert
+            Assert.That(tokens, Is.Empty);
+        }
+
     }
 }
