@@ -60,7 +60,8 @@ namespace TauCode.Parsing.Lexing
         {
             if (localIndex < 0)
             {
-                throw new NotImplementedException(); // todo: you shouldn't. error.
+                // you shouldn't run such a code. there's some error in your token extractor logic.
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetStartingAbsolutePosition());
             }
 
             return _input[this.StartingAbsoluteCharIndex + localIndex];
@@ -81,7 +82,6 @@ namespace TauCode.Parsing.Lexing
 
         protected string ExtractResultString()
         {
-            //var str = _input.Substring(_startPos, _localPos);
             var str = _input.Substring(this.StartingAbsoluteCharIndex, this.LocalCharIndex);
             return str;
         }
@@ -90,8 +90,6 @@ namespace TauCode.Parsing.Lexing
         {
             this.LocalCharIndex++;
             this.CurrentColumn++;
-
-            //_localPos++;
         }
 
         protected void SkipSingleLineBreak()
@@ -99,28 +97,29 @@ namespace TauCode.Parsing.Lexing
             var c = this.GetCurrentChar();
             int indexShift;
             
-            if (c == '\r') // todo constant
+            if (c == LexingHelper.Cr)
             {
                 var nextChar = this.GetNextChar();
                 if (nextChar.HasValue)
                 {
-                    if (nextChar.Value == '\n')
+                    if (nextChar.Value == LexingHelper.Lf)
                     {
                         indexShift = 2; // got CRLF
                     }
                     else
                     {
-                        throw new NotImplementedException();
+                        indexShift = 1;
                     }
                 }
                 else
                 {
-                    throw new NotImplementedException();
+                    // no more chars.
+                    indexShift = 1;
                 }
             }
-            else if (c == '\n') // todo constant
+            else if (c == LexingHelper.Lf)
             {
-                throw new NotImplementedException();
+                indexShift = 1;
             }
             else
             {
@@ -166,7 +165,7 @@ namespace TauCode.Parsing.Lexing
         {
             if (this.LocalCharIndex <= 0)
             {
-                throw new NotImplementedException(); // you shouldn't have requested it.
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
             }
 
             return this.GetLocalChar(this.LocalCharIndex - 1);
@@ -240,10 +239,10 @@ namespace TauCode.Parsing.Lexing
                             }
 
                         case CharChallengeResult.GiveUp:
-                            throw new NotImplementedException();
+                            return new TokenExtractionResult(null, 0, 0, null);
 
                         default:
-                            // should never happen. this is an enum, after all.
+                            // should never happen. check your token extractor, it has error(s).
                             throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
                     }
                 }
@@ -257,7 +256,7 @@ namespace TauCode.Parsing.Lexing
                         return new TokenExtractionResult(null, 0, 0, null);
 
                     case CharChallengeResult.Continue:
-                        this.Advance(); // todo: deal with line breaks?
+                        this.Advance();
                         break;
 
                     case CharChallengeResult.Finish:

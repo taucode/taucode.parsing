@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Extensions;
+using System.Linq;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
 {
     public class TextNode : ActionNode
     {
-        private readonly ITextClass[] _textClasses;
+        private readonly HashSet<ITextClass> _textClasses;
 
         public TextNode(
             IEnumerable<ITextClass> textClasses,
@@ -16,8 +16,24 @@ namespace TauCode.Parsing.Nodes
             string name)
             : base(action, family, name)
         {
-            // todo: check args
-            _textClasses = new List<ITextClass>(textClasses).ToArray(); // todo optimize
+            if (textClasses == null)
+            {
+                throw new ArgumentNullException(nameof(textClasses));
+            }
+
+            var textClassesList = textClasses.ToList(); // to avoid multiple enumerating.
+
+            if (textClassesList.Count == 0)
+            {
+                throw new ArgumentException($"'{nameof(textClasses)}' cannot be empty.");
+            }
+
+            if (textClassesList.Any(x => x == null))
+            {
+                throw new ArgumentException($"'{nameof(textClasses)}' cannot contain nulls.");
+            }
+
+            _textClasses = new HashSet<ITextClass>(textClassesList);
         }
 
         public TextNode(
@@ -31,9 +47,9 @@ namespace TauCode.Parsing.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            bool acceptsToken =
+            var acceptsToken =
                 token is TextToken textToken &&
-                textToken.Class.IsIn(_textClasses);
+                _textClasses.Contains(textToken.Class);
 
             if (acceptsToken)
             {
@@ -44,7 +60,5 @@ namespace TauCode.Parsing.Nodes
                 return InquireResult.Reject;
             }
         }
-
-        public IReadOnlyList<ITextClass> TextClasses => _textClasses;
     }
 }

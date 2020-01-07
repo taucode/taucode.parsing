@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Extensions;
+﻿using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
@@ -45,9 +44,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
             var c = this.GetCurrentChar();
 
 
-            var pos = this.LocalCharIndex;
+            var index = this.LocalCharIndex;
 
-            if (pos == 0)
+            if (index == 0)
             {
                 _startingDelimiter = c;
                 return CharChallengeResult.Continue; // 0th char MUST have been accepted.
@@ -74,7 +73,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            throw new LexingException("Unclosed string.", this.GetCurrentAbsolutePosition());
         }
     }
 }

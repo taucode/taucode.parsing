@@ -5,7 +5,6 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
-    // todo: paring of NVARCHAR(100) will produce Precision = 100, Scale = null, Size = null, while it should produce Precision = null, Scale = null, Size = 100
     public class SqlPunctuationExtractor : TokenExtractorBase
     {
         public SqlPunctuationExtractor()
@@ -35,7 +34,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
-            //var c = this.GetCurrentChar();
             var index = this.LocalCharIndex;
 
             if (index == 0)

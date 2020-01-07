@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextDecorations;
@@ -29,14 +28,14 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.LocalCharIndex;
+            var index = this.LocalCharIndex;
 
-            if (pos == 0)
+            if (index == 0)
             {
                 return CharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
-            if (pos == 1)
+            if (index == 1)
             {
                 if (c == '-')
                 {
@@ -51,17 +50,20 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.GiveUp;
             }
 
-            if (pos == 2 && c == '-')
+            if (index == 2 && c == '-')
             {
-                return CharChallengeResult.GiveUp; // 3 hyphens cannot be.
+                if (this.GetPreviousChar() == '-')
+                {
+                    return CharChallengeResult.GiveUp; // 3 hyphens cannot be.
+                }
+
+                return CharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))
             {
                 return CharChallengeResult.Continue;
             }
-
-            // todo: test keys "-", "--", "---", "--fo-", "-fo-", "---foo" etc.
 
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) || c == '=')
             
@@ -74,7 +76,12 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException();
+            if (this.GetPreviousChar() == '-')
+            {
+                return CharChallengeResult.GiveUp;
+            }
+
+            return CharChallengeResult.Finish;
         }
     }
 }

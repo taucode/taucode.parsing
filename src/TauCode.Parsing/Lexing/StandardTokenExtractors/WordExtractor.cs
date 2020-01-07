@@ -53,7 +53,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         {
             var c = this.GetCurrentChar();
 
-            var index = this.LocalCharIndex; // todo: rename all 'var pos =' to avoid confusion with the Position structure.
+            var index = this.LocalCharIndex;
 
             if (index == 0)
             {

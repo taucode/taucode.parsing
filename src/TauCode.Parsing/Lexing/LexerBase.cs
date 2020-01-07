@@ -56,10 +56,76 @@ namespace TauCode.Parsing.Lexing
 
         #endregion
 
+        #region Private
+
+        private CaretControlCharsSkipResult SkipCaretControlChars()
+        {
+            var totalLinesSkipped = 0;
+
+            var startIndex = this.CurrentCharIndex;
+            var index = startIndex;
+
+            while (true)
+            {
+                if (this.IsEndAtIndex(index))
+                {
+                    break;
+                }
+
+                var c = this.GetCharAtIndex(index);
+
+                if (c == LexingHelper.Cr)
+                {
+                    var nextChar = this.TryGetCharAtIndex(index + 1);
+                    if (nextChar.HasValue)
+                    {
+                        if (nextChar.Value == LexingHelper.Lf)
+                        {
+                            // got CRLF
+                            index += 2;
+                            totalLinesSkipped++;
+                        }
+                        else
+                        {
+                            // got CR only
+                            index += 1;
+                            totalLinesSkipped++;
+                        }
+                    }
+                    else
+                    {
+                        // got CR only, and there is no more chars.
+                        index++;
+                        totalLinesSkipped++;
+                        break;
+                    }
+                }
+                else if (c == LexingHelper.Lf)
+                {
+                    // got LF
+                    index++;
+                    totalLinesSkipped++;
+                }
+                else
+                {
+                    // no line-breaks; let's get out of this loop.
+                    break;
+                }
+            }
+
+            var totalDelta = index - startIndex;
+
+            return new CaretControlCharsSkipResult(totalDelta, totalLinesSkipped);
+        }
+
+        #endregion
+
         #region Protected
 
         protected int CurrentCharIndex { get; private set; }
+
         protected int CurrentLine { get; private set; }
+
         protected int CurrentColumn { get; private set; }
 
         protected bool IsEndAtIndex(int index)
@@ -88,14 +154,27 @@ namespace TauCode.Parsing.Lexing
             return new Position(line, column);
         }
 
-        protected char GetCurrentChar()
+        protected char GetCharAtIndex(int index)
         {
-            if (this.IsEnd())
+            if (this.IsEndAtIndex(index))
             {
-                throw LexingHelper.CreateUnexpectedEndOfInputException(this.GetCurrentPosition());
+                // no one should ever query such a thing.
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentPosition());
             }
 
-            return _input[this.CurrentCharIndex];
+            return _input[index];
+        }
+
+        protected char GetCurrentChar() => this.GetCharAtIndex(this.CurrentCharIndex);
+
+        protected char? TryGetCharAtIndex(int index)
+        {
+            if (this.IsEndAtIndex(index))
+            {
+                return null;
+            }
+
+            return _input[index];
         }
 
         protected void Advance(int shift = 1)
@@ -123,7 +202,6 @@ namespace TauCode.Parsing.Lexing
 
             _tokenExtractors.Add(tokenExtractor);
         }
-
 
         #endregion
 
@@ -193,7 +271,7 @@ namespace TauCode.Parsing.Lexing
                 if (nextToken == null)
                 {
                     throw new LexingException($"Unexpected char: '{c}'.",
-                        this.GetCurrentPosition()); // todo: ut this, and all LexingException-s/CreateInternalErrorLexingException-s.
+                        this.GetCurrentPosition());
                 }
 
                 if (nextToken.HasPayload)
@@ -201,89 +279,6 @@ namespace TauCode.Parsing.Lexing
                     list.Add(nextToken);
                 }
             }
-        }
-
-        protected char GetCharAtIndex(int index)
-        {
-            if (this.IsEndAtIndex(index))
-            {
-                throw new NotImplementedException(); // error todo
-            }
-
-            return _input[index];
-        }
-
-        protected char? TryGetCharAtIndex(int index)
-        {
-            if (this.IsEndAtIndex(index))
-            {
-                throw new NotImplementedException(); // todo error we should not query such a thing.
-            }
-
-            var wantedIndex = this.CurrentCharIndex + 1;
-            if (wantedIndex == _input.Length)
-            {
-                return null;
-            }
-
-            return _input[wantedIndex];
-        }
-
-        private CaretControlCharsSkipResult SkipCaretControlChars()
-        {
-            var totalLinesSkipped = 0;
-
-            var startIndex = this.CurrentCharIndex;
-            var index = startIndex;
-
-            while (true)
-            {
-                if (this.IsEndAtIndex(index))
-                {
-                    break;
-                }
-
-                var c = this.GetCharAtIndex(index);
-
-                if (c == '\r')
-                {
-                    var nextChar = this.TryGetCharAtIndex(index + 1);
-                    if (nextChar.HasValue)
-                    {
-                        if (nextChar.Value == '\n')
-                        {
-                            // got CRLF
-                            index += 2;
-                            totalLinesSkipped++;
-                        }
-                        else
-                        {
-                            // got CR only
-                            index += 1;
-                            totalLinesSkipped++;
-                        }
-                    }
-                    else
-                    {
-                        throw new NotImplementedException(); // todo: ut this.
-                    }
-                }
-                else if (c == '\n')
-                {
-                    // got LF
-                    index++;
-                    totalLinesSkipped++;
-                }
-                else
-                {
-                    // no line-breaks; let's get out of this loop.
-                    break;
-                }
-            }
-
-            var totalDelta = index - startIndex;
-
-            return new CaretControlCharsSkipResult(totalDelta, totalLinesSkipped);
         }
 
         #endregion

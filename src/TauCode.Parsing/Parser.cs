@@ -8,7 +8,7 @@ namespace TauCode.Parsing
 {
     public class Parser : IParser
     {
-        protected virtual bool WantsOnlyOneResult => false;
+        public bool WantsOnlyOneResult { get; set; }
 
         public object[] Parse(INode root, IEnumerable<IToken> tokens)
         {
@@ -66,9 +66,9 @@ namespace TauCode.Parsing
                             if (gotActor)
                             {
                                 throw new NodeConcurrencyException(
-                                    context.ResultAccumulator.ToArray(),
                                     token,
-                                    BuildRivalNodes(winners, node));
+                                    BuildConcurrentNodes(winners, node),
+                                    context.ResultAccumulator.ToArray());
                             }
                             gotSkippers = true;
                             winners.Add(node);
@@ -78,9 +78,9 @@ namespace TauCode.Parsing
                             if (gotActor)
                             {
                                 throw new NodeConcurrencyException(
-                                    context.ResultAccumulator.ToArray(),
                                     token,
-                                    BuildRivalNodes(winners, node));
+                                    BuildConcurrentNodes(winners, node),
+                                    context.ResultAccumulator.ToArray());
                             }
                             gotActor = true;
                             winners.Add(node);
@@ -121,9 +121,9 @@ namespace TauCode.Parsing
                         if (winners.Count > 1)
                         {
                             throw new NodeConcurrencyException(
-                                context.ResultAccumulator.ToArray(),
                                 token,
-                                winners.ToArray());
+                                winners.ToArray(),
+                                context.ResultAccumulator.ToArray());
                         }
 
                         var actor = winners.Single();
@@ -155,9 +155,12 @@ namespace TauCode.Parsing
             }
         }
 
-        private INode[] BuildRivalNodes(List<INode> rivalNodes, INode oneMoreRivalNode)
+        private INode[] BuildConcurrentNodes(List<INode> concurrentNodes, INode oneMoreConcurrentNode)
         {
-            throw new NotImplementedException();
+            var allConcurrentNodes = new List<INode>();
+            allConcurrentNodes.AddRange(concurrentNodes);
+            allConcurrentNodes.Add(oneMoreConcurrentNode);
+            return allConcurrentNodes.ToArray();
         }
     }
 }

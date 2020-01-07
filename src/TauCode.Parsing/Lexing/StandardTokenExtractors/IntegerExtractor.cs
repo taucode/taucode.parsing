@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Extensions;
+﻿using TauCode.Extensions;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
@@ -20,12 +19,6 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 str = str.Substring(1);
             }
 
-            // todo: remove this check
-            if (!int.TryParse(str, out var dummy))
-            {
-                throw new NotImplementedException();
-            }
-
             var position = new Position(this.StartingLine, this.StartingColumn);
             var consumedLength = this.LocalCharIndex;
 
@@ -34,15 +27,14 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
         protected override void ResetState()
         {
-            // todo: idle now, but actually should contain things like heading sign '+', '-', etc...
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.LocalCharIndex;
+            var index = this.LocalCharIndex;
 
-            if (pos == 0)
+            if (index == 0)
             {
                 return CharChallengeResult.Continue; // MUST be ok.
             }

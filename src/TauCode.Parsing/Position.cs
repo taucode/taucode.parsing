@@ -5,7 +5,6 @@ namespace TauCode.Parsing
     public struct Position : IEquatable<Position>, IComparable<Position>
     {
         public static readonly Position Zero = new Position(0, 0);
-        public static Position TodoErrorPosition => throw new NotImplementedException();
 
         public Position(int line, int column)
         {

@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Extensions;
+﻿using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardTokenExtractors;
@@ -90,7 +89,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            throw new NotImplementedException(); // todo: error. met end while extracting identifier.
+            throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
         }
     }
 }

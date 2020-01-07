@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Extensions;
+using System.Linq;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
 {
     public class ExactTextNode : ActionNode
     {
-        private readonly ITextClass[] _textClasses;
+        private readonly HashSet<ITextClass> _textClasses;
 
         public ExactTextNode(
             string exactText,
@@ -18,8 +18,24 @@ namespace TauCode.Parsing.Nodes
             : base(action, family, name)
         {
             this.ExactText = exactText ?? throw new ArgumentNullException(nameof(exactText));
-            // todo: check args
-            _textClasses = new List<ITextClass>(textClasses).ToArray(); // todo optimize
+
+            if (textClasses == null)
+            {
+                throw new ArgumentNullException(nameof(textClasses));
+            }
+
+            var textClassesList = textClasses.ToList();
+            if (textClassesList.Count == 0)
+            {
+                throw new ArgumentException($"'{nameof(textClasses)}' cannot be empty.");
+            }
+
+            if (textClassesList.Any(x => x == null))
+            {
+                throw new ArgumentException($"'{nameof(textClasses)}' cannot contain nulls.");
+            }
+
+            _textClasses = new HashSet<ITextClass>(textClassesList);
 
         }
 
@@ -35,9 +51,9 @@ namespace TauCode.Parsing.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            bool acceptsToken =
+            var acceptsToken =
                 token is TextToken textToken &&
-                textToken.Class.IsIn(_textClasses) &&
+                _textClasses.Contains(textToken.Class) &&
                 string.Equals(
                     textToken.Text,
                     this.ExactText,
@@ -54,8 +70,6 @@ namespace TauCode.Parsing.Nodes
         }
 
         public string ExactText { get; }
-
-        public IReadOnlyList<ITextClass> TextClasses => _textClasses;
 
         public bool IsCaseSensitive { get; set; }
     }

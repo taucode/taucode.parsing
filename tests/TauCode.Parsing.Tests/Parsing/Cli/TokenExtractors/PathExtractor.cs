@@ -43,9 +43,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            var pos = this.LocalCharIndex;
+            var index = this.LocalCharIndex;
 
-            if (pos == 0)
+            if (index == 0)
             {
                 return CharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
