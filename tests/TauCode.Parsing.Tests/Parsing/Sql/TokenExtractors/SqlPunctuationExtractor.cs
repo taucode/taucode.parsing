@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
@@ -26,22 +27,23 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         {
             var str = this.ExtractResultString();
 
-            throw new NotImplementedException();
-            //return new PunctuationToken(str.Single());
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new PunctuationToken(str.Single(), position, consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
-            var c = this.GetCurrentChar();
-            throw new NotImplementedException();
-            //var pos = this.GetLocalPosition();
+            //var c = this.GetCurrentChar();
+            var index = this.LocalCharIndex;
 
-            //if (pos == 0)
-            //{
-            //    return CharChallengeResult.Continue;
-            //}
+            if (index == 0)
+            {
+                return CharChallengeResult.Continue;
+            }
 
-            //return CharChallengeResult.Finish; // whatever it is - it's a single-char token extractor.
+            return CharChallengeResult.Finish; // whatever it is - it's a single-char token extractor.
         }
 
         protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish;

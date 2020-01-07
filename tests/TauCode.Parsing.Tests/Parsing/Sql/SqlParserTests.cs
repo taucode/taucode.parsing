@@ -5,7 +5,7 @@ using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
-using TauCode.Parsing.Tests.Data;
+using TauCode.Parsing.Tests.Parsing.Sql.Data;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 

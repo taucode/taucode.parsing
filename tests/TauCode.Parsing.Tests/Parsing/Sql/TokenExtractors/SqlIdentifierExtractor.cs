@@ -1,9 +1,15 @@
 ﻿using System;
 using TauCode.Extensions;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Lexing.StandardTokenExtractors;
+using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Tokens.TextClasses;
+using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
+    // todo clean up
     public class SqlIdentifierExtractor : TokenExtractorBase
     {
         public SqlIdentifierExtractor()
@@ -26,40 +32,45 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             }
 
             var identifier = str.Substring(1, str.Length - 2);
-            throw new NotImplementedException();
-            //return new TextToken(
-            //    IdentifierTextClass.Instance,
-            //    NoneTextDecoration.Instance,
-            //    identifier);
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new TextToken(
+                IdentifierTextClass.Instance,
+                NoneTextDecoration.Instance,
+                identifier,
+                position,
+                consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
-            throw new NotImplementedException();
+            var index = this.LocalCharIndex;
 
-            //var pos = this.GetLocalPosition();
+            if (index == 0)
+            {
+                return CharChallengeResult.Continue; // how else?
+            }
 
-            //if (pos == 0)
-            //{
-            //    return CharChallengeResult.Continue; // how else?
-            //}
+            if (WordExtractor.StandardInnerCharPredicate(c))
+            {
+                return CharChallengeResult.Continue;
+            }
 
-            //if (WordExtractor.StandardInnerCharPredicate(c))
-            //{
-            //    return CharChallengeResult.Continue;
-            //}
+            if (c.IsIn(']', '`', '"'))
+            {
+                var openingDelimiter = this.GetLocalChar(0);
+                if (GetClosingDelimiter(openingDelimiter) == c)
+                {
+                    this.Advance();
+                    return CharChallengeResult.Finish;
+                }
+            }
 
-            //if (c.IsIn(']', '`', '"'))
-            //{
-            //    var openingDelimiter = this.GetLocalChar(0);
-            //    if (GetClosingDelimiter(openingDelimiter) == c)
-            //    {
-            //        this.Advance();
-            //        return CharChallengeResult.Finish;
-            //    }
-            //}
+            throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
 
             //return CharChallengeResult.Error; // unexpected char within identifier.
         }

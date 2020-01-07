@@ -1,5 +1,6 @@
 ﻿using System;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
@@ -18,22 +19,23 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override IToken ProduceResult()
         {
-            throw new NotImplementedException();
-            //return new PunctuationToken('=');
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
+            return new PunctuationToken('=', position, consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
-            throw new NotImplementedException();
-            //var pos = this.GetLocalPosition();
+            var index = this.LocalCharIndex;
 
-            //if (pos == 0)
-            //{
-            //    // 0th is always accepted.
-            //    return CharChallengeResult.Continue;
-            //}
+            if (index == 0)
+            {
+                // 0th is always accepted.
+                return CharChallengeResult.Continue;
+            }
 
-            //return CharChallengeResult.Finish;
+            return CharChallengeResult.Finish;
         }
 
         protected override CharChallengeResult ChallengeEnd()

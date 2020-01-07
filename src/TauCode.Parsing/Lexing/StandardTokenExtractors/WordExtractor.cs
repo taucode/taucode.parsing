@@ -40,48 +40,45 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
+
+            var position = new Position(this.StartingLine, this.StartingColumn);
+            var consumedLength = this.LocalCharIndex;
+
             return new TextToken(
                 WordTextClass.Instance,
                 NoneTextDecoration.Instance,
                 str,
-                Position.TodoErrorPosition,
-                LexingHelper.TodoErrorConsumedLength);
+                position,
+                consumedLength);
         }
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
-            throw new NotImplementedException();
-            //var pos = this.GetLocalPosition();
+            var index = this.LocalCharIndex; // todo: rename all 'var pos =' to avoid confusion with the Position structure.
 
-            //if (pos == 0)
-            //{
-            //    if (this.AllowsFirstChar(c))
-            //    {
-            //        return CharChallengeResult.Continue;
-            //    }
-            //    else
-            //    {
-            //        throw LexingHelper.CreateInternalErrorException();
-            //    }
-            //}
+            if (index == 0)
+            {
+                return CharChallengeResult.Continue; // MUST be accepted in accordance with design.
+            }
 
-            
-            //if (
-            //    this.Environment.IsSpace(c) ||
-            //    LexingHelper.IsStandardPunctuationChar(c))
-            //{
-            //    return CharChallengeResult.Finish;
-            //}
 
-            //if (this.AllowsInnerChar(c))
-            //{
-            //    return CharChallengeResult.Continue;
-            //}
+            if (
+                //this.Environment.IsSpace(c) ||
+                LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) ||
+                LexingHelper.IsStandardPunctuationChar(c))
+            {
+                return CharChallengeResult.Finish;
+            }
 
-            //// I don't want this char inside my word.
-            //return CharChallengeResult.GiveUp;
+            if (this.AllowsInnerChar(c))
+            {
+                return CharChallengeResult.Continue;
+            }
+
+            // I don't want this char inside my word.
+            return CharChallengeResult.GiveUp;
         }
 
         protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish; // word ended with end-of-input? no problem.
