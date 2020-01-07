@@ -72,44 +72,6 @@ namespace TauCode.Parsing
             }
         }
 
-        // todo not used
-        public static void AddLinksByNames(this INode node, params string[] names)
-        {
-            if (node == null)
-            {
-                throw new ArgumentNullException(nameof(node));
-            }
-
-            foreach (var name in names)
-            {
-                if (name == null)
-                {
-                    throw new ArgumentException($"'{nameof(names)}' must not contain nulls.");
-                }
-
-                node.ClaimLink(name);
-            }
-        }
-
-        // todo not used
-        public static void DrawLinkFromNodes(this INode node, params INode[] drawFromNodes)
-        {
-            if (node == null)
-            {
-                throw new ArgumentNullException(nameof(node));
-            }
-
-            foreach (var drawFromNode in drawFromNodes)
-            {
-                if (drawFromNode == null)
-                {
-                    throw new ArgumentException($"'{nameof(drawFromNode)}' must not contain nulls.");
-                }
-
-                drawFromNode.EstablishLink(node);
-            }
-        }
-
         public static T GetLastResult<T>(this IResultAccumulator accumulator)
         {
             if (accumulator == null)
@@ -138,9 +100,6 @@ namespace TauCode.Parsing
 
             return (T)result;
         }
-
-        // todo not used
-        public static IReadOnlyCollection<INode> GetNonIdleLinks(this INode node) => GetNonIdleNodes(node.ResolveLinks());
 
         public static IReadOnlyCollection<INode> FetchTree(this INode root)
         {

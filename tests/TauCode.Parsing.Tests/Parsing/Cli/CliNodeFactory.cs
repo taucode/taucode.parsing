@@ -64,12 +64,11 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var verbs = item
                 .GetAllKeywordArguments(":verbs")
                 .Select(x => ((StringAtom)x).Value)
-                .ToList(); // todo: optimize, use IEnumerable.
+                .ToList();
 
-            INode node = new MultiTextRepresentationNode(
+            INode node = new MultiTextNode(
                 verbs,
                 new ITextClass[] { TermTextClass.Instance },
-                token => token.Text,
                 this.ProcessAlias,
                 this.NodeFamily,
                 item.GetItemName());
@@ -89,10 +88,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            var node = new MultiTextRepresentationNode(
+            var node = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance, },
-                token => token.Text,
                 this.ProcessKey,
                 this.NodeFamily,
                 item.GetItemName());
@@ -110,10 +108,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            ActionNode keyNameNode = new MultiTextRepresentationNode(
+            ActionNode keyNameNode = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance },
-                token => token.Text,
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -137,10 +134,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            ActionNode keyNameNode = new MultiTextRepresentationNode(
+            ActionNode keyNameNode = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance },
-                token => token.Text,
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -176,15 +172,27 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 textValues = values.Select(x => ((StringAtom)x).Value).ToArray();
             }
 
-            var classTypes = classes.Select(x => this.ParseTextClass(((Symbol)x).Name));
+            var textClasses = classes.Select(x => this.ParseTextClass(((Symbol)x).Name));
 
-            INode choiceNode = new MultiTextRepresentationNode(
-                textValues,
-                classTypes,
-                token => token.Text,
-                ProcessKeyChoice,
-                this.NodeFamily,
-                null);
+            INode choiceNode;
+
+            if (textValues == null)
+            {
+                choiceNode = new TextNode(
+                    textClasses,
+                    ProcessKeyChoice,
+                    this.NodeFamily,
+                    null);
+            }
+            else
+            {
+                choiceNode = new MultiTextNode(
+                    textValues,
+                    textClasses,
+                    ProcessKeyChoice,
+                    this.NodeFamily,
+                    null);
+            }
 
             return choiceNode;
         }
