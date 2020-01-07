@@ -9,7 +9,6 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
-    // todo clean up
     public class SqlIdentifierExtractor : TokenExtractorBase
     {
         public SqlIdentifierExtractor()
@@ -19,8 +18,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 
         protected override void ResetState()
         {
-            // idle now, but todo: _startingDelimiter = {'"', '[', '`'} ?..
-
         }
 
         protected override IToken ProduceResult()
@@ -71,8 +68,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             }
 
             throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
-
-            //return CharChallengeResult.Error; // unexpected char within identifier.
         }
 
         private char GetClosingDelimiter(char openingDelimiter)
@@ -95,8 +90,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 
         protected override CharChallengeResult ChallengeEnd()
         {
-            //return CharChallengeResult.Error; // met end while extracting identifier.
-            throw new NotImplementedException(); // todo: error. see comment above.
+            throw new NotImplementedException(); // todo: error. met end while extracting identifier.
         }
     }
 }

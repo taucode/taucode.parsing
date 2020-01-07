@@ -5,7 +5,6 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    // todo clean up
     public class TermExtractor : TokenExtractorBase
     {
         public TermExtractor()
@@ -40,7 +39,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-            //var pos = this.GetLocalPosition();
 
             if (this.LocalCharIndex == 0)
             {
@@ -77,7 +75,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 }
             }
 
-            //if (this.Environment.IsSpace(c))
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
                 if (this.GetPreviousChar() == '-')
@@ -92,12 +89,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
             return CharChallengeResult.GiveUp;
         }
-
-        //private char GetPreviousChar()
-        //{
-        //    throw new NotImplementedException();
-        //    //return this.GetLocalChar(this.GetLocalPosition() - 1);
-        //}
 
         protected override CharChallengeResult ChallengeEnd()
         {

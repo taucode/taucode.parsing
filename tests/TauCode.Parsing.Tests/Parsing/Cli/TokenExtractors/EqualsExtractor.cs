@@ -4,11 +4,10 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    // todo clean up
     public class EqualsExtractor : TokenExtractorBase
     {
-        public EqualsExtractor(/*ILexingEnvironment environment*/)
-            : base(/*environment,*/ c => c == '=')
+        public EqualsExtractor()
+            : base(c => c == '=')
         {
         }
 

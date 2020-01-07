@@ -8,7 +8,6 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    // todo clean up
     public class StringExtractor : TokenExtractorBase
     {
         private char? _startingDelimiter;
@@ -59,11 +58,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 throw new LexingException("Newline in string.", this.GetCurrentAbsolutePosition());
             }
 
-            //if (this.Environment.IsLineBreak(c))
-            //{
-            //    return CharChallengeResult.Error;
-            //}
-
             if (c == '\'' || c == '"')
             {
                 if (c == _startingDelimiter.Value)
@@ -77,11 +71,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
             return CharChallengeResult.Continue;
         }
-
-        //private char GetStartingDelimiter()
-        //{
-        //    return this.GetLocalChar(0);
-        //}
 
         protected override CharChallengeResult ChallengeEnd()
         {

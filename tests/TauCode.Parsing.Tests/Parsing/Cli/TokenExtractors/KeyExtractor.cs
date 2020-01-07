@@ -6,21 +6,15 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    // todo clean up
     public class KeyExtractor : TokenExtractorBase
     {
-        //private ITextDecoration _textDecoration;
-        //private int? _skip;
-
-        public KeyExtractor(/*ILexingEnvironment environment*/)
-            : base(/*environment,*/ c => c == '-')
+        public KeyExtractor()
+            : base(c => c == '-')
         {
         }
 
         protected override void ResetState()
         {
-            //_textDecoration = null;
-            //_skip = null;
         }
 
         protected override IToken ProduceResult()
@@ -46,8 +40,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
             {
                 if (c == '-')
                 {
-                    //_skip = 2;
-                    //_textDecoration = HyphenTextDecoration.InstanceWithTwoHyphens;
                     return CharChallengeResult.Continue;
                 }
 

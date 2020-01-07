@@ -6,7 +6,6 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    // todo: clean up
     public class PathExtractor : TokenExtractorBase
     {
         public PathExtractor()
@@ -56,7 +55,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharChallengeResult.Continue;
             }
 
-            //if (this.Environment.IsSpace(c))
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
                 return CharChallengeResult.Finish;

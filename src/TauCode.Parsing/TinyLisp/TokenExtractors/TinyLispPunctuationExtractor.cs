@@ -4,13 +4,10 @@ using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    // todo clean up
     public class TinyLispPunctuationExtractor : TokenExtractorBase
     {
         public TinyLispPunctuationExtractor()
-            : base(
-                //StandardLexingEnvironment.Instance,
-                TinyLispHelper.IsPunctuation)
+            : base(TinyLispHelper.IsPunctuation)
         {
         }
 
@@ -40,22 +37,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
         protected override CharChallengeResult ChallengeCurrentChar()
         {
-            //var c = this.GetCurrentChar();
-            //var pos = this.GetLocalPosition();
-            //var pos = this.LocalCharIndex;
-
-            //if (pos == 0)
-            //{
-            //    if (TinyLispHelper.PunctuationChars.Contains(c))
-            //    {
-            //        return CharChallengeResult.Continue;
-            //    }
-            //    else
-            //    {
-            //        throw LexingHelper.CreateInternalErrorException();
-            //    }
-            //}
-
             if (this.LocalCharIndex == 0)
             {
                 return CharChallengeResult.Continue; // local char MUST accepted since it was accepted by 'TinyLispHelper.IsPunctuation'
