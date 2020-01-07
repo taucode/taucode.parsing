@@ -11,7 +11,6 @@ using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
-    // todo clean up
     [TestFixture]
     public class CliParserTests
     {
@@ -32,7 +31,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             IParser parser = new Parser();
 
             ILexer cliLexer = new CliLexer();
-            //var commandText = this.GetType().Assembly.GetResourceText("CliCommand.txt", true);
             var commandText =
                 "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
             var cliTokens = cliLexer.Lexize(commandText);
@@ -46,38 +44,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 var command = new CliCommand();
                 accumulator.AddResult(command);
             };
-
-            //void AddKey(ActionNode actionNode, IToken token, IResultAccumulator accumulator)
-            //{
-            //    throw new NotImplementedException();
-            //    //var command = accumulator.GetLastResult<MmCommand>();
-            //    //command.Entries.Add(new MmCommandEntry());
-
-            //    //var entry = command.Entries.Last();
-            //    //entry.Key = ((TextToken)token).Text;
-            //}
-
-            //void AddValue(ActionNode actionNode, IToken token, IResultAccumulator accumulator)
-            //{
-            //    throw new NotImplementedException();
-            //    //var command = accumulator.GetLastResult<MmCommand>();
-            //    //var entry = command.Entries.Last();
-            //    //entry.Value = ((TextToken)token).Text;
-            //}
-
-            //var keyNodes = allNodes
-            //    .Where(x => x.Name?.EndsWith("-key", StringComparison.CurrentCultureIgnoreCase) ?? false)
-            //    .Cast<ActionNode>()
-            //    .ToList();
-
-            //keyNodes.ForEach(x => x.Action = AddKey);
-
-            //var valueNodes = allNodes
-            //    .Where(x => x.Name?.EndsWith("-value", StringComparison.CurrentCultureIgnoreCase) ?? false)
-            //    .Cast<ActionNode>()
-            //    .ToList();
-
-            //valueNodes.ForEach(x => x.Action = AddValue);
 
             // Act
             var cliResults = parser.Parse(root, cliTokens);
@@ -104,15 +70,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             Assert.That(
                 commandEntry.Value,
                 Is.EqualTo("c:/temp/mysqlite.json"));
-
-            //commandEntry = mmResult.Entries.Single(x => x.Key == "provider");
-            //Assert.That(commandEntry.Value, Is.EqualTo("sqlserver"));
-
-            //commandEntry = mmResult.Entries.Single(x => x.Key == "to");
-            //Assert.That(commandEntry.Value, Is.EqualTo("sqlite"));
-
-            //commandEntry = mmResult.Entries.Single(x => x.Key == "target");
-            //Assert.That(commandEntry.Value, Is.EqualTo("c:/temp/mysqlite.json"));
         }
     }
 }

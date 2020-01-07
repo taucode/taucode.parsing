@@ -4,13 +4,10 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
-    // todo clean up
     public class IntegerExtractor : TokenExtractorBase
     {
-        public IntegerExtractor( /*ILexingEnvironment environment*/)
-            : base(
-                //environment,
-                LexingHelper.IsIntegerFirstChar)
+        public IntegerExtractor()
+            : base(LexingHelper.IsIntegerFirstChar)
         {
         }
 
@@ -29,7 +26,6 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 throw new NotImplementedException();
             }
 
-            // todo: these two lines below are copy/pasted
             var position = new Position(this.StartingLine, this.StartingColumn);
             var consumedLength = this.LocalCharIndex;
 
@@ -44,9 +40,6 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         protected override CharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
-
-            //throw new NotImplementedException();
-
             var pos = this.LocalCharIndex;
 
             if (pos == 0)
@@ -84,18 +77,12 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 return CharChallengeResult.Finish;
             }
 
-            //if (this.Environment.IsSpace(c) || char.IsWhiteSpace(c))
-            //{
-            //    return CharChallengeResult.Finish;
-            //}
-
             // other chars like letters and stuff => not allowed.
             return CharChallengeResult.GiveUp;
         }
 
         private bool GotOnlySign()
         {
-            //var localPosition = this.GetLocalPosition();
             if (this.LocalCharIndex == 1)
             {
                 var firstChar = this.GetLocalChar(0);
@@ -116,7 +103,6 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
             }
             else if (localPos == 1)
             {
-                //var c = this.GetLocalChar(0);
                 var c = this.GetLocalChar(0);
                 if (LexingHelper.IsDigit(c))
                 {

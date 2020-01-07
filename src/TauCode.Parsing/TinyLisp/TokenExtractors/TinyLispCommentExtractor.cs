@@ -3,13 +3,10 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    // todo: clean up
     public class TinyLispCommentExtractor : TokenExtractorBase
     {
         public TinyLispCommentExtractor()
-            : base(
-                //StandardLexingEnvironment.Instance,
-                x => x == ';')
+            : base(x => x == ';')
         {
         }
 
@@ -30,21 +27,10 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             var c = this.GetCurrentChar();
 
-            //var pos = this.GetLocalPosition();
-
             if (this.LocalCharIndex == 0)
             {
                 // 0th char is always accepted by 'firstCharPredicate'
                 return CharChallengeResult.Continue;
-
-                //if (c == ';')
-                //{
-                //    return CharChallengeResult.Continue;
-                //}
-                //else
-                //{
-                //    throw LexingHelper.CreateInternalErrorException();
-                //}
             }
 
             if (LexingHelper.IsCaretControl(c))
@@ -54,15 +40,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             }
 
             return CharChallengeResult.Continue; // comment is going on.
-
-
-
-            //if (this.Environment.IsLineBreak(c))
-            //{
-            //    return CharChallengeResult.Finish;
-            //}
-
-            //return CharChallengeResult.Continue;
         }
 
         protected override CharChallengeResult ChallengeEnd() =>

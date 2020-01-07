@@ -5,13 +5,10 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
-    // todo clean up
     public class WordExtractor : TokenExtractorBase
     {
-        public WordExtractor(
-            //ILexingEnvironment environment,
-            Func<char, bool> firstCharPredicate = null)
-            : base(/*environment,*/ firstCharPredicate ?? StandardFirstCharPredicate)
+        public WordExtractor(Func<char, bool> firstCharPredicate = null)
+            : base(firstCharPredicate ?? StandardFirstCharPredicate)
         {
         }
 
@@ -63,9 +60,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 return CharChallengeResult.Continue; // MUST be accepted in accordance with design.
             }
 
-
             if (
-                //this.Environment.IsSpace(c) ||
                 LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) ||
                 LexingHelper.IsStandardPunctuationChar(c))
             {
