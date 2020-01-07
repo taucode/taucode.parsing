@@ -60,7 +60,8 @@ namespace TauCode.Parsing.Lexing
         {
             if (localIndex < 0)
             {
-                throw new NotImplementedException(); // todo: you shouldn't. error.
+                // you shouldn't run such a code. there's some error in your token extractor logic.
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetStartingAbsolutePosition());
             }
 
             return _input[this.StartingAbsoluteCharIndex + localIndex];
