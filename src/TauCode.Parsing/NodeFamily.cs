@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
-using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing
 {
