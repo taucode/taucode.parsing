@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
+using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Sql.Data;
@@ -14,14 +15,22 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
     [TestFixture]
     public class SqlParserTests
     {
+        private ILexer _lexer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _lexer = new TinyLispLexerLab();
+        }
+
         [Test]
         public void SqlParser_ValidInput_Parses()
         {
             // Arrange
             var nodeFactory = new SqlNodeFactory("my-sqlite");
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            
+            var tokens = _lexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);

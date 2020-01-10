@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Sql;
 using TauCode.Parsing.TinyLisp;
@@ -10,14 +11,21 @@ namespace TauCode.Parsing.Tests.TinyLisp
     [TestFixture]
     public class BuilderTests
     {
+        private ILexer _lexer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _lexer = new TinyLispLexerLab();
+        }
 
         [Test]
         public void Build_EmptyDefblock_ThrowsTinyLispException()
         {
             // Arrange
             var lisp = "(defblock :name foo :is-top t)";
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(lisp);
+            
+            var tokens = _lexer.Lexize(lisp);
             var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
@@ -35,8 +43,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
             var lisp = "(defblock :name foo :is-top t (opt))";
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(lisp);
+            
+            var tokens = _lexer.Lexize(lisp);
             var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
@@ -54,8 +62,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
             var lisp = "(defblock :name foo :is-top t (alt))";
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(lisp);
+            
+            var tokens = _lexer.Lexize(lisp);
             var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
@@ -73,8 +81,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
             var lisp = "(defblock :name foo :is-top t (seq))";
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(lisp);
+            
+            var tokens = _lexer.Lexize(lisp);
             var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
