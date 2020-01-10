@@ -36,6 +36,11 @@ namespace TauCode.Parsing.Lab
 
                 _holder._version++;
             }
+
+            public Position GetCurrentAbsolutePosition()
+            {
+                return new Position(this.CurrentLine, this.CurrentColumn);
+            }
         }
 
         #endregion
@@ -96,6 +101,8 @@ namespace TauCode.Parsing.Lab
         public int GetCurrentLine() => this.GetLastGeneration()?.CurrentLine ?? 0;
 
         public int GetAbsoluteIndex() => this.GetLastGeneration()?.GetAbsoluteIndex() ?? 0;
+
+        public Position GetCurrentAbsolutePosition() => this.GetLastGeneration()?.GetCurrentAbsolutePosition() ?? Position.Zero;
 
         public int GetCurrentColumn() => this.GetLastGeneration()?.CurrentColumn ?? 0;
 

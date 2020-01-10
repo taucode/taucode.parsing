@@ -15,6 +15,8 @@
 
         int GetAbsoluteIndex();
 
+        Position GetCurrentAbsolutePosition();
+
         int GetCurrentColumn();
 
         int GetStartingIndex();
@@ -26,6 +28,7 @@
         void Advance(int indexShift, int lineShift, int currentColumn);
 
         char GetCurrentChar();
+
         char GetLocalChar(int localIndex);
 
         void AdvanceByChar();

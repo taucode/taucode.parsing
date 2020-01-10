@@ -27,6 +27,8 @@ namespace TauCode.Parsing.Lab
 
         public TextProcessingResult Process(ITextProcessingContext context)
         {
+            // todo: prohibit recursion of 'Process()'
+
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
@@ -50,24 +52,25 @@ namespace TauCode.Parsing.Lab
 
                 //var acceptsChar = this.AcceptsPreviousCharImpl(previousChar.Value);
             }
-
+            
             this.Context = lexingContext;
+            this.StartPosition = this.Context.GetCurrentAbsolutePosition();
             this.Context.RequestGeneration();
 
-            var stop = false;
+            var gotStop = false;
 
             while (true)
             {
                 var isEnd = this.Context.IsEnd();
 
-                if (isEnd || stop)
+                if (isEnd || gotStop)
                 {
                     if (this.Context.GetLocalIndex() == 0)
                     {
                         throw new NotImplementedException(); // todo: how on earth did we get here?
                     }
 
-                    if (isEnd)
+                    if (isEnd && !gotStop)
                     {
                         var acceptsEnd = this.ProcessEnd(); // throw here if you need.
                         if (!acceptsEnd)
@@ -129,7 +132,7 @@ namespace TauCode.Parsing.Lab
                         break;
 
                     case CharAcceptanceResult.Stop:
-                        stop = true;
+                        gotStop = true;
                         break;
 
                     case CharAcceptanceResult.Fail:
@@ -178,7 +181,7 @@ namespace TauCode.Parsing.Lab
             return true;
         }
 
-        //protected abstract bool AcceptsPreviousCharImpl(char previousChar);
+        protected Position StartPosition { get; private set; }
 
         protected abstract CharAcceptanceResult AcceptCharImpl(char c, int localIndex);
 

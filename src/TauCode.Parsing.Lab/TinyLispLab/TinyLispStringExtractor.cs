@@ -1,4 +1,6 @@
 ﻿using System;
+using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
@@ -36,12 +38,17 @@ namespace TauCode.Parsing.Lab.TinyLispLab
                 return CharAcceptanceResult.Stop;
             }
 
+            if (LexingHelper.IsCaretControl(c))
+            {
+                throw new LexingException("Newline in string.", this.Context.GetCurrentAbsolutePosition());
+            }
+
             return CharAcceptanceResult.Continue;
         }
 
         protected override bool ProcessEnd()
         {
-            throw new NotImplementedException();
+            throw new LexingException("Unclosed string.", this.StartPosition);
         }
     }
 }

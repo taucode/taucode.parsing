@@ -18,7 +18,14 @@ namespace TauCode.Parsing.Lab.CommonLab
 
         public override IntegerToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
-            var intSubstring = text.Substring(absoluteIndex, consumedLength);
+            var signShift = 0;
+            if (text[absoluteIndex] == '+')
+            {
+                signShift = 1;
+            }
+
+            var intSubstring = text.Substring(absoluteIndex + signShift, consumedLength - signShift);
+
             if (int.TryParse(intSubstring, out var dummy))
             {
                 return new IntegerToken(intSubstring, position, consumedLength);
