@@ -3,12 +3,11 @@ using System;
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tests.TinyLisp
+namespace TauCode.Parsing.Lab.Tests.TinyLisp
 {
     [TestFixture]
     public class TinyLispPseudoReaderTests

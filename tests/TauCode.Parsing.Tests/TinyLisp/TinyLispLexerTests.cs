@@ -3,8 +3,8 @@ using System;
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [SetUp]
         public void SetUp()
         {
-            _lexer = new TinyLispLexer();
+            _lexer = new TinyLispLexerLab();
         }
 
         [Test]
