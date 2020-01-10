@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using TauCode.Extensions;
+using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.Lab
 {
@@ -14,7 +16,7 @@ namespace TauCode.Parsing.Lab
             Fail,
         }
 
-        protected TextProcessingContext Context { get; private set; }
+        protected LexingContext Context { get; private set; }
 
         protected virtual TextProcessingResult Delegate()
         {
@@ -31,16 +33,23 @@ namespace TauCode.Parsing.Lab
             }
 
             var previousChar = context.GetPreviousAbsoluteChar();
-            if (previousChar.HasValue)
+            if (previousChar.HasValue && !LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar.Value))
             {
-                var acceptsChar = this.AcceptsPreviousCharImpl(previousChar.Value);
-                if (!acceptsChar)
+                var previousToken = this.Context.Tokens.LastOrDefault(); // todo: DO optimize.
+                if (previousToken != null)
                 {
-                    return TextProcessingResult.Fail;
+                    var acceptsPreviousToken = this.AcceptsPreviousTokenImpl(previousToken);
+
+                    if (!acceptsPreviousToken)
+                    {
+                        return TextProcessingResult.Fail;
+                    }
                 }
+
+                //var acceptsChar = this.AcceptsPreviousCharImpl(previousChar.Value);
             }
 
-            this.Context = context;
+            this.Context = (LexingContext)context;
             this.Context.RequestGeneration();
 
             var stop = false;
@@ -79,7 +88,7 @@ namespace TauCode.Parsing.Lab
 
                     var indexShift = myAbsoluteIndex - oldAbsoluteIndex;
                     var lineShift = myLine - oldLine;
-                    
+
                     return new TextProcessingResult(summary, indexShift, lineShift, currentColumn);
                 }
 
@@ -124,7 +133,7 @@ namespace TauCode.Parsing.Lab
                     case CharAcceptanceResult.Fail:
                         this.Context.ReleaseGeneration();
                         return TextProcessingResult.Fail;
-                        
+
                     //break;
 
                     default:
@@ -132,6 +141,8 @@ namespace TauCode.Parsing.Lab
                 }
             }
         }
+
+        protected abstract bool AcceptsPreviousTokenImpl(IToken previousToken);
 
         public IToken Produce(string text, int absoluteIndex, int consumedLength, Position position)
             => this.ProduceToken(text, absoluteIndex, consumedLength, position);
@@ -165,9 +176,14 @@ namespace TauCode.Parsing.Lab
             return true;
         }
 
-        protected abstract bool AcceptsPreviousCharImpl(char previousChar);
+        //protected abstract bool AcceptsPreviousCharImpl(char previousChar);
 
         protected abstract CharAcceptanceResult AcceptCharImpl(char c, int localIndex);
+
+        protected CharAcceptanceResult ContinueOrFail(bool b)
+        {
+            return b ? CharAcceptanceResult.Continue : CharAcceptanceResult.Fail;
+        }
 
         protected virtual bool IsProducer =>
             true; // most token extractors produce something; however, comment extractors do not.

@@ -1,5 +1,4 @@
-﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TinyLisp;
+﻿using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.Lab.TinyLispLab
@@ -15,14 +14,20 @@ namespace TauCode.Parsing.Lab.TinyLispLab
                 consumedLength);
         }
 
-        protected override bool AcceptsPreviousCharImpl(char previousChar)
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
             return
-                LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar) ||
-                TinyLispHelper.IsPunctuation(previousChar) ||
-                TinyLispHelper.IsAcceptableSymbolNameChar(previousChar) ||
-                previousChar == '"';
+                previousToken is LispPunctuationToken;
         }
+
+        //protected override bool AcceptsPreviousCharImpl(char previousChar)
+        //{
+        //    return
+        //        LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar) ||
+        //        TinyLispHelper.IsPunctuation(previousChar) ||
+        //        TinyLispHelper.IsAcceptableSymbolNameChar(previousChar) ||
+        //        previousChar == '"';
+        //}
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {

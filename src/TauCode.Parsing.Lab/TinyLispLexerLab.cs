@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TauCode.Parsing.Lab.CommonLab;
 using TauCode.Parsing.Lab.TinyLispLab;
 
@@ -13,7 +14,11 @@ namespace TauCode.Parsing.Lab
                 new TinyLispCommentExtractorLab(),
                 new TinyLispSymbolExtractorLab(),
                 new TinyLispPunctuationExtractorLab(),
-                new IntegerExtractorLab(),
+
+                new IntegerExtractorLab(new Type[]
+                {
+                    typeof(TinyLispPunctuationExtractorLab),
+                }),
             };
         }
     }

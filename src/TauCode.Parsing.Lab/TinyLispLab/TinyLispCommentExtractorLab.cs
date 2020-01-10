@@ -5,6 +5,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lab.TinyLispLab
 {
+    // todo clean
     public class TinyLispCommentExtractorLab : GammaTokenExtractorBase<CommentToken>
     {
         private readonly SkipLineBreaksProcessor _skipLineBreaksProcessor;
@@ -19,7 +20,12 @@ namespace TauCode.Parsing.Lab.TinyLispLab
             return new CommentToken(text.Substring(absoluteIndex, consumedLength), position, consumedLength);
         }
 
-        protected override bool AcceptsPreviousCharImpl(char previousChar) => true; // accepts any previous char
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        {
+            return true; // doesn't matter what previous token is.
+        }
+
+        //protected override bool AcceptsPreviousCharImpl(char previousChar) => true; // accepts any previous char
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {

@@ -8,7 +8,7 @@ namespace TauCode.Parsing.Lab
     // todo clean up
     public abstract class LexerBaseLab : ILexer
     {
-        private TextProcessingContext _context;
+        private LexingContext _context;
 
         private IList<IGammaTokenExtractor> _tokenExtractors;
         private IList<ITextProcessor<string>> _skippers;
@@ -32,8 +32,11 @@ namespace TauCode.Parsing.Lab
         public IList<IToken> Lexize(string input)
         {
             // todo check args
-            var tokens = new List<IToken>();
-            _context = new TextProcessingContext(input);
+            //var tokens = new List<IToken>();
+            //_context = new TextProcessingContext(input);
+
+            _context = new LexingContext(input);
+            var tokens = _context.GetTokenList();
 
             while (true)
             {

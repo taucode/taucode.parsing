@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Lab
 {
-    public class TextProcessingContext
+    public class TextProcessingContext : ITextProcessingContext
     {
         #region Nested
 
@@ -74,7 +74,7 @@ namespace TauCode.Parsing.Lab
 
         #endregion
 
-        #region Public
+        #region ITextProcessingContext Members
 
         public string Text { get; }
 
@@ -134,6 +134,13 @@ namespace TauCode.Parsing.Lab
             return this.Text[absoluteIndex];
         }
 
+        public char GetLocalChar(int localIndex)
+        {
+            // todo checks
+            var absoluteIndex = this.GetStartingIndex() + localIndex;
+            return this.Text[absoluteIndex];
+        }
+
         public void AdvanceByChar()
         {
             // todo checks
@@ -169,30 +176,5 @@ namespace TauCode.Parsing.Lab
         }
 
         #endregion
-    }
-
-    // todo separate file
-    public static class TextProcessingContextExtensions
-    {
-        public static void ReleaseGenerationAndGetMetrics(
-            this TextProcessingContext context,
-            out int indexShift,
-            out int lineShift,
-            out int currentColumn)
-        {
-            // todo checks on context's generations.
-
-            var newIndex = context.GetAbsoluteIndex();
-            var newLine = context.GetCurrentLine();
-            currentColumn = context.GetCurrentColumn();
-
-            context.ReleaseGeneration();
-
-            var oldIndex = context.GetAbsoluteIndex();
-            var oldLine = context.GetCurrentLine();
-
-            indexShift = newIndex - oldIndex;
-            lineShift = newLine - oldLine;
-        }
     }
 }
