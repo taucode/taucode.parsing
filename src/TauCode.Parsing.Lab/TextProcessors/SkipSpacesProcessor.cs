@@ -8,7 +8,7 @@ namespace TauCode.Parsing.Lab.TextProcessors
     {
         public bool AcceptsFirstChar(char c) => LexingHelper.IsInlineWhiteSpace(c);
 
-        public TextProcessingResult Process(TextProcessingContext context)
+        public TextProcessingResult Process(ITextProcessingContext context)
         {
             context.RequestGeneration();
 

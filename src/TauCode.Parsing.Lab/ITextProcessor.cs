@@ -4,7 +4,7 @@
     {
         bool AcceptsFirstChar(char c);
 
-        TextProcessingResult Process(TextProcessingContext context);
+        TextProcessingResult Process(ITextProcessingContext context);
 
         TProduct Produce(string text, int absoluteIndex, int consumedLength, Position position);
     }

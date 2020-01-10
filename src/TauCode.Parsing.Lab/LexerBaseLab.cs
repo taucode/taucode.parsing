@@ -56,6 +56,12 @@ namespace TauCode.Parsing.Lab
                         break;
                     }
 
+                    var c = _context.GetCurrentChar();
+                    if (!tokenExtractor.AcceptsFirstChar(c))
+                    {
+                        continue;
+                    }
+
                     var previousColumn = _context.GetCurrentColumn();
                     var result = tokenExtractor.Process(_context);
                     if (_context.Depth != 1)

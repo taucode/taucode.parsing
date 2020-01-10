@@ -1,6 +1,8 @@
 ﻿using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
+using TauCode.Parsing.Tokens;
 
+// todo clean
 namespace TauCode.Parsing.Lab.TinyLispLab
 {
     public class TinyLispPunctuationExtractorLab : GammaTokenExtractorBase<LispPunctuationToken>
@@ -17,17 +19,12 @@ namespace TauCode.Parsing.Lab.TinyLispLab
         protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
             return
-                previousToken is LispPunctuationToken;
+                previousToken is LispPunctuationToken ||
+                previousToken is IntegerToken ||
+                previousToken is KeywordToken ||
+                previousToken is LispSymbolToken ||
+                previousToken is TextToken;
         }
-
-        //protected override bool AcceptsPreviousCharImpl(char previousChar)
-        //{
-        //    return
-        //        LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar) ||
-        //        TinyLispHelper.IsPunctuation(previousChar) ||
-        //        TinyLispHelper.IsAcceptableSymbolNameChar(previousChar) ||
-        //        previousChar == '"';
-        //}
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {

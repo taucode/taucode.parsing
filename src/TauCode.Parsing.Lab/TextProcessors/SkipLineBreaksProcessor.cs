@@ -15,7 +15,7 @@ namespace TauCode.Parsing.Lab.TextProcessors
 
         public bool AcceptsFirstChar(char c) => LexingHelper.IsCaretControl(c);
 
-        public TextProcessingResult Process(TextProcessingContext context)
+        public TextProcessingResult Process(ITextProcessingContext context)
         {
             context.RequestGeneration();
             var goOn = true;

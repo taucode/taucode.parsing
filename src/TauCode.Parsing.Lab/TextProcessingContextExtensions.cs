@@ -3,7 +3,7 @@
     public static class TextProcessingContextExtensions
     {
         public static void ReleaseGenerationAndGetMetrics(
-            this TextProcessingContext context,
+            this ITextProcessingContext context,
             out int indexShift,
             out int lineShift,
             out int currentColumn)

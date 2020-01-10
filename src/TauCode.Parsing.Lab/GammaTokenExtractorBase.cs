@@ -16,7 +16,7 @@ namespace TauCode.Parsing.Lab
             Fail,
         }
 
-        protected LexingContext Context { get; private set; }
+        protected ILexingContext Context { get; private set; }
 
         protected virtual TextProcessingResult Delegate()
         {
@@ -25,17 +25,19 @@ namespace TauCode.Parsing.Lab
 
         public abstract TToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position);
 
-        public TextProcessingResult Process(TextProcessingContext context)
+        public TextProcessingResult Process(ITextProcessingContext context)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            var previousChar = context.GetPreviousAbsoluteChar();
+            var lexingContext = (ILexingContext)context;
+
+            var previousChar = lexingContext.GetPreviousAbsoluteChar();
             if (previousChar.HasValue && !LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar.Value))
             {
-                var previousToken = this.Context.Tokens.LastOrDefault(); // todo: DO optimize.
+                var previousToken = lexingContext.Tokens.LastOrDefault(); // todo: DO optimize.
                 if (previousToken != null)
                 {
                     var acceptsPreviousToken = this.AcceptsPreviousTokenImpl(previousToken);
@@ -49,7 +51,7 @@ namespace TauCode.Parsing.Lab
                 //var acceptsChar = this.AcceptsPreviousCharImpl(previousChar.Value);
             }
 
-            this.Context = (LexingContext)context;
+            this.Context = lexingContext;
             this.Context.RequestGeneration();
 
             var stop = false;

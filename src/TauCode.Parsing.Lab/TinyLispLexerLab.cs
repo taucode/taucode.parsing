@@ -14,11 +14,12 @@ namespace TauCode.Parsing.Lab
                 new TinyLispCommentExtractorLab(),
                 new TinyLispSymbolExtractorLab(),
                 new TinyLispPunctuationExtractorLab(),
-
                 new IntegerExtractorLab(new Type[]
                 {
                     typeof(TinyLispPunctuationExtractorLab),
                 }),
+                new TinyLispKeywordExtractor(),
+                new TinyLispStringExtractor(), 
             };
         }
     }
