@@ -56,7 +56,7 @@ namespace TauCode.Parsing.TinyLisp
 
         internal static bool IsAcceptableSymbolNamePunctuationChar(this char c) => AcceptableSymbolNamePunctuationChars.Contains(c);
 
-        internal static bool IsAcceptableSymbolNameChar(this char c) =>
+        public static bool IsAcceptableSymbolNameChar(this char c) =>
             char.IsDigit(c) ||
             char.IsLetter(c) ||
             c == '_' ||
