@@ -7,10 +7,10 @@ using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Old.TinyLisp;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
-using TauCode.Parsing.TinyLisp;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
@@ -36,7 +36,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             
             var tokens = _tinyLispLexer.Lexize(input);
 
-            var reader = new TinyLispPseudoReader();
+            var reader = new OldTinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
@@ -92,7 +92,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             
             var tokens = _tinyLispLexer.Lexize(input);
 
-            var reader = new TinyLispPseudoReader();
+            var reader = new OldTinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
@@ -120,7 +120,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             // Act
             var ex = Assert.Throws<UnexpectedTokenException>(() => parser.Parse(root, cliTokens));
 
-            var textToken = (TextToken)ex.Token;
+            var textToken = (OldTextToken)ex.Token;
             Assert.That(textToken.Text, Is.EqualTo("sd"));
         }
     }

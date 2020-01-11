@@ -1,36 +1,37 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.TextClasses;
-using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Old;
+using TauCode.Parsing.Old.TextClasses;
+using TauCode.Parsing.Old.TextDecorations;
+using TauCode.Parsing.Old.Tokens;
 
 namespace TauCode.Parsing.Lab.CommonLab
 {
-    public class StringExtractorLab : GammaTokenExtractorBase<TextToken>
+    public class StringExtractorLab : GammaTokenExtractorBase<OldTextToken>
     {
         private char _openingDelimiter;
 
-        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override OldTextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
-            return new TextToken(
-                StringTextClass.Instance,
+            return new OldTextToken(
+                OldStringTextClass.Instance,
                 GetDecoration(_openingDelimiter),
                 str,
                 position,
                 consumedLength);
         }
 
-        private static ITextDecoration GetDecoration(char openingDelimiter)
+        private static IOldTextDecoration GetDecoration(char openingDelimiter)
         {
             switch (openingDelimiter)
             {
                 case '"':
-                    return DoubleQuoteTextDecoration.Instance;
+                    return OldDoubleQuoteTextDecoration.Instance;
 
                 case '\'':
-                    return SingleQuoteTextDecoration.Instance;
+                    return OldSingleQuoteTextDecoration.Instance;
 
                 default:
                     throw new NotImplementedException(); // error.

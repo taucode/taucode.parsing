@@ -1,14 +1,16 @@
 ﻿using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Old;
+using TauCode.Parsing.Old.Nodes;
+using TauCode.Parsing.Old.TextClasses;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
 using TauCode.Parsing.Tests.Parsing.Cli.Exceptions;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
-using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
@@ -68,7 +70,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             INode node = new MultiTextNode(
                 verbs,
-                new ITextClass[] { TermTextClass.Instance },
+                new IOldTextClass[] { TermTextClass.Instance },
                 this.ProcessAlias,
                 this.NodeFamily,
                 item.GetItemName());
@@ -90,7 +92,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             var node = new MultiTextNode(
                 keyNames,
-                new ITextClass[] { KeyTextClass.Instance, },
+                new IOldTextClass[] { KeyTextClass.Instance, },
                 this.ProcessKey,
                 this.NodeFamily,
                 item.GetItemName());
@@ -110,7 +112,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             ActionNode keyNameNode = new MultiTextNode(
                 keyNames,
-                new ITextClass[] { KeyTextClass.Instance },
+                new IOldTextClass[] { KeyTextClass.Instance },
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -136,7 +138,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             ActionNode keyNameNode = new MultiTextNode(
                 keyNames,
-                new ITextClass[] { KeyTextClass.Instance },
+                new IOldTextClass[] { KeyTextClass.Instance },
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -213,7 +215,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var entry = new KeyCliCommandEntry
             {
                 Alias = actionNode.Properties["alias"],
-                Key = ((TextToken)token).Text,
+                Key = ((OldTextToken)token).Text,
             };
             subCommand.Entries.Add(entry);
         }
@@ -224,7 +226,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var entry = new KeyValueCliCommandEntry
             {
                 Alias = actionNode.Properties["alias"],
-                Key = ((TextToken)token).Text,
+                Key = ((OldTextToken)token).Text,
             };
             subCommand.Entries.Add(entry);
         }
@@ -233,19 +235,19 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         {
             var subCommand = resultAccumulator.GetLastResult<CliCommand>();
             var entry = (KeyValueCliCommandEntry)subCommand.Entries.Last();
-            entry.Value = ((TextToken)token).Text;
+            entry.Value = ((OldTextToken)token).Text;
         }
 
         #endregion
 
         #region Misc
 
-        private ITextClass ParseTextClass(string textClassSymbolName)
+        private IOldTextClass ParseTextClass(string textClassSymbolName)
         {
             switch (textClassSymbolName)
             {
                 case "STRING":
-                    return StringTextClass.Instance;
+                    return OldStringTextClass.Instance;
 
                 case "TERM":
                     return TermTextClass.Instance;

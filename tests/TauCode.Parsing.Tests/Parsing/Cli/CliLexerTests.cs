@@ -2,9 +2,10 @@
 using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.TextClasses;
+using TauCode.Parsing.Old.TextDecorations;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
-using TauCode.Parsing.TextClasses;
-using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
@@ -33,41 +34,41 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             Assert.That(tokens, Has.Count.EqualTo(10));
 
             // pub
-            var termToken = (TextToken)tokens[0];
+            var termToken = (OldTextToken)tokens[0];
             Assert.That(termToken.Class, Is.SameAs(TermTextClass.Instance));
-            Assert.That(termToken.Decoration, Is.SameAs(NoneTextDecoration.Instance));
+            Assert.That(termToken.Decoration, Is.SameAs(OldNoneTextDecoration.Instance));
             Assert.That(termToken.Text, Is.EqualTo("pub"));
             Assert.That(termToken.Position, Is.EqualTo(new Position(0, 0)));
             Assert.That(termToken.ConsumedLength, Is.EqualTo(3));
 
             // -t
-            var keyToken = (TextToken)tokens[1];
+            var keyToken = (OldTextToken)tokens[1];
             Assert.That(keyToken.Class, Is.SameAs(KeyTextClass.Instance));
-            Assert.That(keyToken.Decoration, Is.SameAs(NoneTextDecoration.Instance));
+            Assert.That(keyToken.Decoration, Is.SameAs(OldNoneTextDecoration.Instance));
             Assert.That(keyToken.Text, Is.EqualTo("-t"));
             Assert.That(keyToken.Position, Is.EqualTo(new Position(0, 4)));
             Assert.That(keyToken.ConsumedLength, Is.EqualTo(2));
 
             // one
-            termToken = (TextToken)tokens[2];
+            termToken = (OldTextToken)tokens[2];
             Assert.That(termToken.Class, Is.SameAs(TermTextClass.Instance));
-            Assert.That(termToken.Decoration, Is.SameAs(NoneTextDecoration.Instance));
+            Assert.That(termToken.Decoration, Is.SameAs(OldNoneTextDecoration.Instance));
             Assert.That(termToken.Text, Is.EqualTo("one"));
             Assert.That(termToken.Position, Is.EqualTo(new Position(0, 7)));
             Assert.That(termToken.ConsumedLength, Is.EqualTo(3));
 
             // '{\"name\" : \"ak\"}'
-            var stringToken = (TextToken)tokens[3];
-            Assert.That(stringToken.Class, Is.SameAs(StringTextClass.Instance));
-            Assert.That(stringToken.Decoration, Is.SameAs(SingleQuoteTextDecoration.Instance));
+            var stringToken = (OldTextToken)tokens[3];
+            Assert.That(stringToken.Class, Is.SameAs(OldStringTextClass.Instance));
+            Assert.That(stringToken.Decoration, Is.SameAs(OldSingleQuoteTextDecoration.Instance));
             Assert.That(stringToken.Text, Is.EqualTo("{\"name\" : \"ak\"}"));
             Assert.That(stringToken.Position, Is.EqualTo(new Position(0, 11)));
             Assert.That(stringToken.ConsumedLength, Is.EqualTo(17));
 
             // --repeat
-            keyToken = (TextToken)tokens[4];
+            keyToken = (OldTextToken)tokens[4];
             Assert.That(keyToken.Class, Is.SameAs(KeyTextClass.Instance));
-            Assert.That(keyToken.Decoration, Is.SameAs(NoneTextDecoration.Instance));
+            Assert.That(keyToken.Decoration, Is.SameAs(OldNoneTextDecoration.Instance));
             Assert.That(keyToken.Text, Is.EqualTo("--repeat"));
             Assert.That(keyToken.Position, Is.EqualTo(new Position(0, 29)));
             Assert.That(keyToken.ConsumedLength, Is.EqualTo(8));
@@ -79,33 +80,33 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             Assert.That(intToken.ConsumedLength, Is.EqualTo(2));
 
             // -log
-            keyToken = (TextToken)tokens[6];
+            keyToken = (OldTextToken)tokens[6];
             Assert.That(keyToken.Class, Is.SameAs(KeyTextClass.Instance));
-            Assert.That(keyToken.Decoration, Is.SameAs(NoneTextDecoration.Instance));
+            Assert.That(keyToken.Decoration, Is.SameAs(OldNoneTextDecoration.Instance));
             Assert.That(keyToken.Text, Is.EqualTo("-log"));
             Assert.That(keyToken.Position, Is.EqualTo(new Position(0, 41)));
             Assert.That(keyToken.ConsumedLength, Is.EqualTo(4));
 
             // c:/temp/logs
-            var pathToken = (TextToken)tokens[7];
+            var pathToken = (OldTextToken)tokens[7];
             Assert.That(pathToken.Class, Is.SameAs(PathTextClass.Instance));
-            Assert.That(pathToken.Decoration, Is.SameAs(NoneTextDecoration.Instance));
+            Assert.That(pathToken.Decoration, Is.SameAs(OldNoneTextDecoration.Instance));
             Assert.That(pathToken.Text, Is.EqualTo("c:/temp/logs"));
             Assert.That(pathToken.Position, Is.EqualTo(new Position(0, 46)));
             Assert.That(pathToken.ConsumedLength, Is.EqualTo(12));
 
             // --level
-            keyToken = (TextToken)tokens[8];
+            keyToken = (OldTextToken)tokens[8];
             Assert.That(keyToken.Class, Is.SameAs(KeyTextClass.Instance));
-            Assert.That(keyToken.Decoration, Is.SameAs(NoneTextDecoration.Instance));
+            Assert.That(keyToken.Decoration, Is.SameAs(OldNoneTextDecoration.Instance));
             Assert.That(keyToken.Text, Is.EqualTo("--level"));
             Assert.That(keyToken.Position, Is.EqualTo(new Position(0, 59)));
             Assert.That(keyToken.ConsumedLength, Is.EqualTo(7));
 
             // 1a-c
-            termToken = (TextToken)tokens[9];
+            termToken = (OldTextToken)tokens[9];
             Assert.That(termToken.Class, Is.SameAs(TermTextClass.Instance));
-            Assert.That(termToken.Decoration, Is.SameAs(NoneTextDecoration.Instance));
+            Assert.That(termToken.Decoration, Is.SameAs(OldNoneTextDecoration.Instance));
             Assert.That(termToken.Text, Is.EqualTo("1a-c"));
             Assert.That(termToken.Position, Is.EqualTo(new Position(0, 67)));
             Assert.That(termToken.ConsumedLength, Is.EqualTo(4));
@@ -122,9 +123,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(1));
-            var textToken = (TextToken)tokens.Single();
+            var textToken = (OldTextToken)tokens.Single();
             Assert.That(textToken.Class, Is.SameAs(KeyTextClass.Instance));
-            Assert.That(textToken.Decoration, Is.EqualTo(NoneTextDecoration.Instance));
+            Assert.That(textToken.Decoration, Is.EqualTo(OldNoneTextDecoration.Instance));
             Assert.That(textToken.Text, Is.EqualTo("-a-b"));
         }
 
@@ -146,9 +147,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             // Assert
             Assert.That(tokens, Has.Count.EqualTo(1));
-            var textToken = (TextToken)tokens.Single();
+            var textToken = (OldTextToken)tokens.Single();
             Assert.That(textToken.Class, Is.SameAs(PathTextClass.Instance));
-            Assert.That(textToken.Decoration, Is.EqualTo(NoneTextDecoration.Instance));
+            Assert.That(textToken.Decoration, Is.EqualTo(OldNoneTextDecoration.Instance));
             Assert.That(textToken.Text, Is.EqualTo(input));
         }
 

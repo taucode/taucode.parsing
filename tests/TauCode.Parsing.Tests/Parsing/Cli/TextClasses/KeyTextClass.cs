@@ -1,8 +1,8 @@
-﻿using TauCode.Parsing.Tokens;
+﻿using TauCode.Parsing.Old;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
-    public class KeyTextClass : ITextClass
+    public class KeyTextClass : IOldTextClass
     {
         public static readonly KeyTextClass Instance = new KeyTextClass();
 

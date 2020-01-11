@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextClasses;
-using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.Old.TextClasses;
+using TauCode.Parsing.Old.TextDecorations;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
-    public class SqlIdentifierExtractor : GammaTokenExtractorBase<TextToken>
+    public class SqlIdentifierExtractor : GammaTokenExtractorBase<OldTextToken>
     {
         private static Dictionary<char, char> Delimiters { get; }
         private static HashSet<char> OpeningDelimiters { get; }
@@ -33,15 +34,15 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 
         private char? _openingDelimiter;
         
-        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override OldTextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var shift = _openingDelimiter.HasValue ? 1 : 0;
 
             var str = text.Substring(absoluteIndex + shift, consumedLength - shift * 2);
 
-            return new TextToken(
-                IdentifierTextClass.Instance,
-                NoneTextDecoration.Instance,
+            return new OldTextToken(
+                OldIdentifierTextClass.Instance,
+                OldNoneTextDecoration.Instance,
                 str,
                 position,
                 consumedLength);

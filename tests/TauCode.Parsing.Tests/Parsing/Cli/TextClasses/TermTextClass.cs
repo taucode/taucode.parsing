@@ -1,8 +1,8 @@
-﻿using TauCode.Parsing.Tokens;
+﻿using TauCode.Parsing.Old;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
-    public class TermTextClass : ITextClass
+    public class TermTextClass : IOldTextClass
     {
         public static readonly TermTextClass Instance = new TermTextClass();
 

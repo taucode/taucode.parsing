@@ -1,20 +1,20 @@
 ﻿using System;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.TextDecorations;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
-using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class KeyExtractor : GammaTokenExtractorBase<TextToken>
+    public class KeyExtractor : GammaTokenExtractorBase<OldTextToken>
     {
         private int _hyphenCountInARow;
 
-        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override OldTextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var str = text.Substring(absoluteIndex, consumedLength);
-            return new TextToken(KeyTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
+            return new OldTextToken(KeyTextClass.Instance, OldNoneTextDecoration.Instance, str, position, consumedLength);
         }
 
         protected override void OnBeforeProcess()

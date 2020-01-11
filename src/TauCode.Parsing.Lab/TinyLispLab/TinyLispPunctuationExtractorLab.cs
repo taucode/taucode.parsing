@@ -1,4 +1,5 @@
 ﻿using System;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
@@ -40,7 +41,7 @@ namespace TauCode.Parsing.Lab.TinyLispLab
                 previousToken is IntegerToken ||
                 previousToken is KeywordToken ||
                 previousToken is LispSymbolToken ||
-                previousToken is TextToken;
+                previousToken is OldTextToken;
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)

@@ -1,8 +1,8 @@
-﻿using TauCode.Parsing.Tokens;
+﻿using TauCode.Parsing.Old;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
-    public class PathTextClass : ITextClass
+    public class PathTextClass : IOldTextClass
     {
         public static readonly PathTextClass Instance = new PathTextClass();
 

@@ -2,21 +2,21 @@
 using TauCode.Extensions;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.TextDecorations;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
-using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class PathExtractor : GammaTokenExtractorBase<TextToken>
+    public class PathExtractor : GammaTokenExtractorBase<OldTextToken>
     {
-        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override OldTextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var str = text.Substring(absoluteIndex, consumedLength);
 
-            var token = new TextToken(
+            var token = new OldTextToken(
                 PathTextClass.Instance,
-                NoneTextDecoration.Instance,
+                OldNoneTextDecoration.Instance,
                 str,
                 position,
                 consumedLength);

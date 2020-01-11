@@ -1,9 +1,9 @@
 ﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Old.Lexing;
-using TauCode.Parsing.TextClasses;
-using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Old.TextClasses;
+using TauCode.Parsing.Old.TextDecorations;
+using TauCode.Parsing.Old.Tokens;
 
 namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
@@ -27,9 +27,9 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             var position = new Position(this.StartingLine, this.StartingColumn);
             var consumedLength = this.LocalCharIndex;
 
-            return new TextToken(
-                StringTextClass.Instance,
-                DoubleQuoteTextDecoration.Instance,
+            return new OldTextToken(
+                OldStringTextClass.Instance,
+                OldDoubleQuoteTextDecoration.Instance,
                 value,
                 position,
                 consumedLength);

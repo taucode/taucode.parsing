@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
-using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.Old;
+using TauCode.Parsing.Old.Nodes;
+using TauCode.Parsing.Old.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 
@@ -62,27 +64,27 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             return node;
         }
 
-        private IEnumerable<ITextClass> ParseTextClasses(PseudoList arguments)
+        private IEnumerable<IOldTextClass> ParseTextClasses(PseudoList arguments)
         {
-            var textClasses = new List<ITextClass>();
+            var textClasses = new List<IOldTextClass>();
 
             foreach (var argument in arguments)
             {
-                ITextClass textClass;
+                IOldTextClass textClass;
                 var symbolElement = (Symbol)argument;
 
                 switch (symbolElement.Name)
                 {
                     case "WORD":
-                        textClass = WordTextClass.Instance;
+                        textClass = OldWordTextClass.Instance;
                         break;
 
                     case "IDENTIFIER":
-                        textClass = IdentifierTextClass.Instance;
+                        textClass = OldIdentifierTextClass.Instance;
                         break;
 
                     case "STRING":
-                        textClass = StringTextClass.Instance;
+                        textClass = OldStringTextClass.Instance;
                         break;
 
                     default:

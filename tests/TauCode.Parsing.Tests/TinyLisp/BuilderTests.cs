@@ -3,8 +3,8 @@ using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.TinyLisp;
 using TauCode.Parsing.Tests.Parsing.Sql;
-using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Tests.TinyLisp
 {
@@ -26,7 +26,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var lisp = "(defblock :name foo :is-top t)";
             
             var tokens = _lexer.Lexize(lisp);
-            var reader = new TinyLispPseudoReader();
+            var reader = new OldTinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
             INodeFactory factory = new SqlNodeFactory("foo");
@@ -45,7 +45,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var lisp = "(defblock :name foo :is-top t (opt))";
             
             var tokens = _lexer.Lexize(lisp);
-            var reader = new TinyLispPseudoReader();
+            var reader = new OldTinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
             INodeFactory factory = new SqlNodeFactory("foo");
@@ -64,7 +64,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var lisp = "(defblock :name foo :is-top t (alt))";
             
             var tokens = _lexer.Lexize(lisp);
-            var reader = new TinyLispPseudoReader();
+            var reader = new OldTinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
             INodeFactory factory = new SqlNodeFactory("foo");
@@ -83,7 +83,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var lisp = "(defblock :name foo :is-top t (seq))";
             
             var tokens = _lexer.Lexize(lisp);
-            var reader = new TinyLispPseudoReader();
+            var reader = new OldTinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
             INodeFactory factory = new SqlNodeFactory("foo");

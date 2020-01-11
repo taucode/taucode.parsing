@@ -1,8 +1,8 @@
 ﻿using System;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextClasses;
-using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Old.TextClasses;
+using TauCode.Parsing.Old.TextDecorations;
+using TauCode.Parsing.Old.Tokens;
 
 namespace TauCode.Parsing.Old.Lexing.StandardTokenExtractors
 {
@@ -42,9 +42,9 @@ namespace TauCode.Parsing.Old.Lexing.StandardTokenExtractors
             var position = new Position(this.StartingLine, this.StartingColumn);
             var consumedLength = this.LocalCharIndex;
 
-            return new TextToken(
-                WordTextClass.Instance,
-                NoneTextDecoration.Instance,
+            return new OldTextToken(
+                OldWordTextClass.Instance,
+                OldNoneTextDecoration.Instance,
                 str,
                 position,
                 consumedLength);

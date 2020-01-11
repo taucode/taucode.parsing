@@ -6,8 +6,10 @@ using TauCode.Parsing.Building;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Old.Nodes;
+using TauCode.Parsing.Old.TinyLisp;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tests.Parsing.Sql.Data;
-using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql
@@ -34,7 +36,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             
             var tokens = _tinyLispLexer.Lexize(input);
 
-            var reader = new TinyLispPseudoReader();
+            var reader = new OldTinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
@@ -75,7 +77,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             tableName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
-                tableInfo.Name = ((TextToken)token).Text;
+                tableInfo.Name = ((OldTextToken)token).Text;
             };
 
             var columnName = (ActionNode)allSqlNodes.Single(x =>
@@ -85,7 +87,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = new ColumnInfo
                 {
-                    Name = ((TextToken)token).Text,
+                    Name = ((OldTextToken)token).Text,
                 };
                 tableInfo.Columns.Add(columnInfo);
             };
@@ -96,7 +98,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.TypeName = ((TextToken)token).Text;
+                columnInfo.TypeName = ((OldTextToken)token).Text;
             };
 
             var precision = (ActionNode)allSqlNodes.Single(x =>
@@ -140,7 +142,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             constraintName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
-                tableInfo.LastConstraintName = ((TextToken)token).Text;
+                tableInfo.LastConstraintName = ((OldTextToken)token).Text;
             };
 
             var pk = (ActionNode)allSqlNodes.Single(x =>
@@ -162,7 +164,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 var primaryKey = tableInfo.PrimaryKey;
                 var indexColumn = new IndexColumnInfo
                 {
-                    ColumnName = ((TextToken)token).Text,
+                    ColumnName = ((OldTextToken)token).Text,
                 };
                 primaryKey.Columns.Add(indexColumn);
             };
@@ -205,7 +207,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyTableName = ((TextToken)token).Text;
+                var foreignKeyTableName = ((OldTextToken)token).Text;
                 foreignKey.TableName = foreignKeyTableName;
             };
 
@@ -215,7 +217,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyColumnName = ((TextToken)token).Text;
+                var foreignKeyColumnName = ((OldTextToken)token).Text;
                 foreignKey.ColumnNames.Add(foreignKeyColumnName);
             };
 
@@ -225,7 +227,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyReferencedColumnName = ((TextToken)token).Text;
+                var foreignKeyReferencedColumnName = ((OldTextToken)token).Text;
                 foreignKey.ReferencedColumnNames.Add(foreignKeyReferencedColumnName);
             };
 
@@ -285,7 +287,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             indexName.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
-                index.Name = ((TextToken)token).Text;
+                index.Name = ((OldTextToken)token).Text;
             };
 
             var indexTableName = (ActionNode)allSqlNodes.Single(x =>
@@ -293,7 +295,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             indexTableName.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
-                index.TableName = ((TextToken)token).Text;
+                index.TableName = ((OldTextToken)token).Text;
             };
 
             var indexColumnName = (ActionNode)allSqlNodes.Single(x =>
@@ -303,7 +305,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 var index = accumulator.GetLastResult<IndexInfo>();
                 var columnInfo = new IndexColumnInfo
                 {
-                    ColumnName = ((TextToken)token).Text,
+                    ColumnName = ((OldTextToken)token).Text,
                 };
                 index.Columns.Add(columnInfo);
             };
@@ -339,7 +341,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 objectNameToken.AdditionalChecker = (token, accumulator) =>
                 {
-                    var textToken = ((TextToken)token).Text.ToUpperInvariant();
+                    var textToken = ((OldTextToken)token).Text.ToUpperInvariant();
                     return !reservedWords.Contains(textToken);
                 };
             }

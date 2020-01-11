@@ -5,8 +5,9 @@ using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextClasses;
-using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.Old.TextClasses;
+using TauCode.Parsing.Old.TextDecorations;
+using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
@@ -124,10 +125,10 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(keywordToken.ConsumedLength, Is.EqualTo(5));
 
             //  5: "CREATE"
-            var textToken = (TextToken)tokens[5];
+            var textToken = (OldTextToken)tokens[5];
             Assert.That(textToken.Text, Is.EqualTo("CREATE"));
-            Assert.That(textToken.Class, Is.SameAs(StringTextClass.Instance));
-            Assert.That(textToken.Decoration, Is.SameAs(DoubleQuoteTextDecoration.Instance));
+            Assert.That(textToken.Class, Is.SameAs(OldStringTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.SameAs(OldDoubleQuoteTextDecoration.Instance));
             Assert.That(textToken.Position, Is.EqualTo(new Position(3, 11)));
             Assert.That(textToken.ConsumedLength, Is.EqualTo(8));
 
@@ -277,7 +278,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [TestCase("symbol at end", typeof(LispSymbolToken))]
         [TestCase("keyword at :end", typeof(KeywordToken))]
         [TestCase("integer at end 1488", typeof(IntegerToken))]
-        [TestCase("string at \"end\"", typeof(TextToken))]
+        [TestCase("string at \"end\"", typeof(OldTextToken))]
         [TestCase("( punctuation at end )", typeof(LispPunctuationToken))]
         [TestCase("comment :somma ;end", typeof(KeywordToken))]
         public void Lexize_TokenAtEnd_LexizedCorrectly(string input, Type lastTokenExpectedType)
