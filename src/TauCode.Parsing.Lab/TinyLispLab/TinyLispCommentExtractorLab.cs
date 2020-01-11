@@ -20,6 +20,23 @@ namespace TauCode.Parsing.Lab.TinyLispLab
             return new CommentToken(text.Substring(absoluteIndex, consumedLength), position, consumedLength);
         }
 
+        protected override void OnBeforeProcess()
+        {            
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
+            {
+                throw new NotImplementedException();
+            }
+
+            // idle
+        }
+
         protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
             return true; // doesn't matter what previous token is.

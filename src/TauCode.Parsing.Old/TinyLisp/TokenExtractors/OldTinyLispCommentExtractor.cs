@@ -1,11 +1,11 @@
 ﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.TinyLisp.TokenExtractors
+namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class TinyLispCommentExtractor : TokenExtractorBase
+    public class OldTinyLispCommentExtractor : TokenExtractorBase
     {
-        public TinyLispCommentExtractor()
+        public OldTinyLispCommentExtractor()
             : base(x => x == ';')
         {
         }

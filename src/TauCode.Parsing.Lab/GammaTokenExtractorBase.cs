@@ -16,6 +16,8 @@ namespace TauCode.Parsing.Lab
             Fail,
         }
 
+        private bool _isProcessing;
+
         protected ILexingContext Context { get; private set; }
 
         protected virtual TextProcessingResult Delegate()
@@ -25,13 +27,20 @@ namespace TauCode.Parsing.Lab
 
         public abstract TToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position);
 
+        protected abstract void OnBeforeProcess();
+
         public TextProcessingResult Process(ITextProcessingContext context)
         {
             // todo: prohibit recursion of 'Process()'
-
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
+            }
+
+            // todo: temp (?) redundant check
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
             }
 
             var lexingContext = (ILexingContext)context;
@@ -57,6 +66,11 @@ namespace TauCode.Parsing.Lab
             this.StartPosition = this.Context.GetCurrentAbsolutePosition();
             this.Context.RequestGeneration();
 
+            this.Context.AdvanceByChar(); // since 'Process' has been called, it means that 'First' (i.e. 0th) char was accepted by Lexer.
+
+            this.OnBeforeProcess();
+            this.IsProcessing = true;
+
             var gotStop = false;
 
             while (true)
@@ -76,6 +90,7 @@ namespace TauCode.Parsing.Lab
                         if (!acceptsEnd)
                         {
                             this.Context.ReleaseGeneration();
+                            this.IsProcessing = false;
                             return TextProcessingResult.Fail;
                         }
                     }
@@ -94,6 +109,7 @@ namespace TauCode.Parsing.Lab
                     var indexShift = myAbsoluteIndex - oldAbsoluteIndex;
                     var lineShift = myLine - oldLine;
 
+                    this.IsProcessing = false;
                     return new TextProcessingResult(summary, indexShift, lineShift, currentColumn);
                 }
 
@@ -137,6 +153,7 @@ namespace TauCode.Parsing.Lab
 
                     case CharAcceptanceResult.Fail:
                         this.Context.ReleaseGeneration();
+                        this.IsProcessing = false;
                         return TextProcessingResult.Fail;
 
                     //break;
@@ -154,6 +171,11 @@ namespace TauCode.Parsing.Lab
 
         public bool AcceptsFirstChar(char c)
         {
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
             var charAcceptanceResult = this.AcceptCharImpl(c, 0);
             switch (charAcceptanceResult)
             {
@@ -168,6 +190,20 @@ namespace TauCode.Parsing.Lab
 
                 default:
                     throw new NotImplementedException(); // how can be?
+            }
+        }
+        
+        public bool IsProcessing
+        {
+            get => _isProcessing;
+            private set
+            {
+                if (value == _isProcessing)
+                {
+                    throw new NotImplementedException(); // todo suspicious: why set to same value?
+                }
+
+                _isProcessing = value;
             }
         }
 

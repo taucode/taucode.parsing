@@ -4,6 +4,7 @@ using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
@@ -16,14 +17,22 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
     [TestFixture]
     public class CliParserTests
     {
+        private ILexer _tinyLispLexer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _tinyLispLexer = new TinyLispLexerLab();
+        }
+
         [Test]
         public void CliParser_ValidInput_Parses()
         {
             // Arrange
             var nodeFactory = new CliNodeFactory("my-cli");
             var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            
+            var tokens = _tinyLispLexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
@@ -78,8 +87,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             // Arrange
             var nodeFactory = new CliNodeFactory("my-cli");
             var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            
+            var tokens = _tinyLispLexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);

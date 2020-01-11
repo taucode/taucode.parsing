@@ -15,12 +15,14 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
     [TestFixture]
     public class SqlParserTests
     {
-        private ILexer _lexer;
+        private ILexer _tinyLispLexer;
+        private ILexer _sqlLexer;
 
         [SetUp]
         public void SetUp()
         {
-            _lexer = new TinyLispLexerLab();
+            _tinyLispLexer = new TinyLispLexerLab();
+            _sqlLexer = new SqlLexer();
         }
 
         [Test]
@@ -30,7 +32,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             var nodeFactory = new SqlNodeFactory("my-sqlite");
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
             
-            var tokens = _lexer.Lexize(input);
+            var tokens = _tinyLispLexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);

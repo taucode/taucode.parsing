@@ -1,12 +1,13 @@
 ﻿using System.Linq;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 
-namespace TauCode.Parsing.TinyLisp.TokenExtractors
+namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class TinyLispPunctuationExtractor : TokenExtractorBase
+    public class OldTinyLispPunctuationExtractor : TokenExtractorBase
     {
-        public TinyLispPunctuationExtractor()
+        public OldTinyLispPunctuationExtractor()
             : base(TinyLispHelper.IsPunctuation)
         {
         }

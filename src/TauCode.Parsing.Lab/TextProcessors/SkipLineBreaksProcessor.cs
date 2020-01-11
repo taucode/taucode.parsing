@@ -6,6 +6,7 @@ namespace TauCode.Parsing.Lab.TextProcessors
     // todo clean up
     public class SkipLineBreaksProcessor : ITextProcessor<string>
     {
+        private bool _isProcessing;
         private readonly bool _skipOnlyOneResult;
 
         public SkipLineBreaksProcessor(bool skipOnlyOneResult)
@@ -13,7 +14,30 @@ namespace TauCode.Parsing.Lab.TextProcessors
             _skipOnlyOneResult = skipOnlyOneResult;
         }
 
-        public bool AcceptsFirstChar(char c) => LexingHelper.IsCaretControl(c);
+        public bool AcceptsFirstChar(char c)
+        {
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            return LexingHelper.IsCaretControl(c);
+        }
+
+        public bool IsProcessing
+        {
+            get => _isProcessing;
+            private set
+            {
+                if (value == _isProcessing)
+                {
+                    throw new NotImplementedException(); // todo suspicious: why set to same value?
+                }
+
+                _isProcessing = value;
+            }
+        }
+
 
         public TextProcessingResult Process(ITextProcessingContext context)
         {

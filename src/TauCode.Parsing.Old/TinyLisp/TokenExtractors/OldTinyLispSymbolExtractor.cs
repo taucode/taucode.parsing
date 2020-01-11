@@ -1,11 +1,12 @@
 ﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 
-namespace TauCode.Parsing.TinyLisp.TokenExtractors
+namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class TinyLispSymbolExtractor : TokenExtractorBase
+    public class OldTinyLispSymbolExtractor : TokenExtractorBase
     {
-        public TinyLispSymbolExtractor() 
+        public OldTinyLispSymbolExtractor() 
             : base(
                 //StandardLexingEnvironment.Instance,
                 TinyLispHelper.IsAcceptableSymbolNameChar)

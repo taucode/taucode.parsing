@@ -9,6 +9,7 @@ namespace TauCode.Parsing.Lab.CommonLab
 {
     public class IntegerExtractorLab : GammaTokenExtractorBase<IntegerToken>
     {
+        private char? _sign;
         private readonly List<Type> _acceptablePreviousTokenTypes;
 
         public IntegerExtractorLab(IList<Type> acceptablePreviousTokenTypes)
@@ -34,6 +35,31 @@ namespace TauCode.Parsing.Lab.CommonLab
             return null;
         }
 
+        protected override void OnBeforeProcess()
+        {
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
+            {
+                throw new NotImplementedException();
+            }
+
+            var possibleSign = this.Context.GetLocalChar(0);
+            if (possibleSign.IsIn('+', '-'))
+            {
+                _sign = possibleSign;
+            }
+            else
+            {
+                _sign = null;
+            }
+        }
+
         protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
             return _acceptablePreviousTokenTypes.Contains(previousToken.GetType());
@@ -53,6 +79,7 @@ namespace TauCode.Parsing.Lab.CommonLab
         {
             if (localIndex == 0)
             {
+                // todo: check that IsProcessing is false, here & anywhere.
                 return this.ContinueOrFail(LexingHelper.IsIntegerFirstChar(c)); // todo: use it everywhere
             }
 
@@ -63,17 +90,18 @@ namespace TauCode.Parsing.Lab.CommonLab
 
             if (c == '.' || c == '_')
             {
-                // period ('.') is rarely a thing that you can delimit an integer within any grammar.
-                // underscore ('_') is a punctuation mark, but nowadays it is usually a part of identifiers.
+                // period ('.') is rarely a thing that you can use to delimit an integer within any grammar.
+                // underscore ('_') is a punctuation mark, but nowadays it is usually a part of identifiers or other words.
 
                 return CharAcceptanceResult.Fail;
             }
 
             // other punctuation marks like Comma, (, ), others might delimit though...
+            // todo: this code sucks. e.g "-1-2" is a symbol with name "-1-2" in Lisp, but it is an expression " -1 -2  " ( == -3) in C#. check it later.
             if (char.IsPunctuation(c))
             {
-                var gotOnlySign = this.GotOnlySign();
-                if (gotOnlySign)
+                //var gotOnlySign = this.GotOnlySign();
+                if (/*gotOnlySign*/ _sign.HasValue)
                 {
                     return CharAcceptanceResult.Fail;
                 }
@@ -90,21 +118,21 @@ namespace TauCode.Parsing.Lab.CommonLab
             return CharAcceptanceResult.Fail;
         }
 
-        private bool GotOnlySign()
-        {
-            var localIndex = this.Context.GetLocalIndex();
-            if (localIndex == 0)
-            {
-                throw new NotImplementedException(); // not applicable. invalid call.
-            }
+        //private bool GotOnlySign()
+        //{
+        //    var localIndex = this.Context.GetLocalIndex();
+        //    if (localIndex == 0)
+        //    {
+        //        throw new NotImplementedException(); // not applicable. invalid call.
+        //    }
 
-            if (this.Context.GetLocalIndex() > 0)
-            {
-                var firstChar = this.Context.GetLocalChar(0);
-                return firstChar.IsIn('+', '-');
-            }
+        //    if (this.Context.GetLocalIndex() > 0)
+        //    {
+        //        var firstChar = this.Context.GetLocalChar(0);
+        //        return firstChar.IsIn('+', '-');
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
     }
 }

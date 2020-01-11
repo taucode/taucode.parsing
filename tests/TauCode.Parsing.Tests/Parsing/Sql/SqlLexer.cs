@@ -1,44 +1,26 @@
-﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
+﻿using System;
+using System.Collections.Generic;
+using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lab.CommonLab;
 using TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql
 {
-    public class SqlLexer : LexerBase
+    public class SqlLexer : LexerBaseLab
     {
-        protected override void InitTokenExtractors()
+        protected override IList<IGammaTokenExtractor> CreateTokenExtractors()
         {
-            // word
-            var wordExtractor = new WordExtractor();
-            this.AddTokenExtractor(wordExtractor);
-
-            // punctuation
-            var punctuationExtractor = new SqlPunctuationExtractor();
-            this.AddTokenExtractor(punctuationExtractor);
-
-            // integer
-            var integerExtractor = new IntegerExtractor();
-            this.AddTokenExtractor(integerExtractor);
-
-            // identifier
-            var identifierExtractor = new SqlIdentifierExtractor();
-            this.AddTokenExtractor(identifierExtractor);
-
-            // *** Links ***
-            wordExtractor.AddSuccessors(
-                punctuationExtractor);
-
-            punctuationExtractor.AddSuccessors(
-                punctuationExtractor,
-                wordExtractor,
-                integerExtractor,
-                identifierExtractor);
-
-            integerExtractor.AddSuccessors(
-                punctuationExtractor);
-
-            identifierExtractor.AddSuccessors(
-                punctuationExtractor);
+            return new List<IGammaTokenExtractor>
+            {
+                new WordExtractorLab(),
+                new SqlPunctuationExtractor(),
+                new IntegerExtractorLab(new List<Type>
+                {
+                    typeof(PunctuationToken),
+                }),
+                new SqlIdentifierExtractor(),
+            };
         }
     }
 }

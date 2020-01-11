@@ -1,95 +1,150 @@
-﻿using TauCode.Extensions;
-using TauCode.Parsing.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
-    public class SqlIdentifierExtractor : TokenExtractorBase
+    public class SqlIdentifierExtractor : GammaTokenExtractorBase<TextToken>
     {
-        public SqlIdentifierExtractor()
-            : base(x => x.IsIn('[', '`', '"'))
+        private static Dictionary<char, char> Delimiters { get; }
+        private static HashSet<char> OpeningDelimiters { get; }
+        private static HashSet<char> ClosingDelimiters { get; }
+        private static Dictionary<char, char> ReverseDelimiters { get; }
+
+        static SqlIdentifierExtractor()
         {
+            Delimiters = new[]
+                {
+                    "[]",
+                    "\"\"",
+                    "``",
+                }
+                .ToDictionary(x => x[0], x => x[1]);
+            OpeningDelimiters = new HashSet<char>(Delimiters.Keys);
+            ClosingDelimiters = new HashSet<char>(Delimiters.Values);
+            ReverseDelimiters = Delimiters
+                .ToDictionary(x => x.Value, x => x.Key);
         }
 
-        protected override void ResetState()
+        private char? _openingDelimiter;
+        
+        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
-        }
+            var shift = _openingDelimiter.HasValue ? 1 : 0;
 
-        protected override IToken ProduceResult()
-        {
-            var str = this.ExtractResultString();
-            if (str.Length <= 2)
-            {
-                return null;
-            }
-
-            var identifier = str.Substring(1, str.Length - 2);
-
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
+            var str = text.Substring(absoluteIndex + shift, consumedLength - shift * 2);
 
             return new TextToken(
                 IdentifierTextClass.Instance,
                 NoneTextDecoration.Instance,
-                identifier,
+                str,
                 position,
                 consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override void OnBeforeProcess()
         {
-            var c = this.GetCurrentChar();
-
-            var index = this.LocalCharIndex;
-
-            if (index == 0)
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
             {
-                return CharChallengeResult.Continue; // how else?
+                throw new NotImplementedException();
             }
 
-            if (WordExtractor.StandardInnerCharPredicate(c))
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
             {
-                return CharChallengeResult.Continue;
+                throw new NotImplementedException();
             }
 
-            if (c.IsIn(']', '`', '"'))
+            var c = this.Context.GetLocalChar(0);
+            if (OpeningDelimiters.Contains(c))
             {
-                var openingDelimiter = this.GetLocalChar(0);
-                if (GetClosingDelimiter(openingDelimiter) == c)
+                _openingDelimiter = c;
+            }
+            else
+            {
+                _openingDelimiter = null;
+            }
+        }
+
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        {
+            return
+                previousToken is PunctuationToken; // todo make it tunable (use list of acceptable token types in ctor).
+        }
+
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
+        {
+            if (localIndex == 0)
+            {
+                // todo: check IsProcessing == false, here & anywhere
+                // todo: check Context is null, here & anywhere.
+
+                return this.ContinueOrFail(
+                    OpeningDelimiters.Contains(c) ||
+                    c == '_' ||
+                    LexingHelper.IsLatinLetter(c));
+            }
+
+            if (c == '_' || LexingHelper.IsLatinLetter(c) || LexingHelper.IsDigit(c))
+            {
+                return CharAcceptanceResult.Continue;
+            }
+
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                if (_openingDelimiter.HasValue)
                 {
-                    this.Advance();
-                    return CharChallengeResult.Finish;
+                    throw new NotImplementedException(); // todo error unclosed identifier.
                 }
             }
 
-            throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
-        }
-
-        private char GetClosingDelimiter(char openingDelimiter)
-        {
-            switch (openingDelimiter)
+            if (ClosingDelimiters.Contains(c))
             {
-                case '[':
-                    return ']';
+                // got closing delimiter.
+                if (localIndex > 1)
+                {
+                    if (_openingDelimiter.HasValue)
+                    {
+                        if (_openingDelimiter.Value == ReverseDelimiters[c])
+                        {
+                            this.Context.AdvanceByChar();
+                            return CharAcceptanceResult.Stop;
+                        }
+                        else
+                        {
+                            throw new NotImplementedException(); // error: unclosed identifier
+                        }
+                    }
+                    else
+                    {
+                        return CharAcceptanceResult.Fail; // got closing delimiter without having opening.
+                    }
+                }
+                else
+                {
+                    return CharAcceptanceResult.Fail; // got something like "[]" - delimited "empty" identifier
+                }
 
-                case '`':
-                    return '`';
+                throw new NotImplementedException();
 
-                case '"':
-                    return '"';
+                //if (localIndex > 1 && c == )
+                //{
 
-                default:
-                    return '\0';
+                //}
             }
-        }
 
-        protected override CharChallengeResult ChallengeEnd()
-        {
-            throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
+            if (_openingDelimiter.HasValue)
+            {
+                throw new NotImplementedException(); // todo error unclosed identifier.
+            }
+
+            return CharAcceptanceResult.Fail;
         }
     }
 }

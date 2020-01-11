@@ -17,6 +17,11 @@ namespace TauCode.Parsing.Lab.TinyLispLab
             return new LispSymbolToken(symbolString, position, consumedLength);
         }
 
+        protected override void OnBeforeProcess()
+        {
+            // idle
+        }
+
         // todo: Token-type-based default virtual implementation, for everybody.
         protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
@@ -24,18 +29,12 @@ namespace TauCode.Parsing.Lab.TinyLispLab
                 previousToken is LispPunctuationToken;
         }
 
-        //protected override bool AcceptsPreviousCharImpl(char previousChar)
-        //{
-        //    return
-        //        LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar) ||
-        //        TinyLispHelper.IsPunctuation(previousChar) ||
-        //        previousChar == '"';
-        //}
-
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
             if (localIndex == 0)
             {
+                // todo: temp check that IsProcessing == false, everywhere.
+
                 var accepts = c.IsAcceptableSymbolNameChar();
                 if (accepts)
                 {

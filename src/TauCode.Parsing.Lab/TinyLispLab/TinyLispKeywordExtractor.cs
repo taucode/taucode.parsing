@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.TinyLisp;
+﻿using System;
+using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.Lab.TinyLispLab
@@ -9,6 +10,23 @@ namespace TauCode.Parsing.Lab.TinyLispLab
         {
             var keyword = text.Substring(absoluteIndex, consumedLength);
             return new KeywordToken(keyword, position, consumedLength);
+        }
+
+        protected override void OnBeforeProcess()
+        {
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
+            {
+                throw new NotImplementedException();
+            }
+
+            // idle
         }
 
         protected override bool AcceptsPreviousTokenImpl(IToken previousToken)

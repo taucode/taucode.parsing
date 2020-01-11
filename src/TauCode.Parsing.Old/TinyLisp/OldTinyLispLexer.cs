@@ -1,31 +1,35 @@
 ﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardTokenExtractors;
-using TauCode.Parsing.TinyLisp.TokenExtractors;
+using OldTinyLispCommentExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispCommentExtractor;
+using OldTinyLispKeywordExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispKeywordExtractor;
+using OldTinyLispPunctuationExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispPunctuationExtractor;
+using OldTinyLispStringExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispStringExtractor;
+using OldTinyLispSymbolExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispSymbolExtractor;
 
-namespace TauCode.Parsing.TinyLisp
+namespace TauCode.Parsing.Old.TinyLisp
 {
-    public class TinyLispLexer : LexerBase
+    public class OldTinyLispLexer : LexerBase
     {
         protected override void InitTokenExtractors()
         {
             // comment
-            var commentExtractor = new TinyLispCommentExtractor();
+            var commentExtractor = new OldTinyLispCommentExtractor();
             this.AddTokenExtractor(commentExtractor);
 
             // punctuation
-            var punctuationExtractor = new TinyLispPunctuationExtractor();
+            var punctuationExtractor = new OldTinyLispPunctuationExtractor();
             this.AddTokenExtractor(punctuationExtractor);
 
             // keyword
-            var keywordExtractor = new TinyLispKeywordExtractor();
+            var keywordExtractor = new OldTinyLispKeywordExtractor();
             this.AddTokenExtractor(keywordExtractor);
 
             // symbol
-            var symbolExtractor = new TinyLispSymbolExtractor();
+            var symbolExtractor = new OldTinyLispSymbolExtractor();
             this.AddTokenExtractor(symbolExtractor);
 
             // string
-            var stringExtractor = new TinyLispStringExtractor();
+            var stringExtractor = new OldTinyLispStringExtractor();
             this.AddTokenExtractor(stringExtractor);
 
             // integer

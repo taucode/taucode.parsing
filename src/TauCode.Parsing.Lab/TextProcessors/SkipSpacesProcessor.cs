@@ -6,7 +6,24 @@ namespace TauCode.Parsing.Lab.TextProcessors
     // todo clean up
     public class SkipSpacesProcessor : ITextProcessor<string>
     {
+        private bool _isProcessing;
         public bool AcceptsFirstChar(char c) => LexingHelper.IsInlineWhiteSpace(c);
+
+        // todo: copy-pasted a lot.
+        public bool IsProcessing
+        {
+            get => _isProcessing;
+            private set
+            {
+                if (value == _isProcessing)
+                {
+                    throw new NotImplementedException(); // todo suspicious: why set to same value?
+                }
+
+                _isProcessing = value;
+            }
+        }
+
 
         public TextProcessingResult Process(ITextProcessingContext context)
         {

@@ -4,11 +4,11 @@ using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
 
-namespace TauCode.Parsing.TinyLisp.TokenExtractors
+namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class TinyLispStringExtractor : TokenExtractorBase
+    public class OldTinyLispStringExtractor : TokenExtractorBase
     {
-        public TinyLispStringExtractor()
+        public OldTinyLispStringExtractor()
             : base(x => x == '"')
         {
         }

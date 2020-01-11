@@ -63,7 +63,18 @@ namespace TauCode.Parsing.Lab
                     }
 
                     var previousColumn = _context.GetCurrentColumn();
+
+                    if (tokenExtractor.IsProcessing)
+                    {
+                        throw new NotImplementedException();
+                    }
                     var result = tokenExtractor.Process(_context);
+                    if (tokenExtractor.IsProcessing)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+
                     if (_context.Depth != 1)
                     {
                         throw new NotImplementedException(); // todo error
@@ -146,7 +157,18 @@ namespace TauCode.Parsing.Lab
                         continue;
                     }
 
+                    if (skipper.IsProcessing)
+                    {
+                        throw new NotImplementedException();
+                    }
+
                     var skipResult = skipper.Process(_context);
+
+                    if (skipper.IsProcessing)
+                    {
+                        throw new NotImplementedException();
+                    }
+
                     if (_context.Depth != 1)
                     {
                         throw new NotImplementedException(); // todo error
