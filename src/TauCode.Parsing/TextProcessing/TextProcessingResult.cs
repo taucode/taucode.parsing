@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing.TextProcessing
 {
     public struct TextProcessingResult
     {

@@ -1,6 +1,7 @@
 ﻿using System;
 using TauCode.Parsing.Lab.TextProcessors;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lab.TinyLispLab

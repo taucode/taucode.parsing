@@ -2,6 +2,7 @@
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lab
 {

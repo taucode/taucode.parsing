@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Lab
+﻿namespace TauCode.Parsing.TextProcessing
 {
     public interface ITextProcessingContext
     {

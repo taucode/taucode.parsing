@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lab
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lab.TextProcessors
 {

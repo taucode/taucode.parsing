@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab.TextProcessors;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lab
 {
