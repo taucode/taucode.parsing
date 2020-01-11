@@ -10,7 +10,7 @@ namespace TauCode.Parsing
     {
         public bool WantsOnlyOneResult { get; set; }
 
-        public object[] Parse(INode root, IEnumerable<IToken> tokens)
+        public object[] ParseOld(INode root, IEnumerable<IToken> tokens)
         {
             if (root == null)
             {

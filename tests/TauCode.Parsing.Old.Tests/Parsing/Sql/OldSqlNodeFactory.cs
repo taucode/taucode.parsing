@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Old.Building;
 using TauCode.Parsing.Old.Nodes;
 using TauCode.Parsing.Old.TextClasses;
 using TauCode.Parsing.TinyLisp;
@@ -10,7 +11,7 @@ using TauCode.Parsing.TinyLisp.Data;
 
 namespace TauCode.Parsing.Old.Tests.Parsing.Sql
 {
-    public class OldSqlNodeFactory : NodeFactoryBase
+    public class OldSqlNodeFactory : OldNodeFactoryBase
     {
         public OldSqlNodeFactory(string nodeFamilyName)
             : base(nodeFamilyName)

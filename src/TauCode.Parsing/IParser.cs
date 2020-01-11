@@ -5,6 +5,6 @@ namespace TauCode.Parsing
     public interface IParser
     {
         bool WantsOnlyOneResult { get; set; }
-        object[] Parse(INode root, IEnumerable<IToken> tokens);
+        object[] ParseOld(INode root, IEnumerable<IToken> tokens);
     }
 }

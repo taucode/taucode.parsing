@@ -9,11 +9,13 @@
   <ItemGroup>
     <None Remove="Resources\cli-grammar.lisp" />
     <None Remove="Resources\sql-grammar-expected.lisp" />
+    <None Remove="Resources\sql-grammar-old.lisp" />
     <None Remove="Resources\sql-grammar.lisp" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\cli-grammar.lisp" />
+    <EmbeddedResource Include="Resources\sql-grammar-old.lisp" />
     <EmbeddedResource Include="Resources\sql-grammar-expected.lisp" />
     <EmbeddedResource Include="Resources\sql-grammar.lisp" />
   </ItemGroup>

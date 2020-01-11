@@ -373,7 +373,7 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act
-            var sqlResults = parser.Parse(root, sqlTokens);
+            var sqlResults = parser.ParseOld(root, sqlTokens);
 
             // Assert
             Assert.That(sqlResults, Has.Length.EqualTo(5));

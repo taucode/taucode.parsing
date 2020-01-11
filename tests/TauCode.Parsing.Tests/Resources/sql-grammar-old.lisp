@@ -74,7 +74,12 @@
 (defblock :name pk-columns
 	(punctuation :value "(")
 	(some-text :classes identifier word :name pk-column-name)
-	(opt (multi-text :classes word :values "ASC" "DESC" :name asc-or-desc))
+	(opt
+		(alt
+			(exact-text :classes word :value "ASC" :name asc)
+			(exact-text :classes word :value "DESC" :name desc)
+		)
+	)
 	(alt
 		(punctuation :value "," :links pk-column-name)
 		(idle)

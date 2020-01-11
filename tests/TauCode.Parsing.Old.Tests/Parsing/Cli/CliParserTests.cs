@@ -58,7 +58,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
             };
 
             // Act
-            var cliResults = parser.Parse(root, cliTokens);
+            var cliResults = parser.ParseOld(root, cliTokens);
 
             // Assert
             var cliCommand = (CliCommand) cliResults.Single();
@@ -117,7 +117,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
             };
 
             // Act
-            var ex = Assert.Throws<UnexpectedTokenException>(() => parser.Parse(root, cliTokens));
+            var ex = Assert.Throws<UnexpectedTokenException>(() => parser.ParseOld(root, cliTokens));
 
             var textToken = (OldTextToken)ex.Token;
             Assert.That(textToken.Text, Is.EqualTo("sd"));

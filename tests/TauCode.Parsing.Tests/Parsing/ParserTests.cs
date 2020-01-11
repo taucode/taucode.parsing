@@ -49,7 +49,7 @@ namespace TauCode.Parsing.Tests.Parsing
             };
 
             // Act
-            var ex = Assert.Throws<NodeConcurrencyException>(() => parser.Parse(idle, tokens));
+            var ex = Assert.Throws<NodeConcurrencyException>(() => parser.ParseOld(idle, tokens));
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("More than one node accepted the token."));

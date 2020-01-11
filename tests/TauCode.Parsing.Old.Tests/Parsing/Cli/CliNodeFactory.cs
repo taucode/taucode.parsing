@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Old.Building;
 using TauCode.Parsing.Old.Nodes;
 using TauCode.Parsing.Old.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Old.TextClasses;
@@ -13,7 +14,7 @@ using TauCode.Parsing.TinyLisp.Data;
 
 namespace TauCode.Parsing.Old.Tests.Parsing.Cli
 {
-    public class CliNodeFactory : NodeFactoryBase
+    public class CliNodeFactory : OldNodeFactoryBase
     {
         #region Constructor
 
