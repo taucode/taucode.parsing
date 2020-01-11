@@ -3,7 +3,7 @@ using TauCode.Extensions;
 using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tests.Parsing.SqlOld.TokenExtractors
+namespace TauCode.Parsing.Old.Tests.Parsing.Sql.TokenExtractors
 {
     public class OldSqlPunctuationExtractor : OldTokenExtractorBase
     {

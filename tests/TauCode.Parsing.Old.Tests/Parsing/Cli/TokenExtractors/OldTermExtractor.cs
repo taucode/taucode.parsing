@@ -1,10 +1,10 @@
 ﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Old.Lexing;
+using TauCode.Parsing.Old.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Old.TextDecorations;
 using TauCode.Parsing.Old.Tokens;
-using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 
-namespace TauCode.Parsing.Tests.Parsing.CliOld.TokenExtractors
+namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 {
     public class OldTermExtractor : OldTokenExtractorBase
     {
@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Tests.Parsing.CliOld.TokenExtractors
             var position = new Position(this.StartingLine, this.StartingColumn);
             var consumedLength = this.LocalCharIndex;
             var token = new OldTextToken(
-                TermTextClass.Instance,
+                OldTermTextClass.Instance,
                 OldNoneTextDecoration.Instance,
                 str,
                 position,

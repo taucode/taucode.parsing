@@ -1,8 +1,8 @@
 ﻿using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Old.Lexing.StandardTokenExtractors;
-using TauCode.Parsing.Tests.Parsing.CliOld.TokenExtractors;
+using TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors;
 
-namespace TauCode.Parsing.Tests.Parsing.Cli.Old
+namespace TauCode.Parsing.Old.Tests.Parsing.Cli
 {
     public class OldCliLexer : OldLexerBase
     {

@@ -6,7 +6,7 @@ using TauCode.Parsing.Old.TextClasses;
 using TauCode.Parsing.Old.TextDecorations;
 using TauCode.Parsing.Old.Tokens;
 
-namespace TauCode.Parsing.Tests.Parsing.SqlOld.TokenExtractors
+namespace TauCode.Parsing.Old.Tests.Parsing.Sql.TokenExtractors
 {
     public class OldSqlIdentifierExtractor : OldTokenExtractorBase
     {

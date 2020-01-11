@@ -1,7 +1,7 @@
 ﻿using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tests.Parsing.CliOld.TokenExtractors
+namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 {
     public class OldEqualsExtractor : OldTokenExtractorBase
     {

@@ -1,8 +1,8 @@
 ﻿using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Old.Lexing.StandardTokenExtractors;
-using TauCode.Parsing.Tests.Parsing.SqlOld.TokenExtractors;
+using TauCode.Parsing.Old.Tests.Parsing.Sql.TokenExtractors;
 
-namespace TauCode.Parsing.Tests.Parsing.SqlOld
+namespace TauCode.Parsing.Old.Tests.Parsing.Sql
 {
     public class OldSqlLexer : OldLexerBase
     {

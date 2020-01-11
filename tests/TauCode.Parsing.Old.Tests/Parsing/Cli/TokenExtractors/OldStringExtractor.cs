@@ -1,13 +1,12 @@
 ﻿using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Old;
 using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Old.TextClasses;
 using TauCode.Parsing.Old.TextDecorations;
 using TauCode.Parsing.Old.Tokens;
 
-namespace TauCode.Parsing.Tests.Parsing.CliOld.TokenExtractors
+namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 {
     public class OldStringExtractor : OldTokenExtractorBase
     {

@@ -1,6 +1,4 @@
-﻿using TauCode.Parsing.Old;
-
-namespace TauCode.Parsing.Tests.Parsing.SqlOld.TextClasses
+﻿namespace TauCode.Parsing.Old.Tests.Parsing.Sql.TextClasses
 {
     public class OldSqlIdentifierClass : IOldTextClass
     {
