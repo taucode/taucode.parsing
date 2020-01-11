@@ -51,7 +51,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
                 return CharChallengeResult.Continue; // how else?
             }
 
-            if (WordExtractor.StandardInnerCharPredicate(c))
+            if (OldWordExtractor.StandardInnerCharPredicate(c))
             {
                 return CharChallengeResult.Continue;
             }

@@ -1,46 +1,24 @@
-﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
+﻿using System;
+using System.Collections.Generic;
+using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lab.CommonLab;
 using TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
-    public class CliLexer : LexerBase
+    public class CliLexer : LexerBaseLab
     {
-        protected override void InitTokenExtractors()
+        protected override IList<IGammaTokenExtractor> CreateTokenExtractors()
         {
-            // integer
-            var integerExtractor = new IntegerExtractor();
-            this.AddTokenExtractor(integerExtractor);
-
-            // term
-            var termExtractor = new TermExtractor();
-            this.AddTokenExtractor(termExtractor);
-
-            // key
-            var keyExtractor = new KeyExtractor();
-            this.AddTokenExtractor(keyExtractor);
-
-            // string
-            var stringExtractor = new StringExtractor();
-            this.AddTokenExtractor(stringExtractor);
-
-            // path
-            var pathExtractor = new PathExtractor();
-            this.AddTokenExtractor(pathExtractor);
-
-            // equals
-            var equalsExtractor = new EqualsExtractor();
-            this.AddTokenExtractor(equalsExtractor);
-
-            // *** Links ***
-            keyExtractor.AddSuccessors(equalsExtractor);
-
-            equalsExtractor.AddSuccessors(
-                integerExtractor,
-                termExtractor,
-                keyExtractor,
-                stringExtractor,
-                pathExtractor);
+            return new List<IGammaTokenExtractor>
+            {
+                new IntegerExtractorLab(new List<Type>()),
+                new TermExtractor(),
+                new KeyExtractor(),
+                new StringExtractorLab(),
+                new PathExtractor(),
+                new EqualsExtractor(),
+            };
         }
     }
 }

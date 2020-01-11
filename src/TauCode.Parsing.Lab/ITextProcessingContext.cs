@@ -33,6 +33,7 @@
 
         void AdvanceByChar();
 
+        // todo: rename to TryGetPreviousAbsoluteChar
         char? GetPreviousAbsoluteChar();
 
         char? TryGetNextLocalChar();

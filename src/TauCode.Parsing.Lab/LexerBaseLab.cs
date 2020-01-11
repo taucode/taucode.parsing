@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab.TextProcessors;
 using TauCode.Parsing.Lexing;
 
@@ -129,7 +130,7 @@ namespace TauCode.Parsing.Lab
                 if (!skipped && !gotSuccess)
                 {
                     var c = _context.GetCurrentChar();
-                    throw new NotImplementedException(); // unknown char: c.
+                    throw new LexingException($"Unexpected char: '{c}'.", _context.GetCurrentAbsolutePosition());
                 }
             }
 

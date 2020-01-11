@@ -5,9 +5,9 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
-    public class WordExtractor : TokenExtractorBase
+    public class OldWordExtractor : TokenExtractorBase
     {
-        public WordExtractor(Func<char, bool> firstCharPredicate = null)
+        public OldWordExtractor(Func<char, bool> firstCharPredicate = null)
             : base(firstCharPredicate ?? StandardFirstCharPredicate)
         {
         }

@@ -4,12 +4,12 @@ using TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Old
 {
-    public class OldSqlLexer : LexerBase
+    public class OldSqlLexer : OldLexerBase
     {
         protected override void InitTokenExtractors()
         {
             // word
-            var wordExtractor = new WordExtractor();
+            var wordExtractor = new OldWordExtractor();
             this.AddTokenExtractor(wordExtractor);
 
             // punctuation
@@ -17,7 +17,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Old
             this.AddTokenExtractor(punctuationExtractor);
 
             // integer
-            var integerExtractor = new IntegerExtractor();
+            var integerExtractor = new OldIntegerExtractor();
             this.AddTokenExtractor(integerExtractor);
 
             // identifier

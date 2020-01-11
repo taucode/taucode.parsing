@@ -5,7 +5,7 @@ using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Lexing
 {
-    public abstract class LexerBase : ILexer
+    public abstract class OldLexerBase : ILexer
     {
         #region Nested
 
@@ -43,7 +43,7 @@ namespace TauCode.Parsing.Lexing
 
         #region Constructor
 
-        protected LexerBase()
+        protected OldLexerBase()
         {
             _tokenExtractors = new List<ITokenExtractor>();
         }

@@ -1,103 +1,66 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using System;
+using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class TermExtractor : TokenExtractorBase
+    public class TermExtractor : GammaTokenExtractorBase<TextToken>
     {
-        public TermExtractor()
-            : base(IsTermFirstChar)
+        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
+            var str = text.Substring(absoluteIndex, consumedLength);
+            return new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
         }
 
-        private static bool IsTermFirstChar(char c) =>
-            LexingHelper.IsDigit(c) ||
-            LexingHelper.IsLatinLetter(c);
-
-        protected override void ResetState()
+        protected override void OnBeforeProcess()
         {
             // idle
         }
-        
-        protected override IToken ProduceResult()
-        {
-            var str = this.ExtractResultString();
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
-            var token = new TextToken(
-                TermTextClass.Instance,
-                NoneTextDecoration.Instance,
-                str,
-                position,
-                consumedLength);
 
-            return token;
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        {
+            throw new NotImplementedException();
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override bool ProcessEnd()
         {
-            var c = this.GetCurrentChar();
+            return this.Context.GetPreviousAbsoluteChar().Value != '-';
+        }
 
-            if (this.LocalCharIndex == 0)
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
+        {
+            if (localIndex == 0)
             {
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+                return this.ContinueOrFail(
+                    LexingHelper.IsDigit(c) ||
+                    LexingHelper.IsLatinLetter(c));
             }
 
             if (c == '-')
             {
-                if (this.GetPreviousChar() == '-')
+                if (this.Context.GetPreviousAbsoluteChar().Value == '-')
                 {
-                    // two '-' cannot go in a row within a <term>.
-                    return CharChallengeResult.GiveUp;
+                    return CharAcceptanceResult.Fail;
                 }
 
-                return CharChallengeResult.Continue;
+                return CharAcceptanceResult.Continue;
             }
 
-            if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))
+            if (LexingHelper.IsDigit(c) ||
+                LexingHelper.IsLatinLetter(c))
             {
-                return CharChallengeResult.Continue;
+                return CharAcceptanceResult.Continue;
             }
 
-            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            if (c == '=' || LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
-                var previousChar = this.GetPreviousChar();
-
-                if (previousChar == '-')
-                {
-                    return CharChallengeResult.GiveUp; // term cannot end with '-'.
-                }
-                else
-                {
-                    return CharChallengeResult.Finish;
-                }
+                return CharAcceptanceResult.Stop;
             }
 
-            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
-            {
-                if (this.GetPreviousChar() == '-')
-                {
-                    return CharChallengeResult.GiveUp; // term cannot end with '-'
-                }
-                else
-                {
-                    return CharChallengeResult.Finish;
-                }
-            }
-
-            return CharChallengeResult.GiveUp;
-        }
-
-        protected override CharChallengeResult ChallengeEnd()
-        {
-            if (this.GetPreviousChar() == '-')
-            {
-                return CharChallengeResult.GiveUp;
-            }
-
-            return CharChallengeResult.Finish;
+            return CharAcceptanceResult.Fail;
         }
     }
 }

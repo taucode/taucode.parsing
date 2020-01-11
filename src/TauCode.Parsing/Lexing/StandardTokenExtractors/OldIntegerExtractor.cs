@@ -3,9 +3,9 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 {
-    public class IntegerExtractor : TokenExtractorBase
+    public class OldIntegerExtractor : TokenExtractorBase
     {
-        public IntegerExtractor()
+        public OldIntegerExtractor()
             : base(LexingHelper.IsIntegerFirstChar)
         {
         }

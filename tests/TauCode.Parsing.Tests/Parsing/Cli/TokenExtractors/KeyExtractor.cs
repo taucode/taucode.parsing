@@ -1,87 +1,81 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using System;
+using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class KeyExtractor : TokenExtractorBase
+    public class KeyExtractor : GammaTokenExtractorBase<TextToken>
     {
-        public KeyExtractor()
-            : base(c => c == '-')
+        private int _hyphenCountInARow;
+
+        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
+            var str = text.Substring(absoluteIndex, consumedLength);
+            return new TextToken(KeyTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
         }
 
-        protected override void ResetState()
+        protected override void OnBeforeProcess()
         {
+            _hyphenCountInARow = 1; // guaranteed to start with '-'.
         }
 
-        protected override IToken ProduceResult()
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
-            var str = this.ExtractResultString();
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
-            var token = new TextToken(KeyTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
-            return token;
+            throw new NotImplementedException();
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override bool ProcessEnd()
         {
-            var c = this.GetCurrentChar();
-            var index = this.LocalCharIndex;
+            return this.Context.GetPreviousAbsoluteChar().Value != '-';
+        }
 
-            if (index == 0)
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
+        {
+            if (localIndex == 0)
             {
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+                return this.ContinueOrFail(c == '-');
             }
 
-            if (index == 1)
+            if (LexingHelper.IsDigit(c) ||
+                LexingHelper.IsLatinLetter(c))
             {
-                if (c == '-')
+                _hyphenCountInARow = 0;
+                return CharAcceptanceResult.Continue;
+            }
+
+            // todo: this is bad. you should not give a shit about 'GetPreviousAbsoluteChar'. work with local chars only. here & anywhere.
+            var previousChar = this.Context.GetPreviousAbsoluteChar().Value;
+
+            if (c == '-')
+            {
+                if (previousChar == '-')
                 {
-                    return CharChallengeResult.Continue;
+                    _hyphenCountInARow++;
                 }
 
-                if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))
+                if (_hyphenCountInARow > 2)
                 {
-                    return CharChallengeResult.Continue;
+                    return CharAcceptanceResult.Fail;
                 }
 
-                return CharChallengeResult.GiveUp;
+                return CharAcceptanceResult.Continue;
             }
 
-            if (index == 2 && c == '-')
+
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
-                if (this.GetPreviousChar() == '-')
+                if (previousChar == '-')
                 {
-                    return CharChallengeResult.GiveUp; // 3 hyphens cannot be.
+                    return CharAcceptanceResult.Fail;
                 }
 
-                return CharChallengeResult.Continue;
+                return CharAcceptanceResult.Stop;
             }
 
-            if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))
-            {
-                return CharChallengeResult.Continue;
-            }
-
-            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) || c == '=')
-            
-            {
-                return CharChallengeResult.Finish;
-            }
-
-            return CharChallengeResult.GiveUp;
-        }
-
-        protected override CharChallengeResult ChallengeEnd()
-        {
-            if (this.GetPreviousChar() == '-')
-            {
-                return CharChallengeResult.GiveUp;
-            }
-
-            return CharChallengeResult.Finish;
+            return CharAcceptanceResult.Fail;
         }
     }
 }

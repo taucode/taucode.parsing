@@ -18,11 +18,13 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
     public class CliParserTests
     {
         private ILexer _tinyLispLexer;
+        private ILexer _cliLexer;
 
         [SetUp]
         public void SetUp()
         {
             _tinyLispLexer = new TinyLispLexerLab();
+            _cliLexer = new CliLexer();
         }
 
         [Test]
@@ -41,10 +43,10 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             IParser parser = new Parser();
 
-            ILexer cliLexer = new CliLexer();
+            
             var commandText =
                 "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
-            var cliTokens = cliLexer.Lexize(commandText);
+            var cliTokens = _cliLexer.Lexize(commandText);
 
             var allNodes = root.FetchTree();
 
@@ -99,12 +101,11 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             {
                 WantsOnlyOneResult = true,
             };
-
-            ILexer cliLexer = new CliLexer();
+            
 
             var singleCommand = "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
             var commandText = $"{singleCommand} {singleCommand}";
-            var cliTokens = cliLexer.Lexize(commandText);
+            var cliTokens = _cliLexer.Lexize(commandText);
 
             var allNodes = root.FetchTree();
 

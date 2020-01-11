@@ -5,13 +5,13 @@ using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
 
-namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
+namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
 {
-    public class StringExtractor : TokenExtractorBase
+    public class OldStringExtractor : TokenExtractorBase
     {
         private char? _startingDelimiter;
 
-        public StringExtractor()
+        public OldStringExtractor()
             : base(c => c.IsIn('\'', '"'))
         {
         }

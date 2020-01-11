@@ -8,7 +8,7 @@ using OldTinyLispSymbolExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.
 
 namespace TauCode.Parsing.Old.TinyLisp
 {
-    public class OldTinyLispLexer : LexerBase
+    public class OldTinyLispLexer : OldLexerBase
     {
         protected override void InitTokenExtractors()
         {
@@ -33,7 +33,7 @@ namespace TauCode.Parsing.Old.TinyLisp
             this.AddTokenExtractor(stringExtractor);
 
             // integer
-            var integerExtractor = new IntegerExtractor();
+            var integerExtractor = new OldIntegerExtractor();
             this.AddTokenExtractor(integerExtractor);
 
             // *** Links ***

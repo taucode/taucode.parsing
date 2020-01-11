@@ -1,4 +1,6 @@
-﻿using TauCode.Extensions;
+﻿using System;
+using TauCode.Extensions;
+using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
@@ -6,29 +8,11 @@ using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class PathExtractor : TokenExtractorBase
+    public class PathExtractor : GammaTokenExtractorBase<TextToken>
     {
-        public PathExtractor()
-            : base(IsPathFirstChar)
+        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
-        }
-
-        private static bool IsPathFirstChar(char c) =>
-            LexingHelper.IsDigit(c) ||
-            LexingHelper.IsLatinLetter(c) ||
-            c.IsIn('\\', '/', '.', '!', '~', '$', '%', '-', '+');
-
-        protected override void ResetState()
-        {
-            // idle
-        }
-
-        protected override IToken ProduceResult()
-        {
-            var str = this.ExtractResultString();
-
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
+            var str = text.Substring(absoluteIndex, consumedLength);
 
             var token = new TextToken(
                 PathTextClass.Instance,
@@ -38,34 +22,42 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 consumedLength);
 
             return token;
+
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override void OnBeforeProcess()
         {
-            var c = this.GetCurrentChar();
-            var index = this.LocalCharIndex;
+            // idle
+        }
 
-            if (index == 0)
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
+        {
+            if (localIndex == 0)
             {
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+                return this.ContinueOrFail(IsPathFirstChar(c));
             }
 
             if (IsPathFirstChar(c) || c == ':')
             {
-                return CharChallengeResult.Continue;
+                return CharAcceptanceResult.Continue;
             }
 
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
-                return CharChallengeResult.Finish;
+                return CharAcceptanceResult.Stop;
             }
 
-            return CharChallengeResult.GiveUp;
+            return CharAcceptanceResult.Fail;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
-        {
-            return CharChallengeResult.Finish;
-        }
+        private static bool IsPathFirstChar(char c) =>
+            LexingHelper.IsDigit(c) ||
+            LexingHelper.IsLatinLetter(c) ||
+            c.IsIn('\\', '/', '.', '!', '~', '$', '%', '-', '+');
     }
 }
