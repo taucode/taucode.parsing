@@ -19,8 +19,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
     {
         #region Constructor
 
-        public CliNodeFactory(string nodeFamilyName)
-            : base(nodeFamilyName)
+        public CliNodeFactory()
+            : base("Test-CLI", null)
         {
         }
 

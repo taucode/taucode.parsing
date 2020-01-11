@@ -1,8 +1,7 @@
-﻿using System;
-
-namespace TauCode.Parsing.Lab.TextClasses
+﻿namespace TauCode.Parsing.Lab.TextClasses
 {
-    public class StringTextClassLab : ITextClassLab
+    [TextClass("string")]
+    public class StringTextClassLab : TextClassBaseLab
     {
         public static StringTextClassLab Instance { get; } = new StringTextClassLab();
 
@@ -10,9 +9,6 @@ namespace TauCode.Parsing.Lab.TextClasses
         {   
         }
 
-        public string TryConvertFrom(string text, ITextClassLab anotherClass)
-        {
-            throw new NotImplementedException();
-        }
+        public override string TryConvertFrom(string text, ITextClassLab anotherClass) => null;
     }
 }

@@ -6,7 +6,7 @@ using TauCode.Parsing.Nodes;
 
 namespace TauCode.Parsing
 {
-    public class Parser : IParser
+    public class Parser
     {
         public bool WantsOnlyOneResult { get; set; }
 

@@ -36,7 +36,7 @@ namespace TauCode.Parsing.Tests.Parsing
             someText.EstablishLink(EndNode.Instance);
             exactText.EstablishLink(EndNode.Instance);
 
-            IParser parser = new Parser();
+            IParserLab parser = new ParserLab();
 
             var tokens = new List<IToken>
             {
@@ -49,7 +49,8 @@ namespace TauCode.Parsing.Tests.Parsing
             };
 
             // Act
-            var ex = Assert.Throws<NodeConcurrencyException>(() => parser.ParseOld(idle, tokens));
+            parser.Root = idle;
+            var ex = Assert.Throws<NodeConcurrencyException>(() => parser.Parse(tokens));
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("More than one node accepted the token."));

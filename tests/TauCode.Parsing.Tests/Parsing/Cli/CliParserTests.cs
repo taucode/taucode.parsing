@@ -30,7 +30,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         public void CliParser_ValidInput_Parses()
         {
             // Arrange
-            var nodeFactory = new CliNodeFactory("my-cli");
+            var nodeFactory = new CliNodeFactory();
             var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
             
             var tokens = _tinyLispLexer.Lexize(input);
@@ -40,9 +40,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParser parser = new Parser();
+            IParserLab parser = new ParserLab();
 
-            
             var commandText =
                 "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
             var cliTokens = _cliLexer.Lexize(commandText);
@@ -58,7 +57,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             };
 
             // Act
-            var cliResults = parser.ParseOld(root, cliTokens);
+            parser.Root = root;
+            var cliResults = parser.Parse(cliTokens);
 
             // Assert
             var cliCommand = (CliCommand) cliResults.Single();
@@ -86,7 +86,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         public void CliParser_TooManyResults_ThrowsUnexpectedTokenException()
         {
             // Arrange
-            var nodeFactory = new CliNodeFactory("my-cli");
+            var nodeFactory = new CliNodeFactory();
             var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
             
             var tokens = _tinyLispLexer.Lexize(input);
@@ -96,7 +96,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParser parser = new Parser
+            IParserLab parser = new ParserLab
             {
                 WantsOnlyOneResult = true,
             };
@@ -117,7 +117,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             };
 
             // Act
-            var ex = Assert.Throws<UnexpectedTokenException>(() => parser.ParseOld(root, cliTokens));
+            parser.Root = root;
+            var ex = Assert.Throws<UnexpectedTokenException>(() => parser.Parse(cliTokens));
 
             var textToken = (TextTokenLab)ex.Token;
             Assert.That(textToken.Text, Is.EqualTo("sd"));

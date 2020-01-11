@@ -35,7 +35,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing
             someText.EstablishLink(EndNode.Instance);
             exactText.EstablishLink(EndNode.Instance);
 
-            IParser parser = new Parser();
+            IOldParser parser = new OldParser();
 
             var tokens = new List<IToken>
             {

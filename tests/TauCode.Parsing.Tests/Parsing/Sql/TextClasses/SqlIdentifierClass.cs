@@ -3,7 +3,8 @@ using TauCode.Parsing.Lab;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
 {
-    public class SqlIdentifierClass : ITextClassLab
+    [TextClass("identifier")]
+    public class SqlIdentifierClass : TextClassBaseLab
     {
         //private readonly HashSet<string> _reservedWords;
 
@@ -15,9 +16,9 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
             //_reservedWords = new HashSet<string>(reservedWords.Select(x => x.ToUpperInvariant()));
         }
 
-        public string TryConvertFrom(string text, ITextClassLab anotherClass)
+        public override string TryConvertFrom(string text, ITextClassLab anotherClass)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }

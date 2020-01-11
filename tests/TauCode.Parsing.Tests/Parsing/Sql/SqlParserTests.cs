@@ -30,7 +30,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
         public void SqlParser_ValidInput_Parses()
         {
             // Arrange
-            var nodeFactory = new SqlNodeFactory("my-sqlite");
+            var nodeFactory = new SqlNodeFactory();
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
             
             var tokens = _tinyLispLexer.Lexize(input);
@@ -40,7 +40,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParser parser = new Parser();
+            IParserLab parser = new ParserLab();
 
             var allSqlNodes = root.FetchTree();
 
@@ -373,7 +373,8 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act
-            var sqlResults = parser.ParseOld(root, sqlTokens);
+            parser.Root = root;
+            var sqlResults = parser.Parse(sqlTokens);
 
             // Assert
             Assert.That(sqlResults, Has.Length.EqualTo(5));

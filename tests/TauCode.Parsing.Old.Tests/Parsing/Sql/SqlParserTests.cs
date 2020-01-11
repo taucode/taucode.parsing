@@ -40,7 +40,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParser parser = new Parser();
+            IOldParser parser = new OldParser();
 
             var allSqlNodes = root.FetchTree();
 

@@ -2,7 +2,8 @@
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
-    public class PathTextClass : ITextClassLab
+    [TextClass("path")]
+    public class PathTextClass : TextClassBaseLab
     {
         public static readonly PathTextClass Instance = new PathTextClass();
 
@@ -10,7 +11,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
         {
         }
 
-        public string TryConvertFrom(string text, ITextClassLab anotherClass)
+        public override string TryConvertFrom(string text, ITextClassLab anotherClass)
         {
             throw new System.NotImplementedException();
         }

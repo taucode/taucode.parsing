@@ -1,22 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TauCode.Parsing.Building;
-using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.Building;
-using TauCode.Parsing.Lab.Nodes;
-using TauCode.Parsing.Lab.TextClasses;
-using TauCode.Parsing.Nodes;
-using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
-using TauCode.Parsing.TinyLisp;
-using TauCode.Parsing.TinyLisp.Data;
+﻿using TauCode.Parsing.Lab.Building;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql
 {
     public class SqlNodeFactory : NodeFactoryBaseLab
     {
-        public SqlNodeFactory(string nodeFamilyName)
-            : base(nodeFamilyName)
+        public SqlNodeFactory()
+            : base("Test-SQLite", null)
         {
         }
 

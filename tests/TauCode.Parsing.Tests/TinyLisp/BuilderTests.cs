@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var reader = new TinyLispPseudoReaderLab();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
-            INodeFactory factory = new SqlNodeFactory("foo");
+            INodeFactory factory = new SqlNodeFactory();
 
             // Act
             var ex = Assert.Throws<TinyLispException>(() => builder.Build(factory, pseudoList));
@@ -47,7 +47,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var reader = new TinyLispPseudoReaderLab();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
-            INodeFactory factory = new SqlNodeFactory("foo");
+            INodeFactory factory = new SqlNodeFactory();
 
             // Act
             var ex = Assert.Throws<TinyLispException>(() => builder.Build(factory, pseudoList));
@@ -66,7 +66,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var reader = new TinyLispPseudoReaderLab();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
-            INodeFactory factory = new SqlNodeFactory("foo");
+            INodeFactory factory = new SqlNodeFactory();
 
             // Act
             var ex = Assert.Throws<TinyLispException>(() => builder.Build(factory, pseudoList));
@@ -85,7 +85,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var reader = new TinyLispPseudoReaderLab();
             var pseudoList = reader.Read(tokens);
             IBuilder builder = new Builder();
-            INodeFactory factory = new SqlNodeFactory("foo");
+            INodeFactory factory = new SqlNodeFactory();
 
             // Act
             var ex = Assert.Throws<TinyLispException>(() => builder.Build(factory, pseudoList));

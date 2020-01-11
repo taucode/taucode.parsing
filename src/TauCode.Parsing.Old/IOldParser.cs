@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace TauCode.Parsing
+namespace TauCode.Parsing.Old
 {
-    public interface IParser
+    public interface IOldParser
     {
         bool WantsOnlyOneResult { get; set; }
         object[] ParseOld(INode root, IEnumerable<IToken> tokens);

@@ -40,7 +40,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParser parser = new Parser();
+            IOldParser parser = new OldParser();
 
             
             var commandText =
@@ -96,7 +96,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParser parser = new Parser
+            IOldParser parser = new OldParser
             {
                 WantsOnlyOneResult = true,
             };
