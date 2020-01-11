@@ -5,11 +5,11 @@ using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
@@ -120,7 +120,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             parser.Root = root;
             var ex = Assert.Throws<UnexpectedTokenException>(() => parser.Parse(cliTokens));
 
-            var textToken = (TextTokenLab)ex.Token;
+            var textToken = (TextToken)ex.Token;
             Assert.That(textToken.Text, Is.EqualTo("sd"));
         }
     }

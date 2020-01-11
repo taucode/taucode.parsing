@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Lab.Tokens;
-using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lab.Nodes
+namespace TauCode.Parsing.Nodes
 {
-    public class TextNodeLab : ActionNode
+    public class TextNode : ActionNode
     {
         private readonly HashSet<ITextClass> _textClasses;
 
-        public TextNodeLab(
+        public TextNode(
             IEnumerable<ITextClass> textClasses,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
@@ -37,7 +36,7 @@ namespace TauCode.Parsing.Lab.Nodes
             _textClasses = new HashSet<ITextClass>(textClassesList);
         }
 
-        public TextNodeLab(
+        public TextNode(
             ITextClass textClass,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
@@ -48,7 +47,7 @@ namespace TauCode.Parsing.Lab.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is TextTokenLab textToken)
+            if (token is TextToken textToken)
             {
                 var text = textToken.Text;
 
@@ -63,20 +62,6 @@ namespace TauCode.Parsing.Lab.Nodes
             }
 
             return InquireResult.Reject;
-
-            // todo clean
-            //var acceptsToken =
-            //    token is TextTokenLab textToken &&
-            //    _textClasses.Contains(textToken.Class);
-
-            //if (acceptsToken)
-            //{
-            //    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            //}
-            //else
-            //{
-            //    return InquireResult.Reject;
-            //}
         }
     }
 }

@@ -3,8 +3,8 @@ using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.Nodes;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
@@ -60,13 +60,13 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
             var words = new List<string>();
 
             words.AddRange(nodes
-                .Where(x => x is ExactTextNodeLab)
-                .Cast<ExactTextNodeLab>()
+                .Where(x => x is ExactTextNode)
+                .Cast<ExactTextNode>()
                 .Select(x => x.ExactText.ToLowerInvariant()));
 
             words.AddRange(nodes
-                .Where(x => x is MultiTextNodeLab)
-                .Cast<MultiTextNodeLab>()
+                .Where(x => x is MultiTextNode)
+                .Cast<MultiTextNode>()
                 .SelectMany(x => x.Texts.Select(y => y.ToLowerInvariant())));
 
             return new HashSet<string>(words);

@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Lab.Tokens;
-using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lab.Nodes
+namespace TauCode.Parsing.Nodes
 {
-    public class MultiTextNodeLab : ActionNode
+    public class MultiTextNode : ActionNode
     {
         private readonly HashSet<string> _texts;
         private readonly HashSet<ITextClass> _textClasses;
 
-        public MultiTextNodeLab(
+        public MultiTextNode(
             IEnumerable<string> texts,
             IEnumerable<ITextClass> textClasses,
             bool isCaseSensitive,
@@ -70,7 +69,7 @@ namespace TauCode.Parsing.Lab.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is TextTokenLab textToken)
+            if (token is TextToken textToken)
             {
                 var text = textToken.Text;
                 if (!this.IsCaseSensitive)
@@ -90,29 +89,6 @@ namespace TauCode.Parsing.Lab.Nodes
                     }
                 }
             }
-
-            // todo clean
-            //if (
-            //    token is TextTokenLab textToken &&
-            //    (
-            //        _textClasses.Contains(textToken.Class) ||
-            //        _textClasses.Any(x => x.TryConvertFrom(textToken.Text, textToken.Class))
-            //        )
-            //    )
-            //{
-            //    foreach (var text in _texts)
-            //    {
-            //        if (string.Equals(
-            //            textToken.Text,
-            //            text,
-            //            this.IsCaseSensitive
-            //                ? StringComparison.InvariantCulture
-            //                : StringComparison.InvariantCultureIgnoreCase))
-            //        {
-            //            return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            //        }
-            //    }
-            //}
 
             return InquireResult.Reject;
         }

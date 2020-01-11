@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.Nodes;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing
 {
@@ -20,14 +19,14 @@ namespace TauCode.Parsing.Tests.Parsing
             // Arrange
             INodeFamily nodeFamily = new NodeFamily("family");
             INode idle = new IdleNode(nodeFamily, null);
-            INode exactText = new ExactTextNodeLab(
+            INode exactText = new ExactTextNode(
                 "foo",
                 new[] { WordTextClass.Instance, },
                 false,
                 (node, token, arg3) => { },
                 nodeFamily,
                 null);
-            INode someText = new TextNodeLab(
+            INode someText = new TextNode(
                 new ITextClass[] { WordTextClass.Instance, },
                 null,
                 nodeFamily,
@@ -41,7 +40,7 @@ namespace TauCode.Parsing.Tests.Parsing
 
             var tokens = new List<IToken>
             {
-                new TextTokenLab(
+                new TextToken(
                     WordTextClass.Instance,
                     NoneTextDecoration.Instance, 
                     "foo",

@@ -1,7 +1,6 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
@@ -34,7 +33,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         {
             return
                 previousToken is PunctuationToken ||
-                previousToken is TextTokenLab ||
+                previousToken is TextToken ||
                 previousToken is IntegerToken;
         }
 

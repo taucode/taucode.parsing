@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Lab.Tokens;
-using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lab.Nodes
+namespace TauCode.Parsing.Nodes
 {
-    public class ExactTextNodeLab : ActionNode
+    public class ExactTextNode : ActionNode
     {
         private readonly HashSet<ITextClass> _textClasses;
 
-        public ExactTextNodeLab(
+        public ExactTextNode(
             string exactText,
             IEnumerable<ITextClass> textClasses,
             bool isCaseSensitive,
@@ -52,7 +51,7 @@ namespace TauCode.Parsing.Lab.Nodes
             this.IsCaseSensitive = isCaseSensitive;
         }
 
-        public ExactTextNodeLab(
+        public ExactTextNode(
             string exactText,
             ITextClass textClass,
             bool isCaseSensitive,
@@ -71,7 +70,7 @@ namespace TauCode.Parsing.Lab.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is TextTokenLab textToken)
+            if (token is TextToken textToken)
             {
                 var text = textToken.Text;
                 if (!this.IsCaseSensitive)
@@ -93,24 +92,6 @@ namespace TauCode.Parsing.Lab.Nodes
             }
 
             return InquireResult.Reject;
-
-            // todo clean
-            //var acceptsToken =
-            //    token is TextTokenLab textToken &&
-            //    _textClasses.Contains(textToken.Class) &&
-            //    string.Equals(
-            //        textToken.Text,
-            //        this.ExactText,
-            //        this.IsCaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase);
-
-            //if (acceptsToken)
-            //{
-            //    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            //}
-            //else
-            //{
-            //    return InquireResult.Reject;
-            //}
         }
 
         public string ExactText { get; }

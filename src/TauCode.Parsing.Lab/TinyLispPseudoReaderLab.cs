@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lab
 {
@@ -75,7 +75,7 @@ namespace TauCode.Parsing.Lab
                     list.AddElement(element);
                     index++;
                 }
-                else if (token is TextTokenLab textToken && textToken.Class is StringTextClass)
+                else if (token is TextToken textToken && textToken.Class is StringTextClass)
                 {
                     var element = new StringAtom(textToken.Text);
                     list.AddElement(element);

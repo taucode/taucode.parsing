@@ -1,20 +1,20 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class PathExtractor : GammaTokenExtractorBase<TextTokenLab>
+    public class PathExtractor : GammaTokenExtractorBase<TextToken>
     {
-        public override TextTokenLab ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var str = text.Substring(absoluteIndex, consumedLength);
 
-            var token = new TextTokenLab(
+            var token = new TextToken(
                 PathTextClass.Instance,
                 NoneTextDecoration.Instance,
                 str,

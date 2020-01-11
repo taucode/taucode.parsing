@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lab.Building;
-using TauCode.Parsing.Lab.Nodes;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
@@ -11,6 +9,7 @@ using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
@@ -68,7 +67,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            INode node = new MultiTextNodeLab(
+            INode node = new MultiTextNode(
                 verbs,
                 new ITextClass[] { TermTextClass.Instance },
                 true,
@@ -91,7 +90,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            var node = new MultiTextNodeLab(
+            var node = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance, },
                 true,
@@ -112,7 +111,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            ActionNode keyNameNode = new MultiTextNodeLab(
+            ActionNode keyNameNode = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance },
                 true,
@@ -139,7 +138,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            ActionNode keyNameNode = new MultiTextNodeLab(
+            ActionNode keyNameNode = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance },
                 true,
@@ -184,7 +183,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             if (textValues == null)
             {
-                choiceNode = new TextNodeLab(
+                choiceNode = new TextNode(
                     textClasses,
                     ProcessKeyChoice,
                     this.NodeFamily,
@@ -192,7 +191,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             }
             else
             {
-                choiceNode = new MultiTextNodeLab(
+                choiceNode = new MultiTextNode(
                     textValues,
                     textClasses,
                     true,
@@ -220,7 +219,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var entry = new KeyCliCommandEntry
             {
                 Alias = actionNode.Properties["alias"],
-                Key = ((TextTokenLab)token).Text,
+                Key = ((TextToken)token).Text,
             };
             subCommand.Entries.Add(entry);
         }
@@ -231,7 +230,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var entry = new KeyValueCliCommandEntry
             {
                 Alias = actionNode.Properties["alias"],
-                Key = ((TextTokenLab)token).Text,
+                Key = ((TextToken)token).Text,
             };
             subCommand.Entries.Add(entry);
         }
@@ -240,7 +239,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         {
             var subCommand = resultAccumulator.GetLastResult<CliCommand>();
             var entry = (KeyValueCliCommandEntry)subCommand.Entries.Last();
-            entry.Value = ((TextTokenLab)token).Text;
+            entry.Value = ((TextToken)token).Text;
         }
 
         #endregion

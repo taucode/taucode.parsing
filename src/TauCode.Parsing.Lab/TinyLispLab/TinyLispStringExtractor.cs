@@ -1,20 +1,20 @@
 ﻿using System;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lab.TinyLispLab
 {
-    public class TinyLispStringExtractor : GammaTokenExtractorBase<TextTokenLab>
+    public class TinyLispStringExtractor : GammaTokenExtractorBase<TextToken>
     {
         private char _openingDelimiter;
 
-        public override TextTokenLab ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
-            return new TextTokenLab(
+            return new TextToken(
                 StringTextClass.Instance,
                 DoubleQuoteTextDecoration.Instance,
                 str,

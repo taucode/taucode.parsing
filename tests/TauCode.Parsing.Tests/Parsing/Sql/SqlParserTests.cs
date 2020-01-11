@@ -4,8 +4,6 @@ using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.Nodes;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Sql.Data;
@@ -45,8 +43,8 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             var allSqlNodes = root.FetchTree();
 
             var exactTextNodes = allSqlNodes
-                .Where(x => x is ExactTextNodeLab)
-                .Cast<ExactTextNodeLab>()
+                .Where(x => x is ExactTextNode)
+                .Cast<ExactTextNode>()
                 .ToList();
 
             // todo clean
@@ -77,7 +75,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             tableName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
-                tableInfo.Name = ((TextTokenLab)token).Text;
+                tableInfo.Name = ((TextToken)token).Text;
             };
 
             var columnName = (ActionNode)allSqlNodes.Single(x =>
@@ -87,7 +85,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = new ColumnInfo
                 {
-                    Name = ((TextTokenLab)token).Text,
+                    Name = ((TextToken)token).Text,
                 };
                 tableInfo.Columns.Add(columnInfo);
             };
@@ -98,7 +96,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var columnInfo = tableInfo.Columns.Last();
-                columnInfo.TypeName = ((TextTokenLab)token).Text;
+                columnInfo.TypeName = ((TextToken)token).Text;
             };
 
             var precision = (ActionNode)allSqlNodes.Single(x =>
@@ -142,7 +140,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             constraintName.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
-                tableInfo.LastConstraintName = ((TextTokenLab)token).Text;
+                tableInfo.LastConstraintName = ((TextToken)token).Text;
             };
 
             var pk = (ActionNode)allSqlNodes.Single(x =>
@@ -164,7 +162,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 var primaryKey = tableInfo.PrimaryKey;
                 var indexColumn = new IndexColumnInfo
                 {
-                    ColumnName = ((TextTokenLab)token).Text,
+                    ColumnName = ((TextToken)token).Text,
                 };
                 primaryKey.Columns.Add(indexColumn);
             };
@@ -178,7 +176,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 var indexColumn = primaryKey.Columns.Last();
 
                 indexColumn.SortDirection = Enum.Parse<SortDirection>(
-                    ((TextTokenLab) token).Text.ToLowerInvariant(), 
+                    ((TextToken) token).Text.ToLowerInvariant(), 
                     true);
             };
 
@@ -221,7 +219,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyTableName = ((TextTokenLab)token).Text;
+                var foreignKeyTableName = ((TextToken)token).Text;
                 foreignKey.TableName = foreignKeyTableName;
             };
 
@@ -231,7 +229,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyColumnName = ((TextTokenLab)token).Text;
+                var foreignKeyColumnName = ((TextToken)token).Text;
                 foreignKey.ColumnNames.Add(foreignKeyColumnName);
             };
 
@@ -241,7 +239,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var foreignKey = tableInfo.ForeignKeys.Last();
-                var foreignKeyReferencedColumnName = ((TextTokenLab)token).Text;
+                var foreignKeyReferencedColumnName = ((TextToken)token).Text;
                 foreignKey.ReferencedColumnNames.Add(foreignKeyReferencedColumnName);
             };
 
@@ -301,7 +299,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             indexName.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
-                index.Name = ((TextTokenLab)token).Text;
+                index.Name = ((TextToken)token).Text;
             };
 
             var indexTableName = (ActionNode)allSqlNodes.Single(x =>
@@ -309,7 +307,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             indexTableName.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
-                index.TableName = ((TextTokenLab)token).Text;
+                index.TableName = ((TextToken)token).Text;
             };
 
             var indexColumnName = (ActionNode)allSqlNodes.Single(x =>
@@ -319,7 +317,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 var index = accumulator.GetLastResult<IndexInfo>();
                 var columnInfo = new IndexColumnInfo
                 {
-                    ColumnName = ((TextTokenLab)token).Text,
+                    ColumnName = ((TextToken)token).Text,
                 };
                 index.Columns.Add(columnInfo);
             };
@@ -333,7 +331,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 //columnInfo.SortDirection = SortDirection.Asc;
 
                 columnInfo.SortDirection = Enum.Parse<SortDirection>(
-                    ((TextTokenLab)token).Text.ToLowerInvariant(),
+                    ((TextToken)token).Text.ToLowerInvariant(),
                     true);
 
             };
@@ -360,9 +358,9 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var objectNameTokens = allSqlNodes
                 .Where(x =>
-                    x is TextNodeLab textNode &&
+                    x is TextNode textNode &&
                     x.Name.EndsWith("-name", StringComparison.InvariantCultureIgnoreCase))
-                .Cast<TextNodeLab>()
+                .Cast<TextNode>()
                 .ToList();
 
             // todo: !!! sql lexer will do this job!

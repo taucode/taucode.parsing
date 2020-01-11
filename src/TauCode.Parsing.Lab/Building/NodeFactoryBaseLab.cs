@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
-using TauCode.Parsing.Lab.Nodes;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
@@ -51,7 +50,7 @@ namespace TauCode.Parsing.Lab.Building
             switch (car)
             {
                 case "EXACT-TEXT":
-                    node = new ExactTextNodeLab(
+                    node = new ExactTextNode(
                         item.GetSingleKeywordArgument<StringAtom>(":value").Value,
                         this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
                         _isCaseSensitive,
@@ -61,7 +60,7 @@ namespace TauCode.Parsing.Lab.Building
                     break;
 
                 case "SOME-TEXT":
-                    node = new TextNodeLab(
+                    node = new TextNode(
                         this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
                         null,
                         this.NodeFamily,
@@ -69,7 +68,7 @@ namespace TauCode.Parsing.Lab.Building
                     break;
 
                 case "MULTI-TEXT":
-                    node = new MultiTextNodeLab(
+                    node = new MultiTextNode(
                         item.GetAllKeywordArguments(":values").Cast<StringAtom>().Select(x => x.Value),
                         this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
                         _isCaseSensitive,

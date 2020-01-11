@@ -1,5 +1,4 @@
 ﻿using System;
-using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
@@ -7,13 +6,13 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lab.CommonLab
 {
-    public class WordExtractorLab : GammaTokenExtractorBase<TextTokenLab>
+    public class WordExtractorLab : GammaTokenExtractorBase<TextToken>
     {
-        public override TextTokenLab ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var str = this.Context.Text.Substring(absoluteIndex, consumedLength);
 
-            return new TextTokenLab(
+            return new TextToken(
                 WordTextClass.Instance,
                 NoneTextDecoration.Instance,
                 str,
