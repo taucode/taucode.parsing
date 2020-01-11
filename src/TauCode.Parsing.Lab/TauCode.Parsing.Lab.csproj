@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TauCode.Parsing.Old\TauCode.Parsing.Old.csproj" />
     <ProjectReference Include="..\TauCode.Parsing\TauCode.Parsing.csproj" />
   </ItemGroup>
 

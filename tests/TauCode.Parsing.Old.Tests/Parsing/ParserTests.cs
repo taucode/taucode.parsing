@@ -19,13 +19,13 @@ namespace TauCode.Parsing.Old.Tests.Parsing
             // Arrange
             INodeFamily nodeFamily = new NodeFamily("family");
             INode idle = new IdleNode(nodeFamily, null);
-            INode exactText = new ExactTextNode(
+            INode exactText = new OldExactTextNode(
                 "foo",
                 new[] { OldWordTextClass.Instance, },
                 (node, token, arg3) => { },
                 nodeFamily,
                 null);
-            INode someText = new TextNode(
+            INode someText = new OldTextNode(
                 new IOldTextClass[] { OldWordTextClass.Instance, },
                 null,
                 nodeFamily,

@@ -6,26 +6,24 @@ using TauCode.Parsing.Old.Tokens;
 
 namespace TauCode.Parsing.Old.Nodes
 {
-    public class ExactTextNode : ActionNode
+    public class OldTextNode : ActionNode
     {
         private readonly HashSet<IOldTextClass> _textClasses;
 
-        public ExactTextNode(
-            string exactText,
+        public OldTextNode(
             IEnumerable<IOldTextClass> textClasses,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)
         {
-            this.ExactText = exactText ?? throw new ArgumentNullException(nameof(exactText));
-
             if (textClasses == null)
             {
                 throw new ArgumentNullException(nameof(textClasses));
             }
 
-            var textClassesList = textClasses.ToList();
+            var textClassesList = textClasses.ToList(); // to avoid multiple enumerating.
+
             if (textClassesList.Count == 0)
             {
                 throw new ArgumentException($"'{nameof(textClasses)}' cannot be empty.");
@@ -37,16 +35,14 @@ namespace TauCode.Parsing.Old.Nodes
             }
 
             _textClasses = new HashSet<IOldTextClass>(textClassesList);
-
         }
 
-        public ExactTextNode(
-            string exactText,
+        public OldTextNode(
             IOldTextClass textClass,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
-            : this(exactText, new[] { textClass }, action, family, name)
+            : this(new[] { textClass }, action, family, name)
         {
         }
 
@@ -54,11 +50,7 @@ namespace TauCode.Parsing.Old.Nodes
         {
             var acceptsToken =
                 token is OldTextToken textToken &&
-                _textClasses.Contains(textToken.Class) &&
-                string.Equals(
-                    textToken.Text,
-                    this.ExactText,
-                    this.IsCaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase);
+                _textClasses.Contains(textToken.Class);
 
             if (acceptsToken)
             {
@@ -69,9 +61,5 @@ namespace TauCode.Parsing.Old.Nodes
                 return InquireResult.Reject;
             }
         }
-
-        public string ExactText { get; }
-
-        public bool IsCaseSensitive { get; set; }
     }
 }

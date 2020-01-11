@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lab.Nodes;
+using TauCode.Parsing.Lab.TextClasses;
+using TauCode.Parsing.Lab.TextDecorations;
+using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Nodes;
-using TauCode.Parsing.Old;
-using TauCode.Parsing.Old.Nodes;
-using TauCode.Parsing.Old.TextClasses;
-using TauCode.Parsing.Old.TextDecorations;
-using TauCode.Parsing.Old.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing
 {
@@ -20,14 +20,14 @@ namespace TauCode.Parsing.Tests.Parsing
             // Arrange
             INodeFamily nodeFamily = new NodeFamily("family");
             INode idle = new IdleNode(nodeFamily, null);
-            INode exactText = new ExactTextNode(
+            INode exactText = new ExactTextNodeLab(
                 "foo",
-                new[] { OldWordTextClass.Instance, },
+                new[] { WordTextClassLab.Instance, },
                 (node, token, arg3) => { },
                 nodeFamily,
                 null);
-            INode someText = new TextNode(
-                new IOldTextClass[] { OldWordTextClass.Instance, },
+            INode someText = new TextNodeLab(
+                new ITextClassLab[] { WordTextClassLab.Instance, },
                 null,
                 nodeFamily,
                 null);
@@ -40,9 +40,9 @@ namespace TauCode.Parsing.Tests.Parsing
 
             var tokens = new List<IToken>
             {
-                new OldTextToken(
-                    OldWordTextClass.Instance,
-                    OldNoneTextDecoration.Instance, 
+                new TextTokenLab(
+                    WordTextClassLab.Instance,
+                    NoneTextDecorationLab.Instance, 
                     "foo",
                     Position.Zero, 
                     3),

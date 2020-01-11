@@ -5,7 +5,6 @@ using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Old.TinyLisp;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.TinyLisp
@@ -30,7 +29,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             var tokens = _lexer.Lexize(input);
 
-            var reader = new OldTinyLispPseudoReader();
+            var reader = new TinyLispPseudoReaderLab();
 
             // Act
             var list = reader.Read(tokens);
@@ -75,7 +74,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var form = "(unclosed (a (bit))";
             
             var tokens = _lexer.Lexize(form);
-            var reader = new OldTinyLispPseudoReader();
+            var reader = new TinyLispPseudoReaderLab();
 
             // Act
             var ex = Assert.Throws<TinyLispException>(() => reader.Read(tokens));
@@ -91,7 +90,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var form = "(closed too much))";
             
             var tokens = _lexer.Lexize(form);
-            var reader = new OldTinyLispPseudoReader();
+            var reader = new TinyLispPseudoReaderLab();
 
             // Act
             var ex = Assert.Throws<TinyLispException>(() => reader.Read(tokens));
@@ -110,7 +109,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             var badToken = new EnumToken<int>(1488, Position.Zero, 4);
             tokens.Insert(1, badToken);
-            var reader = new OldTinyLispPseudoReader();
+            var reader = new TinyLispPseudoReaderLab();
 
             // Act
             var ex = Assert.Throws<TinyLispException>(() => reader.Read(tokens));

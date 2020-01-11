@@ -1,16 +1,23 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using TauCode.Parsing.Old;
+﻿using System;
+using TauCode.Parsing.Lab;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
 {
-    public class SqlIdentifierClass : IOldTextClass
+    public class SqlIdentifierClass : ITextClassLab
     {
-        private readonly HashSet<string> _reservedWords;
+        //private readonly HashSet<string> _reservedWords;
 
-        public SqlIdentifierClass(IList<string> reservedWords)
+        public static SqlIdentifierClass Instance { get; } = new SqlIdentifierClass();
+
+        private SqlIdentifierClass(/*IList<string> reservedWords*/)
         {
-            _reservedWords = new HashSet<string>(reservedWords.Select(x => x.ToUpperInvariant()));
+            //throw new NotImplementedException();
+            //_reservedWords = new HashSet<string>(reservedWords.Select(x => x.ToUpperInvariant()));
+        }
+
+        public string TryConvertFrom(string text, ITextClassLab anotherClass)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

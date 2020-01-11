@@ -45,8 +45,8 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql
             var allSqlNodes = root.FetchTree();
 
             var exactTextNodes = allSqlNodes
-                .Where(x => x is ExactTextNode)
-                .Cast<ExactTextNode>()
+                .Where(x => x is OldExactTextNode)
+                .Cast<OldExactTextNode>()
                 .ToList();
 
             foreach (var exactTextNode in exactTextNodes)
@@ -331,9 +331,9 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql
 
             var objectNameTokens = allSqlNodes
                 .Where(x =>
-                    x is TextNode textNode &&
+                    x is OldTextNode textNode &&
                     x.Name.EndsWith("-name", StringComparison.InvariantCultureIgnoreCase))
-                .Cast<TextNode>()
+                .Cast<OldTextNode>()
                 .ToList();
 
             foreach (var objectNameToken in objectNameTokens)

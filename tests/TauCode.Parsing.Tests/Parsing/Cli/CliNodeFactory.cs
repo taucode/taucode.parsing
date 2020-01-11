@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using TauCode.Parsing.Building;
+using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lab.Nodes;
+using TauCode.Parsing.Lab.TextClasses;
+using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Nodes;
-using TauCode.Parsing.Old;
-using TauCode.Parsing.Old.Nodes;
-using TauCode.Parsing.Old.TextClasses;
-using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
 using TauCode.Parsing.Tests.Parsing.Cli.Exceptions;
@@ -68,9 +68,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            INode node = new MultiTextNode(
+            INode node = new MultiTextNodeLab(
                 verbs,
-                new IOldTextClass[] { TermTextClass.Instance },
+                new ITextClassLab[] { TermTextClass.Instance },
                 this.ProcessAlias,
                 this.NodeFamily,
                 item.GetItemName());
@@ -90,9 +90,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            var node = new MultiTextNode(
+            var node = new MultiTextNodeLab(
                 keyNames,
-                new IOldTextClass[] { KeyTextClass.Instance, },
+                new ITextClassLab[] { KeyTextClass.Instance, },
                 this.ProcessKey,
                 this.NodeFamily,
                 item.GetItemName());
@@ -110,9 +110,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            ActionNode keyNameNode = new MultiTextNode(
+            ActionNode keyNameNode = new MultiTextNodeLab(
                 keyNames,
-                new IOldTextClass[] { KeyTextClass.Instance },
+                new ITextClassLab[] { KeyTextClass.Instance },
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -136,9 +136,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            ActionNode keyNameNode = new MultiTextNode(
+            ActionNode keyNameNode = new MultiTextNodeLab(
                 keyNames,
-                new IOldTextClass[] { KeyTextClass.Instance },
+                new ITextClassLab[] { KeyTextClass.Instance },
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -180,7 +180,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             if (textValues == null)
             {
-                choiceNode = new TextNode(
+                choiceNode = new TextNodeLab(
                     textClasses,
                     ProcessKeyChoice,
                     this.NodeFamily,
@@ -188,7 +188,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             }
             else
             {
-                choiceNode = new MultiTextNode(
+                choiceNode = new MultiTextNodeLab(
                     textValues,
                     textClasses,
                     ProcessKeyChoice,
@@ -215,7 +215,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var entry = new KeyCliCommandEntry
             {
                 Alias = actionNode.Properties["alias"],
-                Key = ((OldTextToken)token).Text,
+                Key = ((TextTokenLab)token).Text,
             };
             subCommand.Entries.Add(entry);
         }
@@ -226,7 +226,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var entry = new KeyValueCliCommandEntry
             {
                 Alias = actionNode.Properties["alias"],
-                Key = ((OldTextToken)token).Text,
+                Key = ((TextTokenLab)token).Text,
             };
             subCommand.Entries.Add(entry);
         }
@@ -235,19 +235,19 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         {
             var subCommand = resultAccumulator.GetLastResult<CliCommand>();
             var entry = (KeyValueCliCommandEntry)subCommand.Entries.Last();
-            entry.Value = ((OldTextToken)token).Text;
+            entry.Value = ((TextTokenLab)token).Text;
         }
 
         #endregion
 
         #region Misc
 
-        private IOldTextClass ParseTextClass(string textClassSymbolName)
+        private ITextClassLab ParseTextClass(string textClassSymbolName)
         {
             switch (textClassSymbolName)
             {
                 case "STRING":
-                    return OldStringTextClass.Instance;
+                    return StringTextClassLab.Instance;
 
                 case "TERM":
                     return TermTextClass.Instance;

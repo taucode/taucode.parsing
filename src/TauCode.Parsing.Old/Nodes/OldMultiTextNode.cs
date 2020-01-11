@@ -6,12 +6,12 @@ using TauCode.Parsing.Old.Tokens;
 
 namespace TauCode.Parsing.Old.Nodes
 {
-    public class MultiTextNode : ActionNode
+    public class OldMultiTextNode : ActionNode
     {
         private readonly List<string> _texts;
         private readonly HashSet<IOldTextClass> _textClasses;
 
-        public MultiTextNode(
+        public OldMultiTextNode(
             IEnumerable<string> texts,
             IEnumerable<IOldTextClass> textClasses,
             Action<ActionNode, IToken, IResultAccumulator> action,

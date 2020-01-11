@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Old.TextClasses;
-using TauCode.Parsing.Old.Tokens;
+using TauCode.Parsing.Lab.TextClasses;
+using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;
 
-namespace TauCode.Parsing.Old.TinyLisp
+namespace TauCode.Parsing.Lab
 {
-    public class OldTinyLispPseudoReader : ITinyLispPseudoReader
+    public class TinyLispPseudoReaderLab : ITinyLispPseudoReader
     {
         public PseudoList Read(IList<IToken> tokens)
         {
@@ -74,7 +74,7 @@ namespace TauCode.Parsing.Old.TinyLisp
                     list.AddElement(element);
                     index++;
                 }
-                else if (token is OldTextToken textToken && textToken.Class is OldStringTextClass)
+                else if (token is TextTokenLab textToken && textToken.Class is StringTextClassLab)
                 {
                     var element = new StringAtom(textToken.Text);
                     list.AddElement(element);

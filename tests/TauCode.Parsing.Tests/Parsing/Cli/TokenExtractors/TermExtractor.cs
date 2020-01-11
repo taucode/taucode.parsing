@@ -1,18 +1,18 @@
 ﻿using System;
 using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lab.TextDecorations;
+using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Old.TextDecorations;
-using TauCode.Parsing.Old.Tokens;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class TermExtractor : GammaTokenExtractorBase<OldTextToken>
+    public class TermExtractor : GammaTokenExtractorBase<TextTokenLab>
     {
-        public override OldTextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override TextTokenLab ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var str = text.Substring(absoluteIndex, consumedLength);
-            return new OldTextToken(TermTextClass.Instance, OldNoneTextDecoration.Instance, str, position, consumedLength);
+            return new TextTokenLab(TermTextClass.Instance, NoneTextDecorationLab.Instance, str, position, consumedLength);
         }
 
         protected override void OnBeforeProcess()

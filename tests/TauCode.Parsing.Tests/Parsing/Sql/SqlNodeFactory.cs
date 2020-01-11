@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Building;
+using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lab.Nodes;
+using TauCode.Parsing.Lab.TextClasses;
 using TauCode.Parsing.Nodes;
-using TauCode.Parsing.Old;
-using TauCode.Parsing.Old.Nodes;
-using TauCode.Parsing.Old.TextClasses;
+using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 
@@ -26,7 +27,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             switch (car)
             {
                 case "EXACT-TEXT":
-                    node = new ExactTextNode(
+                    node = new ExactTextNodeLab(
                         item.GetSingleKeywordArgument<StringAtom>(":value").Value,
                         this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
                         null,
@@ -35,7 +36,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                     break;
 
                 case "SOME-TEXT":
-                    node = new TextNode(
+                    node = new TextNodeLab(
                         this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
                         null,
                         this.NodeFamily,
@@ -64,27 +65,27 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             return node;
         }
 
-        private IEnumerable<IOldTextClass> ParseTextClasses(PseudoList arguments)
+        private IEnumerable<ITextClassLab> ParseTextClasses(PseudoList arguments)
         {
-            var textClasses = new List<IOldTextClass>();
+            var textClasses = new List<ITextClassLab>();
 
             foreach (var argument in arguments)
             {
-                IOldTextClass textClass;
+                ITextClassLab textClass;
                 var symbolElement = (Symbol)argument;
 
                 switch (symbolElement.Name)
                 {
                     case "WORD":
-                        textClass = OldWordTextClass.Instance;
+                        textClass = WordTextClassLab.Instance;
                         break;
 
                     case "IDENTIFIER":
-                        textClass = OldIdentifierTextClass.Instance;
+                        textClass = SqlIdentifierClass.Instance;
                         break;
 
                     case "STRING":
-                        textClass = OldStringTextClass.Instance;
+                        textClass = StringTextClassLab.Instance;
                         break;
 
                     default:

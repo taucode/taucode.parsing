@@ -67,7 +67,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            INode node = new MultiTextNode(
+            INode node = new OldMultiTextNode(
                 verbs,
                 new IOldTextClass[] { OldTermTextClass.Instance },
                 this.ProcessAlias,
@@ -89,7 +89,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            var node = new MultiTextNode(
+            var node = new OldMultiTextNode(
                 keyNames,
                 new IOldTextClass[] { OldKeyTextClass.Instance, },
                 this.ProcessKey,
@@ -109,7 +109,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            ActionNode keyNameNode = new MultiTextNode(
+            ActionNode keyNameNode = new OldMultiTextNode(
                 keyNames,
                 new IOldTextClass[] { OldKeyTextClass.Instance },
                 this.ProcessKeySucceededByValue,
@@ -135,7 +135,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
                 .Select(x => ((StringAtom)x).Value)
                 .ToList();
 
-            ActionNode keyNameNode = new MultiTextNode(
+            ActionNode keyNameNode = new OldMultiTextNode(
                 keyNames,
                 new IOldTextClass[] { OldKeyTextClass.Instance },
                 this.ProcessKeySucceededByValue,
@@ -179,7 +179,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
 
             if (textValues == null)
             {
-                choiceNode = new TextNode(
+                choiceNode = new OldTextNode(
                     textClasses,
                     ProcessKeyChoice,
                     this.NodeFamily,
@@ -187,7 +187,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli
             }
             else
             {
-                choiceNode = new MultiTextNode(
+                choiceNode = new OldMultiTextNode(
                     textValues,
                     textClasses,
                     ProcessKeyChoice,

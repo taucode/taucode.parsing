@@ -25,7 +25,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql
             switch (car)
             {
                 case "EXACT-TEXT":
-                    node = new ExactTextNode(
+                    node = new OldExactTextNode(
                         item.GetSingleKeywordArgument<StringAtom>(":value").Value,
                         this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
                         null,
@@ -34,7 +34,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql
                     break;
 
                 case "SOME-TEXT":
-                    node = new TextNode(
+                    node = new OldTextNode(
                         this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
                         null,
                         this.NodeFamily,

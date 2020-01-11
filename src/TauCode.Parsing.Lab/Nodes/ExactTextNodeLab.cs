@@ -1,29 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Nodes;
-using TauCode.Parsing.Old.Tokens;
 
-namespace TauCode.Parsing.Old.Nodes
+namespace TauCode.Parsing.Lab.Nodes
 {
-    public class TextNode : ActionNode
+    public class ExactTextNodeLab : ActionNode
     {
-        private readonly HashSet<IOldTextClass> _textClasses;
+        private readonly HashSet<ITextClassLab> _textClasses;
 
-        public TextNode(
-            IEnumerable<IOldTextClass> textClasses,
+        public ExactTextNodeLab(
+            string exactText,
+            IEnumerable<ITextClassLab> textClasses,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)
         {
+            this.ExactText = exactText ?? throw new ArgumentNullException(nameof(exactText));
+
             if (textClasses == null)
             {
                 throw new ArgumentNullException(nameof(textClasses));
             }
 
-            var textClassesList = textClasses.ToList(); // to avoid multiple enumerating.
-
+            var textClassesList = textClasses.ToList();
             if (textClassesList.Count == 0)
             {
                 throw new ArgumentException($"'{nameof(textClasses)}' cannot be empty.");
@@ -34,23 +36,29 @@ namespace TauCode.Parsing.Old.Nodes
                 throw new ArgumentException($"'{nameof(textClasses)}' cannot contain nulls.");
             }
 
-            _textClasses = new HashSet<IOldTextClass>(textClassesList);
+            _textClasses = new HashSet<ITextClassLab>(textClassesList);
+
         }
 
-        public TextNode(
-            IOldTextClass textClass,
+        public ExactTextNodeLab(
+            string exactText,
+            ITextClassLab textClass,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
-            : this(new[] { textClass }, action, family, name)
+            : this(exactText, new[] { textClass }, action, family, name)
         {
         }
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             var acceptsToken =
-                token is OldTextToken textToken &&
-                _textClasses.Contains(textToken.Class);
+                token is TextTokenLab textToken &&
+                _textClasses.Contains(textToken.Class) &&
+                string.Equals(
+                    textToken.Text,
+                    this.ExactText,
+                    this.IsCaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase);
 
             if (acceptsToken)
             {
@@ -61,5 +69,9 @@ namespace TauCode.Parsing.Old.Nodes
                 return InquireResult.Reject;
             }
         }
+
+        public string ExactText { get; }
+
+        public bool IsCaseSensitive { get; set; }
     }
 }
