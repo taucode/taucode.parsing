@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Tokens.TextClasses
+﻿namespace TauCode.Parsing.TextClasses
 {
     public class StringTextClass : ITextClass
     {

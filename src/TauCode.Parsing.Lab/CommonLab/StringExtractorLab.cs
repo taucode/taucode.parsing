@@ -1,9 +1,9 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
-using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Lab.CommonLab
 {

@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Tokens
+﻿namespace TauCode.Parsing
 {
     public interface ITextDecoration
     {

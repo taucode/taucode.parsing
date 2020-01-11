@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Tokens.TextDecorations
+﻿namespace TauCode.Parsing.TextDecorations
 {
     public class BracesTextDecoration : ITextDecoration
     {

@@ -3,8 +3,8 @@ using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Old.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
 {
