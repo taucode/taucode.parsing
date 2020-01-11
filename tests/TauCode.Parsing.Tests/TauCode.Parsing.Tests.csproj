@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\TauCode.Parsing.Lab\TauCode.Parsing.Lab.csproj" />
+    <ProjectReference Include="..\..\src\TauCode.Parsing.Old\TauCode.Parsing.Old.csproj" />
     <ProjectReference Include="..\..\src\TauCode.Parsing\TauCode.Parsing.csproj" />
   </ItemGroup>
 

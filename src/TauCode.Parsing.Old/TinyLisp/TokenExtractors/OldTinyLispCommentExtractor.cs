@@ -1,9 +1,10 @@
 ﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class OldTinyLispCommentExtractor : TokenExtractorBase
+    public class OldTinyLispCommentExtractor : OldTokenExtractorBase
     {
         public OldTinyLispCommentExtractor()
             : base(x => x == ';')
@@ -23,26 +24,26 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             // idle
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
             if (this.LocalCharIndex == 0)
             {
                 // 0th char is always accepted by 'firstCharPredicate'
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsCaretControl(c))
             {
                 this.SkipSingleLineBreak();
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
 
-            return CharChallengeResult.Continue; // comment is going on.
+            return OldCharChallengeResult.Continue; // comment is going on.
         }
 
-        protected override CharChallengeResult ChallengeEnd() =>
-            CharChallengeResult.Finish; // LISP comment can be terminated by the end of input, no problem.
+        protected override OldCharChallengeResult ChallengeEnd() =>
+            OldCharChallengeResult.Finish; // LISP comment can be terminated by the end of input, no problem.
     }
 }

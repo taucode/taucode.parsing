@@ -1,6 +1,6 @@
-﻿namespace TauCode.Parsing.Lexing
+﻿namespace TauCode.Parsing.Old.Lexing
 {
-    public enum CharChallengeResult
+    public enum OldCharChallengeResult
     {
         /// <summary>
         /// Character was accepted, and token extraction process can continue.

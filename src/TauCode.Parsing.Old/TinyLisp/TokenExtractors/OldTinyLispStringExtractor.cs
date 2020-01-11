@@ -1,12 +1,13 @@
 ﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class OldTinyLispStringExtractor : TokenExtractorBase
+    public class OldTinyLispStringExtractor : OldTokenExtractorBase
     {
         public OldTinyLispStringExtractor()
             : base(x => x == '"')
@@ -34,14 +35,14 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
                 consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var index = this.LocalCharIndex;
 
             if (index == 0)
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsCaretControl(c))
@@ -52,13 +53,13 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             if (c == '"')
             {
                 this.Advance();
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
 
-            return CharChallengeResult.Continue;
+            return OldCharChallengeResult.Continue;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
             throw new LexingException("Unclosed string.", this.GetStartingAbsolutePosition());
         }

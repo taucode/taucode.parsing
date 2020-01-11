@@ -1,9 +1,10 @@
 ﻿using TauCode.Extensions;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lexing.StandardTokenExtractors
+namespace TauCode.Parsing.Old.Lexing.StandardTokenExtractors
 {
-    public class OldIntegerExtractor : TokenExtractorBase
+    public class OldIntegerExtractor : OldTokenExtractorBase
     {
         public OldIntegerExtractor()
             : base(LexingHelper.IsIntegerFirstChar)
@@ -29,19 +30,19 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
         {
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var index = this.LocalCharIndex;
 
             if (index == 0)
             {
-                return CharChallengeResult.Continue; // MUST be ok.
+                return OldCharChallengeResult.Continue; // MUST be ok.
             }
 
             if (LexingHelper.IsDigit(c))
             {
-                return CharChallengeResult.Continue; // digits are always welcome in an integer.
+                return OldCharChallengeResult.Continue; // digits are always welcome in an integer.
             }
 
             if (c == '.' || c == '_')
@@ -49,7 +50,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 // period ('.') is rarely a thing that you can delimit an integer within any grammar.
                 // underscore ('_') is a punctuation mark, but nowadays it is usually a part of identifiers.
 
-                return CharChallengeResult.GiveUp;
+                return OldCharChallengeResult.GiveUp;
             }
 
             // other punctuation marks like Comma, (, ), others might delimit though...
@@ -58,19 +59,19 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 var gotOnlySign = this.GotOnlySign();
                 if (gotOnlySign)
                 {
-                    return CharChallengeResult.GiveUp;
+                    return OldCharChallengeResult.GiveUp;
                 }
 
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
 
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
 
             // other chars like letters and stuff => not allowed.
-            return CharChallengeResult.GiveUp;
+            return OldCharChallengeResult.GiveUp;
         }
 
         private bool GotOnlySign()
@@ -84,7 +85,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
             return false;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
             var localPos = this.LocalCharIndex;
 
@@ -98,17 +99,17 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 var c = this.GetLocalChar(0);
                 if (LexingHelper.IsDigit(c))
                 {
-                    return CharChallengeResult.Finish; // int consisting of a single digit - no problem.
+                    return OldCharChallengeResult.Finish; // int consisting of a single digit - no problem.
                 }
                 else
                 {
-                    return CharChallengeResult.GiveUp; // not an int. let some another extractor deal with it.
+                    return OldCharChallengeResult.GiveUp; // not an int. let some another extractor deal with it.
                 }
             }
             else
             {
                 // we consumed more than one char, so it is guaranteed we've got a good int already
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
         }
     }

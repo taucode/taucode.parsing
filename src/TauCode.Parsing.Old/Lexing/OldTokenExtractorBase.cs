@@ -1,25 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexing;
 
-namespace TauCode.Parsing.Lexing
+namespace TauCode.Parsing.Old.Lexing
 {
-    public abstract class TokenExtractorBase : ITokenExtractor
+    public abstract class OldTokenExtractorBase : IOldTokenExtractor
     {
         #region Fields
 
         private string _input;
-        private readonly List<ITokenExtractor> _successors;
+        private readonly List<IOldTokenExtractor> _successors;
 
         #endregion
 
         #region Constructor
 
-        protected TokenExtractorBase(Func<char, bool> firstCharPredicate)
+        protected OldTokenExtractorBase(Func<char, bool> firstCharPredicate)
         {
 
             FirstCharPredicate = firstCharPredicate ?? throw new ArgumentNullException(nameof(firstCharPredicate));
-            _successors = new List<ITokenExtractor>();
+            _successors = new List<IOldTokenExtractor>();
         }
 
         #endregion
@@ -30,9 +31,9 @@ namespace TauCode.Parsing.Lexing
 
         protected abstract IToken ProduceResult();
 
-        protected abstract CharChallengeResult ChallengeCurrentChar();
+        protected abstract OldCharChallengeResult ChallengeCurrentChar();
 
-        protected abstract CharChallengeResult ChallengeEnd();
+        protected abstract OldCharChallengeResult ChallengeEnd();
 
         #endregion
 
@@ -190,13 +191,13 @@ namespace TauCode.Parsing.Lexing
 
         #region Public
 
-        public void AddSuccessors(params TokenExtractorBase[] successors) => _successors.AddRange(successors);
+        public void AddSuccessors(params OldTokenExtractorBase[] successors) => _successors.AddRange(successors);
 
         #endregion
 
         #region ITokenExtractor Members
 
-        public TokenExtractionResult Extract(string input, int charIndex, int line, int column)
+        public OldTokenExtractionResult Extract(string input, int charIndex, int line, int column)
         {
             _input = input ?? throw new ArgumentNullException(nameof(input));
 
@@ -225,21 +226,21 @@ namespace TauCode.Parsing.Lexing
 
                     switch (challengeEnd)
                     {
-                        case CharChallengeResult.Finish:
+                        case OldCharChallengeResult.Finish:
                             var token = this.ProduceResult();
                             if (token == null)
                             {
                                 // possible situation. e.g. in LISP '+1488' looks like as a symbol at the beginning, but at the end would appear
                                 // an integer, and symbol extractor would refuse deliver such a result as a symbol.
-                                return new TokenExtractionResult(null, 0, 0, null);
+                                return new OldTokenExtractionResult(null, 0, 0, null);
                             }
                             else
                             {
-                                return new TokenExtractionResult(token, this.LocalCharIndex, this.LineShift, this.CurrentColumn);
+                                return new OldTokenExtractionResult(token, this.LocalCharIndex, this.LineShift, this.CurrentColumn);
                             }
 
-                        case CharChallengeResult.GiveUp:
-                            return new TokenExtractionResult(null, 0, 0, null);
+                        case OldCharChallengeResult.GiveUp:
+                            return new OldTokenExtractionResult(null, 0, 0, null);
 
                         default:
                             // should never happen. check your token extractor, it has error(s).
@@ -251,20 +252,20 @@ namespace TauCode.Parsing.Lexing
 
                 switch (testCharResult)
                 {
-                    case CharChallengeResult.GiveUp:
+                    case OldCharChallengeResult.GiveUp:
                         // this extractor failed to recognize the whole token, no problem.
-                        return new TokenExtractionResult(null, 0, 0, null);
+                        return new OldTokenExtractionResult(null, 0, 0, null);
 
-                    case CharChallengeResult.Continue:
+                    case OldCharChallengeResult.Continue:
                         this.Advance();
                         break;
 
-                    case CharChallengeResult.Finish:
+                    case OldCharChallengeResult.Finish:
                         var token = this.ProduceResult();
 
                         if (token == null)
                         {
-                            return new TokenExtractionResult(null, 0, 0, null);
+                            return new OldTokenExtractionResult(null, 0, 0, null);
                         }
 
                         // check if next char is ok.
@@ -281,7 +282,7 @@ namespace TauCode.Parsing.Lexing
                             }
                         }
 
-                        return new TokenExtractionResult(token, this.LocalCharIndex, this.LineShift, this.CurrentColumn);
+                        return new OldTokenExtractionResult(token, this.LocalCharIndex, this.LineShift, this.CurrentColumn);
 
                     default:
                         // should never happen. this is enum.

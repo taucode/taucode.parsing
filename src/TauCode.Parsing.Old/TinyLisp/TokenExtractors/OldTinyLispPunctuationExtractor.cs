@@ -1,11 +1,12 @@
 ﻿using System.Linq;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class OldTinyLispPunctuationExtractor : TokenExtractorBase
+    public class OldTinyLispPunctuationExtractor : OldTokenExtractorBase
     {
         public OldTinyLispPunctuationExtractor()
             : base(TinyLispHelper.IsPunctuation)
@@ -36,16 +37,16 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             return new LispPunctuationToken(punctuation, position, this.LocalCharIndex);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             if (this.LocalCharIndex == 0)
             {
-                return CharChallengeResult.Continue; // local char MUST accepted since it was accepted by 'TinyLispHelper.IsPunctuation'
+                return OldCharChallengeResult.Continue; // local char MUST accepted since it was accepted by 'TinyLispHelper.IsPunctuation'
             }
 
-            return CharChallengeResult.Finish; // pos > 0 ==> finish no matter what.
+            return OldCharChallengeResult.Finish; // pos > 0 ==> finish no matter what.
         }
 
-        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish; // end after punctuation? why not, let it be.
+        protected override OldCharChallengeResult ChallengeEnd() => OldCharChallengeResult.Finish; // end after punctuation? why not, let it be.
     }
 }

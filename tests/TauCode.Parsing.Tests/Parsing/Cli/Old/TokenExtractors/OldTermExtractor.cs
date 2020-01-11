@@ -1,11 +1,12 @@
 ﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
 {
-    public class OldTermExtractor : TokenExtractorBase
+    public class OldTermExtractor : OldTokenExtractorBase
     {
         public OldTermExtractor()
             : base(IsTermFirstChar)
@@ -36,13 +37,13 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
             return token;
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
             if (this.LocalCharIndex == 0)
             {
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+                return OldCharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
             if (c == '-')
@@ -50,15 +51,15 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
                 if (this.GetPreviousChar() == '-')
                 {
                     // two '-' cannot go in a row within a <term>.
-                    return CharChallengeResult.GiveUp;
+                    return OldCharChallengeResult.GiveUp;
                 }
 
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
@@ -67,11 +68,11 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
 
                 if (previousChar == '-')
                 {
-                    return CharChallengeResult.GiveUp; // term cannot end with '-'.
+                    return OldCharChallengeResult.GiveUp; // term cannot end with '-'.
                 }
                 else
                 {
-                    return CharChallengeResult.Finish;
+                    return OldCharChallengeResult.Finish;
                 }
             }
 
@@ -79,25 +80,25 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
             {
                 if (this.GetPreviousChar() == '-')
                 {
-                    return CharChallengeResult.GiveUp; // term cannot end with '-'
+                    return OldCharChallengeResult.GiveUp; // term cannot end with '-'
                 }
                 else
                 {
-                    return CharChallengeResult.Finish;
+                    return OldCharChallengeResult.Finish;
                 }
             }
 
-            return CharChallengeResult.GiveUp;
+            return OldCharChallengeResult.GiveUp;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
             if (this.GetPreviousChar() == '-')
             {
-                return CharChallengeResult.GiveUp;
+                return OldCharChallengeResult.GiveUp;
             }
 
-            return CharChallengeResult.Finish;
+            return OldCharChallengeResult.Finish;
         }
     }
 }

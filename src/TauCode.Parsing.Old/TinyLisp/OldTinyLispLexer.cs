@@ -1,5 +1,5 @@
-﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
+﻿using TauCode.Parsing.Old.Lexing;
+using TauCode.Parsing.Old.Lexing.StandardTokenExtractors;
 using OldTinyLispCommentExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispCommentExtractor;
 using OldTinyLispKeywordExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispKeywordExtractor;
 using OldTinyLispPunctuationExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispPunctuationExtractor;

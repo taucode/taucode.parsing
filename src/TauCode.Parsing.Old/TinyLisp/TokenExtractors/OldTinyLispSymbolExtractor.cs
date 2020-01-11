@@ -1,10 +1,10 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class OldTinyLispSymbolExtractor : TokenExtractorBase
+    public class OldTinyLispSymbolExtractor : OldTokenExtractorBase
     {
         public OldTinyLispSymbolExtractor() 
             : base(
@@ -33,21 +33,21 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             return new LispSymbolToken(str, position, consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
             if (c.IsAcceptableSymbolNameChar())
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
-            return CharChallengeResult.Finish;
+            return OldCharChallengeResult.Finish;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
-            return CharChallengeResult.Finish; // symbol ends with end-of-input? no problem then.
+            return OldCharChallengeResult.Finish; // symbol ends with end-of-input? no problem then.
         }
     }
 }

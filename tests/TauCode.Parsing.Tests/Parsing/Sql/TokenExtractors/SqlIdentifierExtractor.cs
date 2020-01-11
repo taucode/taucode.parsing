@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors

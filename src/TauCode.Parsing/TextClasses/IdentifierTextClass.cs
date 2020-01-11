@@ -1,4 +1,6 @@
-﻿namespace TauCode.Parsing.Tokens.TextClasses
+﻿using TauCode.Parsing.Tokens;
+
+namespace TauCode.Parsing.TextClasses
 {
     public class IdentifierTextClass : ITextClass
     {

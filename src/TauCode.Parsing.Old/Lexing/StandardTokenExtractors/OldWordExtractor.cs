@@ -1,11 +1,12 @@
 ﻿using System;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
 
-namespace TauCode.Parsing.Lexing.StandardTokenExtractors
+namespace TauCode.Parsing.Old.Lexing.StandardTokenExtractors
 {
-    public class OldWordExtractor : TokenExtractorBase
+    public class OldWordExtractor : OldTokenExtractorBase
     {
         public OldWordExtractor(Func<char, bool> firstCharPredicate = null)
             : base(firstCharPredicate ?? StandardFirstCharPredicate)
@@ -49,7 +50,7 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
                 consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
@@ -57,25 +58,25 @@ namespace TauCode.Parsing.Lexing.StandardTokenExtractors
 
             if (index == 0)
             {
-                return CharChallengeResult.Continue; // MUST be accepted in accordance with design.
+                return OldCharChallengeResult.Continue; // MUST be accepted in accordance with design.
             }
 
             if (
                 LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) ||
                 LexingHelper.IsStandardPunctuationChar(c))
             {
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
 
             if (this.AllowsInnerChar(c))
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             // I don't want this char inside my word.
-            return CharChallengeResult.GiveUp;
+            return OldCharChallengeResult.GiveUp;
         }
 
-        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish; // word ended with end-of-input? no problem.
+        protected override OldCharChallengeResult ChallengeEnd() => OldCharChallengeResult.Finish; // word ended with end-of-input? no problem.
     }
 }

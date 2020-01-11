@@ -1,13 +1,14 @@
 ﻿using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
 {
-    public class OldStringExtractor : TokenExtractorBase
+    public class OldStringExtractor : OldTokenExtractorBase
     {
         private char? _startingDelimiter;
 
@@ -39,7 +40,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
                 consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
@@ -49,7 +50,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
             if (index == 0)
             {
                 _startingDelimiter = c;
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+                return OldCharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
             if (LexingHelper.IsCaretControl(c))
@@ -62,16 +63,16 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
                 if (c == _startingDelimiter.Value)
                 {
                     this.Advance();
-                    return CharChallengeResult.Finish;
+                    return OldCharChallengeResult.Finish;
                 }
 
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
-            return CharChallengeResult.Continue;
+            return OldCharChallengeResult.Continue;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
             throw new LexingException("Unclosed string.", this.GetCurrentAbsolutePosition());
         }

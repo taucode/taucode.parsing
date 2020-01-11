@@ -1,9 +1,10 @@
 ﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
 {
-    public class OldEqualsExtractor : TokenExtractorBase
+    public class OldEqualsExtractor : OldTokenExtractorBase
     {
         public OldEqualsExtractor()
             : base(c => c == '=')
@@ -23,22 +24,22 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
             return new PunctuationToken('=', position, consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var index = this.LocalCharIndex;
 
             if (index == 0)
             {
                 // 0th is always accepted.
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
-            return CharChallengeResult.Finish;
+            return OldCharChallengeResult.Finish;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
-            return CharChallengeResult.Finish; // exactly one char is guaranteed to be consumed; no problem with end of input.
+            return OldCharChallengeResult.Finish; // exactly one char is guaranteed to be consumed; no problem with end of input.
         }
     }
 }

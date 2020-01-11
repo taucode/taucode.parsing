@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using TauCode.Extensions;
-using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
 {
-    public class OldSqlPunctuationExtractor : TokenExtractorBase
+    public class OldSqlPunctuationExtractor : OldTokenExtractorBase
     {
         public OldSqlPunctuationExtractor()
             : base(SqlPunctuationFirstCharPredicate)
@@ -32,18 +32,18 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
             return new PunctuationToken(str.Single(), position, consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var index = this.LocalCharIndex;
 
             if (index == 0)
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
-            return CharChallengeResult.Finish; // whatever it is - it's a single-char token extractor.
+            return OldCharChallengeResult.Finish; // whatever it is - it's a single-char token extractor.
         }
 
-        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish;
+        protected override OldCharChallengeResult ChallengeEnd() => OldCharChallengeResult.Finish;
     }
 }

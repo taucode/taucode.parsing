@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexing;
 
-namespace TauCode.Parsing.Lexing
+namespace TauCode.Parsing.Old.Lexing
 {
     public abstract class OldLexerBase : ILexer
     {
@@ -36,7 +37,7 @@ namespace TauCode.Parsing.Lexing
         #region Fields
 
         private string _input;
-        private readonly List<ITokenExtractor> _tokenExtractors;
+        private readonly List<IOldTokenExtractor> _tokenExtractors;
         private bool _tokenExtractorsInited;
 
         #endregion
@@ -45,7 +46,7 @@ namespace TauCode.Parsing.Lexing
 
         protected OldLexerBase()
         {
-            _tokenExtractors = new List<ITokenExtractor>();
+            _tokenExtractors = new List<IOldTokenExtractor>();
         }
 
         #endregion
@@ -188,12 +189,12 @@ namespace TauCode.Parsing.Lexing
             this.CurrentColumn += shift;
         }
 
-        protected List<ITokenExtractor> GetSuitableTokenExtractors(char firstChar)
+        protected List<IOldTokenExtractor> GetSuitableTokenExtractors(char firstChar)
         {
             return _tokenExtractors.Where(x => x.AllowsFirstChar(firstChar)).ToList();
         }
 
-        protected void AddTokenExtractor(ITokenExtractor tokenExtractor)
+        protected void AddTokenExtractor(IOldTokenExtractor tokenExtractor)
         {
             if (tokenExtractor == null)
             {

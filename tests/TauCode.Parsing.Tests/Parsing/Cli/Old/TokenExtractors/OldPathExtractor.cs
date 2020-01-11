@@ -1,12 +1,13 @@
 ﻿using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
 {
-    public class OldPathExtractor : TokenExtractorBase
+    public class OldPathExtractor : OldTokenExtractorBase
     {
         public OldPathExtractor()
             : base(IsPathFirstChar)
@@ -40,32 +41,32 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
             return token;
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var index = this.LocalCharIndex;
 
             if (index == 0)
             {
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+                return OldCharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
             if (IsPathFirstChar(c) || c == ':')
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
 
-            return CharChallengeResult.GiveUp;
+            return OldCharChallengeResult.GiveUp;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
-            return CharChallengeResult.Finish;
+            return OldCharChallengeResult.Finish;
         }
     }
 }

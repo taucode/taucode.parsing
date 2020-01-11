@@ -1,5 +1,5 @@
-﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
+﻿using TauCode.Parsing.Old.Lexing;
+using TauCode.Parsing.Old.Lexing.StandardTokenExtractors;
 using TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Old

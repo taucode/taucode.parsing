@@ -1,11 +1,11 @@
 ﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
-    public class OldTinyLispKeywordExtractor : TokenExtractorBase
+    public class OldTinyLispKeywordExtractor : OldTokenExtractorBase
     {
         public OldTinyLispKeywordExtractor()
             : base(x => x == ':')
@@ -27,31 +27,31 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             return new KeywordToken(res, position, consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var index = this.LocalCharIndex;
 
             if (index == 0)
             {
-                return CharChallengeResult.Continue; // 0th char is always ok
+                return OldCharChallengeResult.Continue; // 0th char is always ok
             }
 
             var isMine = c.IsAcceptableSymbolNameChar();
             if (isMine)
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
-            return CharChallengeResult.Finish;
+            return OldCharChallengeResult.Finish;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
             if (this.LocalCharIndex > 1)
             {
                 // consumed more than one char (0th is always ':'), so no problem here
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
             else
             {

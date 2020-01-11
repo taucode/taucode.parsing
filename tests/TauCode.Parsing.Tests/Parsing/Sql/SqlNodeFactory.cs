@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.Tokens;

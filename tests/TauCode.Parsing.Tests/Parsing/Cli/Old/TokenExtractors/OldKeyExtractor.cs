@@ -1,11 +1,12 @@
 ﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.Tokens;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
 {
-    public class OldKeyExtractor : TokenExtractorBase
+    public class OldKeyExtractor : OldTokenExtractorBase
     {
         public OldKeyExtractor()
             : base(c => c == '-')
@@ -25,63 +26,63 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Old.TokenExtractors
             return token;
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
             var index = this.LocalCharIndex;
 
             if (index == 0)
             {
-                return CharChallengeResult.Continue; // 0th char MUST have been accepted.
+                return OldCharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
             if (index == 1)
             {
                 if (c == '-')
                 {
-                    return CharChallengeResult.Continue;
+                    return OldCharChallengeResult.Continue;
                 }
 
                 if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))
                 {
-                    return CharChallengeResult.Continue;
+                    return OldCharChallengeResult.Continue;
                 }
 
-                return CharChallengeResult.GiveUp;
+                return OldCharChallengeResult.GiveUp;
             }
 
             if (index == 2 && c == '-')
             {
                 if (this.GetPreviousChar() == '-')
                 {
-                    return CharChallengeResult.GiveUp; // 3 hyphens cannot be.
+                    return OldCharChallengeResult.GiveUp; // 3 hyphens cannot be.
                 }
 
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsDigit(c) || LexingHelper.IsLatinLetter(c))
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) || c == '=')
             
             {
-                return CharChallengeResult.Finish;
+                return OldCharChallengeResult.Finish;
             }
 
-            return CharChallengeResult.GiveUp;
+            return OldCharChallengeResult.GiveUp;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
             if (this.GetPreviousChar() == '-')
             {
-                return CharChallengeResult.GiveUp;
+                return OldCharChallengeResult.GiveUp;
             }
 
-            return CharChallengeResult.Finish;
+            return OldCharChallengeResult.Finish;
         }
     }
 }

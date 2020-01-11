@@ -1,10 +1,10 @@
 ﻿using System;
 
-namespace TauCode.Parsing.Lexing
+namespace TauCode.Parsing.Old.Lexing
 {
-    public struct TokenExtractionResult
+    public struct OldTokenExtractionResult
     {
-        public TokenExtractionResult(IToken token, int positionShift, int lineShift, int? currentColumn)
+        public OldTokenExtractionResult(IToken token, int positionShift, int lineShift, int? currentColumn)
         {
             if (token == null)
             {

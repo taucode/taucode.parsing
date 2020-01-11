@@ -1,14 +1,14 @@
 ﻿using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
+using TauCode.Parsing.Old.Lexing;
+using TauCode.Parsing.Old.Lexing.StandardTokenExtractors;
+using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
 using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
 {
-    public class OldSqlIdentifierExtractor : TokenExtractorBase
+    public class OldSqlIdentifierExtractor : OldTokenExtractorBase
     {
         public OldSqlIdentifierExtractor()
             : base(x => x.IsIn('[', '`', '"'))
@@ -40,7 +40,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
                 consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override OldCharChallengeResult ChallengeCurrentChar()
         {
             var c = this.GetCurrentChar();
 
@@ -48,12 +48,12 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
 
             if (index == 0)
             {
-                return CharChallengeResult.Continue; // how else?
+                return OldCharChallengeResult.Continue; // how else?
             }
 
             if (OldWordExtractor.StandardInnerCharPredicate(c))
             {
-                return CharChallengeResult.Continue;
+                return OldCharChallengeResult.Continue;
             }
 
             if (c.IsIn(']', '`', '"'))
@@ -62,7 +62,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
                 if (GetClosingDelimiter(openingDelimiter) == c)
                 {
                     this.Advance();
-                    return CharChallengeResult.Finish;
+                    return OldCharChallengeResult.Finish;
                 }
             }
 
@@ -87,7 +87,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Old.TokenExtractors
             }
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override OldCharChallengeResult ChallengeEnd()
         {
             throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
         }
