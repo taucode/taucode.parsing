@@ -4,13 +4,13 @@ using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lab.Nodes;
-using TauCode.Parsing.Lab.TextClasses;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
 {
     [TextClass("identifier")]
-    public class SqlIdentifierClass : TextClassBaseLab
+    public class SqlIdentifierClass : TextClassBase
     {
         //private readonly HashSet<string> _reservedWords;
 
@@ -22,12 +22,12 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
             //_reservedWords = new HashSet<string>(reservedWords.Select(x => x.ToUpperInvariant()));
         }
 
-        protected override string TryConvertFromImpl(string text, ITextClassLab anotherClass)
+        protected override string TryConvertFromImpl(string text, ITextClass anotherClass)
         {
             var todo = SqlTestsHelper.ReservedWords.OrderBy(x => x).ToList();
 
             if (
-                anotherClass is WordTextClassLab &&
+                anotherClass is WordTextClass &&
                 !SqlTestsHelper.IsReservedWord(text))
             {
                 return text;

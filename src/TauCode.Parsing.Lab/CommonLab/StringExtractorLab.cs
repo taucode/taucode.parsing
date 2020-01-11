@@ -1,9 +1,9 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab.TextClasses;
-using TauCode.Parsing.Lab.TextDecorations;
 using TauCode.Parsing.Lab.Tokens;
+using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 
 namespace TauCode.Parsing.Lab.CommonLab
 {
@@ -15,22 +15,22 @@ namespace TauCode.Parsing.Lab.CommonLab
         {
             var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
             return new TextTokenLab(
-                StringTextClassLab.Instance,
+                StringTextClass.Instance,
                 GetDecoration(_openingDelimiter),
                 str,
                 position,
                 consumedLength);
         }
 
-        private static ITextDecorationLab GetDecoration(char openingDelimiter)
+        private static ITextDecoration GetDecoration(char openingDelimiter)
         {
             switch (openingDelimiter)
             {
                 case '"':
-                    return DoubleQuoteTextDecorationLab.Instance;
+                    return DoubleQuoteTextDecoration.Instance;
 
                 case '\'':
-                    return SingleQuoteTextDecorationLab.Instance;
+                    return SingleQuoteTextDecoration.Instance;
 
                 default:
                     throw new NotImplementedException(); // error.

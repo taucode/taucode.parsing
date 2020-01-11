@@ -9,11 +9,11 @@ namespace TauCode.Parsing.Lab.Nodes
     public class MultiTextNodeLab : ActionNode
     {
         private readonly HashSet<string> _texts;
-        private readonly HashSet<ITextClassLab> _textClasses;
+        private readonly HashSet<ITextClass> _textClasses;
 
         public MultiTextNodeLab(
             IEnumerable<string> texts,
-            IEnumerable<ITextClassLab> textClasses,
+            IEnumerable<ITextClass> textClasses,
             bool isCaseSensitive,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
@@ -61,7 +61,7 @@ namespace TauCode.Parsing.Lab.Nodes
                 throw new ArgumentException($"'{nameof(textClasses)}' cannot contain nulls.");
             }
 
-            _textClasses = new HashSet<ITextClassLab>(textClassesList);
+            _textClasses = new HashSet<ITextClass>(textClassesList);
 
             this.IsCaseSensitive = isCaseSensitive;
 

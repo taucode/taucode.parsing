@@ -1,10 +1,10 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.TextDecorations;
 using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
+using TauCode.Parsing.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
@@ -16,7 +16,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
             var token = new TextTokenLab(
                 PathTextClass.Instance,
-                NoneTextDecorationLab.Instance,
+                NoneTextDecoration.Instance,
                 str,
                 position,
                 consumedLength);

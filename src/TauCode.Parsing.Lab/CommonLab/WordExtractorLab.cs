@@ -1,8 +1,8 @@
 ﻿using System;
-using TauCode.Parsing.Lab.TextClasses;
-using TauCode.Parsing.Lab.TextDecorations;
 using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lab.CommonLab
@@ -14,8 +14,8 @@ namespace TauCode.Parsing.Lab.CommonLab
             var str = this.Context.Text.Substring(absoluteIndex, consumedLength);
 
             return new TextTokenLab(
-                WordTextClassLab.Instance,
-                NoneTextDecorationLab.Instance,
+                WordTextClass.Instance,
+                NoneTextDecoration.Instance,
                 str,
                 position,
                 consumedLength);

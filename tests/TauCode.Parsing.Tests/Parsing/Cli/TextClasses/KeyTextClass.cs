@@ -3,7 +3,7 @@
 namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
     [TextClass("key")]
-    public class KeyTextClass : TextClassBaseLab
+    public class KeyTextClass : TextClassBase
     {
         public static readonly KeyTextClass Instance = new KeyTextClass();
 
@@ -11,7 +11,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
         {
         }
 
-        protected override string TryConvertFromImpl(string text, ITextClassLab anotherClass)
+        protected override string TryConvertFromImpl(string text, ITextClass anotherClass)
         {
             throw new System.NotImplementedException();
         }

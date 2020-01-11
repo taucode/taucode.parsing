@@ -1,15 +1,14 @@
 ﻿using System.Linq;
 using TauCode.Parsing.Building;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lab.Building;
 using TauCode.Parsing.Lab.Nodes;
-using TauCode.Parsing.Lab.TextClasses;
 using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
 using TauCode.Parsing.Tests.Parsing.Cli.Exceptions;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
+using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 
@@ -71,7 +70,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             INode node = new MultiTextNodeLab(
                 verbs,
-                new ITextClassLab[] { TermTextClass.Instance },
+                new ITextClass[] { TermTextClass.Instance },
                 true,
                 this.ProcessAlias,
                 this.NodeFamily,
@@ -94,7 +93,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             var node = new MultiTextNodeLab(
                 keyNames,
-                new ITextClassLab[] { KeyTextClass.Instance, },
+                new ITextClass[] { KeyTextClass.Instance, },
                 true,
                 this.ProcessKey,
                 this.NodeFamily,
@@ -115,7 +114,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             ActionNode keyNameNode = new MultiTextNodeLab(
                 keyNames,
-                new ITextClassLab[] { KeyTextClass.Instance },
+                new ITextClass[] { KeyTextClass.Instance },
                 true,
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
@@ -142,7 +141,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             ActionNode keyNameNode = new MultiTextNodeLab(
                 keyNames,
-                new ITextClassLab[] { KeyTextClass.Instance },
+                new ITextClass[] { KeyTextClass.Instance },
                 true,
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
@@ -248,12 +247,12 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
         #region Misc
 
-        private ITextClassLab ParseTextClass(string textClassSymbolName)
+        private ITextClass ParseTextClass(string textClassSymbolName)
         {
             switch (textClassSymbolName)
             {
                 case "STRING":
-                    return StringTextClassLab.Instance;
+                    return StringTextClass.Instance;
 
                 case "TERM":
                     return TermTextClass.Instance;

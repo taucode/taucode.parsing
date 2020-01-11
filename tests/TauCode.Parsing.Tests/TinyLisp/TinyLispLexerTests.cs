@@ -4,10 +4,10 @@ using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.TextClasses;
-using TauCode.Parsing.Lab.TextDecorations;
 using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
@@ -127,8 +127,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
             //  5: "CREATE"
             var textToken = (TextTokenLab)tokens[5];
             Assert.That(textToken.Text, Is.EqualTo("CREATE"));
-            Assert.That(textToken.Class, Is.SameAs(StringTextClassLab.Instance));
-            Assert.That(textToken.Decoration, Is.SameAs(DoubleQuoteTextDecorationLab.Instance));
+            Assert.That(textToken.Class, Is.SameAs(StringTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.SameAs(DoubleQuoteTextDecoration.Instance));
             Assert.That(textToken.Position, Is.EqualTo(new Position(3, 11)));
             Assert.That(textToken.ConsumedLength, Is.EqualTo(8));
 

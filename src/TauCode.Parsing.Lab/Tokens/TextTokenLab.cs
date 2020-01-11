@@ -7,8 +7,8 @@ namespace TauCode.Parsing.Lab.Tokens
     public class TextTokenLab : TokenBase
     {
         public TextTokenLab(
-            ITextClassLab @class,
-            ITextDecorationLab decoration,
+            ITextClass @class,
+            ITextDecoration decoration,
             string text,
             Position position,
             int consumedLength,
@@ -21,8 +21,8 @@ namespace TauCode.Parsing.Lab.Tokens
             this.Text = text ?? throw new ArgumentNullException(nameof(text));
         }
 
-        public ITextClassLab Class { get; }
-        public ITextDecorationLab Decoration { get; }
+        public ITextClass Class { get; }
+        public ITextDecoration Decoration { get; }
         public string Text { get; }
     }
 }

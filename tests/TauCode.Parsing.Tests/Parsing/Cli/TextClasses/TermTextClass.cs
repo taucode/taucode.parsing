@@ -3,7 +3,7 @@
 namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
     [TextClass("term")]
-    public class TermTextClass : TextClassBaseLab
+    public class TermTextClass : TextClassBase
     {
         public static readonly TermTextClass Instance = new TermTextClass();
 
@@ -11,7 +11,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
         {   
         }
 
-        protected override string TryConvertFromImpl(string text, ITextClassLab anotherClass)
+        protected override string TryConvertFromImpl(string text, ITextClass anotherClass)
         {
             throw new System.NotImplementedException();
         }

@@ -8,10 +8,10 @@ namespace TauCode.Parsing.Lab.Nodes
 {
     public class TextNodeLab : ActionNode
     {
-        private readonly HashSet<ITextClassLab> _textClasses;
+        private readonly HashSet<ITextClass> _textClasses;
 
         public TextNodeLab(
-            IEnumerable<ITextClassLab> textClasses,
+            IEnumerable<ITextClass> textClasses,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
@@ -34,11 +34,11 @@ namespace TauCode.Parsing.Lab.Nodes
                 throw new ArgumentException($"'{nameof(textClasses)}' cannot contain nulls.");
             }
 
-            _textClasses = new HashSet<ITextClassLab>(textClassesList);
+            _textClasses = new HashSet<ITextClass>(textClassesList);
         }
 
         public TextNodeLab(
-            ITextClassLab textClass,
+            ITextClass textClass,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)

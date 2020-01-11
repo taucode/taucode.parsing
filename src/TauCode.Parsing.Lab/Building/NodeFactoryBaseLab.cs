@@ -12,18 +12,18 @@ namespace TauCode.Parsing.Lab.Building
 {
     public class NodeFactoryBaseLab : INodeFactory
     {
-        private readonly IDictionary<string, ITextClassLab> _textClasses;
+        private readonly IDictionary<string, ITextClass> _textClasses;
         private readonly bool _isCaseSensitive;
 
         protected NodeFactoryBaseLab(
             string nodeFamilyName,
-            IList<ITextClassLab> textClasses,
+            IList<ITextClass> textClasses,
             bool isCaseSensitive)
         {
             this.NodeFamily = new NodeFamily(nodeFamilyName);
-            textClasses = textClasses ?? new List<ITextClassLab>();
+            textClasses = textClasses ?? new List<ITextClass>();
 
-            _textClasses = new Dictionary<string, ITextClassLab>();
+            _textClasses = new Dictionary<string, ITextClass>();
 
             foreach (var textClass in textClasses)
             {
@@ -100,9 +100,9 @@ namespace TauCode.Parsing.Lab.Building
             return node;
         }
 
-        private IEnumerable<ITextClassLab> ParseTextClasses(PseudoList arguments)
+        private IEnumerable<ITextClass> ParseTextClasses(PseudoList arguments)
         {
-            var textClasses = new List<ITextClassLab>();
+            var textClasses = new List<ITextClass>();
 
             foreach (var argument in arguments)
             {
@@ -134,7 +134,7 @@ namespace TauCode.Parsing.Lab.Building
             return textClasses;
         }
 
-        protected virtual ITextClassLab ResolveTextClass(string tag)
+        protected virtual ITextClass ResolveTextClass(string tag)
         {
             var textClass = _textClasses.GetOrDefault(tag.ToLowerInvariant());
             if (textClass == null)

@@ -1,9 +1,9 @@
 ﻿using System;
 using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.TextDecorations;
 using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
+using TauCode.Parsing.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         public override TextTokenLab ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
             var str = text.Substring(absoluteIndex, consumedLength);
-            return new TextTokenLab(KeyTextClass.Instance, NoneTextDecorationLab.Instance, str, position, consumedLength);
+            return new TextTokenLab(KeyTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
         }
 
         protected override void OnBeforeProcess()

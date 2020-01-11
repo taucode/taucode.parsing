@@ -1,9 +1,9 @@
 ﻿using System;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab.TextClasses;
-using TauCode.Parsing.Lab.TextDecorations;
 using TauCode.Parsing.Lab.Tokens;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 
 namespace TauCode.Parsing.Lab.TinyLispLab
 {
@@ -15,8 +15,8 @@ namespace TauCode.Parsing.Lab.TinyLispLab
         {
             var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
             return new TextTokenLab(
-                StringTextClassLab.Instance,
-                DoubleQuoteTextDecorationLab.Instance,
+                StringTextClass.Instance,
+                DoubleQuoteTextDecoration.Instance,
                 str,
                 position,
                 consumedLength);

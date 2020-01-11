@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lab.Building;
-using TauCode.Parsing.Lab.TextClasses;
 using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
+using TauCode.Parsing.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql
 {
@@ -11,10 +10,10 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
         public SqlNodeFactory()
             : base(
                 "Test-SQLite",
-                new List<ITextClassLab>
+                new List<ITextClass>
                 {
-                    WordTextClassLab.Instance,
-                    StringTextClassLab.Instance,
+                    WordTextClass.Instance,
+                    StringTextClass.Instance,
                     SqlIdentifierClass.Instance,
                 },
                 false)

@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Reflection;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing
 {
-    public abstract class TextClassBaseLab : ITextClassLab
+    public abstract class TextClassBase : ITextClass
     {
         public virtual string Tag => this
             .GetType()
             .GetCustomAttribute<TextClassAttribute>()?.Tag;
 
-        public string TryConvertFrom(string text, ITextClassLab anotherClass)
+        public string TryConvertFrom(string text, ITextClass anotherClass)
         {
             if (text == null)
             {
@@ -29,6 +29,6 @@ namespace TauCode.Parsing.Lab
             return this.TryConvertFromImpl(text, anotherClass);
         }
 
-        protected abstract string TryConvertFromImpl(string text, ITextClassLab anotherClass);
+        protected abstract string TryConvertFromImpl(string text, ITextClass anotherClass);
     }
 }

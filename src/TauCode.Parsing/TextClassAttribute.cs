@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
     public class TextClassAttribute : Attribute

@@ -8,11 +8,11 @@ namespace TauCode.Parsing.Lab.Nodes
 {
     public class ExactTextNodeLab : ActionNode
     {
-        private readonly HashSet<ITextClassLab> _textClasses;
+        private readonly HashSet<ITextClass> _textClasses;
 
         public ExactTextNodeLab(
             string exactText,
-            IEnumerable<ITextClassLab> textClasses,
+            IEnumerable<ITextClass> textClasses,
             bool isCaseSensitive,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
@@ -47,14 +47,14 @@ namespace TauCode.Parsing.Lab.Nodes
                 throw new ArgumentException($"'{nameof(textClasses)}' cannot contain nulls.");
             }
 
-            _textClasses = new HashSet<ITextClassLab>(textClassesList);
+            _textClasses = new HashSet<ITextClass>(textClassesList);
 
             this.IsCaseSensitive = isCaseSensitive;
         }
 
         public ExactTextNodeLab(
             string exactText,
-            ITextClassLab textClass,
+            ITextClass textClass,
             bool isCaseSensitive,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
