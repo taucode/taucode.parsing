@@ -48,18 +48,35 @@ namespace TauCode.Parsing.Lab.Nodes
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            var acceptsToken =
-                token is TextTokenLab textToken &&
-                _textClasses.Contains(textToken.Class);
+            if (token is TextTokenLab textToken)
+            {
+                var text = textToken.Text;
 
-            if (acceptsToken)
-            {
-                return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+                var textTokenClass = textToken.Class;
+                if (
+                    _textClasses.Contains(textTokenClass) ||
+                    _textClasses.Any(x => x.TryConvertFrom(text, textTokenClass) != null)
+                )
+                {
+                    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+                }
             }
-            else
-            {
-                return InquireResult.Reject;
-            }
+
+            return InquireResult.Reject;
+
+            // todo clean
+            //var acceptsToken =
+            //    token is TextTokenLab textToken &&
+            //    _textClasses.Contains(textToken.Class);
+
+            //if (acceptsToken)
+            //{
+            //    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+            //}
+            //else
+            //{
+            //    return InquireResult.Reject;
+            //}
         }
     }
 }

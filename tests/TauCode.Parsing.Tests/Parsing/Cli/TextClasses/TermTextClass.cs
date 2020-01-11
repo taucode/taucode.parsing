@@ -11,7 +11,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
         {   
         }
 
-        public override string TryConvertFrom(string text, ITextClassLab anotherClass)
+        protected override string TryConvertFromImpl(string text, ITextClassLab anotherClass)
         {
             throw new System.NotImplementedException();
         }

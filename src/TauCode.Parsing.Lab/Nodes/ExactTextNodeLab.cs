@@ -13,12 +13,23 @@ namespace TauCode.Parsing.Lab.Nodes
         public ExactTextNodeLab(
             string exactText,
             IEnumerable<ITextClassLab> textClasses,
+            bool isCaseSensitive,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)
         {
-            this.ExactText = exactText ?? throw new ArgumentNullException(nameof(exactText));
+            if (exactText == null)
+            {
+                throw new ArgumentNullException(nameof(exactText));
+            }
+
+            if (!isCaseSensitive)
+            {
+                exactText = exactText.ToLowerInvariant();
+            }
+
+            this.ExactText = exactText;
 
             if (textClasses == null)
             {
@@ -38,40 +49,72 @@ namespace TauCode.Parsing.Lab.Nodes
 
             _textClasses = new HashSet<ITextClassLab>(textClassesList);
 
+            this.IsCaseSensitive = isCaseSensitive;
         }
 
         public ExactTextNodeLab(
             string exactText,
             ITextClassLab textClass,
+            bool isCaseSensitive,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
-            : this(exactText, new[] { textClass }, action, family, name)
+            : this(
+                exactText,
+                new[] { textClass },
+                isCaseSensitive,
+                action,
+                family,
+                name)
         {
         }
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            var acceptsToken =
-                token is TextTokenLab textToken &&
-                _textClasses.Contains(textToken.Class) &&
-                string.Equals(
-                    textToken.Text,
-                    this.ExactText,
-                    this.IsCaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase);
+            if (token is TextTokenLab textToken)
+            {
+                var text = textToken.Text;
+                if (!this.IsCaseSensitive)
+                {
+                    text = text.ToLowerInvariant();
+                }
 
-            if (acceptsToken)
-            {
-                return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+                if (string.Equals(text, this.ExactText))
+                {
+                    var textTokenClass = textToken.Class;
+                    if (
+                        _textClasses.Contains(textTokenClass) ||
+                        _textClasses.Any(x => string.Equals(text, x.TryConvertFrom(text, textTokenClass)))
+                    )
+                    {
+                        return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+                    }
+                }
             }
-            else
-            {
-                return InquireResult.Reject;
-            }
+
+            return InquireResult.Reject;
+
+            // todo clean
+            //var acceptsToken =
+            //    token is TextTokenLab textToken &&
+            //    _textClasses.Contains(textToken.Class) &&
+            //    string.Equals(
+            //        textToken.Text,
+            //        this.ExactText,
+            //        this.IsCaseSensitive ? StringComparison.InvariantCulture : StringComparison.InvariantCultureIgnoreCase);
+
+            //if (acceptsToken)
+            //{
+            //    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+            //}
+            //else
+            //{
+            //    return InquireResult.Reject;
+            //}
         }
 
         public string ExactText { get; }
 
-        public bool IsCaseSensitive { get; set; }
+        public bool IsCaseSensitive { get; }
     }
 }

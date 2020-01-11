@@ -23,6 +23,7 @@ namespace TauCode.Parsing.Tests.Parsing
             INode exactText = new ExactTextNodeLab(
                 "foo",
                 new[] { WordTextClassLab.Instance, },
+                false,
                 (node, token, arg3) => { },
                 nodeFamily,
                 null);

@@ -1,11 +1,23 @@
-﻿using TauCode.Parsing.Lab.Building;
+﻿using System.Collections.Generic;
+using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lab.Building;
+using TauCode.Parsing.Lab.TextClasses;
+using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql
 {
     public class SqlNodeFactory : NodeFactoryBaseLab
     {
         public SqlNodeFactory()
-            : base("Test-SQLite", null)
+            : base(
+                "Test-SQLite",
+                new List<ITextClassLab>
+                {
+                    WordTextClassLab.Instance,
+                    StringTextClassLab.Instance,
+                    SqlIdentifierClass.Instance,
+                },
+                false)
         {
         }
 

@@ -9,6 +9,6 @@
         {   
         }
 
-        public override string TryConvertFrom(string text, ITextClassLab anotherClass) => null;
+        protected override string TryConvertFromImpl(string text, ITextClassLab anotherClass) => null;
     }
 }

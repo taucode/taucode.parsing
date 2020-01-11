@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         #region Constructor
 
         public CliNodeFactory()
-            : base("Test-CLI", null)
+            : base("Test-CLI", null, true)
         {
         }
 
@@ -72,6 +72,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             INode node = new MultiTextNodeLab(
                 verbs,
                 new ITextClassLab[] { TermTextClass.Instance },
+                true,
                 this.ProcessAlias,
                 this.NodeFamily,
                 item.GetItemName());
@@ -94,6 +95,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var node = new MultiTextNodeLab(
                 keyNames,
                 new ITextClassLab[] { KeyTextClass.Instance, },
+                true,
                 this.ProcessKey,
                 this.NodeFamily,
                 item.GetItemName());
@@ -114,6 +116,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             ActionNode keyNameNode = new MultiTextNodeLab(
                 keyNames,
                 new ITextClassLab[] { KeyTextClass.Instance },
+                true,
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -140,6 +143,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             ActionNode keyNameNode = new MultiTextNodeLab(
                 keyNames,
                 new ITextClassLab[] { KeyTextClass.Instance },
+                true,
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -192,6 +196,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 choiceNode = new MultiTextNodeLab(
                     textValues,
                     textClasses,
+                    true,
                     ProcessKeyChoice,
                     this.NodeFamily,
                     null);

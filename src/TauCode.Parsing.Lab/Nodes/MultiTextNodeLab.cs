@@ -8,12 +8,13 @@ namespace TauCode.Parsing.Lab.Nodes
 {
     public class MultiTextNodeLab : ActionNode
     {
-        private readonly List<string> _texts;
+        private readonly HashSet<string> _texts;
         private readonly HashSet<ITextClassLab> _textClasses;
 
         public MultiTextNodeLab(
             IEnumerable<string> texts,
             IEnumerable<ITextClassLab> textClasses,
+            bool isCaseSensitive,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
@@ -24,16 +25,24 @@ namespace TauCode.Parsing.Lab.Nodes
                 throw new ArgumentNullException(nameof(texts));
             }
 
-            _texts = texts.ToList();
-            if (_texts.Count == 0)
+            var textList = texts.ToList();
+
+            if (textList.Count == 0)
             {
                 throw new ArgumentException($"'{nameof(texts)}' cannot be empty.", nameof(texts));
             }
 
-            if (_texts.Any(x => x == null))
+            if (textList.Any(x => x == null))
             {
                 throw new ArgumentException($"'{nameof(texts)}' cannot contain nulls.", nameof(texts));
             }
+
+            if (!isCaseSensitive)
+            {
+                textList = textList.Select(x => x.ToLowerInvariant()).ToList();
+            }
+
+            _texts = new HashSet<string>(textList);
 
             if (textClasses == null)
             {
@@ -53,29 +62,63 @@ namespace TauCode.Parsing.Lab.Nodes
             }
 
             _textClasses = new HashSet<ITextClassLab>(textClassesList);
+
+            this.IsCaseSensitive = isCaseSensitive;
+
+            this.Texts = _texts.ToList();
         }
 
         protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is TextTokenLab textToken && _textClasses.Contains(textToken.Class))
+            if (token is TextTokenLab textToken)
             {
-                foreach (var text in _texts)
+                var text = textToken.Text;
+                if (!this.IsCaseSensitive)
                 {
-                    if (string.Equals(
-                        textToken.Text,
-                        text,
-                        this.IsCaseSensitive
-                            ? StringComparison.InvariantCulture
-                            : StringComparison.InvariantCultureIgnoreCase))
+                    text = text.ToLowerInvariant();
+                }
+
+                if (_texts.Contains(text))
+                {
+                    var textTokenClass = textToken.Class;
+                    if (
+                        _textClasses.Contains(textTokenClass) ||
+                        _textClasses.Any(x => string.Equals(text, x.TryConvertFrom(text, textTokenClass)))
+                    )
                     {
                         return this.Action == null ? InquireResult.Skip : InquireResult.Act;
                     }
                 }
             }
 
+            // todo clean
+            //if (
+            //    token is TextTokenLab textToken &&
+            //    (
+            //        _textClasses.Contains(textToken.Class) ||
+            //        _textClasses.Any(x => x.TryConvertFrom(textToken.Text, textToken.Class))
+            //        )
+            //    )
+            //{
+            //    foreach (var text in _texts)
+            //    {
+            //        if (string.Equals(
+            //            textToken.Text,
+            //            text,
+            //            this.IsCaseSensitive
+            //                ? StringComparison.InvariantCulture
+            //                : StringComparison.InvariantCultureIgnoreCase))
+            //        {
+            //            return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+            //        }
+            //    }
+            //}
+
             return InquireResult.Reject;
         }
 
-        public bool IsCaseSensitive { get; set; } = false;
+        public bool IsCaseSensitive { get; }
+
+        public IReadOnlyList<string> Texts { get; }
     }
 }
