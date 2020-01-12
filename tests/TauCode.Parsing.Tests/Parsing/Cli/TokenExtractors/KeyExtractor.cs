@@ -2,6 +2,7 @@
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
@@ -18,6 +19,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override void OnBeforeProcess()
         {
+            this.AlphaCheckOnBeforeProcess();
+
             _hyphenCountInARow = 1; // guaranteed to start with '-'.
         }
 
@@ -28,7 +31,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override bool ProcessEnd()
         {
-            return this.Context.GetPreviousAbsoluteChar().Value != '-';
+            return this.Context.GetPreviousLocalChar() != '-';
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
@@ -45,8 +48,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharAcceptanceResult.Continue;
             }
 
-            // todo: this is bad. you should not give a shit about 'GetPreviousAbsoluteChar'. work with local chars only. here & anywhere.
-            var previousChar = this.Context.GetPreviousAbsoluteChar().Value;
+            var previousChar = this.Context.GetPreviousLocalChar();
 
             if (c == '-')
             {

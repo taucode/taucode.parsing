@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 
@@ -79,9 +81,16 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
 
-        public static LexingException CreateInternalErrorLexingException(Position position)
+        public static LexingException CreateInternalErrorLexingException(Position position, string additionalInfo = null)
         {
-            return new LexingException("Internal error.", position);
+            var sb = new StringBuilder("Internal error.");
+            if (additionalInfo != null)
+            {
+                sb.Append(Environment.NewLine);
+                sb.Append($"Additional info: {additionalInfo}");
+            }
+
+            return new LexingException(sb.ToString(), position);
         }
 
         public static bool IsInlineWhiteSpace(char c) => c.IsIn(' ', '\t');

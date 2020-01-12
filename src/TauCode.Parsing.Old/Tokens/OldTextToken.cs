@@ -11,10 +11,8 @@ namespace TauCode.Parsing.Old.Tokens
             IOldTextDecoration decoration,
             string text,
             Position position,
-            int consumedLength,
-            string name = null,
-            IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(position, consumedLength, name, properties)
+            int consumedLength)
+            : base(position, consumedLength)
         {
             this.Class = @class ?? throw new ArgumentNullException(nameof(@class));
             this.Decoration = decoration ?? throw new ArgumentNullException(nameof(decoration));

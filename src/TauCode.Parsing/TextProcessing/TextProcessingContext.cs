@@ -154,17 +154,17 @@ namespace TauCode.Parsing.TextProcessing
             this.Advance(1, 0, this.GetCurrentColumn() + 1);
         }
 
-        public char? GetPreviousAbsoluteChar()
-        {
-            // todo: checks
-            var absoluteIndex = this.GetAbsoluteIndex();
-            if (absoluteIndex == 0)
-            {
-                return null;
-            }
+        //public char? GetPreviousAbsoluteChar()
+        //{
+        //    // todo: checks
+        //    var absoluteIndex = this.GetAbsoluteIndex();
+        //    if (absoluteIndex == 0)
+        //    {
+        //        return null;
+        //    }
 
-            return this.Text[absoluteIndex - 1];
-        }
+        //    return this.Text[absoluteIndex - 1];
+        //}
 
         public char? TryGetNextLocalChar()
         {
@@ -179,6 +179,18 @@ namespace TauCode.Parsing.TextProcessing
                 return null;
             }
 
+            return this.Text[wantedIndex];
+        }
+
+        public char? TryGetPreviousLocalChar()
+        {
+            if (this.GetLocalIndex() == 0)
+            {
+                return null;
+            }
+
+            var absoluteIndex = this.GetAbsoluteIndex();
+            var wantedIndex = absoluteIndex - 1;
             return this.Text[wantedIndex];
         }
 

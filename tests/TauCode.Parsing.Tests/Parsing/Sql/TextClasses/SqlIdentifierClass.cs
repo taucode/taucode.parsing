@@ -12,20 +12,14 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
     [TextClass("identifier")]
     public class SqlIdentifierClass : TextClassBase
     {
-        //private readonly HashSet<string> _reservedWords;
-
         public static SqlIdentifierClass Instance { get; } = new SqlIdentifierClass();
 
-        private SqlIdentifierClass(/*IList<string> reservedWords*/)
+        private SqlIdentifierClass()
         {
-            //throw new NotImplementedException();
-            //_reservedWords = new HashSet<string>(reservedWords.Select(x => x.ToUpperInvariant()));
         }
 
         protected override string TryConvertFromImpl(string text, ITextClass anotherClass)
         {
-            var todo = SqlTestsHelper.ReservedWords.OrderBy(x => x).ToList();
-
             if (
                 anotherClass is WordTextClass &&
                 !SqlTestsHelper.IsReservedWord(text))
@@ -39,21 +33,21 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
 
     public static class SqlTestsHelper
     {
-        private static readonly ILexer _tinyLispLexer = new TinyLispLexer();
-        private static HashSet<string> _reservedWords;
+        private static readonly ILexer TinyLispLexer = new TinyLispLexer();
+        private static readonly HashSet<string> ReservedWordsHashSet;
 
-        public static HashSet<string> ReservedWords = _reservedWords ?? (_reservedWords = CreateReservedWords());
+        public static HashSet<string> ReservedWords = ReservedWordsHashSet ?? (ReservedWordsHashSet = CreateReservedWords());
 
         private static HashSet<string> CreateReservedWords()
         {
             var grammar = typeof(SqlTestsHelper).Assembly.GetResourceText("sql-grammar.lisp", true);
-            var tokens = _tinyLispLexer.Lexize(grammar);
+            var tokens = TinyLispLexer.Lexize(grammar);
 
             var reader = new TinyLispPseudoReader();
             var form = reader.Read(tokens);
 
             var nodeFactory = new SqlNodeFactory();
-            var builder = new Builder();
+            var builder = new TreeBuilder();
             var root = builder.Build(nodeFactory, form);
             var nodes = root.FetchTree();
 

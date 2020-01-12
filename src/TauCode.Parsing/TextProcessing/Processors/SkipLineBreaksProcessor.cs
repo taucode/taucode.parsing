@@ -3,10 +3,8 @@ using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.TextProcessing.Processors
 {
-    // todo clean up
-    public class SkipLineBreaksProcessor : ITextProcessor<string>
+    public class SkipLineBreaksProcessor : TextProcessorBase<string> // todo: Nothing.
     {
-        private bool _isProcessing;
         private readonly bool _skipOnlyOneResult;
 
         public SkipLineBreaksProcessor(bool skipOnlyOneResult)
@@ -14,7 +12,7 @@ namespace TauCode.Parsing.TextProcessing.Processors
             _skipOnlyOneResult = skipOnlyOneResult;
         }
 
-        public bool AcceptsFirstChar(char c)
+        public override bool AcceptsFirstChar(char c)
         {
             if (this.IsProcessing)
             {
@@ -24,22 +22,7 @@ namespace TauCode.Parsing.TextProcessing.Processors
             return LexingHelper.IsCaretControl(c);
         }
 
-        public bool IsProcessing
-        {
-            get => _isProcessing;
-            private set
-            {
-                if (value == _isProcessing)
-                {
-                    throw new NotImplementedException(); // todo suspicious: why set to same value?
-                }
-
-                _isProcessing = value;
-            }
-        }
-
-
-        public TextProcessingResult Process(ITextProcessingContext context)
+        public override TextProcessingResult Process(ITextProcessingContext context)
         {
             context.RequestGeneration();
             var goOn = true;
@@ -106,7 +89,7 @@ namespace TauCode.Parsing.TextProcessing.Processors
             return new TextProcessingResult(TextProcessingSummary.Skip, indexShift, lineShift, currentColumn);
         }
 
-        public string Produce(string text, int absoluteIndex, Position position, int consumedLength)
+        public override string Produce(string text, int absoluteIndex, Position position, int consumedLength)
         {
             throw new NotImplementedException(); // todo should never be called
         }

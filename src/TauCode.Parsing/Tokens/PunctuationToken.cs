@@ -9,10 +9,8 @@ namespace TauCode.Parsing.Tokens
         public PunctuationToken(
             char c,
             Position position,
-            int consumedLength,
-            string name = null,
-            IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(position, consumedLength, name, properties)
+            int consumedLength)
+            : base(position, consumedLength)
         {
             if (!LexingHelper.IsStandardPunctuationChar(c))
             {

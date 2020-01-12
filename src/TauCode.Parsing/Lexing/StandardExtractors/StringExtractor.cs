@@ -39,6 +39,8 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
         protected override void OnBeforeProcess()
         {
+            this.AlphaCheckOnBeforeProcess();
+
             _openingDelimiter = this.Context.GetLocalChar(0);
         }
 

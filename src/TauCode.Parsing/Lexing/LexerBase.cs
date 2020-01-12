@@ -6,13 +6,88 @@ using TauCode.Parsing.TextProcessing.Processors;
 
 namespace TauCode.Parsing.Lexing
 {
-    // todo clean up
     public abstract class LexerBase : ILexer
     {
-        private LexingContext _context;
+        #region Fields
 
+        private LexingContext _context;
         private IList<ITokenExtractor> _tokenExtractors;
         private IList<ITextProcessor<string>> _skippers;
+
+        #endregion
+
+        #region Private
+
+        private bool SkipWhilePossible()
+        {
+            var eventuallySkipped = false;
+
+            while (true)
+            {
+                if (_context.IsEnd())
+                {
+                    break;
+                }
+
+                var skipped = false;
+
+                foreach (var skipper in this.Skippers)
+                {
+                    var c = _context.GetCurrentChar();
+                    if (!skipper.AcceptsFirstChar(c))
+                    {
+                        continue;
+                    }
+
+                    if (skipper.IsProcessing)
+                    {
+                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to be in processing state.");
+                    }
+
+                    var skipResult = skipper.Process(_context);
+
+                    if (skipper.IsProcessing)
+                    {
+                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to be in processing state.");
+
+                    }
+
+                    if (_context.Depth != 1)
+                    {
+                        throw new LexingException($"Depth of '{typeof(ILexingContext).FullName}.{nameof(ILexingContext.Depth)}' must be equal to 1 when exiting skipper.", _context.GetCurrentAbsolutePosition());
+                    }
+
+                    if (skipResult.Summary == TextProcessingSummary.Skip)
+                    {
+                        skipped = true;
+                        eventuallySkipped = true;
+                        _context.Advance(skipResult.IndexShift, skipResult.LineShift, skipResult.GetCurrentColumn());
+                        break;
+                    }
+                    else if (skipResult.Summary == TextProcessingSummary.CanProduce)
+                    {
+                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to produce a product.");
+                    }
+                }
+
+                if (!skipped)
+                {
+                    break;
+                }
+            }
+
+            return eventuallySkipped;
+        }
+
+        #endregion
+
+        #region Abstract
+
+        protected abstract IList<ITokenExtractor> CreateTokenExtractors();
+
+        #endregion
+
+        #region Protected
 
         protected IList<ITokenExtractor> TokenExtractors =>
             _tokenExtractors ?? (_tokenExtractors = this.CreateTokenExtractors());
@@ -28,7 +103,9 @@ namespace TauCode.Parsing.Lexing
             };
         }
 
-        protected abstract IList<ITokenExtractor> CreateTokenExtractors();
+        #endregion
+
+        #region ILexer Members
 
         public IList<IToken> Lexize(string input)
         {
@@ -37,6 +114,8 @@ namespace TauCode.Parsing.Lexing
             //_context = new TextProcessingContext(input);
 
             _context = new LexingContext(input);
+
+
             var tokens = _context.GetTokenList();
 
             while (true)
@@ -137,64 +216,6 @@ namespace TauCode.Parsing.Lexing
             return tokens;
         }
 
-        private bool SkipWhilePossible()
-        {
-            var eventuallySkipped = false;
-
-            while (true)
-            {
-                if (_context.IsEnd())
-                {
-                    break;
-                }
-
-                var skipped = false;
-
-                foreach (var skipper in this.Skippers)
-                {
-                    var c = _context.GetCurrentChar();
-                    if (!skipper.AcceptsFirstChar(c))
-                    {
-                        continue;
-                    }
-
-                    if (skipper.IsProcessing)
-                    {
-                        throw new NotImplementedException();
-                    }
-
-                    var skipResult = skipper.Process(_context);
-
-                    if (skipper.IsProcessing)
-                    {
-                        throw new NotImplementedException();
-                    }
-
-                    if (_context.Depth != 1)
-                    {
-                        throw new NotImplementedException(); // todo error
-                    }
-
-                    if (skipResult.Summary == TextProcessingSummary.Skip)
-                    {
-                        skipped = true;
-                        eventuallySkipped = true;
-                        _context.Advance(skipResult.IndexShift, skipResult.LineShift, skipResult.GetCurrentColumn());
-                        break;
-                    }
-                    else if (skipResult.Summary == TextProcessingSummary.CanProduce)
-                    {
-                        throw new NotImplementedException(); // should never happen, skippers only 'skip' or 'fail'.
-                    }
-                }
-
-                if (!skipped)
-                {
-                    break;
-                }
-            }
-
-            return eventuallySkipped;
-        }
+        #endregion
     }
 }

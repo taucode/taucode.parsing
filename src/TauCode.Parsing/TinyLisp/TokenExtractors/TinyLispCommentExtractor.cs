@@ -6,7 +6,6 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    // todo clean
     public class TinyLispCommentExtractor : TokenExtractorBase<CommentToken>
     {
         private readonly SkipLineBreaksProcessor _skipLineBreaksProcessor;
@@ -23,27 +22,13 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
         protected override void OnBeforeProcess()
         {
-            // todo: temporary check that IsProcessing == FALSE, everywhere
-            if (this.IsProcessing)
-            {
-                throw new NotImplementedException();
-            }
-
-            // todo: temporary check that LocalPosition == 1, everywhere
-            if (this.Context.GetLocalIndex() != 1)
-            {
-                throw new NotImplementedException();
-            }
-
-            // idle
+            this.AlphaCheckOnBeforeProcess();
         }
 
         protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
             return true; // doesn't matter what previous token is.
         }
-
-        //protected override bool AcceptsPreviousCharImpl(char previousChar) => true; // accepts any previous char
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {

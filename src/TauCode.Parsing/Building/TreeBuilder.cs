@@ -8,7 +8,7 @@ using TauCode.Parsing.TinyLisp.Data;
 
 namespace TauCode.Parsing.Building
 {
-    public class Builder : IBuilder
+    public class TreeBuilder : ITreeBuilder
     {
         #region Fields
 
@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Building
 
         #region Private
 
-        private BuildResult BuildContent(PseudoList content)
+        private NodeBunch BuildContent(PseudoList content)
         {
             NodeBox head = null;
             NodeBox tail = null;
@@ -60,20 +60,19 @@ namespace TauCode.Parsing.Building
                 throw new BuildingException("Last item in a content must not have explicit links.");
             }
 
-            var buildResult = new BuildResult(head, tail);
+            var buildResult = new NodeBunch(head, tail);
 
             return buildResult;
         }
 
-        private BuildResult BuildItem(Element item)
+        private NodeBunch BuildItem(Element item)
         {
             var car = item.GetCarSymbolName();
-            BuildResult buildResult;
+            NodeBunch buildResult;
 
             INode node;
             NodeBox nodeBox;
-
-
+            
             switch (car)
             {
                 case "BLOCK":
@@ -97,13 +96,13 @@ namespace TauCode.Parsing.Building
                         _nodeFactory.NodeFamily,
                         item.GetItemName());
                     nodeBox = new NodeBox(node, item.GetItemLinks());
-                    buildResult = new BuildResult(nodeBox, nodeBox);
+                    buildResult = new NodeBunch(nodeBox, nodeBox);
                     break;
 
                 case "END":
                     node = EndNode.Instance;
                     nodeBox = new NodeBox(node);
-                    buildResult = new BuildResult(nodeBox, nodeBox);
+                    buildResult = new NodeBunch(nodeBox, nodeBox);
                     break;
 
                 default:
@@ -114,7 +113,7 @@ namespace TauCode.Parsing.Building
             return buildResult;
         }
 
-        private BuildResult BuildCustomItem(Element item)
+        private NodeBunch BuildCustomItem(Element item)
         {
             var links = item.GetItemLinks();
 
@@ -122,27 +121,35 @@ namespace TauCode.Parsing.Building
 
             if (headNode == null)
             {
-                throw new NotImplementedException(); // check your factory, it returns nulls...
+                throw new BuildingException("Node factory returned null.");
             }
 
             var tree = headNode.FetchTree();
             if (tree.Count == 1)
             {
                 var nodeBox = new NodeBox(headNode, links);
-                return new BuildResult(nodeBox, nodeBox);
+                return new NodeBunch(nodeBox, nodeBox);
             }
             else
             {
                 var headNodeBox = new NodeBox(headNode);
 
-                var tailNode = tree.Single(x => x.EstablishedLinks.Count == 0); // todo: can throw
-                var tailNodeBox = new NodeBox(tailNode, links);
+                try
+                {
+                    var tailNode = tree.Single(x => x.EstablishedLinks.Count == 0);
+                    var tailNodeBox = new NodeBox(tailNode, links);
 
-                return new BuildResult(headNodeBox, tailNodeBox);
+                    return new NodeBunch(headNodeBox, tailNodeBox);
+
+                }
+                catch (Exception ex)
+                {
+                    throw new BuildingException("More than one tail node (the node which doesn't have links).", ex);
+                }
             }
         }
 
-        private BuildResult BuildBlock(Element item)
+        private NodeBunch BuildBlock(Element item)
         {
             var blockName = item.GetSingleKeywordArgument<Symbol>(":ref").Name;
             var defblock = _defblocks[blockName];
@@ -155,12 +162,12 @@ namespace TauCode.Parsing.Building
             blockEnter.DemandLink(contentResult.Head);
             contentResult.Tail.RequestLink(blockExit);
 
-            var result = new BuildResult(blockEnter, blockExit);
+            var result = new NodeBunch(blockEnter, blockExit);
 
             return result;
         }
 
-        private BuildResult BuildAlt(Element item)
+        private NodeBunch BuildAlt(Element item)
         {
             var altName = item.GetItemName() ?? this.GetNextAltName();
             var alternatives = item.GetFreeArguments();
@@ -176,12 +183,12 @@ namespace TauCode.Parsing.Building
                 alternativeResult.Tail.RequestLink(altExit);
             }
 
-            var result = new BuildResult(altEnter, altExit);
+            var result = new NodeBunch(altEnter, altExit);
 
             return result;
         }
 
-        private BuildResult BuildOpt(Element item)
+        private NodeBunch BuildOpt(Element item)
         {
             var optName = item.GetItemName() ?? this.GetNextOptName();
 
@@ -197,12 +204,12 @@ namespace TauCode.Parsing.Building
             optEnter.DemandLink(contentResult.Head);
             contentResult.Tail.RequestLink(optExit);
 
-            var result = new BuildResult(optEnter, optExit);
+            var result = new NodeBunch(optEnter, optExit);
 
             return result;
         }
 
-        private BuildResult BuildSeq(Element item)
+        private NodeBunch BuildSeq(Element item)
         {
             var args = item.GetFreeArguments();
             var result = this.BuildContent(args);

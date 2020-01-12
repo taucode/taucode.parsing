@@ -2,8 +2,7 @@
 
 namespace TauCode.Parsing
 {
-    // todo: consider renaming to IParsingContext
-    public interface IContext
+    public interface IParsingContext
     {
         ITokenStream TokenStream { get; }
         void SetNodes(IReadOnlyCollection<INode> nodes);

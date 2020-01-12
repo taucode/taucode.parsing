@@ -2,6 +2,7 @@
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
@@ -16,6 +17,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override void OnBeforeProcess()
         {
+            this.AlphaCheckOnBeforeProcess();
+
             // idle
         }
 
@@ -26,7 +29,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override bool ProcessEnd()
         {
-            return this.Context.GetPreviousAbsoluteChar().Value != '-';
+            return this.Context.GetPreviousLocalChar() != '-';
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
@@ -40,7 +43,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
             if (c == '-')
             {
-                if (this.Context.GetPreviousAbsoluteChar().Value == '-')
+                if (this.Context.GetPreviousLocalChar() == '-')
                 {
                     return CharAcceptanceResult.Fail;
                 }

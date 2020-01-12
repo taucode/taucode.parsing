@@ -27,7 +27,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var tokens = _lexer.Lexize(lisp);
             var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
-            IBuilder builder = new Builder();
+            ITreeBuilder builder = new TreeBuilder();
             INodeFactory factory = new SqlNodeFactory();
 
             // Act
@@ -46,7 +46,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var tokens = _lexer.Lexize(lisp);
             var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
-            IBuilder builder = new Builder();
+            ITreeBuilder builder = new TreeBuilder();
             INodeFactory factory = new SqlNodeFactory();
 
             // Act
@@ -65,7 +65,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var tokens = _lexer.Lexize(lisp);
             var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
-            IBuilder builder = new Builder();
+            ITreeBuilder builder = new TreeBuilder();
             INodeFactory factory = new SqlNodeFactory();
 
             // Act
@@ -84,7 +84,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var tokens = _lexer.Lexize(lisp);
             var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
-            IBuilder builder = new Builder();
+            ITreeBuilder builder = new TreeBuilder();
             INodeFactory factory = new SqlNodeFactory();
 
             // Act
