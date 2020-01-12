@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
-using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 
-namespace TauCode.Parsing.Lab.Building
+namespace TauCode.Parsing.Building
 {
-    public class NodeFactoryBaseLab : INodeFactory
+    public class NodeFactoryBase : INodeFactory
     {
         private readonly IDictionary<string, ITextClass> _textClasses;
         private readonly bool _isCaseSensitive;
 
-        protected NodeFactoryBaseLab(
+        protected NodeFactoryBase(
             string nodeFamilyName,
             IList<ITextClass> textClasses,
             bool isCaseSensitive)
@@ -107,26 +106,6 @@ namespace TauCode.Parsing.Lab.Building
             {
                 var symbolElement = (Symbol)argument;
                 var textClass = this.ResolveTextClass(symbolElement.Name);
-
-                // todo clean
-                //switch (symbolElement.Name)
-                //{
-                //    case "WORD":
-                //        textClass = WordTextClassLab.Instance;
-                //        break;
-
-                //    case "IDENTIFIER":
-                //        textClass = SqlIdentifierClass.Instance;
-                //        break;
-
-                //    case "STRING":
-                //        textClass = StringTextClassLab.Instance;
-                //        break;
-
-                //    default:
-                //        throw new ArgumentOutOfRangeException();
-                //}
-
                 textClasses.Add(textClass);
             }
 

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
-using TauCode.Parsing.Lab.Building;
+using TauCode.Parsing.Building;
 using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
 using TauCode.Parsing.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql
 {
-    public class SqlNodeFactory : NodeFactoryBaseLab
+    public class SqlNodeFactory : NodeFactoryBase
     {
         public SqlNodeFactory()
             : base(

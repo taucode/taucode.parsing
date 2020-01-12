@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TauCode.Parsing.TextProcessing;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing.TinyLisp
 {
     public interface ILexingContext : ITextProcessingContext
     {
