@@ -35,7 +35,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             if (localIndex == 0)
             {
                 this.AlphaCheckNotBusyAndContextIsNull();
-                return this.ContinueOrFail(LexingHelper.IsIntegerFirstChar(c)); // todo: use it everywhere
+                return this.ContinueOrFail(LexingHelper.IsIntegerFirstChar(c));
             }
 
             if (LexingHelper.IsDigit(c))

@@ -80,7 +80,6 @@ namespace TauCode.Parsing.Lexing
 
         protected CharAcceptanceResult ContinueOrFail(bool b)
         {
-            // todo: take adv. of it anywhere
             return b ? CharAcceptanceResult.Continue : CharAcceptanceResult.Fail;
         }
 
