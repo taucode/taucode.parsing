@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
 
+// todo  clean up
 namespace TauCode.Parsing.Nodes
 {
     public abstract class NodeImpl : INode
@@ -11,7 +12,6 @@ namespace TauCode.Parsing.Nodes
 
         private readonly HashSet<INode> _establishedLinks;
         private readonly HashSet<string> _claimedLinkNames;
-        private Func<IToken, IResultAccumulator, bool> _additionalChecker;
         private readonly IDictionary<string, string> _properties;
 
         #endregion
@@ -20,22 +20,22 @@ namespace TauCode.Parsing.Nodes
 
         protected NodeImpl(INodeFamily family, string name)
         {
-            if (family != null)
-            {
-                if (!(family is NodeFamily))
-                {
-                    throw new ArgumentException(
-                        $"'{nameof(family)}' must be of type '{typeof(NodeFamily).FullName}'.",
-                        nameof(family));
-                }
-            }
+            //if (family != null)
+            //{
+            //    if (!(family is OldNodeFamily))
+            //    {
+            //        throw new ArgumentException(
+            //            $"'{nameof(family)}' must be of type '{typeof(OldNodeFamily).FullName}'.",
+            //            nameof(family));
+            //    }
+            //}
 
-            var familyImpl = (NodeFamily)family;
+            //var familyImpl = (OldNodeFamily)family;
 
             this.Family = family;
             this.Name = name;
 
-            familyImpl?.RegisterNode(this);
+            /*familyImpl*/family?.RegisterNode(this);
 
             _establishedLinks = new HashSet<INode>();
             _claimedLinkNames = new HashSet<string>();
@@ -69,11 +69,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Public
 
-        public virtual Func<IToken, IResultAccumulator, bool> AdditionalChecker
-        {
-            get => _additionalChecker;
-            set => _additionalChecker = value;
-        }
+        public virtual Func<IToken, IResultAccumulator, bool> AdditionalChecker { get; set; }
 
         #endregion
 

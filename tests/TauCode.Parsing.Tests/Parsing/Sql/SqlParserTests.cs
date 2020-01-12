@@ -14,21 +14,34 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
     [TestFixture]
     public class SqlParserTests
     {
+        private ILexer _tinyLispLexer;
+        private ILexer _sqlLexer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _tinyLispLexer = new TinyLispLexer();
+            _sqlLexer = new SqlLexer();
+        }
+
         [Test]
         public void SqlParser_ValidInput_Parses()
         {
             // Arrange
-            var nodeFactory = new SqlNodeFactory("my-sqlite");
+            var nodeFactory = new SqlNodeFactory();
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+
+            var tokens = _tinyLispLexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParser parser = new Parser();
+            IParser parser = new Parser
+            {
+                Root = root,
+            };
 
             var allSqlNodes = root.FetchTree();
 
@@ -36,17 +49,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 .Where(x => x is ExactTextNode)
                 .Cast<ExactTextNode>()
                 .ToList();
-
-            foreach (var exactTextNode in exactTextNodes)
-            {
-                exactTextNode.IsCaseSensitive = false;
-            }
-
-            var reservedWords = exactTextNodes
-                .Select(x => x.ExactText)
-                .Distinct()
-                .Select(x => x.ToUpperInvariant())
-                .ToHashSet();
 
             #region assign job to nodes
 
@@ -156,25 +158,39 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 primaryKey.Columns.Add(indexColumn);
             };
 
-            var pkColumnAsc = (ActionNode)allSqlNodes.Single(x =>
-               string.Equals(x.Name, "asc", StringComparison.InvariantCultureIgnoreCase));
-            pkColumnAsc.Action = (node, token, accumulator) =>
+            var pkColumnAscOrDesc = (ActionNode)allSqlNodes.Single(x =>
+                string.Equals(x.Name, "pk-asc-or-desc", StringComparison.InvariantCultureIgnoreCase));
+            pkColumnAscOrDesc.Action = (node, token, accumulator) =>
             {
                 var tableInfo = accumulator.GetLastResult<TableInfo>();
                 var primaryKey = tableInfo.PrimaryKey;
                 var indexColumn = primaryKey.Columns.Last();
-                indexColumn.SortDirection = SortDirection.Asc;
+
+                indexColumn.SortDirection = Enum.Parse<SortDirection>(
+                    ((TextToken) token).Text.ToLowerInvariant(), 
+                    true);
             };
 
-            var pkColumnDesc = (ActionNode)allSqlNodes.Single(x =>
-               string.Equals(x.Name, "desc", StringComparison.InvariantCultureIgnoreCase));
-            pkColumnDesc.Action = (node, token, accumulator) =>
-            {
-                var tableInfo = accumulator.GetLastResult<TableInfo>();
-                var primaryKey = tableInfo.PrimaryKey;
-                var indexColumn = primaryKey.Columns.Last();
-                indexColumn.SortDirection = SortDirection.Desc;
-            };
+
+            //var pkColumnAsc = (ActionNode)allSqlNodes.Single(x =>
+            //   string.Equals(x.Name, "asc", StringComparison.InvariantCultureIgnoreCase));
+            //pkColumnAsc.Action = (node, token, accumulator) =>
+            //{
+            //    var tableInfo = accumulator.GetLastResult<TableInfo>();
+            //    var primaryKey = tableInfo.PrimaryKey;
+            //    var indexColumn = primaryKey.Columns.Last();
+            //    indexColumn.SortDirection = SortDirection.Asc;
+            //};
+
+            //var pkColumnDesc = (ActionNode)allSqlNodes.Single(x =>
+            //   string.Equals(x.Name, "desc", StringComparison.InvariantCultureIgnoreCase));
+            //pkColumnDesc.Action = (node, token, accumulator) =>
+            //{
+            //    var tableInfo = accumulator.GetLastResult<TableInfo>();
+            //    var primaryKey = tableInfo.PrimaryKey;
+            //    var indexColumn = primaryKey.Columns.Last();
+            //    indexColumn.SortDirection = SortDirection.Desc;
+            //};
 
             var fk = (ActionNode)allSqlNodes.Single(x =>
                string.Equals(x.Name, "do-foreign-key", StringComparison.InvariantCultureIgnoreCase));
@@ -297,23 +313,37 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 index.Columns.Add(columnInfo);
             };
 
-            var indexColumnAsc = (ActionNode)allSqlNodes.Single(x =>
-               string.Equals(x.Name, "index-column-asc", StringComparison.InvariantCultureIgnoreCase));
-            indexColumnAsc.Action = (node, token, accumulator) =>
+            var indexColumnAscOrDesc = (ActionNode)allSqlNodes.Single(x =>
+                   string.Equals(x.Name, "index-column-asc-or-desc", StringComparison.InvariantCultureIgnoreCase));
+            indexColumnAscOrDesc.Action = (node, token, accumulator) =>
             {
                 var index = accumulator.GetLastResult<IndexInfo>();
                 var columnInfo = index.Columns.Last();
-                columnInfo.SortDirection = SortDirection.Asc;
+                //columnInfo.SortDirection = SortDirection.Asc;
+
+                columnInfo.SortDirection = Enum.Parse<SortDirection>(
+                    ((TextToken)token).Text.ToLowerInvariant(),
+                    true);
+
             };
 
-            var indexColumnDesc = (ActionNode)allSqlNodes.Single(x =>
-               string.Equals(x.Name, "index-column-desc", StringComparison.InvariantCultureIgnoreCase));
-            indexColumnDesc.Action = (node, token, accumulator) =>
-            {
-                var index = accumulator.GetLastResult<IndexInfo>();
-                var columnInfo = index.Columns.Last();
-                columnInfo.SortDirection = SortDirection.Desc;
-            };
+            //var indexColumnAsc = (ActionNode)allSqlNodes.Single(x =>
+            //   string.Equals(x.Name, "index-column-asc", StringComparison.InvariantCultureIgnoreCase));
+            //indexColumnAsc.Action = (node, token, accumulator) =>
+            //{
+            //    var index = accumulator.GetLastResult<IndexInfo>();
+            //    var columnInfo = index.Columns.Last();
+            //    columnInfo.SortDirection = SortDirection.Asc;
+            //};
+
+            //var indexColumnDesc = (ActionNode)allSqlNodes.Single(x =>
+            //   string.Equals(x.Name, "index-column-desc", StringComparison.InvariantCultureIgnoreCase));
+            //indexColumnDesc.Action = (node, token, accumulator) =>
+            //{
+            //    var index = accumulator.GetLastResult<IndexInfo>();
+            //    var columnInfo = index.Columns.Last();
+            //    columnInfo.SortDirection = SortDirection.Desc;
+            //};
 
             #endregion
 
@@ -323,15 +353,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                     x.Name.EndsWith("-name", StringComparison.InvariantCultureIgnoreCase))
                 .Cast<TextNode>()
                 .ToList();
-
-            foreach (var objectNameToken in objectNameTokens)
-            {
-                objectNameToken.AdditionalChecker = (token, accumulator) =>
-                {
-                    var textToken = ((TextToken)token).Text.ToUpperInvariant();
-                    return !reservedWords.Contains(textToken);
-                };
-            }
 
             var sql =
                 @"
@@ -361,7 +382,8 @@ CREATE INDEX [IX_Salary] ON my_tab([salary])
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act
-            var sqlResults = parser.Parse(root, sqlTokens);
+            parser.Root = root;
+            var sqlResults = parser.Parse(sqlTokens);
 
             // Assert
             Assert.That(sqlResults, Has.Length.EqualTo(5));

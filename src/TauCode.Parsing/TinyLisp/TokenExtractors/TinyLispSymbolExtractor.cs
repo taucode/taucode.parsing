@@ -3,50 +3,55 @@ using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispSymbolExtractor : TokenExtractorBase
+    public class TinyLispSymbolExtractor : TokenExtractorBase<LispSymbolToken>
     {
-        public TinyLispSymbolExtractor() 
-            : base(
-                //StandardLexingEnvironment.Instance,
-                TinyLispHelper.IsAcceptableSymbolNameChar)
+        // todo: wtf! change places for <int consumedLength> and <Position position>
+        public override LispSymbolToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-        }
-
-        protected override void ResetState()
-        {
-            // idle
-        }
-
-        protected override IToken ProduceResult()
-        {
-            var str = this.ExtractResultString();
-
-            if (int.TryParse(str, out var dummy))
+            var symbolString = text.Substring(absoluteIndex, consumedLength);
+            if (int.TryParse(symbolString, out var dummy))
             {
                 return null;
             }
 
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
-
-            return new LispSymbolToken(str, position, consumedLength);
+            return new LispSymbolToken(symbolString, position, consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override void OnBeforeProcess()
         {
-            var c = this.GetCurrentChar();
+            // idle
+        }
+
+        // todo: Token-type-based default virtual implementation, for everybody.
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        {
+            return
+                previousToken is LispPunctuationToken;
+        }
+
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
+        {
+            if (localIndex == 0)
+            {
+                // todo: temp check that IsProcessing == false, everywhere.
+
+                var accepts = c.IsAcceptableSymbolNameChar();
+                if (accepts)
+                {
+                    return CharAcceptanceResult.Continue;
+                }
+                else
+                {
+                    return CharAcceptanceResult.Fail;
+                }
+            }
 
             if (c.IsAcceptableSymbolNameChar())
             {
-                return CharChallengeResult.Continue;
+                return CharAcceptanceResult.Continue;
             }
 
-            return CharChallengeResult.Finish;
-        }
-
-        protected override CharChallengeResult ChallengeEnd()
-        {
-            return CharChallengeResult.Finish; // symbol ends with end-of-input? no problem then.
+            return CharAcceptanceResult.Stop;
         }
     }
 }

@@ -20,8 +20,8 @@ namespace TauCode.Parsing.Tokens
             this.Text = text ?? throw new ArgumentNullException(nameof(text));
         }
 
-        public ITextClass Class { get; set; }
-        public ITextDecoration Decoration { get; set; }
-        public string Text { get; set; }
+        public ITextClass Class { get; }
+        public ITextDecoration Decoration { get; }
+        public string Text { get; }
     }
 }

@@ -5,10 +5,10 @@ using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
 using TauCode.Parsing.Tests.Parsing.Cli.Exceptions;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
+using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
@@ -16,8 +16,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
     {
         #region Constructor
 
-        public CliNodeFactory(string nodeFamilyName)
-            : base(nodeFamilyName)
+        public CliNodeFactory()
+            : base("Test-CLI", null, true)
         {
         }
 
@@ -69,6 +69,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             INode node = new MultiTextNode(
                 verbs,
                 new ITextClass[] { TermTextClass.Instance },
+                true,
                 this.ProcessAlias,
                 this.NodeFamily,
                 item.GetItemName());
@@ -91,6 +92,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var node = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance, },
+                true,
                 this.ProcessKey,
                 this.NodeFamily,
                 item.GetItemName());
@@ -111,6 +113,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             ActionNode keyNameNode = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance },
+                true,
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -137,6 +140,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             ActionNode keyNameNode = new MultiTextNode(
                 keyNames,
                 new ITextClass[] { KeyTextClass.Instance },
+                true,
                 this.ProcessKeySucceededByValue,
                 this.NodeFamily,
                 item.GetItemName());
@@ -189,6 +193,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 choiceNode = new MultiTextNode(
                     textValues,
                     textClasses,
+                    true,
                     ProcessKeyChoice,
                     this.NodeFamily,
                     null);

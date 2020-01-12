@@ -1,50 +1,70 @@
-﻿using System.Linq;
+﻿using System;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
+using TauCode.Parsing.Tokens;
 
+// todo clean
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispPunctuationExtractor : TokenExtractorBase
+    public class TinyLispPunctuationExtractor : TokenExtractorBase<LispPunctuationToken>
     {
-        public TinyLispPunctuationExtractor()
-            : base(TinyLispHelper.IsPunctuation)
+        public override LispPunctuationToken ProduceToken(
+            string text,
+            int absoluteIndex,
+            Position position,
+            int consumedLength)
         {
+            return new LispPunctuationToken(
+                TinyLispHelper.CharToPunctuation(text[absoluteIndex]),
+                position,
+                consumedLength);
         }
 
-        protected override void ResetState()
+        protected override void OnBeforeProcess()
         {
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
+            {
+                throw new NotImplementedException();
+            }
+
             // idle
         }
 
-        protected override IToken ProduceResult()
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
-            var result = this.ExtractResultString();
-
-            if (result.Length != 1)
-            {
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
-            }
-
-            var c = result.Single();
-            var punctuation = TinyLispHelper.CharToPunctuation(c);
-
-            var position = new Position(
-                this.StartingLine,
-                this.StartingColumn);
-
-            return new LispPunctuationToken(punctuation, position, this.LocalCharIndex);
+            return
+                previousToken is LispPunctuationToken ||
+                previousToken is IntegerToken ||
+                previousToken is KeywordToken ||
+                previousToken is LispSymbolToken ||
+                previousToken is TextToken;
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
-            if (this.LocalCharIndex == 0)
+            if (localIndex == 0)
             {
-                return CharChallengeResult.Continue; // local char MUST accepted since it was accepted by 'TinyLispHelper.IsPunctuation'
+                var isPunctuation = TinyLispHelper.IsPunctuation(c);
+                if (isPunctuation)
+                {
+                    return CharAcceptanceResult.Continue;
+                }
+                else
+                {
+                    return CharAcceptanceResult.Fail;
+                }
             }
 
-            return CharChallengeResult.Finish; // pos > 0 ==> finish no matter what.
-        }
+            // todo: check localIndex == 1?
 
-        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish; // end after punctuation? why not, let it be.
+            return CharAcceptanceResult.Stop;
+        }
     }
 }

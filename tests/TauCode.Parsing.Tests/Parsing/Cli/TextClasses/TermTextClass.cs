@@ -1,13 +1,17 @@
-﻿using TauCode.Parsing.Tokens;
-
-namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
+﻿namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
-    public class TermTextClass : ITextClass
+    [TextClass("term")]
+    public class TermTextClass : TextClassBase
     {
         public static readonly TermTextClass Instance = new TermTextClass();
 
         private TermTextClass()
         {   
+        }
+
+        protected override string TryConvertFromImpl(string text, ITextClass anotherClass)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

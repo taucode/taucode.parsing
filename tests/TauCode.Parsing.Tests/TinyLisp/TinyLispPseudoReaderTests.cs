@@ -12,14 +12,22 @@ namespace TauCode.Parsing.Tests.TinyLisp
     [TestFixture]
     public class TinyLispPseudoReaderTests
     {
+        private ILexer _lexer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _lexer = new TinyLispLexer();
+        }
+
         [Test]
         public void Read_SqlGrammar_ProducesExpectedResult()
         {
             // Arrange
             var input = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
-            ILexer lexer = new TinyLispLexer();
+            
 
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
 
@@ -64,8 +72,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
             var form = "(unclosed (a (bit))";
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(form);
+            
+            var tokens = _lexer.Lexize(form);
             var reader = new TinyLispPseudoReader();
 
             // Act
@@ -80,8 +88,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
             var form = "(closed too much))";
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(form);
+            
+            var tokens = _lexer.Lexize(form);
             var reader = new TinyLispPseudoReader();
 
             // Act
@@ -96,8 +104,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
         {
             // Arrange
             var form = "(some good form)";
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(form);
+            
+            var tokens = _lexer.Lexize(form);
 
             var badToken = new EnumToken<int>(1488, Position.Zero, 4);
             tokens.Insert(1, badToken);

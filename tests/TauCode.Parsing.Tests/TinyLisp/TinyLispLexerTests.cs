@@ -4,11 +4,11 @@ using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
-using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.TinyLisp
 {

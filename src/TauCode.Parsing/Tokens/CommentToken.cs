@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
+    // todo: use textToken with class 'Comment'?
     public class CommentToken : TokenBase
     {
         public CommentToken(

@@ -79,7 +79,7 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
 
-        internal static LexingException CreateInternalErrorLexingException(Position position)
+        public static LexingException CreateInternalErrorLexingException(Position position)
         {
             return new LexingException("Internal error.", position);
         }

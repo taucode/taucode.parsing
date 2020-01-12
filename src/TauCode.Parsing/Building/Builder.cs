@@ -117,7 +117,14 @@ namespace TauCode.Parsing.Building
         private BuildResult BuildCustomItem(Element item)
         {
             var links = item.GetItemLinks();
+
             var headNode = _nodeFactory.CreateNode(item.AsPseudoList());
+
+            if (headNode == null)
+            {
+                throw new NotImplementedException(); // check your factory, it returns nulls...
+            }
+
             var tree = headNode.FetchTree();
             if (tree.Count == 1)
             {
@@ -128,7 +135,7 @@ namespace TauCode.Parsing.Building
             {
                 var headNodeBox = new NodeBox(headNode);
 
-                var tailNode = tree.Single(x => x.EstablishedLinks.Count == 0);
+                var tailNode = tree.Single(x => x.EstablishedLinks.Count == 0); // todo: can throw
                 var tailNodeBox = new NodeBox(tailNode, links);
 
                 return new BuildResult(headNodeBox, tailNodeBox);

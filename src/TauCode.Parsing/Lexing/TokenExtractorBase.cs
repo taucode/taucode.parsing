@@ -1,297 +1,233 @@
 ﻿using System;
-using System.Collections.Generic;
-using TauCode.Parsing.Exceptions;
+using System.Linq;
+using TauCode.Extensions;
+using TauCode.Parsing.TextProcessing;
+using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Lexing
 {
-    public abstract class TokenExtractorBase : ITokenExtractor
+    // todo clean up
+    public abstract class TokenExtractorBase<TToken> : ITokenExtractor<TToken>
+        where TToken : IToken
     {
-        #region Fields
-
-        private string _input;
-        private readonly List<ITokenExtractor> _successors;
-
-        #endregion
-
-        #region Constructor
-
-        protected TokenExtractorBase(Func<char, bool> firstCharPredicate)
+        protected enum CharAcceptanceResult
         {
-
-            FirstCharPredicate = firstCharPredicate ?? throw new ArgumentNullException(nameof(firstCharPredicate));
-            _successors = new List<ITokenExtractor>();
+            Continue = 1,
+            Stop,
+            Fail,
         }
 
-        #endregion
+        private bool _isProcessing;
 
-        #region Abstract
+        protected ILexingContext Context { get; private set; }
 
-        protected abstract void ResetState();
-
-        protected abstract IToken ProduceResult();
-
-        protected abstract CharChallengeResult ChallengeCurrentChar();
-
-        protected abstract CharChallengeResult ChallengeEnd();
-
-        #endregion
-
-        #region Protected
-
-        protected int StartingAbsoluteCharIndex { get; private set; }
-
-        protected int StartingLine { get; private set; }
-
-        protected int LineShift { get; private set; }
-
-        protected int StartingColumn { get; private set; }
-
-        protected int CurrentColumn { get; private set; }
-
-        protected int LocalCharIndex { get; private set; }
-
-        protected Func<char, bool> FirstCharPredicate { get; }
-
-        protected bool IsEnd() => this.StartingAbsoluteCharIndex + this.LocalCharIndex == _input.Length;
-
-        protected int GetAbsoluteCharIndex() => this.StartingAbsoluteCharIndex + this.LocalCharIndex;
-
-        protected char GetLocalChar(int localIndex)
+        protected virtual TextProcessingResult Delegate()
         {
-            if (localIndex < 0)
+            return TextProcessingResult.Fail;
+        }
+
+        public abstract TToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength);
+
+        protected abstract void OnBeforeProcess();
+
+        public TextProcessingResult Process(ITextProcessingContext context)
+        {
+            // todo: prohibit recursion of 'Process()'
+            if (context == null)
             {
-                // you shouldn't run such a code. there's some error in your token extractor logic.
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetStartingAbsolutePosition());
+                throw new ArgumentNullException(nameof(context));
             }
 
-            return _input[this.StartingAbsoluteCharIndex + localIndex];
-        }
-
-        protected virtual bool AllowsCharAfterProduction(char c)
-        {
-            foreach (var successor in _successors)
+            // todo: temp (?) redundant check
+            if (this.IsProcessing)
             {
-                if (successor.AllowsFirstChar(c))
+                throw new NotImplementedException();
+            }
+
+            var lexingContext = (ILexingContext)context;
+
+            var previousChar = lexingContext.GetPreviousAbsoluteChar();
+            if (previousChar.HasValue && !LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar.Value))
+            {
+                var previousToken = lexingContext.Tokens.LastOrDefault(); // todo: DO optimize.
+                if (previousToken != null)
                 {
-                    return true;
+                    var acceptsPreviousToken = this.AcceptsPreviousTokenImpl(previousToken);
+
+                    if (!acceptsPreviousToken)
+                    {
+                        return TextProcessingResult.Fail;
+                    }
                 }
+
+                //var acceptsChar = this.AcceptsPreviousCharImpl(previousChar.Value);
             }
-
-            return false;
-        }
-
-        protected string ExtractResultString()
-        {
-            var str = _input.Substring(this.StartingAbsoluteCharIndex, this.LocalCharIndex);
-            return str;
-        }
-
-        protected void Advance()
-        {
-            this.LocalCharIndex++;
-            this.CurrentColumn++;
-        }
-
-        protected void SkipSingleLineBreak()
-        {
-            var c = this.GetCurrentChar();
-            int indexShift;
             
-            if (c == LexingHelper.Cr)
-            {
-                var nextChar = this.GetNextChar();
-                if (nextChar.HasValue)
-                {
-                    if (nextChar.Value == LexingHelper.Lf)
-                    {
-                        indexShift = 2; // got CRLF
-                    }
-                    else
-                    {
-                        indexShift = 1;
-                    }
-                }
-                else
-                {
-                    // no more chars.
-                    indexShift = 1;
-                }
-            }
-            else if (c == LexingHelper.Lf)
-            {
-                indexShift = 1;
-            }
-            else
-            {
-                // how on earth did we get here?
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
-            }
+            this.Context = lexingContext;
+            this.StartPosition = this.Context.GetCurrentAbsolutePosition();
+            this.Context.RequestGeneration();
 
-            this.LocalCharIndex += indexShift;
-            this.LineShift++;
-            this.CurrentColumn = 0;
-        }
+            this.Context.AdvanceByChar(); // since 'Process' has been called, it means that 'First' (i.e. 0th) char was accepted by Lexer.
 
-        protected char GetCurrentChar()
-        {
-            if (this.IsEnd())
-            {
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
-            }
+            this.OnBeforeProcess();
+            this.IsProcessing = true;
 
-            var absPos = this.GetAbsoluteCharIndex();
-            var c = _input[absPos];
-            return c;
-        }
-
-        protected char? GetNextChar()
-        {
-            if (this.IsEnd())
-            {
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
-            }
-
-            var absIndex = this.StartingAbsoluteCharIndex + this.LocalCharIndex + 1;
-            if (absIndex == _input.Length)
-            {
-                return null;
-            }
-
-            var c = _input[absIndex];
-            return c;
-        }
-
-        protected char GetPreviousChar()
-        {
-            if (this.LocalCharIndex <= 0)
-            {
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
-            }
-
-            return this.GetLocalChar(this.LocalCharIndex - 1);
-        }
-
-        protected Position GetStartingAbsolutePosition()
-        {
-            var line = this.StartingLine;
-            var column = this.StartingColumn;
-            return new Position(line, column);
-        }
-
-        protected Position GetCurrentAbsolutePosition()
-        {
-            var line = this.StartingLine + this.LineShift;
-            var column = this.CurrentColumn;
-
-            return new Position(line, column);
-        }
-
-        #endregion
-
-        #region Public
-
-        public void AddSuccessors(params TokenExtractorBase[] successors) => _successors.AddRange(successors);
-
-        #endregion
-
-        #region ITokenExtractor Members
-
-        public TokenExtractionResult Extract(string input, int charIndex, int line, int column)
-        {
-            _input = input ?? throw new ArgumentNullException(nameof(input));
-
-            if (charIndex < 0 || charIndex >= input.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(charIndex));
-            }
-
-            this.StartingAbsoluteCharIndex = charIndex;
-
-            this.StartingLine = line;
-            this.LineShift = 0;
-
-            this.StartingColumn = column;
-            this.CurrentColumn = column;
-
-            this.LocalCharIndex = 0;
-
-            this.ResetState();
+            var gotStop = false;
 
             while (true)
             {
-                if (this.IsEnd())
+                var isEnd = this.Context.IsEnd();
+
+                if (isEnd || gotStop)
                 {
-                    var challengeEnd = this.ChallengeEnd();
-
-                    switch (challengeEnd)
+                    if (this.Context.GetLocalIndex() == 0)
                     {
-                        case CharChallengeResult.Finish:
-                            var token = this.ProduceResult();
-                            if (token == null)
-                            {
-                                // possible situation. e.g. in LISP '+1488' looks like as a symbol at the beginning, but at the end would appear
-                                // an integer, and symbol extractor would refuse deliver such a result as a symbol.
-                                return new TokenExtractionResult(null, 0, 0, null);
-                            }
-                            else
-                            {
-                                return new TokenExtractionResult(token, this.LocalCharIndex, this.LineShift, this.CurrentColumn);
-                            }
+                        throw new NotImplementedException(); // todo: how on earth did we get here?
+                    }
 
-                        case CharChallengeResult.GiveUp:
-                            return new TokenExtractionResult(null, 0, 0, null);
+                    if (isEnd && !gotStop)
+                    {
+                        var acceptsEnd = this.ProcessEnd(); // throw here if you need.
+                        if (!acceptsEnd)
+                        {
+                            this.Context.ReleaseGeneration();
+                            this.IsProcessing = false;
+                            return TextProcessingResult.Fail;
+                        }
+                    }
 
-                        default:
-                            // should never happen. check your token extractor, it has error(s).
-                            throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
+                    var summary = this.IsProducer ? TextProcessingSummary.CanProduce : TextProcessingSummary.Skip;
+
+                    var myAbsoluteIndex = this.Context.GetAbsoluteIndex();
+                    var myLine = this.Context.GetCurrentLine();
+                    var currentColumn = this.Context.GetCurrentColumn();
+
+                    this.Context.ReleaseGeneration();
+
+                    var oldAbsoluteIndex = this.Context.GetAbsoluteIndex();
+                    var oldLine = this.Context.GetCurrentLine();
+
+                    var indexShift = myAbsoluteIndex - oldAbsoluteIndex;
+                    var lineShift = myLine - oldLine;
+
+                    this.IsProcessing = false;
+                    return new TextProcessingResult(summary, indexShift, lineShift, currentColumn);
+                }
+
+                var delegatedResult = this.Delegate();
+                if (delegatedResult.Summary != TextProcessingSummary.Fail)
+                {
+                    throw new NotImplementedException();
+                }
+
+                var c = this.Context.GetCurrentChar();
+                var localIndex = this.Context.GetLocalIndex();
+
+                var oldContextVersion = this.Context.Version;
+                var acceptanceResult = this.AcceptCharImpl(c, localIndex);
+
+                // check.
+                if (this.Context.GetLocalIndex() == 0 && !acceptanceResult.IsIn(CharAcceptanceResult.Continue, CharAcceptanceResult.Fail))
+                {
+                    throw new NotImplementedException(); // todo error in your logic.
+                }
+
+                // check: only 'Stop' allows altering of context's version.
+                if (acceptanceResult != CharAcceptanceResult.Stop)
+                {
+                    var newContextVersion = this.Context.Version;
+                    if (oldContextVersion != newContextVersion)
+                    {
+                        throw new NotImplementedException();
                     }
                 }
 
-                var testCharResult = this.ChallengeCurrentChar();
-
-                switch (testCharResult)
+                switch (acceptanceResult)
                 {
-                    case CharChallengeResult.GiveUp:
-                        // this extractor failed to recognize the whole token, no problem.
-                        return new TokenExtractionResult(null, 0, 0, null);
-
-                    case CharChallengeResult.Continue:
-                        this.Advance();
+                    case CharAcceptanceResult.Continue:
+                        this.Context.AdvanceByChar();
                         break;
 
-                    case CharChallengeResult.Finish:
-                        var token = this.ProduceResult();
+                    case CharAcceptanceResult.Stop:
+                        gotStop = true;
+                        break;
 
-                        if (token == null)
-                        {
-                            return new TokenExtractionResult(null, 0, 0, null);
-                        }
+                    case CharAcceptanceResult.Fail:
+                        this.Context.ReleaseGeneration();
+                        this.IsProcessing = false;
+                        return TextProcessingResult.Fail;
 
-                        // check if next char is ok.
-                        if (!this.IsEnd())
-                        {
-                            var upcomingChar = this.GetCurrentChar();
-                            if (!LexingHelper.IsInlineWhiteSpaceOrCaretControl(upcomingChar))
-                            {
-                                var check = this.AllowsCharAfterProduction(upcomingChar);
-                                if (!check)
-                                {
-                                    throw new LexingException($"Unexpected char: '{upcomingChar}'.", this.GetCurrentAbsolutePosition());
-                                }
-                            }
-                        }
-
-                        return new TokenExtractionResult(token, this.LocalCharIndex, this.LineShift, this.CurrentColumn);
+                    //break;
 
                     default:
-                        // should never happen. this is enum.
-                        throw new LexingException($"Internal error. Unexpected test char result: '{testCharResult}'.", this.GetCurrentAbsolutePosition());
+                        throw new NotImplementedException(); // wtf? (todo)
                 }
             }
         }
 
-        public virtual bool AllowsFirstChar(char c) => FirstCharPredicate(c);
+        protected abstract bool AcceptsPreviousTokenImpl(IToken previousToken);
 
-        #endregion
+        public IToken Produce(string text, int absoluteIndex, Position position, int consumedLength)
+            => this.ProduceToken(text, absoluteIndex, position, consumedLength);
+
+        public bool AcceptsFirstChar(char c)
+        {
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            var charAcceptanceResult = this.AcceptCharImpl(c, 0);
+            switch (charAcceptanceResult)
+            {
+                case CharAcceptanceResult.Continue:
+                    return true;
+
+                case CharAcceptanceResult.Stop:
+                    throw new NotImplementedException(); // error in your logic.
+
+                case CharAcceptanceResult.Fail:
+                    return false;
+
+                default:
+                    throw new NotImplementedException(); // how can be?
+            }
+        }
+        
+        public bool IsProcessing
+        {
+            get => _isProcessing;
+            private set
+            {
+                if (value == _isProcessing)
+                {
+                    throw new NotImplementedException(); // todo suspicious: why set to same value?
+                }
+
+                _isProcessing = value;
+            }
+        }
+
+        protected virtual bool ProcessEnd()
+        {
+            // idle, no problem for most token extractors.
+            //
+            // but of course will fail for unclosed strings, SQL identifiers [my_column_name , etc.
+            // in such a case, throw a todo exception here.
+
+            return true;
+        }
+
+        protected Position StartPosition { get; private set; }
+
+        protected abstract CharAcceptanceResult AcceptCharImpl(char c, int localIndex);
+
+        protected CharAcceptanceResult ContinueOrFail(bool b)
+        {
+            return b ? CharAcceptanceResult.Continue : CharAcceptanceResult.Fail;
+        }
+
+        protected virtual bool IsProducer =>
+            true; // most token extractors produce something; however, comment extractors do not.
     }
 }

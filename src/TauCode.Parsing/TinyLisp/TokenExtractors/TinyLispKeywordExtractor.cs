@@ -1,61 +1,53 @@
-﻿using TauCode.Parsing.Exceptions;
+﻿using System;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispKeywordExtractor : TokenExtractorBase
+    public class TinyLispKeywordExtractor : TokenExtractorBase<KeywordToken>
     {
-        public TinyLispKeywordExtractor()
-            : base(x => x == ':')
+        public override KeywordToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
+            var keyword = text.Substring(absoluteIndex, consumedLength);
+            return new KeywordToken(keyword, position, consumedLength);
         }
 
-        protected override void ResetState()
+        protected override void OnBeforeProcess()
         {
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
+            {
+                throw new NotImplementedException();
+            }
+
             // idle
         }
 
-        protected override IToken ProduceResult()
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
-            var res = this.ExtractResultString();
-
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
-
-            return new KeywordToken(res, position, consumedLength);
+            return previousToken is LispPunctuationToken;
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
-            var c = this.GetCurrentChar();
-            var index = this.LocalCharIndex;
-
-            if (index == 0)
+            if (localIndex == 0)
             {
-                return CharChallengeResult.Continue; // 0th char is always ok
+                return this.ContinueOrFail(c == ':');
             }
 
             var isMine = c.IsAcceptableSymbolNameChar();
             if (isMine)
             {
-                return CharChallengeResult.Continue;
+                return CharAcceptanceResult.Continue;
             }
 
-            return CharChallengeResult.Finish;
-        }
-
-        protected override CharChallengeResult ChallengeEnd()
-        {
-            if (this.LocalCharIndex > 1)
-            {
-                // consumed more than one char (0th is always ':'), so no problem here
-                return CharChallengeResult.Finish;
-            }
-            else
-            {
-                throw new LexingException("Invalid symbol name.", this.GetCurrentAbsolutePosition());
-            }
+            return CharAcceptanceResult.Stop;
         }
     }
 }

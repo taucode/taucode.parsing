@@ -15,7 +15,6 @@ namespace TauCode.Parsing.Nodes
             this.Action = action; // can be null
         }
 
-
         #endregion
 
         #region Overridden

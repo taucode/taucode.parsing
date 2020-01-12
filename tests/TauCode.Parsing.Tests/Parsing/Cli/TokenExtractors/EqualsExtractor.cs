@@ -1,44 +1,34 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using System;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class EqualsExtractor : TokenExtractorBase
+    public class EqualsExtractor : TokenExtractorBase<PunctuationToken>
     {
-        public EqualsExtractor()
-            : base(c => c == '=')
+        public override PunctuationToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
+            return new PunctuationToken('=', position, consumedLength);
         }
 
-        protected override void ResetState()
+        protected override void OnBeforeProcess()
         {
             // idle
         }
 
-        protected override IToken ProduceResult()
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
-
-            return new PunctuationToken('=', position, consumedLength);
+            throw new NotImplementedException();
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
-            var index = this.LocalCharIndex;
-
-            if (index == 0)
+            if (localIndex == 0)
             {
-                // 0th is always accepted.
-                return CharChallengeResult.Continue;
+                return this.ContinueOrFail(c == '=');
             }
 
-            return CharChallengeResult.Finish;
-        }
-
-        protected override CharChallengeResult ChallengeEnd()
-        {
-            return CharChallengeResult.Finish; // exactly one char is guaranteed to be consumed; no problem with end of input.
+            return CharAcceptanceResult.Stop;
         }
     }
 }

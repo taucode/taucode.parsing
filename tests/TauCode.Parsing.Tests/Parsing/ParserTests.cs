@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
-using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Parsing
 {
@@ -21,6 +21,7 @@ namespace TauCode.Parsing.Tests.Parsing
             INode exactText = new ExactTextNode(
                 "foo",
                 new[] { WordTextClass.Instance, },
+                false,
                 (node, token, arg3) => { },
                 nodeFamily,
                 null);
@@ -47,7 +48,8 @@ namespace TauCode.Parsing.Tests.Parsing
             };
 
             // Act
-            var ex = Assert.Throws<NodeConcurrencyException>(() => parser.Parse(idle, tokens));
+            parser.Root = idle;
+            var ex = Assert.Throws<NodeConcurrencyException>(() => parser.Parse(tokens));
 
             // Assert
             Assert.That(ex.Message, Is.EqualTo("More than one node accepted the token."));

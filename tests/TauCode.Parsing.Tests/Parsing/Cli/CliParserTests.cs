@@ -16,26 +16,38 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
     [TestFixture]
     public class CliParserTests
     {
+        private ILexer _tinyLispLexer;
+        private ILexer _cliLexer;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _tinyLispLexer = new TinyLispLexer();
+            _cliLexer = new CliLexer();
+        }
+
         [Test]
         public void CliParser_ValidInput_Parses()
         {
             // Arrange
-            var nodeFactory = new CliNodeFactory("my-cli");
+            var nodeFactory = new CliNodeFactory();
             var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            
+            var tokens = _tinyLispLexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParser parser = new Parser();
+            IParser parser = new Parser
+            {
+                Root = root,
+            };
 
-            ILexer cliLexer = new CliLexer();
             var commandText =
                 "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
-            var cliTokens = cliLexer.Lexize(commandText);
+            var cliTokens = _cliLexer.Lexize(commandText);
 
             var allNodes = root.FetchTree();
 
@@ -48,7 +60,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             };
 
             // Act
-            var cliResults = parser.Parse(root, cliTokens);
+            parser.Root = root;
+            var cliResults = parser.Parse(cliTokens);
 
             // Assert
             var cliCommand = (CliCommand) cliResults.Single();
@@ -76,10 +89,10 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         public void CliParser_TooManyResults_ThrowsUnexpectedTokenException()
         {
             // Arrange
-            var nodeFactory = new CliNodeFactory("my-cli");
+            var nodeFactory = new CliNodeFactory();
             var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
-            ILexer lexer = new TinyLispLexer();
-            var tokens = lexer.Lexize(input);
+            
+            var tokens = _tinyLispLexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
@@ -89,13 +102,13 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             IParser parser = new Parser
             {
                 WantsOnlyOneResult = true,
+                Root = root,
             };
-
-            ILexer cliLexer = new CliLexer();
+            
 
             var singleCommand = "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
             var commandText = $"{singleCommand} {singleCommand}";
-            var cliTokens = cliLexer.Lexize(commandText);
+            var cliTokens = _cliLexer.Lexize(commandText);
 
             var allNodes = root.FetchTree();
 
@@ -108,7 +121,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             };
 
             // Act
-            var ex = Assert.Throws<UnexpectedTokenException>(() => parser.Parse(root, cliTokens));
+            parser.Root = root;
+            var ex = Assert.Throws<UnexpectedTokenException>(() => parser.Parse(cliTokens));
 
             var textToken = (TextToken)ex.Token;
             Assert.That(textToken.Text, Is.EqualTo("sd"));

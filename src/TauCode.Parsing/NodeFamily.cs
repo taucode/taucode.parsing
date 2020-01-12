@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
-using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing
 {
@@ -29,8 +28,10 @@ namespace TauCode.Parsing
 
         #region Internal
 
-        internal void RegisterNode(INode node)
+        public void RegisterNode(INode node)
         {
+            // todo: did I ever try to create two nodes with the same name? I believe not.
+
             if (node == null)
             {
                 throw new ArgumentNullException(nameof(node));

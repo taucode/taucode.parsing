@@ -10,11 +10,15 @@ namespace TauCode.Parsing
     {
         public bool WantsOnlyOneResult { get; set; }
 
-        public object[] Parse(INode root, IEnumerable<IToken> tokens)
+        public INode Root { get; set; }
+
+        public object[] Parse(IEnumerable<IToken> tokens)
         {
+            var root = this.Root;
+
             if (root == null)
             {
-                throw new ArgumentNullException(nameof(root));
+                throw new NullReferenceException($"Property '{nameof(Root)}' not set.");
             }
 
             if (tokens == null)

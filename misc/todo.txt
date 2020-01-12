@@ -35,3 +35,13 @@ todo3. TinyLisp: ratios and doubles.
 +   4. SQLite test lexer remastered.
 +   5. ILexingEnvironment: IsSpace, IsLineBreak
 +   6. Get rid of 'lexizing'. Use 'lexing'.
+
+2020-01-11
+==========
++   1. Get rid of *todo* files.
+
+2020-01-12
+==========
+    1. Lexize C lang string
+    2. Lexize C# verbatim string
+    3. Lexize C# $ string.

@@ -15,6 +15,7 @@ namespace TauCode.Parsing.TinyLisp.Tokens
             IEnumerable<KeyValuePair<string, string>> properties = null)
             : base(value, position, consumedLength, name, properties)
         {
+            // todo: check 'consumedLength == 1'?
         }
 
         public override string ToString() => Value.PunctuationToChar().ToString();

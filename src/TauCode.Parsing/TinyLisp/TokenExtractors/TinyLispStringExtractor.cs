@@ -1,66 +1,73 @@
-﻿using TauCode.Parsing.Exceptions;
+﻿using System;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
-using TauCode.Parsing.Tokens.TextClasses;
-using TauCode.Parsing.Tokens.TextDecorations;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispStringExtractor : TokenExtractorBase
+    public class TinyLispStringExtractor : TokenExtractorBase<TextToken>
     {
-        public TinyLispStringExtractor()
-            : base(x => x == '"')
+        private char _openingDelimiter;
+
+        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-        }
-
-        protected override void ResetState()
-        {
-            // idle
-        }
-
-        protected override IToken ProduceResult()
-        {
-            var str = this.ExtractResultString();
-            var value = str.Substring(1, str.Length - 2);
-
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
-
+            var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
             return new TextToken(
                 StringTextClass.Instance,
                 DoubleQuoteTextDecoration.Instance,
-                value,
+                str,
                 position,
                 consumedLength);
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override void OnBeforeProcess()
         {
-            var c = this.GetCurrentChar();
-            var index = this.LocalCharIndex;
-
-            if (index == 0)
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
             {
-                return CharChallengeResult.Continue;
+                throw new NotImplementedException();
             }
 
-            if (LexingHelper.IsCaretControl(c))
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
             {
-                throw new LexingException("Newline in string.", this.GetCurrentAbsolutePosition());
+                throw new NotImplementedException();
+            }
+
+            _openingDelimiter = this.Context.GetLocalChar(0);
+        }
+
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
+        {
+            if (localIndex == 0)
+            {
+                return ContinueOrFail(c == '"');
             }
 
             if (c == '"')
             {
-                this.Advance();
-                return CharChallengeResult.Finish;
+                this.Context.AdvanceByChar();
+                return CharAcceptanceResult.Stop;
             }
 
-            return CharChallengeResult.Continue;
+            if (LexingHelper.IsCaretControl(c))
+            {
+                throw new LexingException("Newline in string.", this.Context.GetCurrentAbsolutePosition());
+            }
+
+            return CharAcceptanceResult.Continue;
         }
 
-        protected override CharChallengeResult ChallengeEnd()
+        protected override bool ProcessEnd()
         {
-            throw new LexingException("Unclosed string.", this.GetStartingAbsolutePosition());
+            throw new LexingException("Unclosed string.", this.StartPosition);
         }
     }
 }

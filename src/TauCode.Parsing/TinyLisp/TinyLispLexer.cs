@@ -1,75 +1,27 @@
-﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardTokenExtractors;
+﻿using System;
+using System.Collections.Generic;
+using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Lexing.StandardExtractors;
 using TauCode.Parsing.TinyLisp.TokenExtractors;
 
 namespace TauCode.Parsing.TinyLisp
 {
     public class TinyLispLexer : LexerBase
     {
-        protected override void InitTokenExtractors()
+        protected override IList<ITokenExtractor> CreateTokenExtractors()
         {
-            // comment
-            var commentExtractor = new TinyLispCommentExtractor();
-            this.AddTokenExtractor(commentExtractor);
-
-            // punctuation
-            var punctuationExtractor = new TinyLispPunctuationExtractor();
-            this.AddTokenExtractor(punctuationExtractor);
-
-            // keyword
-            var keywordExtractor = new TinyLispKeywordExtractor();
-            this.AddTokenExtractor(keywordExtractor);
-
-            // symbol
-            var symbolExtractor = new TinyLispSymbolExtractor();
-            this.AddTokenExtractor(symbolExtractor);
-
-            // string
-            var stringExtractor = new TinyLispStringExtractor();
-            this.AddTokenExtractor(stringExtractor);
-
-            // integer
-            var integerExtractor = new IntegerExtractor();
-            this.AddTokenExtractor(integerExtractor);
-
-            // *** Links ***
-            commentExtractor.AddSuccessors(
-                commentExtractor,
-                punctuationExtractor,
-                keywordExtractor,
-                symbolExtractor,
-                stringExtractor,
-                integerExtractor);
-
-            punctuationExtractor.AddSuccessors(
-                commentExtractor,
-                punctuationExtractor,
-                keywordExtractor,
-                symbolExtractor,
-                stringExtractor,
-                integerExtractor);
-
-            keywordExtractor.AddSuccessors(
-                commentExtractor,
-                punctuationExtractor,
-                stringExtractor);
-
-            symbolExtractor.AddSuccessors(
-                commentExtractor,
-                punctuationExtractor,
-                stringExtractor);
-
-            stringExtractor.AddSuccessors(
-                commentExtractor,
-                punctuationExtractor,
-                keywordExtractor,
-                symbolExtractor,
-                integerExtractor);
-
-            integerExtractor.AddSuccessors(
-                commentExtractor,
-                punctuationExtractor,
-                stringExtractor);
+            return new ITokenExtractor[]
+            {
+                new TinyLispCommentExtractor(),
+                new TinyLispSymbolExtractor(),
+                new TinyLispPunctuationExtractor(),
+                new IntegerExtractor(new Type[]
+                {
+                    typeof(TinyLispPunctuationExtractor),
+                }),
+                new TinyLispKeywordExtractor(),
+                new TinyLispStringExtractor(), 
+            };
         }
     }
 }

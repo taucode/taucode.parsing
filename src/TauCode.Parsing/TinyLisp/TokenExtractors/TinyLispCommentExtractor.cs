@@ -1,48 +1,78 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using System;
+using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextProcessing;
+using TauCode.Parsing.TextProcessing.Processors;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispCommentExtractor : TokenExtractorBase
+    // todo clean
+    public class TinyLispCommentExtractor : TokenExtractorBase<CommentToken>
     {
+        private readonly SkipLineBreaksProcessor _skipLineBreaksProcessor;
+
         public TinyLispCommentExtractor()
-            : base(x => x == ';')
         {
+            _skipLineBreaksProcessor = new SkipLineBreaksProcessor(true);
         }
 
-        protected override IToken ProduceResult()
+        public override CommentToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-            var str = this.ExtractResultString();
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
-            return new CommentToken(str, position, consumedLength);
+            return new CommentToken(text.Substring(absoluteIndex, consumedLength), position, consumedLength);
         }
 
-        protected override void ResetState()
+        protected override void OnBeforeProcess()
         {
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
+            {
+                throw new NotImplementedException();
+            }
+
             // idle
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
-            var c = this.GetCurrentChar();
+            return true; // doesn't matter what previous token is.
+        }
 
-            if (this.LocalCharIndex == 0)
+        //protected override bool AcceptsPreviousCharImpl(char previousChar) => true; // accepts any previous char
+
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
+        {
+            if (localIndex == 0)
             {
-                // 0th char is always accepted by 'firstCharPredicate'
-                return CharChallengeResult.Continue;
+                if (c == ';')
+                {
+                    return CharAcceptanceResult.Continue;
+                }
+
+                return CharAcceptanceResult.Fail;
             }
 
             if (LexingHelper.IsCaretControl(c))
             {
-                this.SkipSingleLineBreak();
-                return CharChallengeResult.Finish;
+                var skipLineBreaksResult = _skipLineBreaksProcessor.Process(this.Context);
+                if (skipLineBreaksResult.Summary != TextProcessingSummary.Skip)
+                {
+                    throw
+                        new NotImplementedException(); // cannot be. todo: check it somewhere? (SkipperBase or something)
+                }
+
+                this.Context.Advance(skipLineBreaksResult.IndexShift, skipLineBreaksResult.LineShift,
+                    skipLineBreaksResult.GetCurrentColumn());
+                return CharAcceptanceResult.Stop;
             }
 
-            return CharChallengeResult.Continue; // comment is going on.
+            return CharAcceptanceResult.Continue; // collect any other chars into comment
         }
-
-        protected override CharChallengeResult ChallengeEnd() =>
-            CharChallengeResult.Finish; // LISP comment can be terminated by the end of input, no problem.
     }
 }
+

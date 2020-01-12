@@ -1,6 +1,6 @@
 ;;; splitting comment
 (defblock :name create :is-top t
-	(exact-text :classes WORD :value "CREATE")
+	(exact-text :classes word :value "CREATE")
 	(alt (block :ref create-table) (block :ref create-index))
 	(end)
 )
@@ -8,26 +8,26 @@
 ;;; splitting comment
 (defblock :name create-table
 	(exact-text :classes word :value "TABLE" :name do-create-table)
-	(some-text :classes identifier word :name table-name)
-	(punctuation :value "(")
+	(some-text :classes identifier :name table-name)
+	(exact-punctuation :value "(")
 	(block :ref column-def :links table-closing next)
-	(punctuation :value "," :links column-def next)
+	(exact-punctuation :value "," :links column-def next)
 	(block :ref constraint-defs)
-	(punctuation :value ")" :name table-closing)
+	(exact-punctuation :value ")" :name table-closing)
 )
 
 ;;; splitting comment
 (defblock :name column-def
-	(some-text :classes identifier word :name column-name)
-	(some-text :classes identifier word :name type-name)
+	(some-text :classes identifier :name column-name)
+	(some-text :classes identifier :name type-name)
 	(opt 
-		(punctuation :value "(")
-		(some-int :name precision)
+		(exact-punctuation :value "(")
+		(some-integer :name precision)
 		(opt
-			(punctuation :value ",")
-			(some-int :name scale)
+			(exact-punctuation :value ",")
+			(some-integer :name scale)
 		)
-		(punctuation :value ")")
+		(exact-punctuation :value ")")
 	)
 	(opt
 		(alt
@@ -46,7 +46,7 @@
 		(exact-text :classes word :value "DEFAULT")
 		(alt
 			(exact-text :classes word :value "NULL" :name default-null)
-			(some-int :name default-integer)
+			(some-integer :name default-integer)
 			(some-text :classes string :name default-string)
 		)
 	)
@@ -55,10 +55,10 @@
 ;;; splitting comment
 (defblock :name constraint-defs
 	(exact-text :classes word :value "CONSTRAINT" :name constraint)
-	(some-text :classes identifier word :name constraint-name)
+	(some-text :classes identifier :name constraint-name)
 	(alt (block :ref primary-key) (block :ref foreign-key))
 	(alt
-		(punctuation :value "," :links constraint)
+		(exact-punctuation :value "," :links constraint)
 		(idle)
 	)
 )
@@ -72,19 +72,14 @@
 
 ;;; splitting comment
 (defblock :name pk-columns
-	(punctuation :value "(")
-	(some-text :classes identifier word :name pk-column-name)
-	(opt
-		(alt
-			(exact-text :classes word :value "ASC" :name asc)
-			(exact-text :classes word :value "DESC" :name desc)
-		)
-	)
+	(exact-punctuation :value "(")
+	(some-text :classes identifier :name pk-column-name)
+	(opt (multi-text :classes word :values "ASC" "DESC" :name pk-asc-or-desc))
 	(alt
-		(punctuation :value "," :links pk-column-name)
+		(exact-punctuation :value "," :links pk-column-name)
 		(idle)
 	)
-	(punctuation :value ")")
+	(exact-punctuation :value ")")
 )
 
 ;;; splitting comment
@@ -93,49 +88,45 @@
 	(exact-text :classes word :value "KEY")
 	(block :ref fk-columns)
 	(exact-text :classes word :value "REFERENCES")
-	(some-text :classes identifier word :name fk-referenced-table-name)
+	(some-text :classes identifier :name fk-referenced-table-name)
 	(block :ref fk-referenced-columns)
 )
 
 ;;; splitting comment
 (defblock :name fk-columns
-	(punctuation :value "(")
-	(some-text :classes identifier word :name fk-column-name)
+	(exact-punctuation :value "(")
+	(some-text :classes identifier :name fk-column-name)
 	(alt
-		(punctuation :value "," :links fk-column-name)
+		(exact-punctuation :value "," :links fk-column-name)
 		(idle)
 	)
-	(punctuation :value ")")
+	(exact-punctuation :value ")")
 )
 
 ;;; splitting comment
 (defblock :name fk-referenced-columns
-	(punctuation :value "(")
-	(some-text :classes identifier word :name fk-referenced-column-name)
+	(exact-punctuation :value "(")
+	(some-text :classes identifier :name fk-referenced-column-name)
 	(alt
-		(punctuation :value "," :links fk-referenced-column-name)
+		(exact-punctuation :value "," :links fk-referenced-column-name)
 		(idle)
 	)
-	(punctuation :value ")")
+	(exact-punctuation :value ")")
 )
 
 ;;; splitting comment
 (defblock :name create-index
 	(opt (exact-text :classes word :value "UNIQUE" :name do-create-unique-index))
 	(exact-text :classes word :value "INDEX" :name do-create-index)
-	(some-text :classes identifier word :name index-name)
+	(some-text :classes identifier :name index-name)
 	(exact-text :classes word :value "ON")
-	(some-text :classes identifier word :name index-table-name)
-	(punctuation :value "(")
-	(some-text :classes identifier word :name index-column-name)
-	(opt
-		(alt
-			(exact-text :classes word :value "ASC" :name index-column-asc)
-			(exact-text :classes word :value "DESC" :name index-column-desc))
-	)
+	(some-text :classes identifier :name index-table-name)
+	(exact-punctuation :value "(")
+	(some-text :classes identifier :name index-column-name)
+	(opt (multi-text :classes word :values "ASC" "DESC" :name index-column-asc-or-desc))
 	(alt
-		(punctuation :value "," :links index-column-name)
+		(exact-punctuation :value "," :links index-column-name)
 		(idle)
 	)
-	(punctuation :value ")")
+	(exact-punctuation :value ")")
 )

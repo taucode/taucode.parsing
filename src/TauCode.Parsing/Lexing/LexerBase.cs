@@ -1,286 +1,200 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.TextProcessing;
+using TauCode.Parsing.TextProcessing.Processors;
 
 namespace TauCode.Parsing.Lexing
 {
+    // todo clean up
     public abstract class LexerBase : ILexer
     {
-        #region Nested
+        private LexingContext _context;
 
-        private struct CaretControlCharsSkipResult
+        private IList<ITokenExtractor> _tokenExtractors;
+        private IList<ITextProcessor<string>> _skippers;
+
+        protected IList<ITokenExtractor> TokenExtractors =>
+            _tokenExtractors ?? (_tokenExtractors = this.CreateTokenExtractors());
+
+        protected IList<ITextProcessor<string>> Skippers => _skippers ?? (_skippers = this.CreateSkippers());
+
+        protected virtual IList<ITextProcessor<string>> CreateSkippers()
         {
-            public CaretControlCharsSkipResult(int charsSkipped, int linesSkipped)
+            return new ITextProcessor<string>[]
             {
-                if (charsSkipped <= 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(charsSkipped));
-                }
-
-                if (linesSkipped <= 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(linesSkipped));
-                }
-
-                this.CharsSkipped = charsSkipped;
-                this.LinesSkipped = linesSkipped;
-            }
-
-            public int CharsSkipped { get; }
-            public int LinesSkipped { get; }
+                new SkipSpacesProcessor(),
+                new SkipLineBreaksProcessor(false),
+            };
         }
 
-        #endregion
-
-        #region Fields
-
-        private string _input;
-        private readonly List<ITokenExtractor> _tokenExtractors;
-        private bool _tokenExtractorsInited;
-
-        #endregion
-
-        #region Constructor
-
-        protected LexerBase()
-        {
-            _tokenExtractors = new List<ITokenExtractor>();
-        }
-
-        #endregion
-
-        #region Abstract
-
-        protected abstract void InitTokenExtractors();
-
-        #endregion
-
-        #region Private
-
-        private CaretControlCharsSkipResult SkipCaretControlChars()
-        {
-            var totalLinesSkipped = 0;
-
-            var startIndex = this.CurrentCharIndex;
-            var index = startIndex;
-
-            while (true)
-            {
-                if (this.IsEndAtIndex(index))
-                {
-                    break;
-                }
-
-                var c = this.GetCharAtIndex(index);
-
-                if (c == LexingHelper.Cr)
-                {
-                    var nextChar = this.TryGetCharAtIndex(index + 1);
-                    if (nextChar.HasValue)
-                    {
-                        if (nextChar.Value == LexingHelper.Lf)
-                        {
-                            // got CRLF
-                            index += 2;
-                            totalLinesSkipped++;
-                        }
-                        else
-                        {
-                            // got CR only
-                            index += 1;
-                            totalLinesSkipped++;
-                        }
-                    }
-                    else
-                    {
-                        // got CR only, and there is no more chars.
-                        index++;
-                        totalLinesSkipped++;
-                        break;
-                    }
-                }
-                else if (c == LexingHelper.Lf)
-                {
-                    // got LF
-                    index++;
-                    totalLinesSkipped++;
-                }
-                else
-                {
-                    // no line-breaks; let's get out of this loop.
-                    break;
-                }
-            }
-
-            var totalDelta = index - startIndex;
-
-            return new CaretControlCharsSkipResult(totalDelta, totalLinesSkipped);
-        }
-
-        #endregion
-
-        #region Protected
-
-        protected int CurrentCharIndex { get; private set; }
-
-        protected int CurrentLine { get; private set; }
-
-        protected int CurrentColumn { get; private set; }
-
-        protected bool IsEndAtIndex(int index)
-        {
-            if (index > _input.Length)
-            {
-                // no one should ever query such a thing.
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentPosition());
-            }
-
-            if (index == _input.Length)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        protected bool IsEnd() => this.IsEndAtIndex(this.CurrentCharIndex);
-
-        protected Position GetCurrentPosition()
-        {
-            var line = this.CurrentLine;
-            var column = this.CurrentColumn;
-
-            return new Position(line, column);
-        }
-
-        protected char GetCharAtIndex(int index)
-        {
-            if (this.IsEndAtIndex(index))
-            {
-                // no one should ever query such a thing.
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentPosition());
-            }
-
-            return _input[index];
-        }
-
-        protected char GetCurrentChar() => this.GetCharAtIndex(this.CurrentCharIndex);
-
-        protected char? TryGetCharAtIndex(int index)
-        {
-            if (this.IsEndAtIndex(index))
-            {
-                return null;
-            }
-
-            return _input[index];
-        }
-
-        protected void Advance(int shift = 1)
-        {
-            if (shift <= 0 || this.CurrentCharIndex + shift > _input.Length)
-            {
-                throw new ArgumentOutOfRangeException(nameof(shift));
-            }
-
-            this.CurrentCharIndex += shift;
-            this.CurrentColumn += shift;
-        }
-
-        protected List<ITokenExtractor> GetSuitableTokenExtractors(char firstChar)
-        {
-            return _tokenExtractors.Where(x => x.AllowsFirstChar(firstChar)).ToList();
-        }
-
-        protected void AddTokenExtractor(ITokenExtractor tokenExtractor)
-        {
-            if (tokenExtractor == null)
-            {
-                throw new ArgumentNullException(nameof(tokenExtractor));
-            }
-
-            _tokenExtractors.Add(tokenExtractor);
-        }
-
-        #endregion
-
-        #region ILexer Members
+        protected abstract IList<ITokenExtractor> CreateTokenExtractors();
 
         public IList<IToken> Lexize(string input)
         {
-            if (!_tokenExtractorsInited)
-            {
-                this.InitTokenExtractors();
-                _tokenExtractorsInited = true;
-            }
+            // todo check args
+            //var tokens = new List<IToken>();
+            //_context = new TextProcessingContext(input);
 
-            _input = input ?? throw new ArgumentNullException(nameof(input));
-            this.CurrentCharIndex = 0;
-            this.CurrentLine = 0;
-            this.CurrentColumn = 0;
-
-            var list = new List<IToken>();
+            _context = new LexingContext(input);
+            var tokens = _context.GetTokenList();
 
             while (true)
             {
-                if (this.IsEnd())
+                // skippers begin to work
+                var skipped = this.SkipWhilePossible();
+                if (_context.IsEnd())
                 {
-                    return list;
+                    break;
                 }
 
-                var c = this.GetCurrentChar();
-
-                if (LexingHelper.IsInlineWhiteSpace(c))
+                // token extractors begin to work
+                var gotSuccess = false;
+                foreach (var tokenExtractor in this.TokenExtractors)
                 {
-                    this.Advance();
-                    continue;
-                }
-
-                if (LexingHelper.IsCaretControl(c))
-                {
-                    var caretControlCharsSkipResult = this.SkipCaretControlChars();
-                    this.Advance(caretControlCharsSkipResult.CharsSkipped);
-                    this.CurrentLine += caretControlCharsSkipResult.LinesSkipped;
-                    this.CurrentColumn = 0;
-
-                    continue;
-                }
-
-                var tokenExtractors = this.GetSuitableTokenExtractors(c);
-                IToken nextToken = null;
-
-                foreach (var tokenExtractor in tokenExtractors)
-                {
-                    var result = tokenExtractor.Extract(_input, this.CurrentCharIndex, this.CurrentLine,
-                        this.CurrentColumn);
-                    nextToken = result.Token;
-
-                    if (nextToken != null)
+                    if (gotSuccess)
                     {
-                        this.Advance(result.PositionShift);
-
-                        this.CurrentLine += result.LineShift;
-                        this.CurrentColumn = result.CurrentColumn.Value;
-
-                        nextToken = result.Token;
                         break;
+                    }
+
+                    var c = _context.GetCurrentChar();
+                    if (!tokenExtractor.AcceptsFirstChar(c))
+                    {
+                        continue;
+                    }
+
+                    var previousColumn = _context.GetCurrentColumn();
+
+                    if (tokenExtractor.IsProcessing)
+                    {
+                        throw new NotImplementedException();
+                    }
+                    var result = tokenExtractor.Process(_context);
+                    if (tokenExtractor.IsProcessing)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+
+                    if (_context.Depth != 1)
+                    {
+                        throw new NotImplementedException(); // todo error
+                    }
+
+                    switch (result.Summary)
+                    {
+                        case TextProcessingSummary.Skip:
+                            gotSuccess = true;
+                            _context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
+                            break;
+
+                        case TextProcessingSummary.CanProduce:
+                            var absoluteIndex = _context.GetAbsoluteIndex();
+                            var consumedLength = result.IndexShift;
+
+                            var line = _context.GetCurrentLine() + result.LineShift;
+                            var position = new Position(line, previousColumn);
+
+                            var token = tokenExtractor.Produce(
+                                _context.Text,
+                                absoluteIndex,
+                                position,
+                                consumedLength);
+
+                            if (token == null)
+                            {
+                                // No luck. It can happen - for example, Lisp Symbol extractor will accept every char of "1111", but will refuse produce a whole result,
+                                // because "1111" should be lexized as an Integer, not a Symbol.
+                            }
+                            else
+                            {
+                                gotSuccess = true;
+                                _context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
+
+                                if (token.HasPayload)
+                                {
+                                    tokens.Add(token);
+                                }
+                            }
+
+                            break;
+
+                        case TextProcessingSummary.Fail: // no luck for this extractor
+                            break;
+
+                        default:
+                            throw new NotImplementedException();
                     }
                 }
 
-                if (nextToken == null)
+                if (!skipped && !gotSuccess)
                 {
-                    throw new LexingException($"Unexpected char: '{c}'.",
-                        this.GetCurrentPosition());
-                }
-
-                if (nextToken.HasPayload)
-                {
-                    list.Add(nextToken);
+                    var c = _context.GetCurrentChar();
+                    throw new LexingException($"Unexpected char: '{c}'.", _context.GetCurrentAbsolutePosition());
                 }
             }
+
+            return tokens;
         }
 
-        #endregion
+        private bool SkipWhilePossible()
+        {
+            var eventuallySkipped = false;
+
+            while (true)
+            {
+                if (_context.IsEnd())
+                {
+                    break;
+                }
+
+                var skipped = false;
+
+                foreach (var skipper in this.Skippers)
+                {
+                    var c = _context.GetCurrentChar();
+                    if (!skipper.AcceptsFirstChar(c))
+                    {
+                        continue;
+                    }
+
+                    if (skipper.IsProcessing)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    var skipResult = skipper.Process(_context);
+
+                    if (skipper.IsProcessing)
+                    {
+                        throw new NotImplementedException();
+                    }
+
+                    if (_context.Depth != 1)
+                    {
+                        throw new NotImplementedException(); // todo error
+                    }
+
+                    if (skipResult.Summary == TextProcessingSummary.Skip)
+                    {
+                        skipped = true;
+                        eventuallySkipped = true;
+                        _context.Advance(skipResult.IndexShift, skipResult.LineShift, skipResult.GetCurrentColumn());
+                        break;
+                    }
+                    else if (skipResult.Summary == TextProcessingSummary.CanProduce)
+                    {
+                        throw new NotImplementedException(); // should never happen, skippers only 'skip' or 'fail'.
+                    }
+                }
+
+                if (!skipped)
+                {
+                    break;
+                }
+            }
+
+            return eventuallySkipped;
+        }
     }
 }

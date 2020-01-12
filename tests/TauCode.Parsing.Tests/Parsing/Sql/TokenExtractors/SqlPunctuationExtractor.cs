@@ -1,49 +1,50 @@
-﻿using System.Linq;
+﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
-    public class SqlPunctuationExtractor : TokenExtractorBase
+    public class SqlPunctuationExtractor : TokenExtractorBase<PunctuationToken>
     {
-        public SqlPunctuationExtractor()
-            : base(SqlPunctuationFirstCharPredicate)
+        public override PunctuationToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
+            return new PunctuationToken(text[absoluteIndex], position, consumedLength);
         }
 
-        private static bool SqlPunctuationFirstCharPredicate(char c)
+        protected override void OnBeforeProcess()
         {
-            return c.IsIn('(', ')', ',');
-        }
+            // todo: temporary check that IsProcessing == FALSE, everywhere
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
 
-        protected override void ResetState()
-        {
+            // todo: temporary check that LocalPosition == 1, everywhere
+            if (this.Context.GetLocalIndex() != 1)
+            {
+                throw new NotImplementedException();
+            }
+
             // idle
         }
 
-        protected override IToken ProduceResult()
+        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
-            var str = this.ExtractResultString();
-
-            var position = new Position(this.StartingLine, this.StartingColumn);
-            var consumedLength = this.LocalCharIndex;
-
-            return new PunctuationToken(str.Single(), position, consumedLength);
+            return
+                previousToken is PunctuationToken ||
+                previousToken is TextToken ||
+                previousToken is IntegerToken;
         }
 
-        protected override CharChallengeResult ChallengeCurrentChar()
+        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
-            var index = this.LocalCharIndex;
-
-            if (index == 0)
+            if (localIndex == 0)
             {
-                return CharChallengeResult.Continue;
+                return this.ContinueOrFail(c.IsIn('(', ')', ','));
             }
 
-            return CharChallengeResult.Finish; // whatever it is - it's a single-char token extractor.
+            return CharAcceptanceResult.Stop;
         }
-
-        protected override CharChallengeResult ChallengeEnd() => CharChallengeResult.Finish;
     }
 }

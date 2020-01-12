@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -8,15 +8,14 @@
 
   <ItemGroup>
     <None Remove="Resources\cli-grammar.lisp" />
-    <None Remove="Resources\CliCommand.txt" />
     <None Remove="Resources\sql-grammar-expected.lisp" />
     <None Remove="Resources\sql-grammar.lisp" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\cli-grammar.lisp" />
-    <EmbeddedResource Include="Resources\sql-grammar.lisp" />
     <EmbeddedResource Include="Resources\sql-grammar-expected.lisp" />
+    <EmbeddedResource Include="Resources\sql-grammar.lisp" />
   </ItemGroup>
 
   <ItemGroup>
