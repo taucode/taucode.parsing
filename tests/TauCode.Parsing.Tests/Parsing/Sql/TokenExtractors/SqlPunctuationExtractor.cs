@@ -7,7 +7,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
     public class SqlPunctuationExtractor : TokenExtractorBase<PunctuationToken>
     {
-        public override PunctuationToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override PunctuationToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             return new PunctuationToken(text[absoluteIndex], position, consumedLength);
         }

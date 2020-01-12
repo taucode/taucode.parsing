@@ -16,7 +16,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             _acceptablePreviousTokenTypes = acceptablePreviousTokenTypes.ToList();
         }
 
-        public override IntegerToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override IntegerToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var signShift = 0;
             if (text[absoluteIndex] == '+')

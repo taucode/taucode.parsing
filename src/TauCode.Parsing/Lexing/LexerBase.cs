@@ -98,8 +98,8 @@ namespace TauCode.Parsing.Lexing
                             var token = tokenExtractor.Produce(
                                 _context.Text,
                                 absoluteIndex,
-                                consumedLength,
-                                position);
+                                position,
+                                consumedLength);
 
                             if (token == null)
                             {

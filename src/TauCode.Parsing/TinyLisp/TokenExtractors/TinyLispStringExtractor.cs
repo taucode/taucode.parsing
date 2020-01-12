@@ -11,7 +11,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     {
         private char _openingDelimiter;
 
-        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
             return new TextToken(

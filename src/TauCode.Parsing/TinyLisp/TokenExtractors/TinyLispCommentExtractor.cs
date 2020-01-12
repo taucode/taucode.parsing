@@ -16,13 +16,13 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             _skipLineBreaksProcessor = new SkipLineBreaksProcessor(true);
         }
 
-        public override CommentToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override CommentToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             return new CommentToken(text.Substring(absoluteIndex, consumedLength), position, consumedLength);
         }
 
         protected override void OnBeforeProcess()
-        {            
+        {
             // todo: temporary check that IsProcessing == FALSE, everywhere
             if (this.IsProcessing)
             {
@@ -62,10 +62,12 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 var skipLineBreaksResult = _skipLineBreaksProcessor.Process(this.Context);
                 if (skipLineBreaksResult.Summary != TextProcessingSummary.Skip)
                 {
-                    throw new NotImplementedException(); // cannot be. todo: check it somewhere? (SkipperBase or something)
+                    throw
+                        new NotImplementedException(); // cannot be. todo: check it somewhere? (SkipperBase or something)
                 }
 
-                this.Context.Advance(skipLineBreaksResult.IndexShift, skipLineBreaksResult.LineShift, skipLineBreaksResult.GetCurrentColumn());
+                this.Context.Advance(skipLineBreaksResult.IndexShift, skipLineBreaksResult.LineShift,
+                    skipLineBreaksResult.GetCurrentColumn());
                 return CharAcceptanceResult.Stop;
             }
 
@@ -73,3 +75,4 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         }
     }
 }
+

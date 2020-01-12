@@ -9,7 +9,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
     public class PathExtractor : TokenExtractorBase<TextToken>
     {
-        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var str = text.Substring(absoluteIndex, consumedLength);
 

@@ -26,7 +26,7 @@ namespace TauCode.Parsing.Lexing
             return TextProcessingResult.Fail;
         }
 
-        public abstract TToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position);
+        public abstract TToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength);
 
         protected abstract void OnBeforeProcess();
 
@@ -167,8 +167,8 @@ namespace TauCode.Parsing.Lexing
 
         protected abstract bool AcceptsPreviousTokenImpl(IToken previousToken);
 
-        public IToken Produce(string text, int absoluteIndex, int consumedLength, Position position)
-            => this.ProduceToken(text, absoluteIndex, consumedLength, position);
+        public IToken Produce(string text, int absoluteIndex, Position position, int consumedLength)
+            => this.ProduceToken(text, absoluteIndex, position, consumedLength);
 
         public bool AcceptsFirstChar(char c)
         {

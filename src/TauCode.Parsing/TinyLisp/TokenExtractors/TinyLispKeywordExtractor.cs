@@ -6,7 +6,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     public class TinyLispKeywordExtractor : TokenExtractorBase<KeywordToken>
     {
-        public override KeywordToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override KeywordToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var keyword = text.Substring(absoluteIndex, consumedLength);
             return new KeywordToken(keyword, position, consumedLength);

@@ -8,6 +8,6 @@
 
         TextProcessingResult Process(ITextProcessingContext context);
 
-        TProduct Produce(string text, int absoluteIndex, int consumedLength, Position position);
+        TProduct Produce(string text, int absoluteIndex, Position position, int consumedLength);
     }
 }

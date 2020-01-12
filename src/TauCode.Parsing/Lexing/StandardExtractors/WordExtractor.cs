@@ -7,7 +7,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 {
     public class WordExtractor : TokenExtractorBase<TextToken>
     {
-        public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var str = this.Context.Text.Substring(absoluteIndex, consumedLength);
 

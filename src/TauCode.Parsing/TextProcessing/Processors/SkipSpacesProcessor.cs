@@ -52,7 +52,7 @@ namespace TauCode.Parsing.TextProcessing.Processors
             return new TextProcessingResult(TextProcessingSummary.Skip, indexShift, lineShift, currentColumn);
         }
 
-        public string Produce(string text, int absoluteIndex, int consumedLength, Position position)
+        public string Produce(string text, int absoluteIndex, Position position, int consumedLength)
         {
             throw new NotImplementedException(); // todo should never be called
         }

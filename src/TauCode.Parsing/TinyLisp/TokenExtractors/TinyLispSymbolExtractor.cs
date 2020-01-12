@@ -6,7 +6,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
     public class TinyLispSymbolExtractor : TokenExtractorBase<LispSymbolToken>
     {
         // todo: wtf! change places for <int consumedLength> and <Position position>
-        public override LispSymbolToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
+        public override LispSymbolToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var symbolString = text.Substring(absoluteIndex, consumedLength);
             if (int.TryParse(symbolString, out var dummy))

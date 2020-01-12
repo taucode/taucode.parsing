@@ -8,8 +8,11 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     public class TinyLispPunctuationExtractor : TokenExtractorBase<LispPunctuationToken>
     {
-        public override LispPunctuationToken ProduceToken(string text, int absoluteIndex, int consumedLength,
-            Position position)
+        public override LispPunctuationToken ProduceToken(
+            string text,
+            int absoluteIndex,
+            Position position,
+            int consumedLength)
         {
             return new LispPunctuationToken(
                 TinyLispHelper.CharToPunctuation(text[absoluteIndex]),
@@ -30,6 +33,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             {
                 throw new NotImplementedException();
             }
+
             // idle
         }
 
