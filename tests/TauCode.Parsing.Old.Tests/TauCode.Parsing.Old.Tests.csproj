@@ -25,4 +25,9 @@
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\TauCode.Parsing.Old\TauCode.Parsing.Old.csproj" />
+    <ProjectReference Include="..\..\src\TauCode.Parsing\TauCode.Parsing.csproj" />
+  </ItemGroup>
+
 </Project>
