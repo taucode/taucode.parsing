@@ -13,8 +13,9 @@ namespace TauCode.Parsing.Lexing
         private static readonly HashSet<char> StandardPunctuationChars;
         private static readonly HashSet<char> LatinLetters;
 
-        public const char Cr = '\r';
-        public const char Lf = '\n';
+        public const char CR = '\r';
+        public const char LF = '\n';
+        public const string CRLF = "\r\n";
 
         static LexingHelper()
         {

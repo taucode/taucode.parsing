@@ -1,26 +1,20 @@
-﻿using System;
+﻿using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.TextProcessing.Processors
 {
-    public class SkipLineBreaksProcessor : TextProcessorBase<string> // todo: Nothing.
+    public class NewLineSkipper : TextProcessorBase
     {
-        private readonly bool _skipOnlyOneResult;
-
-        public SkipLineBreaksProcessor(bool skipOnlyOneResult)
+        public NewLineSkipper(bool wantsSingleResult)
         {
-            _skipOnlyOneResult = skipOnlyOneResult;
+            this.WantsSingleResult = wantsSingleResult;
         }
 
-        public override bool AcceptsFirstChar(char c)
-        {
-            if (this.IsProcessing)
-            {
-                throw new NotImplementedException();
-            }
+        public bool WantsSingleResult { get; }
 
-            return LexingHelper.IsCaretControl(c);
-        }
+        public override bool AcceptsFirstChar(char c) => c.IsIn(
+            LexingHelper.CR,
+            LexingHelper.LF);
 
         public override TextProcessingResult Process(ITextProcessingContext context)
         {
@@ -38,8 +32,8 @@ namespace TauCode.Parsing.TextProcessing.Processors
 
                 switch (c)
                 {
-                    case LexingHelper.Cr:
-                        if (_skipOnlyOneResult)
+                    case LexingHelper.CR:
+                        if (this.WantsSingleResult)
                         {
                             // whatever outcome is, stop processing.
                             goOn = false;
@@ -48,7 +42,7 @@ namespace TauCode.Parsing.TextProcessing.Processors
                         var nextChar = context.TryGetNextLocalChar();
                         if (nextChar.HasValue)
                         {
-                            if (nextChar.Value == LexingHelper.Lf)
+                            if (nextChar.Value == LexingHelper.LF)
                             {
                                 // got CRLF
                                 context.Advance(2, 1, 0);
@@ -69,8 +63,8 @@ namespace TauCode.Parsing.TextProcessing.Processors
                             break;
                         }
 
-                    case '\n':
-                        if (_skipOnlyOneResult)
+                    case LexingHelper.LF:
+                        if (this.WantsSingleResult)
                         {
                             // whatever outcome is, stop processing.
                             goOn = false;
@@ -86,12 +80,7 @@ namespace TauCode.Parsing.TextProcessing.Processors
             }
 
             context.ReleaseGenerationAndGetMetrics(out var indexShift, out var lineShift, out var currentColumn);
-            return new TextProcessingResult(TextProcessingSummary.Skip, indexShift, lineShift, currentColumn);
-        }
-
-        public override string Produce(string text, int absoluteIndex, Position position, int consumedLength)
-        {
-            throw new NotImplementedException(); // todo should never be called
+            return new TextProcessingResult(indexShift, lineShift, currentColumn, EmptyPayload.Value);
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lexing
 {
-    public abstract class TokenExtractorBase<TToken> : ITokenExtractor<TToken>
+    public abstract class TokenExtractorBase<TToken> : TextProcessorBase, ITokenExtractor
         where TToken : IToken
     {
         #region Nested
@@ -21,7 +22,24 @@ namespace TauCode.Parsing.Lexing
 
         #region Fields
 
-        private bool _isProcessing;
+        private readonly HashSet<Type> _acceptablePreviousTokenTypes;
+
+        #endregion
+
+        #region Constructor
+
+        protected TokenExtractorBase(Type[] acceptablePreviousTokenTypes)
+        {
+            acceptablePreviousTokenTypes = (acceptablePreviousTokenTypes ?? Type.EmptyTypes).ToArray();
+            if (acceptablePreviousTokenTypes.Any(x =>
+                x == null ||
+                !x.GetInterfaces().Contains(typeof(IToken))))
+            {
+                throw new NotImplementedException(); // todo args
+            }
+
+            _acceptablePreviousTokenTypes = new HashSet<Type>(acceptablePreviousTokenTypes);
+        }
 
         #endregion
 
@@ -29,14 +47,22 @@ namespace TauCode.Parsing.Lexing
 
         protected abstract CharAcceptanceResult AcceptCharImpl(char c, int localIndex);
 
-        protected abstract bool AcceptsPreviousTokenImpl(IToken previousToken);
-
         protected abstract void OnBeforeProcess();
+
+        protected abstract TToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength);
 
         #endregion
 
         #region Protected
-        
+
+        protected virtual bool AcceptsPreviousTokenImpl(IToken previousToken) =>
+            _acceptablePreviousTokenTypes.Contains(previousToken.GetType());
+
+        protected virtual void OnCharAccepted(char c)
+        {
+            // idle
+        }
+
         protected ILexingContext Context { get; private set; }
 
         protected virtual bool ProcessEnd()
@@ -49,11 +75,6 @@ namespace TauCode.Parsing.Lexing
             return true;
         }
 
-        protected virtual TextProcessingResult Subprocess()
-        {
-            return TextProcessingResult.Fail;
-        }
-
         protected Position StartPosition { get; private set; }
 
         protected CharAcceptanceResult ContinueOrFail(bool b)
@@ -62,25 +83,24 @@ namespace TauCode.Parsing.Lexing
             return b ? CharAcceptanceResult.Continue : CharAcceptanceResult.Fail;
         }
 
-        protected virtual bool IsProducer =>
-            true; // most token extractors produce something; however, comment extractors do not.
+        protected virtual TextProcessingResult SubProcess() => TextProcessingResult.Failure;
 
-        #endregion
-
-        #region ITokenExtractor<TToken> Members
-
-        public abstract TToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength);
-
-        #endregion
-
-        #region ITextProcessor<TProduct> Members
-
-        public bool AcceptsFirstChar(char c)
+        protected void AlphaCheckOnBeforeProcess()
         {
-            if (this.IsProcessing)
-            {
-                throw new NotImplementedException();
-            }
+            var bad1 = this.IsBusy;
+            var bad2 = this.Context.GetLocalIndex() != 1;
+            var good = !(bad1 || bad2);
+
+            ParsingHelper.AlphaAssert(good);
+        }
+
+        #endregion
+
+        #region Overridden
+
+        public override bool AcceptsFirstChar(char c)
+        {
+            this.AlphaCheckNotBusy();
 
             var charAcceptanceResult = this.AcceptCharImpl(c, 0);
             switch (charAcceptanceResult)
@@ -99,33 +119,14 @@ namespace TauCode.Parsing.Lexing
             }
         }
 
-        public bool IsProcessing
+        public override TextProcessingResult Process(ITextProcessingContext context)
         {
-            get => _isProcessing;
-            private set
-            {
-                if (value == _isProcessing)
-                {
-                    throw new NotImplementedException(); // todo suspicious: why set to same value?
-                }
-
-                _isProcessing = value;
-            }
-        }
-
-        public TextProcessingResult Process(ITextProcessingContext context)
-        {
-            // todo: prohibit recursion of 'Process()'
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            // todo: temp (?) redundant check
-            if (this.IsProcessing)
-            {
-                throw new NotImplementedException();
-            }
+            this.AlphaCheckNotBusy();
 
             var lexingContext = (ILexingContext)context;
 
@@ -139,7 +140,7 @@ namespace TauCode.Parsing.Lexing
 
                     if (!acceptsPreviousToken)
                     {
-                        return TextProcessingResult.Fail;
+                        return TextProcessingResult.Failure;
                     }
                 }
             }
@@ -148,10 +149,11 @@ namespace TauCode.Parsing.Lexing
             this.StartPosition = this.Context.GetCurrentAbsolutePosition();
             this.Context.RequestGeneration();
 
-            this.Context.AdvanceByChar(); // since 'Process' has been called, it means that 'First' (i.e. 0th) char was accepted by Lexer.
+            this.Context
+                .AdvanceByChar(); // since 'Process' has been called, it means that 'First' (i.e. 0th) char was accepted by Lexer.
 
             this.OnBeforeProcess();
-            this.IsProcessing = true;
+            this.IsBusy = true;
 
             var gotStop = false;
 
@@ -172,12 +174,10 @@ namespace TauCode.Parsing.Lexing
                         if (!acceptsEnd)
                         {
                             this.Context.ReleaseGeneration();
-                            this.IsProcessing = false;
-                            return TextProcessingResult.Fail;
+                            this.IsBusy = false;
+                            return TextProcessingResult.Failure;
                         }
                     }
-
-                    var summary = this.IsProducer ? TextProcessingSummary.CanProduce : TextProcessingSummary.Skip;
 
                     var myAbsoluteIndex = this.Context.GetAbsoluteIndex();
                     var myLine = this.Context.GetCurrentLine();
@@ -187,16 +187,23 @@ namespace TauCode.Parsing.Lexing
 
                     var oldAbsoluteIndex = this.Context.GetAbsoluteIndex();
                     var oldLine = this.Context.GetCurrentLine();
+                    var oldColumn = this.Context.GetCurrentColumn();
 
                     var indexShift = myAbsoluteIndex - oldAbsoluteIndex;
                     var lineShift = myLine - oldLine;
 
-                    this.IsProcessing = false;
-                    return new TextProcessingResult(summary, indexShift, lineShift, currentColumn);
+                    this.IsBusy = false;
+
+                    var position = new Position(oldLine, oldColumn);
+                    var token = this.DeliverToken(this.Context.Text, oldAbsoluteIndex, position, indexShift);
+
+                    return token == null
+                        ? TextProcessingResult.Failure
+                        : new TextProcessingResult(indexShift, lineShift, currentColumn, token);
                 }
 
-                var delegatedResult = this.Subprocess();
-                if (delegatedResult.Summary != TextProcessingSummary.Fail)
+                var subProcessResult = this.SubProcess();
+                if (subProcessResult.IsSuccessful())
                 {
                     throw new NotImplementedException();
                 }
@@ -208,7 +215,8 @@ namespace TauCode.Parsing.Lexing
                 var acceptanceResult = this.AcceptCharImpl(c, localIndex);
 
                 // check.
-                if (this.Context.GetLocalIndex() == 0 && !acceptanceResult.IsIn(CharAcceptanceResult.Continue, CharAcceptanceResult.Fail))
+                if (this.Context.GetLocalIndex() == 0 &&
+                    !acceptanceResult.IsIn(CharAcceptanceResult.Continue, CharAcceptanceResult.Fail))
                 {
                     throw new NotImplementedException(); // todo error in your logic.
                 }
@@ -226,6 +234,7 @@ namespace TauCode.Parsing.Lexing
                 switch (acceptanceResult)
                 {
                     case CharAcceptanceResult.Continue:
+                        this.OnCharAccepted(c);
                         this.Context.AdvanceByChar();
                         break;
 
@@ -235,29 +244,13 @@ namespace TauCode.Parsing.Lexing
 
                     case CharAcceptanceResult.Fail:
                         this.Context.ReleaseGeneration();
-                        this.IsProcessing = false;
-                        return TextProcessingResult.Fail;
+                        this.IsBusy = false;
+                        return TextProcessingResult.Failure;
 
                     default:
                         throw new NotImplementedException(); // wtf? (todo)
                 }
             }
-        }
-
-        public IToken Produce(string text, int absoluteIndex, Position position, int consumedLength)
-            => this.ProduceToken(text, absoluteIndex, position, consumedLength);
-
-        #endregion
-
-        #region Alpha Debug
-
-        protected void AlphaCheckOnBeforeProcess()
-        {
-            var bad1 = this.IsProcessing;
-            var bad2 = this.Context.GetLocalIndex() != 1;
-            var good = !(bad1 || bad2);
-
-            ParsingHelper.AlphaAssert(good);
         }
 
         #endregion

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.TextProcessing.Processors;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing
 {
@@ -11,16 +13,17 @@ namespace TauCode.Parsing.Lexing
         #region Fields
 
         private LexingContext _context;
+
+        private IList<ITextProcessor> _whiteSpaceSkippers;
         private IList<ITokenExtractor> _tokenExtractors;
-        private IList<ITextProcessor<string>> _skippers;
 
         #endregion
 
         #region Private
 
-        private bool SkipWhilePossible()
+        private bool SkipWhiteSpace()
         {
-            var eventuallySkipped = false;
+            var startIndex = _context.GetAbsoluteIndex();
 
             while (true)
             {
@@ -29,54 +32,40 @@ namespace TauCode.Parsing.Lexing
                     break;
                 }
 
-                var skipped = false;
+                var shifted = false;
 
-                foreach (var skipper in this.Skippers)
+                foreach (var whiteSpaceSkipper in this.WhiteSpaceSkippers)
                 {
                     var c = _context.GetCurrentChar();
-                    if (!skipper.AcceptsFirstChar(c))
+                    if (!whiteSpaceSkipper.AcceptsFirstChar(c))
                     {
                         continue;
                     }
 
-                    if (skipper.IsProcessing)
+                    whiteSpaceSkipper.AlphaCheckNotBusy();
+
+                    var result = whiteSpaceSkipper.Process(_context);
+
+                    whiteSpaceSkipper.AlphaCheckNotBusy();
+                    _context.AlphaCheckDepthOne();
+
+                    if (result.IsSuccessful())
                     {
-                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to be in processing state.");
-                    }
-
-                    var skipResult = skipper.Process(_context);
-
-                    if (skipper.IsProcessing)
-                    {
-                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to be in processing state.");
-
-                    }
-
-                    if (_context.Depth != 1)
-                    {
-                        throw new LexingException($"Depth of '{typeof(ILexingContext).FullName}.{nameof(ILexingContext.Depth)}' must be equal to 1 when exiting skipper.", _context.GetCurrentAbsolutePosition());
-                    }
-
-                    if (skipResult.Summary == TextProcessingSummary.Skip)
-                    {
-                        skipped = true;
-                        eventuallySkipped = true;
-                        _context.Advance(skipResult.IndexShift, skipResult.LineShift, skipResult.GetCurrentColumn());
+                        shifted = true;
+                        _context.AdvanceByResult(result);
                         break;
-                    }
-                    else if (skipResult.Summary == TextProcessingSummary.CanProduce)
-                    {
-                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to produce a product.");
                     }
                 }
 
-                if (!skipped)
+                if (!shifted)
                 {
                     break;
                 }
             }
 
-            return eventuallySkipped;
+            var endIndex = _context.GetAbsoluteIndex();
+
+            return endIndex - startIndex > 0;
         }
 
         #endregion
@@ -89,18 +78,47 @@ namespace TauCode.Parsing.Lexing
 
         #region Protected
 
-        protected IList<ITokenExtractor> TokenExtractors =>
-            _tokenExtractors ?? (_tokenExtractors = this.CreateTokenExtractors());
-
-        protected IList<ITextProcessor<string>> Skippers => _skippers ?? (_skippers = this.CreateSkippers());
-
-        protected virtual IList<ITextProcessor<string>> CreateSkippers()
+        protected virtual IList<ITextProcessor> CreateWhiteSpaceSkippers()
         {
-            return new ITextProcessor<string>[]
+            return new List<ITextProcessor>
             {
-                new SkipSpacesProcessor(),
-                new SkipLineBreaksProcessor(false),
+                new SpaceSkipper(),
+                new NewLineSkipper(false),
             };
+        }
+
+        protected IList<ITextProcessor> WhiteSpaceSkippers
+        {
+            get
+            {
+                if (_whiteSpaceSkippers == null)
+                {
+                    _whiteSpaceSkippers = this.CreateWhiteSpaceSkippers();
+                    if (_whiteSpaceSkippers == null || !_whiteSpaceSkippers.Any())
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+
+                return _whiteSpaceSkippers;
+            }
+        }
+
+        protected IList<ITokenExtractor> TokenExtractors
+        {
+            get
+            {
+                if (_tokenExtractors == null)
+                {
+                    _tokenExtractors = this.CreateTokenExtractors();
+                    if (_tokenExtractors == null || !_tokenExtractors.Any())
+                    {
+                        throw new NotImplementedException();
+                    }
+                }
+
+                return _tokenExtractors;
+            }
         }
 
         #endregion
@@ -110,18 +128,13 @@ namespace TauCode.Parsing.Lexing
         public IList<IToken> Lexize(string input)
         {
             // todo check args
-            //var tokens = new List<IToken>();
-            //_context = new TextProcessingContext(input);
-
             _context = new LexingContext(input);
-
-
             var tokens = _context.GetTokenList();
 
             while (true)
             {
                 // skippers begin to work
-                var skipped = this.SkipWhilePossible();
+                var whiteSpaceSkipped = this.SkipWhiteSpace();
                 if (_context.IsEnd())
                 {
                     break;
@@ -129,6 +142,7 @@ namespace TauCode.Parsing.Lexing
 
                 // token extractors begin to work
                 var gotSuccess = false;
+
                 foreach (var tokenExtractor in this.TokenExtractors)
                 {
                     if (gotSuccess)
@@ -142,71 +156,24 @@ namespace TauCode.Parsing.Lexing
                         continue;
                     }
 
-                    var previousColumn = _context.GetCurrentColumn();
+                    tokenExtractor.AlphaCheckNotBusy();
 
-                    if (tokenExtractor.IsProcessing)
-                    {
-                        throw new NotImplementedException();
-                    }
                     var result = tokenExtractor.Process(_context);
-                    if (tokenExtractor.IsProcessing)
+
+                    if (result.IsSuccessful())
                     {
-                        throw new NotImplementedException();
-                    }
+                        gotSuccess = true;
+                        _context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
+                        var token = (IToken)result.Payload;
 
-
-                    if (_context.Depth != 1)
-                    {
-                        throw new NotImplementedException(); // todo error
-                    }
-
-                    switch (result.Summary)
-                    {
-                        case TextProcessingSummary.Skip:
-                            gotSuccess = true;
-                            _context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
-                            break;
-
-                        case TextProcessingSummary.CanProduce:
-                            var absoluteIndex = _context.GetAbsoluteIndex();
-                            var consumedLength = result.IndexShift;
-
-                            var line = _context.GetCurrentLine() + result.LineShift;
-                            var position = new Position(line, previousColumn);
-
-                            var token = tokenExtractor.Produce(
-                                _context.Text,
-                                absoluteIndex,
-                                position,
-                                consumedLength);
-
-                            if (token == null)
-                            {
-                                // No luck. It can happen - for example, Lisp Symbol extractor will accept every char of "1111", but will refuse produce a whole result,
-                                // because "1111" should be lexized as an Integer, not a Symbol.
-                            }
-                            else
-                            {
-                                gotSuccess = true;
-                                _context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
-
-                                if (token.HasPayload)
-                                {
-                                    tokens.Add(token);
-                                }
-                            }
-
-                            break;
-
-                        case TextProcessingSummary.Fail: // no luck for this extractor
-                            break;
-
-                        default:
-                            throw new NotImplementedException();
+                        if (!(token is NullToken))
+                        {
+                            tokens.Add(token);
+                        }
                     }
                 }
 
-                if (!skipped && !gotSuccess)
+                if (!whiteSpaceSkipped && !gotSuccess)
                 {
                     var c = _context.GetCurrentChar();
                     throw new LexingException($"Unexpected char: '{c}'.", _context.GetCurrentAbsolutePosition());

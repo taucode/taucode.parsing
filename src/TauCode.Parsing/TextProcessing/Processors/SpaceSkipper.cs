@@ -1,9 +1,8 @@
-﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.TextProcessing.Processors
 {
-    public class SkipSpacesProcessor : TextProcessorBase<string> // todo: Nothing.
+    public class SpaceSkipper : TextProcessorBase
     {
         public override bool AcceptsFirstChar(char c) => LexingHelper.IsInlineWhiteSpace(c);
 
@@ -31,13 +30,7 @@ namespace TauCode.Parsing.TextProcessing.Processors
             }
 
             context.ReleaseGenerationAndGetMetrics(out var indexShift, out var lineShift, out var currentColumn);
-            return new TextProcessingResult(TextProcessingSummary.Skip, indexShift, lineShift, currentColumn);
-        }
-
-        public override string Produce(string text, int absoluteIndex, Position position, int consumedLength)
-        {
-            // todo use internal ex.
-            throw new LexingException("'Produce' should not be called", position); // todo
+            return new TextProcessingResult(indexShift, lineShift, currentColumn, EmptyPayload.Value);
         }
     }
 }
