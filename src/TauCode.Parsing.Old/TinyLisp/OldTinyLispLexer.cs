@@ -1,10 +1,6 @@
 ﻿using TauCode.Parsing.Old.Lexing;
 using TauCode.Parsing.Old.Lexing.StandardTokenExtractors;
-using OldTinyLispCommentExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispCommentExtractor;
-using OldTinyLispKeywordExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispKeywordExtractor;
-using OldTinyLispPunctuationExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispPunctuationExtractor;
-using OldTinyLispStringExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispStringExtractor;
-using OldTinyLispSymbolExtractor = TauCode.Parsing.Old.TinyLisp.TokenExtractors.OldTinyLispSymbolExtractor;
+using TauCode.Parsing.Old.TinyLisp.TokenExtractors;
 
 namespace TauCode.Parsing.Old.TinyLisp
 {

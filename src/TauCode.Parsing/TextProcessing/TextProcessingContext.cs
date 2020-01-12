@@ -131,6 +131,21 @@ namespace TauCode.Parsing.TextProcessing
 
         public void Advance(int indexShift, int lineShift, int currentColumn)
         {
+            if (indexShift <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(indexShift));
+            }
+
+            if (lineShift < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(lineShift));
+            }
+
+            if (currentColumn < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(currentColumn));
+            }
+
             this.GetLastGeneration().Advance(indexShift, lineShift, currentColumn);
         }
 
@@ -153,18 +168,6 @@ namespace TauCode.Parsing.TextProcessing
             // todo checks
             this.Advance(1, 0, this.GetCurrentColumn() + 1);
         }
-
-        //public char? GetPreviousAbsoluteChar()
-        //{
-        //    // todo: checks
-        //    var absoluteIndex = this.GetAbsoluteIndex();
-        //    if (absoluteIndex == 0)
-        //    {
-        //        return null;
-        //    }
-
-        //    return this.Text[absoluteIndex - 1];
-        //}
 
         public char? TryGetNextLocalChar()
         {

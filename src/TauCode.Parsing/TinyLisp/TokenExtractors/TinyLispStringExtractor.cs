@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Exceptions;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
@@ -9,9 +8,20 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     public class TinyLispStringExtractor : TokenExtractorBase<TextToken>
     {
-        private char _openingDelimiter;
+        public TinyLispStringExtractor()
+            : base(null) // todo: actually, accepts any.
+        {
 
-        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
+        }
+
+        protected override void OnBeforeProcess()
+        {
+            this.AlphaCheckOnBeforeProcess();
+
+            // idle
+        }
+
+        protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
             return new TextToken(
@@ -20,18 +30,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 str,
                 position,
                 consumedLength);
-        }
-
-        protected override void OnBeforeProcess()
-        {
-            this.AlphaCheckOnBeforeProcess();
-
-            _openingDelimiter = this.Context.GetLocalChar(0);
-        }
-
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
-        {
-            throw new NotImplementedException();
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)

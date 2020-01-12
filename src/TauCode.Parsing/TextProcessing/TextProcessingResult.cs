@@ -4,52 +4,54 @@ namespace TauCode.Parsing.TextProcessing
 {
     public struct TextProcessingResult
     {
-        public static TextProcessingResult Fail { get; } =
-            new TextProcessingResult(TextProcessingSummary.Fail, 0, 0, null);
+        public static TextProcessingResult Failure { get; } = new TextProcessingResult(0, 0, null, null);
 
-        public TextProcessingResult(TextProcessingSummary summary, int indexShift, int lineShift, int? currentColumn)
+        public TextProcessingResult(int indexShift, int lineShift, int? currentColumn, IPayload payload)
         {
-            if (summary == TextProcessingSummary.Skip || summary == TextProcessingSummary.CanProduce)
+            if (indexShift < 0)
             {
-                var argsAreValid =
-                    indexShift > 0 &&
-                    currentColumn.HasValue;
-
-                if (!argsAreValid)
-                {
-                    throw new NotImplementedException(); // todo
-                }
+                throw new ArgumentOutOfRangeException(nameof(indexShift));
             }
-            else if (summary == TextProcessingSummary.Fail)
-            {
-                var argsAreValid =
-                    indexShift == 0 &&
-                    lineShift == 0 &&
-                    !currentColumn.HasValue;
 
-                if (!argsAreValid)
+            if (lineShift < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(lineShift));
+            }
+
+            if (currentColumn.HasValue && currentColumn.Value < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(currentColumn));
+            }
+
+            if (indexShift == 0)
+            {
+                var validArgs =
+                    lineShift == 0 &&
+                    !currentColumn.HasValue &&
+                    payload == null;
+
+                if (!validArgs)
                 {
-                    throw new NotImplementedException(); // todo
+                    throw new ArgumentException("Inconsistent arguments.", nameof(lineShift));
                 }
             }
             else
             {
-                throw new NotImplementedException(); // a kto zhe togda?! :)
+                if (!currentColumn.HasValue || payload == null)
+                {
+                    throw new ArgumentException("Inconsistent arguments.", nameof(lineShift));
+                }
             }
 
-            this.Summary = summary;
             this.IndexShift = indexShift;
             this.LineShift = lineShift;
             this.CurrentColumn = currentColumn;
+            this.Payload = payload;
         }
 
-        public TextProcessingSummary Summary { get; }
-        public int IndexShift { get; set; }
-        public int LineShift { get; set; }
-        public int? CurrentColumn { get; set; }
-
-        public int GetCurrentColumn() =>
-            this.CurrentColumn ??
-            throw new NotImplementedException(); // bad operation; something wrong with your logic.
+        public int IndexShift { get; }
+        public int LineShift { get; }
+        public int? CurrentColumn { get; }
+        public IPayload Payload { get; }
     }
 }

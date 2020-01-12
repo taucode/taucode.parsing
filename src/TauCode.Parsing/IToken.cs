@@ -1,12 +1,9 @@
-﻿namespace TauCode.Parsing
-{
-    public interface IToken
-    {
-        /// <summary>
-        /// Does the token has payload. E.g. comment tokens don't have payload.
-        /// </summary>
-        bool HasPayload { get; }
+﻿using TauCode.Parsing.TextProcessing;
 
+namespace TauCode.Parsing
+{
+    public interface IToken : IPayload
+    {
         /// <summary>
         /// Position within the original text.
         /// </summary>

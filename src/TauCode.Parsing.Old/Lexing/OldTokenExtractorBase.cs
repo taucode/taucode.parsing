@@ -98,12 +98,12 @@ namespace TauCode.Parsing.Old.Lexing
             var c = this.GetCurrentChar();
             int indexShift;
             
-            if (c == LexingHelper.Cr)
+            if (c == LexingHelper.CR)
             {
                 var nextChar = this.GetNextChar();
                 if (nextChar.HasValue)
                 {
-                    if (nextChar.Value == LexingHelper.Lf)
+                    if (nextChar.Value == LexingHelper.LF)
                     {
                         indexShift = 2; // got CRLF
                     }
@@ -118,7 +118,7 @@ namespace TauCode.Parsing.Old.Lexing
                     indexShift = 1;
                 }
             }
-            else if (c == LexingHelper.Lf)
+            else if (c == LexingHelper.LF)
             {
                 indexShift = 1;
             }

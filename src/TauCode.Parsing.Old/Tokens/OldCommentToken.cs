@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Tokens
+namespace TauCode.Parsing.Old.Tokens
 {
-    public class CommentToken : TokenBase
+    public class OldCommentToken : TokenBase
     {
-        public CommentToken(
+        public OldCommentToken(
             string comment,
             Position position,
             int consumedLength)

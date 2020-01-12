@@ -1,29 +1,23 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextProcessing;
-using TauCode.Parsing.TextProcessing.Processors;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispCommentExtractor : TokenExtractorBase<CommentToken>
+    public class TinyLispCommentExtractor : TokenExtractorBase<NullToken>
     {
-        private readonly SkipLineBreaksProcessor _skipLineBreaksProcessor;
-
         public TinyLispCommentExtractor()
+            : base(null)
         {
-            _skipLineBreaksProcessor = new SkipLineBreaksProcessor(true);
-        }
-
-        public override CommentToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
-        {
-            return new CommentToken(text.Substring(absoluteIndex, consumedLength), position, consumedLength);
         }
 
         protected override void OnBeforeProcess()
         {
             this.AlphaCheckOnBeforeProcess();
+            // idle
         }
+
+        protected override NullToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength) => 
+            NullToken.Instance;
 
         protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
@@ -34,25 +28,11 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             if (localIndex == 0)
             {
-                if (c == ';')
-                {
-                    return CharAcceptanceResult.Continue;
-                }
-
-                return CharAcceptanceResult.Fail;
+                return this.ContinueOrFail(c == ';');
             }
 
             if (LexingHelper.IsCaretControl(c))
             {
-                var skipLineBreaksResult = _skipLineBreaksProcessor.Process(this.Context);
-                if (skipLineBreaksResult.Summary != TextProcessingSummary.Skip)
-                {
-                    throw
-                        new NotImplementedException(); // cannot be. todo: check it somewhere? (SkipperBase or something)
-                }
-
-                this.Context.Advance(skipLineBreaksResult.IndexShift, skipLineBreaksResult.LineShift,
-                    skipLineBreaksResult.GetCurrentColumn());
                 return CharAcceptanceResult.Stop;
             }
 
@@ -60,4 +40,3 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         }
     }
 }
-

@@ -81,6 +81,11 @@ namespace TauCode.Parsing.Old.TinyLisp
                     list.AddElement(element);
                     index++;
                 }
+                else if (token is OldCommentToken)
+                {
+                    // skip.
+                    index++;
+                }
                 else
                 {
                     throw new TinyLispException($"Could not read token of type '{token.GetType().FullName}'.");

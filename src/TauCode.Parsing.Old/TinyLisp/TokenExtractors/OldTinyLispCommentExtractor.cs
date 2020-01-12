@@ -1,6 +1,6 @@
 ﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Old.Lexing;
-using TauCode.Parsing.Tokens;
+using TauCode.Parsing.Old.Tokens;
 
 namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 {
@@ -16,7 +16,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             var str = this.ExtractResultString();
             var position = new Position(this.StartingLine, this.StartingColumn);
             var consumedLength = this.LocalCharIndex;
-            return new CommentToken(str, position, consumedLength);
+            return new OldCommentToken(str, position, consumedLength);
         }
 
         protected override void ResetState()
