@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Tokens;
 
@@ -9,29 +7,11 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
     public class IntegerExtractor : TokenExtractorBase<IntegerToken>
     {
         private char? _sign;
-        private readonly List<Type> _acceptablePreviousTokenTypes;
 
-        public IntegerExtractor(IList<Type> acceptablePreviousTokenTypes)
+        public IntegerExtractor(params Type[] acceptablePreviousTokenTypes)
+            : base(acceptablePreviousTokenTypes)
         {
-            _acceptablePreviousTokenTypes = acceptablePreviousTokenTypes.ToList();
-        }
 
-        public override IntegerToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
-        {
-            var signShift = 0;
-            if (text[absoluteIndex] == '+')
-            {
-                signShift = 1;
-            }
-
-            var intSubstring = text.Substring(absoluteIndex + signShift, consumedLength - signShift);
-
-            if (int.TryParse(intSubstring, out var dummy))
-            {
-                return new IntegerToken(intSubstring, position, consumedLength);
-            }
-
-            return null;
         }
 
         protected override void OnBeforeProcess()
@@ -47,11 +27,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             {
                 _sign = null;
             }
-        }
-
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
-        {
-            return _acceptablePreviousTokenTypes.Contains(previousToken.GetType());
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
@@ -93,6 +68,24 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
             // other chars like letters and stuff => not allowed.
             return CharAcceptanceResult.Fail;
+        }
+
+        protected override IntegerToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
+        {
+            var signShift = 0;
+            if (text[absoluteIndex] == '+')
+            {
+                signShift = 1;
+            }
+
+            var intSubstring = text.Substring(absoluteIndex + signShift, consumedLength - signShift);
+
+            if (int.TryParse(intSubstring, out var dummy))
+            {
+                return new IntegerToken(intSubstring, position, consumedLength);
+            }
+
+            return null;
         }
     }
 }

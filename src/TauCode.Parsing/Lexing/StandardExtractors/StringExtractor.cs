@@ -11,15 +11,9 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
     {
         private char _openingDelimiter;
 
-        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
+        public StringExtractor(params Type[] acceptablePreviousTokenTypes)
+            : base(acceptablePreviousTokenTypes)
         {
-            var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
-            return new TextToken(
-                StringTextClass.Instance,
-                GetDecoration(_openingDelimiter),
-                str,
-                position,
-                consumedLength);
         }
 
         private static ITextDecoration GetDecoration(char openingDelimiter)
@@ -44,11 +38,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             _openingDelimiter = this.Context.GetLocalChar(0);
         }
 
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
-        {
-            throw new NotImplementedException();
-        }
-
         protected override bool ProcessEnd()
         {
             throw new LexingException("Unclosed string.", this.Context.GetCurrentAbsolutePosition());
@@ -68,6 +57,17 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             }
 
             return CharAcceptanceResult.Continue;
+        }
+
+        protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
+        {
+            var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
+            return new TextToken(
+                StringTextClass.Instance,
+                GetDecoration(_openingDelimiter),
+                str,
+                position,
+                consumedLength);
         }
     }
 }
