@@ -41,14 +41,15 @@ namespace TauCode.Parsing.Lexing
 
                     if (skipper.IsProcessing)
                     {
-                        throw new NotImplementedException();
+                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to be in processing state.");
                     }
 
                     var skipResult = skipper.Process(_context);
 
                     if (skipper.IsProcessing)
                     {
-                        throw new NotImplementedException();
+                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to be in processing state.");
+
                     }
 
                     if (_context.Depth != 1)
@@ -65,7 +66,7 @@ namespace TauCode.Parsing.Lexing
                     }
                     else if (skipResult.Summary == TextProcessingSummary.CanProduce)
                     {
-                        throw new NotImplementedException(); // should never happen, skippers only 'skip' or 'fail'.
+                        throw LexingHelper.CreateInternalErrorLexingException(_context.GetCurrentAbsolutePosition(), "Skipper is not expected to produce a product.");
                     }
                 }
 

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.TextProcessing.Processors
@@ -36,7 +36,8 @@ namespace TauCode.Parsing.TextProcessing.Processors
 
         public override string Produce(string text, int absoluteIndex, Position position, int consumedLength)
         {
-            throw new NotImplementedException(); // todo should never be called
+            // todo use internal ex.
+            throw new LexingException("'Produce' should not be called", position); // todo
         }
     }
 }
