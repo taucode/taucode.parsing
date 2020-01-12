@@ -1,4 +1,7 @@
-﻿namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
+﻿using TauCode.Extensions;
+using TauCode.Parsing.TextClasses;
+
+namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
     [TextClass("path")]
     public class PathTextClass : TextClassBase
@@ -9,9 +12,19 @@
         {
         }
 
+        // todo: integer is a valid path, too.
         protected override string TryConvertFromImpl(string text, ITextClass anotherClass)
         {
-            throw new System.NotImplementedException();
+            if (anotherClass.IsIn(
+                TermTextClass.Instance,
+                KeyTextClass.Instance,
+                StringTextClass.Instance
+            ))
+            {
+                return text;
+            }
+
+            return null;
         }
     }
 }

@@ -3,6 +3,7 @@ using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardExtractors
@@ -16,7 +17,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
         {
         }
 
-        private static ITextDecoration GetDecoration(char openingDelimiter)
+        private static ITextDecoration GetDecoration(char openingDelimiter, Position position)
         {
             switch (openingDelimiter)
             {
@@ -27,7 +28,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
                     return SingleQuoteTextDecoration.Instance;
 
                 default:
-                    throw new NotImplementedException(); // error.
+                    throw new LexingException($"Invalid string delimiter: '{openingDelimiter}'", position);
             }
         }
 
@@ -47,6 +48,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
         {
             if (localIndex == 0)
             {
+                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(c.IsIn('\'', '"'));
             }
 
@@ -64,7 +66,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
             return new TextToken(
                 StringTextClass.Instance,
-                GetDecoration(_openingDelimiter),
+                GetDecoration(_openingDelimiter, this.StartPosition),
                 str,
                 position,
                 consumedLength);

@@ -7,5 +7,7 @@
         TextProcessingResult Process(ITextProcessingContext context);
 
         bool IsBusy { get; }
+
+        ITextProcessingContext AlphaGetContext();
     }
 }

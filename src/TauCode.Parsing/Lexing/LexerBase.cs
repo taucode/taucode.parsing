@@ -42,11 +42,11 @@ namespace TauCode.Parsing.Lexing
                         continue;
                     }
 
-                    whiteSpaceSkipper.AlphaCheckNotBusy();
+                    whiteSpaceSkipper.AlphaCheckNotBusyAndContextIsNull();
 
                     var result = whiteSpaceSkipper.Process(_context);
 
-                    whiteSpaceSkipper.AlphaCheckNotBusy();
+                    whiteSpaceSkipper.AlphaCheckNotBusyAndContextIsNull();
                     _context.AlphaCheckDepthOne();
 
                     if (result.IsSuccessful())
@@ -94,9 +94,9 @@ namespace TauCode.Parsing.Lexing
                 if (_whiteSpaceSkippers == null)
                 {
                     _whiteSpaceSkippers = this.CreateWhiteSpaceSkippers();
-                    if (_whiteSpaceSkippers == null || !_whiteSpaceSkippers.Any())
+                    if (_whiteSpaceSkippers == null)
                     {
-                        throw new NotImplementedException();
+                        throw LexingHelper.CreateInternalErrorLexingException(additionalInfo: $"'{nameof(CreateWhiteSpaceSkippers)}' returned null.");
                     }
                 }
 
@@ -113,7 +113,7 @@ namespace TauCode.Parsing.Lexing
                     _tokenExtractors = this.CreateTokenExtractors();
                     if (_tokenExtractors == null || !_tokenExtractors.Any())
                     {
-                        throw new NotImplementedException();
+                        throw LexingHelper.CreateInternalErrorLexingException(additionalInfo: $"'{nameof(CreateTokenExtractors)}' returned null or empty collection.");
                     }
                 }
 
@@ -127,7 +127,11 @@ namespace TauCode.Parsing.Lexing
 
         public IList<IToken> Lexize(string input)
         {
-            // todo check args
+            if (input == null)
+            {
+                throw new ArgumentNullException(nameof(input));
+            }
+
             _context = new LexingContext(input);
             var tokens = _context.GetTokenList();
 
@@ -156,7 +160,7 @@ namespace TauCode.Parsing.Lexing
                         continue;
                     }
 
-                    tokenExtractor.AlphaCheckNotBusy();
+                    tokenExtractor.AlphaCheckNotBusyAndContextIsNull();
 
                     var result = tokenExtractor.Process(_context);
 

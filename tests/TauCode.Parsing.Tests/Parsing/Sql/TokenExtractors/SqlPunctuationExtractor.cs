@@ -1,5 +1,6 @@
 ﻿using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
@@ -34,6 +35,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         {
             if (localIndex == 0)
             {
+                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(c.IsIn('(', ')', ','));
             }
 

@@ -1,14 +1,15 @@
-﻿using System;
+﻿using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.TextProcessing
 {
     public static class TextProcessingExtensions // todo merge all extensions into one static class?
     {
-        public static void AlphaCheckNotBusy(this ITextProcessor textProcessor)
+        public static void AlphaCheckNotBusyAndContextIsNull(this ITextProcessor textProcessor)
         {
-            if (textProcessor.IsBusy)
+            if (textProcessor.IsBusy || textProcessor.AlphaGetContext() != null)
             {
-                throw new NotImplementedException();
+                throw LexingHelper.CreateInternalErrorLexingException(null, "Text processor is busy while it should not.");
             }
         }
 
@@ -16,7 +17,7 @@ namespace TauCode.Parsing.TextProcessing
         {
             if (context.Depth != 1)
             {
-                throw new NotImplementedException();
+                throw new AlphaException("Expected depth 1.");
             }
         }
 
@@ -25,6 +26,6 @@ namespace TauCode.Parsing.TextProcessing
 
         public static int GetCurrentColumn(this TextProcessingResult result) =>
             result.CurrentColumn ??
-            throw new NotImplementedException(); // bad operation; something wrong with your logic.
+            throw LexingHelper.CreateInternalErrorLexingException(null, "Invalid operation: result doesn't have current column.");
     }
 }

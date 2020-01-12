@@ -9,9 +9,6 @@
         {   
         }
 
-        protected override string TryConvertFromImpl(string text, ITextClass anotherClass)
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override string TryConvertFromImpl(string text, ITextClass anotherClass) => null;
     }
 }

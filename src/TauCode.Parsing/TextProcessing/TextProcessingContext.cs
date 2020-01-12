@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.TextProcessing
 {
@@ -91,7 +92,13 @@ namespace TauCode.Parsing.TextProcessing
 
         public void ReleaseGeneration()
         {
-            // todo checks
+            if (this.Depth == 1)
+            {
+                throw LexingHelper.CreateInternalErrorLexingException(
+                    null,
+                    "Generation release was requested at depth 1.");
+            }
+
             _generations.Pop();
         }
 
@@ -118,12 +125,13 @@ namespace TauCode.Parsing.TextProcessing
 
         public bool IsEnd()
         {
-            // todo checks
             var lastGeneration = _generations.Peek();
             var absoluteIndex = lastGeneration.StartingIndex + lastGeneration.LocalIndex;
             if (absoluteIndex > this.Text.Length)
             {
-                throw new NotImplementedException();
+                throw LexingHelper.CreateInternalErrorLexingException(
+                    null,
+                    $"{nameof(ITextProcessingContext)} is in an invalid state.");
             }
 
             return absoluteIndex == this.Text.Length;
@@ -152,6 +160,7 @@ namespace TauCode.Parsing.TextProcessing
         public char GetCurrentChar()
         {
             // todo checks
+            // todo should be extension
             var absoluteIndex = this.GetAbsoluteIndex();
             return this.Text[absoluteIndex];
         }
@@ -159,6 +168,7 @@ namespace TauCode.Parsing.TextProcessing
         public char GetLocalChar(int localIndex)
         {
             // todo checks
+            // todo should be extension
             var absoluteIndex = this.GetStartingIndex() + localIndex;
             return this.Text[absoluteIndex];
         }
@@ -166,6 +176,7 @@ namespace TauCode.Parsing.TextProcessing
         public void AdvanceByChar()
         {
             // todo checks
+            // todo should be extension
             this.Advance(1, 0, this.GetCurrentColumn() + 1);
         }
 
@@ -173,7 +184,11 @@ namespace TauCode.Parsing.TextProcessing
         {
             if (this.IsEnd())
             {
-                throw new NotImplementedException(); // todo
+                // todo copy/pasted
+                throw LexingHelper.CreateInternalErrorLexingException(
+                    null,
+                    $"{nameof(ITextProcessingContext)} is in an invalid state.");
+
             }
 
             var wantedIndex = this.GetAbsoluteIndex() + 1;

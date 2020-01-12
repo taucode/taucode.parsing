@@ -9,6 +9,7 @@
         void ReleaseGeneration();
 
         int Depth { get; }
+
         int Version { get; }
 
         int GetCurrentLine();

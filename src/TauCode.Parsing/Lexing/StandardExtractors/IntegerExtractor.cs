@@ -1,5 +1,6 @@
 ﻿using System;
 using TauCode.Extensions;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardExtractors
@@ -33,7 +34,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
         {
             if (localIndex == 0)
             {
-                // todo: check that IsProcessing is false, here & anywhere.
+                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(LexingHelper.IsIntegerFirstChar(c)); // todo: use it everywhere
             }
 

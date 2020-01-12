@@ -32,5 +32,8 @@ namespace TauCode.Parsing.TextProcessing
         }
 
         #endregion
+
+        public virtual ITextProcessingContext AlphaGetContext() => null;
+
     }
 }

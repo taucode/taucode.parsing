@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lexing
@@ -35,7 +36,7 @@ namespace TauCode.Parsing.Lexing
                 x == null ||
                 !x.GetInterfaces().Contains(typeof(IToken))))
             {
-                throw new NotImplementedException(); // todo args
+                throw new ArgumentException("Invalid token types.", nameof(acceptablePreviousTokenTypes));
             }
 
             _acceptablePreviousTokenTypes = new HashSet<Type>(acceptablePreviousTokenTypes);
@@ -100,7 +101,7 @@ namespace TauCode.Parsing.Lexing
 
         public override bool AcceptsFirstChar(char c)
         {
-            this.AlphaCheckNotBusy();
+            this.AlphaCheckNotBusyAndContextIsNull();
 
             var charAcceptanceResult = this.AcceptCharImpl(c, 0);
             switch (charAcceptanceResult)
@@ -109,13 +110,13 @@ namespace TauCode.Parsing.Lexing
                     return true;
 
                 case CharAcceptanceResult.Stop:
-                    throw new NotImplementedException(); // error in your logic.
+                    throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
 
                 case CharAcceptanceResult.Fail:
                     return false;
 
                 default:
-                    throw new NotImplementedException(); // how can be?
+                    throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
             }
         }
 
@@ -126,7 +127,7 @@ namespace TauCode.Parsing.Lexing
                 throw new ArgumentNullException(nameof(context));
             }
 
-            this.AlphaCheckNotBusy();
+            this.AlphaCheckNotBusyAndContextIsNull();
 
             var lexingContext = (ILexingContext)context;
 
@@ -165,7 +166,7 @@ namespace TauCode.Parsing.Lexing
                 {
                     if (this.Context.GetLocalIndex() == 0)
                     {
-                        throw new NotImplementedException(); // todo: how on earth did we get here?
+                        throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
                     }
 
                     if (isEnd && !gotStop)
@@ -205,7 +206,7 @@ namespace TauCode.Parsing.Lexing
                 var subProcessResult = this.SubProcess();
                 if (subProcessResult.IsSuccessful())
                 {
-                    throw new NotImplementedException();
+                    throw new AlphaException("todo!");
                 }
 
                 var c = this.Context.GetCurrentChar();
@@ -218,7 +219,7 @@ namespace TauCode.Parsing.Lexing
                 if (this.Context.GetLocalIndex() == 0 &&
                     !acceptanceResult.IsIn(CharAcceptanceResult.Continue, CharAcceptanceResult.Fail))
                 {
-                    throw new NotImplementedException(); // todo error in your logic.
+                    throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
                 }
 
                 // check: only 'Stop' allows altering of context's version.
@@ -227,7 +228,7 @@ namespace TauCode.Parsing.Lexing
                     var newContextVersion = this.Context.Version;
                     if (oldContextVersion != newContextVersion)
                     {
-                        throw new NotImplementedException();
+                        throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic."); // todo: copy/pasted.
                     }
                 }
 
@@ -248,11 +249,13 @@ namespace TauCode.Parsing.Lexing
                         return TextProcessingResult.Failure;
 
                     default:
-                        throw new NotImplementedException(); // wtf? (todo)
+                        throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
                 }
             }
         }
 
         #endregion
+
+        public override ITextProcessingContext AlphaGetContext() => this.Context;
     }
 }

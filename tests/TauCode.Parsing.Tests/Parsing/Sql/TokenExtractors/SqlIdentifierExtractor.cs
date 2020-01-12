@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
 using TauCode.Parsing.TextDecorations;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
@@ -73,7 +74,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         {
             if (localIndex == 0)
             {
-                // todo: check IsProcessing == false, here & anywhere
+                this.AlphaCheckNotBusyAndContextIsNull();
                 // todo: check Context is null, here & anywhere.
 
                 return this.ContinueOrFail(
@@ -91,7 +92,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             {
                 if (_openingDelimiter.HasValue)
                 {
-                    throw new NotImplementedException(); // todo error unclosed identifier.
+                    throw new LexingException("Unclosed identifier.", this.Context.GetCurrentAbsolutePosition());
                 }
             }
 
@@ -109,7 +110,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
                         }
                         else
                         {
-                            throw new NotImplementedException(); // error: unclosed identifier
+                            throw new LexingException("Unclosed identifier.", this.Context.GetCurrentAbsolutePosition());
                         }
                     }
                     else
@@ -125,7 +126,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 
             if (_openingDelimiter.HasValue)
             {
-                throw new NotImplementedException(); // todo error unclosed identifier.
+                throw new LexingException("Unclosed identifier.", this.Context.GetCurrentAbsolutePosition());
             }
 
             return CharAcceptanceResult.Fail;

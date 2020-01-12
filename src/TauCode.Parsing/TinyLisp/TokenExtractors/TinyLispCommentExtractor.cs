@@ -1,4 +1,5 @@
 ﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
@@ -28,6 +29,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
         {
             if (localIndex == 0)
             {
+                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(c == ';');
             }
 

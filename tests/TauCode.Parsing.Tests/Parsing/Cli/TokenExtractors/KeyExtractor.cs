@@ -37,6 +37,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
             if (localIndex == 0)
             {
+                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(c == '-');
             }
 
