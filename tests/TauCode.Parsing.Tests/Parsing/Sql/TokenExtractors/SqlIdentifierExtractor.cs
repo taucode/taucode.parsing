@@ -31,19 +31,13 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         }
 
         private char? _openingDelimiter;
-        
-        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
+
+        public SqlIdentifierExtractor()
+            : base(new[]
+            {
+                typeof(PunctuationToken)
+            })
         {
-            var shift = _openingDelimiter.HasValue ? 1 : 0;
-
-            var str = text.Substring(absoluteIndex + shift, consumedLength - shift * 2);
-
-            return new TextToken(
-                SqlIdentifierClass.Instance,
-                NoneTextDecoration.Instance,
-                str,
-                position,
-                consumedLength);
         }
 
         protected override void OnBeforeProcess()
@@ -61,10 +55,18 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             }
         }
 
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-            return
-                previousToken is PunctuationToken; // todo make it tunable (use list of acceptable token types in ctor).
+            var shift = _openingDelimiter.HasValue ? 1 : 0;
+
+            var str = text.Substring(absoluteIndex + shift, consumedLength - shift * 2);
+
+            return new TextToken(
+                SqlIdentifierClass.Instance,
+                NoneTextDecoration.Instance,
+                str,
+                position,
+                consumedLength);
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
@@ -119,13 +121,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
                 {
                     return CharAcceptanceResult.Fail; // got something like "[]" - delimited "empty" identifier
                 }
-
-                throw new NotImplementedException();
-
-                //if (localIndex > 1 && c == )
-                //{
-
-                //}
             }
 
             if (_openingDelimiter.HasValue)

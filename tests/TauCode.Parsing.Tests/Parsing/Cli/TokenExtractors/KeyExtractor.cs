@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TextProcessing;
@@ -11,10 +10,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
     {
         private int _hyphenCountInARow;
 
-        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
-        {
-            var str = text.Substring(absoluteIndex, consumedLength);
-            return new TextToken(KeyTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
+        public KeyExtractor()
+            : base(null)
+        {   
         }
 
         protected override void OnBeforeProcess()
@@ -24,9 +22,10 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
             _hyphenCountInARow = 1; // guaranteed to start with '-'.
         }
 
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-            throw new NotImplementedException();
+            var str = text.Substring(absoluteIndex, consumedLength);
+            return new TextToken(KeyTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
         }
 
         protected override bool ProcessEnd()

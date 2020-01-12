@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Extensions;
+﻿using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextDecorations;
@@ -9,7 +8,20 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
     public class PathExtractor : TokenExtractorBase<TextToken>
     {
-        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
+        public PathExtractor()
+            : base(null)
+        {
+
+        }
+
+        protected override void OnBeforeProcess()
+        {
+            this.AlphaCheckOnBeforeProcess();
+
+            // idle
+        }
+
+        protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var str = text.Substring(absoluteIndex, consumedLength);
 
@@ -21,19 +33,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 consumedLength);
 
             return token;
-
-        }
-
-        protected override void OnBeforeProcess()
-        {
-            this.AlphaCheckOnBeforeProcess();
-
-            // idle
-        }
-
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
-        {
-            throw new NotImplementedException();
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)

@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Parsing.Old", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TauCode.Parsing.Tests", "tests\TauCode.Parsing.Tests\TauCode.Parsing.Tests.csproj", "{8950B665-3181-4848-AA20-8E044268EF1C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TauCode.Parsing.Tests.Exe", "tests\TauCode.Parsing.Tests.Exe\TauCode.Parsing.Tests.Exe.csproj", "{97B192DA-09DC-482B-92E1-22203FE07519}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +50,10 @@ Global
 		{8950B665-3181-4848-AA20-8E044268EF1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8950B665-3181-4848-AA20-8E044268EF1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8950B665-3181-4848-AA20-8E044268EF1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97B192DA-09DC-482B-92E1-22203FE07519}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97B192DA-09DC-482B-92E1-22203FE07519}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97B192DA-09DC-482B-92E1-22203FE07519}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97B192DA-09DC-482B-92E1-22203FE07519}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{E766970C-1E35-4979-B2EE-5DE8A218A1EA} = {EA6273A9-3C2B-47AD-AEFF-C4ADF3EED4F7}
 		{D17414F7-E468-4931-A18B-A93E016F3874} = {6C7B821D-9D49-47FD-AD07-9B8A7A81F241}
 		{8950B665-3181-4848-AA20-8E044268EF1C} = {EA6273A9-3C2B-47AD-AEFF-C4ADF3EED4F7}
+		{97B192DA-09DC-482B-92E1-22203FE07519} = {EA6273A9-3C2B-47AD-AEFF-C4ADF3EED4F7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D05FF35E-F455-4502-B560-D25313D00BD8}
