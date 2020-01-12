@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using TauCode.Parsing.Tokens;
 
@@ -10,12 +10,13 @@ namespace TauCode.Parsing.TinyLisp.Tokens
         public LispPunctuationToken(
             Punctuation value,
             Position position,
-            int consumedLength,
-            string name = null,
-            IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(value, position, consumedLength, name, properties)
+            int consumedLength)
+            : base(value, position, consumedLength)
         {
-            // todo: check 'consumedLength == 1'?
+            if (consumedLength != 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(consumedLength));
+            }
         }
 
         public override string ToString() => Value.PunctuationToChar().ToString();
