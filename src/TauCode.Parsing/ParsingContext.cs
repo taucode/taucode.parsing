@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace TauCode.Parsing
 {
-    public class Context : IContext
+    public class ParsingContext : IParsingContext
     {
         #region Fields
 
@@ -13,7 +13,7 @@ namespace TauCode.Parsing
 
         #region Constructor
 
-        public Context(ITokenStream tokenStream)
+        public ParsingContext(ITokenStream tokenStream)
         {
             this.TokenStream = tokenStream ?? throw new ArgumentNullException(nameof(tokenStream));
             this.ResultAccumulator = new ResultAccumulator();

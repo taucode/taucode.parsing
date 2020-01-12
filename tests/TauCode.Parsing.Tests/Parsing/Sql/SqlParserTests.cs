@@ -35,7 +35,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
-            IBuilder builder = new Builder();
+            ITreeBuilder builder = new TreeBuilder();
             var root = builder.Build(nodeFactory, list);
 
             IParser parser = new Parser

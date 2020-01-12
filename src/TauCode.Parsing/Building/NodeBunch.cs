@@ -2,9 +2,9 @@
 
 namespace TauCode.Parsing.Building
 {
-    public class BuildResult
+    public class NodeBunch
     {
-        public BuildResult(NodeBox head, NodeBox tail)
+        public NodeBunch(NodeBox head, NodeBox tail)
         {
             this.Head = head ?? throw new ArgumentNullException(nameof(head));
             this.Tail = tail ?? throw new ArgumentNullException(nameof(tail));

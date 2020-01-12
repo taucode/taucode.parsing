@@ -27,7 +27,7 @@ namespace TauCode.Parsing
             }
 
             var stream = new TokenStream(tokens);
-            IContext context = new Context(stream);
+            IParsingContext context = new ParsingContext(stream);
             var initialNodes = ParsingHelper.GetNonIdleNodes(new[] { root });
 
             context.SetNodes(initialNodes);

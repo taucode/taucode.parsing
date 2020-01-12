@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing.Building
 {
-    public interface IBuilder
+    public interface ITreeBuilder
     {
         INode Build(INodeFactory nodeFactory, PseudoList defblocks);
     }

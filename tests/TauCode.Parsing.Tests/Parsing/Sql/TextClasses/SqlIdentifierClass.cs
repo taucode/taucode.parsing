@@ -53,7 +53,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
             var form = reader.Read(tokens);
 
             var nodeFactory = new SqlNodeFactory();
-            var builder = new Builder();
+            var builder = new TreeBuilder();
             var root = builder.Build(nodeFactory, form);
             var nodes = root.FetchTree();
 
