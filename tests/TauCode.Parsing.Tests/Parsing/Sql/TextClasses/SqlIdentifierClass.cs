@@ -2,7 +2,6 @@
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TextClasses;
@@ -50,7 +49,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
             var grammar = typeof(SqlTestsHelper).Assembly.GetResourceText("sql-grammar.lisp", true);
             var tokens = _tinyLispLexer.Lexize(grammar);
 
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var form = reader.Read(tokens);
 
             var nodeFactory = new SqlNodeFactory();

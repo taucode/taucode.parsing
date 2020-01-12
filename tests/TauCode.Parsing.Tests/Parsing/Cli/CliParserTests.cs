@@ -4,7 +4,6 @@ using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
@@ -36,12 +35,15 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             
             var tokens = _tinyLispLexer.Lexize(input);
 
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParserLab parser = new ParserLab();
+            IParser parser = new Parser
+            {
+                Root = root,
+            };
 
             var commandText =
                 "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
@@ -92,14 +94,15 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             
             var tokens = _tinyLispLexer.Lexize(input);
 
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParserLab parser = new ParserLab
+            IParser parser = new Parser
             {
                 WantsOnlyOneResult = true,
+                Root = root,
             };
             
 

@@ -8,10 +8,4 @@
     <ProjectReference Include="..\TauCode.Parsing\TauCode.Parsing.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CommonLab\" />
-    <Folder Include="TextProcessors\" />
-    <Folder Include="TinyLispLab\" />
-  </ItemGroup>
-
 </Project>

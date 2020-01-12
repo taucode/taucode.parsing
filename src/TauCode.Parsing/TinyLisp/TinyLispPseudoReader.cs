@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextClasses;
-using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing.TinyLisp
 {
-    public class TinyLispPseudoReaderLab : ITinyLispPseudoReader
+    public class TinyLispPseudoReader : ITinyLispPseudoReader
     {
         public PseudoList Read(IList<IToken> tokens)
         {

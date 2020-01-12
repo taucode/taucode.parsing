@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
@@ -36,7 +35,7 @@ namespace TauCode.Parsing.Tests.Parsing
             someText.EstablishLink(EndNode.Instance);
             exactText.EstablishLink(EndNode.Instance);
 
-            IParserLab parser = new ParserLab();
+            IParser parser = new Parser();
 
             var tokens = new List<IToken>
             {

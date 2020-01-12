@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Building;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Sql.Data;
@@ -34,12 +33,15 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 
             var tokens = _tinyLispLexer.Lexize(input);
 
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var list = reader.Read(tokens);
             IBuilder builder = new Builder();
             var root = builder.Build(nodeFactory, list);
 
-            IParserLab parser = new ParserLab();
+            IParser parser = new Parser
+            {
+                Root = root,
+            };
 
             var allSqlNodes = root.FetchTree();
 
@@ -47,18 +49,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                 .Where(x => x is ExactTextNode)
                 .Cast<ExactTextNode>()
                 .ToList();
-
-            // todo clean
-            //foreach (var exactTextNode in exactTextNodes)
-            //{
-            //    exactTextNode.IsCaseSensitive = false;
-            //}
-
-            //var reservedWords = exactTextNodes
-            //    .Select(x => x.ExactText)
-            //    .Distinct()
-            //    .Select(x => x.ToUpperInvariant())
-            //    .ToHashSet();
 
             #region assign job to nodes
 
@@ -363,16 +353,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
                     x.Name.EndsWith("-name", StringComparison.InvariantCultureIgnoreCase))
                 .Cast<TextNode>()
                 .ToList();
-
-            // todo: !!! sql lexer will do this job!
-            //foreach (var objectNameToken in objectNameTokens)
-            //{
-            //    objectNameToken.AdditionalChecker = (token, accumulator) =>
-            //    {
-            //        var textToken = ((TextTokenLab)token).Text.ToUpperInvariant();
-            //        return !reservedWords.Contains(textToken);
-            //    };
-            //}
 
             var sql =
                 @"

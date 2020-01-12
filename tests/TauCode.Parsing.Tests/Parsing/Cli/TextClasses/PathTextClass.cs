@@ -1,6 +1,4 @@
-﻿using TauCode.Parsing.Lab;
-
-namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
+﻿namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
 {
     [TextClass("path")]
     public class PathTextClass : TextClassBase

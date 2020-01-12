@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
@@ -112,7 +111,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key three)";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens);
 
             // Act
@@ -129,7 +128,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key three)";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -149,7 +148,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key three :your-key :no-luck)";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -171,7 +170,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key three :your-key)";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -191,7 +190,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key three :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -209,7 +208,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -233,7 +232,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -250,7 +249,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -270,7 +269,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key one two \"three\" :your-key :no-items-for-you \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -289,7 +288,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key one two \"three\" :no-items-for-you \"some string\" :your-key-at-end)";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -334,7 +333,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -353,7 +352,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
 
@@ -372,7 +371,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -389,7 +388,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key nil one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -406,7 +405,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = "(foo one two :key t one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -425,7 +424,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var formText = $"(foo one two :key {badItem} one two \"three\" :your-key \"some string\")";
             
             var tokens = _lexer.Lexize(formText);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -445,7 +444,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Arrange
             
             var tokens = _lexer.Lexize(form);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -519,7 +518,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Arrange
             
             var tokens = _lexer.Lexize(form);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
             
             // Act
@@ -565,7 +564,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Arrange
             
             var tokens = _lexer.Lexize(form);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -583,7 +582,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Arrange
             
             var tokens = _lexer.Lexize(form);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
@@ -601,7 +600,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             // Arrange
             
             var tokens = _lexer.Lexize(form);
-            var reader = new TinyLispPseudoReaderLab();
+            var reader = new TinyLispPseudoReader();
             var pseudoList = reader.Read(tokens).Single().AsPseudoList();
 
             // Act
