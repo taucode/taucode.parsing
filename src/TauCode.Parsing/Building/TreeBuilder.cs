@@ -121,7 +121,7 @@ namespace TauCode.Parsing.Building
 
             if (headNode == null)
             {
-                throw new NotImplementedException(); // check your factory, it returns nulls...
+                throw new BuildingException("Node factory returned null.");
             }
 
             var tree = headNode.FetchTree();
@@ -134,10 +134,18 @@ namespace TauCode.Parsing.Building
             {
                 var headNodeBox = new NodeBox(headNode);
 
-                var tailNode = tree.Single(x => x.EstablishedLinks.Count == 0); // todo: can throw
-                var tailNodeBox = new NodeBox(tailNode, links);
+                try
+                {
+                    var tailNode = tree.Single(x => x.EstablishedLinks.Count == 0);
+                    var tailNodeBox = new NodeBox(tailNode, links);
 
-                return new NodeBunch(headNodeBox, tailNodeBox);
+                    return new NodeBunch(headNodeBox, tailNodeBox);
+
+                }
+                catch (Exception ex)
+                {
+                    throw new BuildingException("More than one tail node (the node which doesn't have links).", ex);
+                }
             }
         }
 

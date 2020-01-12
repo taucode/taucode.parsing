@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.TextClasses;
+﻿using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
 
@@ -21,17 +20,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
         protected override void OnBeforeProcess()
         {
-            // todo: temporary check that IsProcessing == FALSE, everywhere
-            if (this.IsProcessing)
-            {
-                throw new NotImplementedException();
-            }
-
-            // todo: temporary check that LocalPosition == 1, everywhere
-            if (this.Context.GetLocalIndex() != 1)
-            {
-                throw new NotImplementedException();
-            }
+            this.AlphaCheckOnBeforeProcess();
 
             // idle
         }

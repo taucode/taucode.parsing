@@ -2,7 +2,6 @@
 using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.TextProcessing;
-using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Lexing
 {
@@ -46,7 +45,7 @@ namespace TauCode.Parsing.Lexing
 
             var lexingContext = (ILexingContext)context;
 
-            var previousChar = lexingContext.GetPreviousAbsoluteChar();
+            var previousChar = lexingContext.TryGetPreviousLocalChar();
             if (previousChar.HasValue && !LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar.Value))
             {
                 var previousToken = lexingContext.Tokens.LastOrDefault(); // todo: DO optimize.
@@ -229,5 +228,14 @@ namespace TauCode.Parsing.Lexing
 
         protected virtual bool IsProducer =>
             true; // most token extractors produce something; however, comment extractors do not.
+
+        protected void AlphaCheckOnBeforeProcess()
+        {
+            var bad1 = this.IsProcessing;
+            var bad2 = this.Context.GetLocalIndex() != 1;
+            var good = !(bad1 || bad2);
+
+            ParsingHelper.AlphaAssert(good);
+        }
     }
 }

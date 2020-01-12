@@ -26,6 +26,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override void OnBeforeProcess()
         {
+            this.AlphaCheckOnBeforeProcess();
+
             // idle
         }
 

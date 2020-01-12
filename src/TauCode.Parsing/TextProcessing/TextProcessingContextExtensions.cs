@@ -1,4 +1,6 @@
-﻿namespace TauCode.Parsing.TextProcessing
+﻿using TauCode.Parsing.Exceptions;
+
+namespace TauCode.Parsing.TextProcessing
 {
     public static class TextProcessingContextExtensions
     {
@@ -21,6 +23,13 @@
 
             indexShift = newIndex - oldIndex;
             lineShift = newLine - oldLine;
+        }
+
+        public static char GetPreviousLocalChar(this ITextProcessingContext context)
+        {
+            return context.TryGetPreviousLocalChar()
+                   ??
+                   throw new LexingException("Cannot get previous local char when local index is 0", context.GetCurrentAbsolutePosition());
         }
     }
 }

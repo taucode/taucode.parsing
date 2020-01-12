@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
@@ -22,17 +21,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
         protected override void OnBeforeProcess()
         {
-            // todo: temporary check that IsProcessing == FALSE, everywhere
-            if (this.IsProcessing)
-            {
-                throw new NotImplementedException();
-            }
-
-            // todo: temporary check that LocalPosition == 1, everywhere
-            if (this.Context.GetLocalIndex() != 1)
-            {
-                throw new NotImplementedException();
-            }
+            this.AlphaCheckOnBeforeProcess();
 
             // idle
         }
