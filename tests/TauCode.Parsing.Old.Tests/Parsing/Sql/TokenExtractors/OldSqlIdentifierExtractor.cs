@@ -29,7 +29,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql.TokenExtractors
 
             var identifier = str.Substring(1, str.Length - 2);
 
-            var position = new Position(this.StartingLine, this.StartColumn);
+            var position = new Position(this.StartLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new OldTextToken(
