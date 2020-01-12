@@ -54,16 +54,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             return _acceptablePreviousTokenTypes.Contains(previousToken.GetType());
         }
 
-        //protected override bool AcceptsPreviousCharImpl(char previousChar)
-        //{
-        //    //var accepts =
-        //    //    LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar) ||
-        //    //    previousChar == '"' ||
-        //    //    LexingHelper.IsStandardPunctuationChar()
-
-        //    throw new NotImplementedException();
-        //}
-
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
             if (localIndex == 0)
@@ -81,7 +71,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             {
                 // period ('.') is rarely a thing that you can use to delimit an integer within any grammar.
                 // underscore ('_') is a punctuation mark, but nowadays it is usually a part of identifiers or other words.
-
                 return CharAcceptanceResult.Fail;
             }
 
@@ -89,8 +78,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             // todo: this code sucks. e.g "-1-2" is a symbol with name "-1-2" in Lisp, but it is an expression " -1 -2  " ( == -3) in C#. check it later.
             if (char.IsPunctuation(c))
             {
-                //var gotOnlySign = this.GotOnlySign();
-                if (/*gotOnlySign*/ _sign.HasValue)
+                if (_sign.HasValue)
                 {
                     return CharAcceptanceResult.Fail;
                 }
@@ -106,22 +94,5 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             // other chars like letters and stuff => not allowed.
             return CharAcceptanceResult.Fail;
         }
-
-        //private bool GotOnlySign()
-        //{
-        //    var localIndex = this.Context.GetLocalIndex();
-        //    if (localIndex == 0)
-        //    {
-        //        throw new NotImplementedException(); // not applicable. invalid call.
-        //    }
-
-        //    if (this.Context.GetLocalIndex() > 0)
-        //    {
-        //        var firstChar = this.Context.GetLocalChar(0);
-        //        return firstChar.IsIn('+', '-');
-        //    }
-
-        //    return false;
-        //}
     }
 }

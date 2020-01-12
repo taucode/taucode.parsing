@@ -5,10 +5,11 @@ using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lexing
 {
-    // todo clean up
     public abstract class TokenExtractorBase<TToken> : ITokenExtractor<TToken>
         where TToken : IToken
     {
+        #region Nested
+
         protected enum CharAcceptanceResult
         {
             Continue = 1,
@@ -16,18 +17,101 @@ namespace TauCode.Parsing.Lexing
             Fail,
         }
 
+        #endregion
+
+        #region Fields
+
         private bool _isProcessing;
 
+        #endregion
+
+        #region Abstract
+
+        protected abstract CharAcceptanceResult AcceptCharImpl(char c, int localIndex);
+
+        protected abstract bool AcceptsPreviousTokenImpl(IToken previousToken);
+
+        protected abstract void OnBeforeProcess();
+
+        #endregion
+
+        #region Protected
+        
         protected ILexingContext Context { get; private set; }
 
-        protected virtual TextProcessingResult Delegate()
+        protected virtual bool ProcessEnd()
+        {
+            // idle, no problem for most token extractors.
+            //
+            // but of course will fail for unclosed strings, SQL identifiers [my_column_name , etc.
+            // in such a case, throw an 'Unexpected-end' LexingException here.
+
+            return true;
+        }
+
+        protected virtual TextProcessingResult Subprocess()
         {
             return TextProcessingResult.Fail;
         }
 
+        protected Position StartPosition { get; private set; }
+
+        protected CharAcceptanceResult ContinueOrFail(bool b)
+        {
+            // todo: take adv. of it anywhere
+            return b ? CharAcceptanceResult.Continue : CharAcceptanceResult.Fail;
+        }
+
+        protected virtual bool IsProducer =>
+            true; // most token extractors produce something; however, comment extractors do not.
+
+        #endregion
+
+        #region ITokenExtractor<TToken> Members
+
         public abstract TToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength);
 
-        protected abstract void OnBeforeProcess();
+        #endregion
+
+        #region ITextProcessor<TProduct> Members
+
+        public bool AcceptsFirstChar(char c)
+        {
+            if (this.IsProcessing)
+            {
+                throw new NotImplementedException();
+            }
+
+            var charAcceptanceResult = this.AcceptCharImpl(c, 0);
+            switch (charAcceptanceResult)
+            {
+                case CharAcceptanceResult.Continue:
+                    return true;
+
+                case CharAcceptanceResult.Stop:
+                    throw new NotImplementedException(); // error in your logic.
+
+                case CharAcceptanceResult.Fail:
+                    return false;
+
+                default:
+                    throw new NotImplementedException(); // how can be?
+            }
+        }
+
+        public bool IsProcessing
+        {
+            get => _isProcessing;
+            private set
+            {
+                if (value == _isProcessing)
+                {
+                    throw new NotImplementedException(); // todo suspicious: why set to same value?
+                }
+
+                _isProcessing = value;
+            }
+        }
 
         public TextProcessingResult Process(ITextProcessingContext context)
         {
@@ -58,10 +142,8 @@ namespace TauCode.Parsing.Lexing
                         return TextProcessingResult.Fail;
                     }
                 }
-
-                //var acceptsChar = this.AcceptsPreviousCharImpl(previousChar.Value);
             }
-            
+
             this.Context = lexingContext;
             this.StartPosition = this.Context.GetCurrentAbsolutePosition();
             this.Context.RequestGeneration();
@@ -113,7 +195,7 @@ namespace TauCode.Parsing.Lexing
                     return new TextProcessingResult(summary, indexShift, lineShift, currentColumn);
                 }
 
-                var delegatedResult = this.Delegate();
+                var delegatedResult = this.Subprocess();
                 if (delegatedResult.Summary != TextProcessingSummary.Fail)
                 {
                     throw new NotImplementedException();
@@ -156,78 +238,18 @@ namespace TauCode.Parsing.Lexing
                         this.IsProcessing = false;
                         return TextProcessingResult.Fail;
 
-                    //break;
-
                     default:
                         throw new NotImplementedException(); // wtf? (todo)
                 }
             }
         }
 
-        protected abstract bool AcceptsPreviousTokenImpl(IToken previousToken);
-
         public IToken Produce(string text, int absoluteIndex, Position position, int consumedLength)
             => this.ProduceToken(text, absoluteIndex, position, consumedLength);
 
-        public bool AcceptsFirstChar(char c)
-        {
-            if (this.IsProcessing)
-            {
-                throw new NotImplementedException();
-            }
+        #endregion
 
-            var charAcceptanceResult = this.AcceptCharImpl(c, 0);
-            switch (charAcceptanceResult)
-            {
-                case CharAcceptanceResult.Continue:
-                    return true;
-
-                case CharAcceptanceResult.Stop:
-                    throw new NotImplementedException(); // error in your logic.
-
-                case CharAcceptanceResult.Fail:
-                    return false;
-
-                default:
-                    throw new NotImplementedException(); // how can be?
-            }
-        }
-        
-        public bool IsProcessing
-        {
-            get => _isProcessing;
-            private set
-            {
-                if (value == _isProcessing)
-                {
-                    throw new NotImplementedException(); // todo suspicious: why set to same value?
-                }
-
-                _isProcessing = value;
-            }
-        }
-
-        protected virtual bool ProcessEnd()
-        {
-            // idle, no problem for most token extractors.
-            //
-            // but of course will fail for unclosed strings, SQL identifiers [my_column_name , etc.
-            // in such a case, throw a todo exception here.
-
-            return true;
-        }
-
-        protected Position StartPosition { get; private set; }
-
-        protected abstract CharAcceptanceResult AcceptCharImpl(char c, int localIndex);
-
-        protected CharAcceptanceResult ContinueOrFail(bool b)
-        {
-            return b ? CharAcceptanceResult.Continue : CharAcceptanceResult.Fail;
-        }
-
-        protected virtual bool IsProducer =>
-            true; // most token extractors produce something; however, comment extractors do not.
+        #region Alpha Debug
 
         protected void AlphaCheckOnBeforeProcess()
         {
@@ -237,5 +259,7 @@ namespace TauCode.Parsing.Lexing
 
             ParsingHelper.AlphaAssert(good);
         }
+
+        #endregion
     }
 }
