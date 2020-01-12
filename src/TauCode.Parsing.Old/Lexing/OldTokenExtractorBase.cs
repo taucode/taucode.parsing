@@ -45,7 +45,7 @@ namespace TauCode.Parsing.Old.Lexing
 
         protected int LineShift { get; private set; }
 
-        protected int StartingColumn { get; private set; }
+        protected int StartColumn { get; private set; }
 
         protected int CurrentColumn { get; private set; }
 
@@ -175,7 +175,7 @@ namespace TauCode.Parsing.Old.Lexing
         protected Position GetStartingAbsolutePosition()
         {
             var line = this.StartingLine;
-            var column = this.StartingColumn;
+            var column = this.StartColumn;
             return new Position(line, column);
         }
 
@@ -211,7 +211,7 @@ namespace TauCode.Parsing.Old.Lexing
             this.StartingLine = line;
             this.LineShift = 0;
 
-            this.StartingColumn = column;
+            this.StartColumn = column;
             this.CurrentColumn = column;
 
             this.LocalCharIndex = 0;

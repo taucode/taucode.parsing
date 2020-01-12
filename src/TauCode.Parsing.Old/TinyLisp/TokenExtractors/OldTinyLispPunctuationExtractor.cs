@@ -32,7 +32,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 
             var position = new Position(
                 this.StartingLine,
-                this.StartingColumn);
+                this.StartColumn);
 
             return new LispPunctuationToken(punctuation, position, this.LocalCharIndex);
         }

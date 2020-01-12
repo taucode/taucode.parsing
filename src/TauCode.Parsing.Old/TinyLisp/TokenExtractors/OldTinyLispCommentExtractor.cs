@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
         protected override IToken ProduceResult()
         {
             var str = this.ExtractResultString();
-            var position = new Position(this.StartingLine, this.StartingColumn);
+            var position = new Position(this.StartingLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
             return new OldCommentToken(str, position, consumedLength);
         }

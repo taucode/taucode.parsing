@@ -17,7 +17,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 
         protected override IToken ProduceResult()
         {
-            var position = new Position(this.StartingLine, this.StartingColumn);
+            var position = new Position(this.StartingLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new PunctuationToken('=', position, consumedLength);

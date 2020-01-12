@@ -27,7 +27,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
 
-            var position = new Position(this.StartingLine, this.StartingColumn);
+            var position = new Position(this.StartingLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new OldTextToken(

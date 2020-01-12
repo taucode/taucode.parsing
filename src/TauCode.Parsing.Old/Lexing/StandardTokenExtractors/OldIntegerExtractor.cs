@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Old.Lexing.StandardTokenExtractors
                 str = str.Substring(1);
             }
 
-            var position = new Position(this.StartingLine, this.StartingColumn);
+            var position = new Position(this.StartingLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new IntegerToken(str, position, consumedLength);

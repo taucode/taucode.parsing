@@ -27,7 +27,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
                 return null;
             }
 
-            var position = new Position(this.StartingLine, this.StartingColumn);
+            var position = new Position(this.StartingLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new LispSymbolToken(str, position, consumedLength);

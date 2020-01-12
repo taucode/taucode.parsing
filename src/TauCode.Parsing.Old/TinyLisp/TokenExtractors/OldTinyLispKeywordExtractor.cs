@@ -21,7 +21,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
         {
             var res = this.ExtractResultString();
 
-            var position = new Position(this.StartingLine, this.StartingColumn);
+            var position = new Position(this.StartingLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new KeywordToken(res, position, consumedLength);
