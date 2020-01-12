@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Old.Tokens;
 
 namespace TauCode.Parsing.Old.Lexing
 {
@@ -75,12 +76,12 @@ namespace TauCode.Parsing.Old.Lexing
 
                 var c = this.GetCharAtIndex(index);
 
-                if (c == LexingHelper.Cr)
+                if (c == LexingHelper.CR)
                 {
                     var nextChar = this.TryGetCharAtIndex(index + 1);
                     if (nextChar.HasValue)
                     {
-                        if (nextChar.Value == LexingHelper.Lf)
+                        if (nextChar.Value == LexingHelper.LF)
                         {
                             // got CRLF
                             index += 2;
@@ -101,7 +102,7 @@ namespace TauCode.Parsing.Old.Lexing
                         break;
                     }
                 }
-                else if (c == LexingHelper.Lf)
+                else if (c == LexingHelper.LF)
                 {
                     // got LF
                     index++;
@@ -275,7 +276,7 @@ namespace TauCode.Parsing.Old.Lexing
                         this.GetCurrentPosition());
                 }
 
-                if (nextToken.HasPayload)
+                if (!(nextToken is OldCommentToken))
                 {
                     list.Add(nextToken);
                 }

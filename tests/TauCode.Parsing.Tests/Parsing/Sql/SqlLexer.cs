@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardExtractors;
 using TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors;
@@ -15,7 +14,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
             {
                 new WordExtractor(),
                 new SqlPunctuationExtractor(),
-                new IntegerExtractor(new List<Type>
+                new IntegerExtractor(new[]
                 {
                     typeof(PunctuationToken),
                 }),

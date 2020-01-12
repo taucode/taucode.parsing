@@ -2,30 +2,35 @@
 
 namespace TauCode.Parsing.TextProcessing
 {
-    public abstract class TextProcessorBase<TProduct> : ITextProcessor<TProduct>
+    public abstract class TextProcessorBase : ITextProcessor
     {
-        private bool _isProcessing;
+        #region Fields
+
+        private bool _isBusy;
+
+        #endregion
+
+        #region ITextProcessor Members
 
         public abstract bool AcceptsFirstChar(char c);
 
-        public bool IsProcessing
+        public abstract TextProcessingResult Process(ITextProcessingContext context);
+
+        public bool IsBusy
         {
-            get => _isProcessing;
-            private set
+            get => _isBusy;
+            protected set
             {
-                if (value == _isProcessing)
+                if (value == _isBusy)
                 {
                     throw new TextProcessingException(
-                        $"Suspicious operation: setting '{nameof(IsProcessing)}' to the same value it has now ({value}).");
+                        $"Suspicious operation: setting '{nameof(IsBusy)}' to the same value it has now ({value}).");
                 }
 
-                _isProcessing = value;
+                _isBusy = value;
             }
         }
 
-
-        public abstract TextProcessingResult Process(ITextProcessingContext context);
-
-        public abstract TProduct Produce(string text, int absoluteIndex, Position position, int consumedLength);
+        #endregion
     }
 }

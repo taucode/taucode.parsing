@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardExtractors;
 using TauCode.Parsing.TinyLisp.TokenExtractors;
+using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp
 {
@@ -15,12 +15,12 @@ namespace TauCode.Parsing.TinyLisp
                 new TinyLispCommentExtractor(),
                 new TinyLispSymbolExtractor(),
                 new TinyLispPunctuationExtractor(),
-                new IntegerExtractor(new Type[]
+                new IntegerExtractor(new[]
                 {
-                    typeof(TinyLispPunctuationExtractor),
+                    typeof(PunctuationToken),
                 }),
                 new TinyLispKeywordExtractor(),
-                new TinyLispStringExtractor(), 
+                new TinyLispStringExtractor(),
             };
         }
     }

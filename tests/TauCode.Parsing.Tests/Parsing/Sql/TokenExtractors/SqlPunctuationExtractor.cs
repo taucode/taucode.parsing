@@ -4,11 +4,18 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
+    // todo clean
     public class SqlPunctuationExtractor : TokenExtractorBase<PunctuationToken>
     {
-        public override PunctuationToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
+        public SqlPunctuationExtractor()
+            : base(new[]
+            {
+                typeof(PunctuationToken),
+                typeof(TextToken),
+                typeof(IntegerToken)
+            })
         {
-            return new PunctuationToken(text[absoluteIndex], position, consumedLength);
+
         }
 
         protected override void OnBeforeProcess()
@@ -18,12 +25,9 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             // idle
         }
 
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        protected override PunctuationToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-            return
-                previousToken is PunctuationToken ||
-                previousToken is TextToken ||
-                previousToken is IntegerToken;
+            return new PunctuationToken(text[absoluteIndex], position, consumedLength);
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)

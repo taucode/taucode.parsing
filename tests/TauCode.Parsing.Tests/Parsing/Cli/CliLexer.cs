@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Lexing.StandardExtractors;
 using TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors;
@@ -12,10 +11,10 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         {
             return new List<ITokenExtractor>
             {
-                new IntegerExtractor(new List<Type>()),
+                new IntegerExtractor(null),
                 new TermExtractor(),
                 new KeyExtractor(),
-                new StringExtractor(),
+                new StringExtractor(null),
                 new PathExtractor(),
                 new EqualsExtractor(),
             };

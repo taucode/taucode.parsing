@@ -1,13 +1,11 @@
 ﻿namespace TauCode.Parsing.TextProcessing
 {
-    public interface ITextProcessor<out TProduct>
+    public interface ITextProcessor
     {
         bool AcceptsFirstChar(char c);
 
-        bool IsProcessing { get; }
-
         TextProcessingResult Process(ITextProcessingContext context);
 
-        TProduct Produce(string text, int absoluteIndex, Position position, int consumedLength);
+        bool IsBusy { get; }
     }
 }

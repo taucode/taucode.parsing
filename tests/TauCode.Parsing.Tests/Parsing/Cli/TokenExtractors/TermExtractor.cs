@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TextProcessing;
@@ -9,10 +8,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
     public class TermExtractor : TokenExtractorBase<TextToken>
     {
-        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
+        public TermExtractor()
+            : base(null)
         {
-            var str = text.Substring(absoluteIndex, consumedLength);
-            return new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
         }
 
         protected override void OnBeforeProcess()
@@ -22,9 +20,10 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
             // idle
         }
 
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-            throw new NotImplementedException();
+            var str = text.Substring(absoluteIndex, consumedLength);
+            return new TextToken(TermTextClass.Instance, NoneTextDecoration.Instance, str, position, consumedLength);
         }
 
         protected override bool ProcessEnd()

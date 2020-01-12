@@ -5,7 +5,21 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     public class TinyLispSymbolExtractor : TokenExtractorBase<LispSymbolToken>
     {
-        public override LispSymbolToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
+        public TinyLispSymbolExtractor()
+            : base(new[]
+            {
+                typeof(LispPunctuationToken)
+            })
+        {
+        }
+
+        protected override void OnBeforeProcess()
+        {
+            this.AlphaCheckOnBeforeProcess();
+            // idle
+        }
+
+        protected override LispSymbolToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
             var symbolString = text.Substring(absoluteIndex, consumedLength);
             if (int.TryParse(symbolString, out var dummy))
@@ -16,34 +30,12 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             return new LispSymbolToken(symbolString, position, consumedLength);
         }
 
-        protected override void OnBeforeProcess()
-        {
-            this.AlphaCheckOnBeforeProcess();
-            // idle
-        }
-
-        // todo: Token-type-based default virtual implementation, for everybody.
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
-        {
-            return
-                previousToken is LispPunctuationToken;
-        }
-
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
             if (localIndex == 0)
             {
-                // todo: temp check that IsProcessing == false, everywhere.
-
-                var accepts = c.IsAcceptableSymbolNameChar();
-                if (accepts)
-                {
-                    return CharAcceptanceResult.Continue;
-                }
-                else
-                {
-                    return CharAcceptanceResult.Fail;
-                }
+                return this.ContinueOrFail(c.IsAcceptableSymbolNameChar());
+                // todo: temp check that IsBusy == false, everywhere.
             }
 
             if (c.IsAcceptableSymbolNameChar())

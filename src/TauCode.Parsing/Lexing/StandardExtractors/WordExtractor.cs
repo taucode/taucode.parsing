@@ -6,16 +6,12 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 {
     public class WordExtractor : TokenExtractorBase<TextToken>
     {
-        public override TextToken ProduceToken(string text, int absoluteIndex, Position position, int consumedLength)
+        public WordExtractor()
+            : base(new[]
+            {
+                typeof(PunctuationToken),
+            })
         {
-            var str = this.Context.Text.Substring(absoluteIndex, consumedLength);
-
-            return new TextToken(
-                WordTextClass.Instance,
-                NoneTextDecoration.Instance,
-                str,
-                position,
-                consumedLength);
         }
 
         protected override void OnBeforeProcess()
@@ -25,10 +21,16 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             // idle
         }
 
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-            return
-                previousToken is PunctuationToken; // todo make it tunable (use list of acceptable token types in ctor).
+            var str = this.Context.Text.Substring(absoluteIndex, consumedLength);
+
+            return new TextToken(
+                WordTextClass.Instance,
+                NoneTextDecoration.Instance,
+                str,
+                position,
+                consumedLength);
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)

@@ -2,7 +2,7 @@
 
 namespace TauCode.Parsing.Lexing
 {
-    public interface ITokenExtractor : ITextProcessor<IToken>
+    public interface ITokenExtractor : ITextProcessor
     {   
     }
 }

@@ -6,16 +6,16 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     public class TinyLispPunctuationExtractor : TokenExtractorBase<LispPunctuationToken>
     {
-        public override LispPunctuationToken ProduceToken(
-            string text,
-            int absoluteIndex,
-            Position position,
-            int consumedLength)
+        public TinyLispPunctuationExtractor()
+            : base(new[]
+            {
+                typeof(LispPunctuationToken),
+                typeof(IntegerToken),
+                typeof(KeywordToken),
+                typeof(LispSymbolToken),
+                typeof(TextToken),
+            })
         {
-            return new LispPunctuationToken(
-                TinyLispHelper.CharToPunctuation(text[absoluteIndex]),
-                position,
-                consumedLength);
         }
 
         protected override void OnBeforeProcess()
@@ -25,29 +25,19 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
             // idle
         }
 
-        protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
+        protected override LispPunctuationToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
         {
-            return
-                previousToken is LispPunctuationToken ||
-                previousToken is IntegerToken ||
-                previousToken is KeywordToken ||
-                previousToken is LispSymbolToken ||
-                previousToken is TextToken;
+            return new LispPunctuationToken(
+                TinyLispHelper.CharToPunctuation(text[absoluteIndex]),
+                position,
+                consumedLength);
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
             if (localIndex == 0)
             {
-                var isPunctuation = TinyLispHelper.IsPunctuation(c);
-                if (isPunctuation)
-                {
-                    return CharAcceptanceResult.Continue;
-                }
-                else
-                {
-                    return CharAcceptanceResult.Fail;
-                }
+                return this.ContinueOrFail(TinyLispHelper.IsPunctuation(c));
             }
 
             return CharAcceptanceResult.Stop;
