@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Data;
@@ -41,61 +42,71 @@ namespace TauCode.Parsing.Building
 
         public virtual INode CreateNode(PseudoList item)
         {
-            // todo: wrap it into try/catch => throw bad_grammar
-
-            var car = item.GetCarSymbolName();
-            INode node;
-
-            switch (car)
+            if (item == null)
             {
-                case "EXACT-TEXT":
-                    node = new ExactTextNode(
-                        item.GetSingleKeywordArgument<StringAtom>(":value").Value,
-                        this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
-                        _isCaseSensitive,
-                        null,
-                        this.NodeFamily,
-                        item.GetItemName());
-                    break;
-
-                case "SOME-TEXT":
-                    node = new TextNode(
-                        this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
-                        null,
-                        this.NodeFamily,
-                        item.GetItemName());
-                    break;
-
-                case "MULTI-TEXT":
-                    node = new MultiTextNode(
-                        item.GetAllKeywordArguments(":values").Cast<StringAtom>().Select(x => x.Value),
-                        this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
-                        _isCaseSensitive,
-                        null,
-                        this.NodeFamily,
-                        item.GetItemName());
-                    break;
-
-                case "EXACT-PUNCTUATION":
-                    node = new ExactPunctuationNode(
-                        item.GetSingleKeywordArgument<StringAtom>(":value").Value.Single(),
-                        null,
-                        this.NodeFamily,
-                        item.GetItemName());
-                    break;
-
-                case "SOME-INTEGER":
-                    node = new IntegerNode(
-                        null,
-                        this.NodeFamily,
-                        item.GetItemName());
-                    break;
-
-                default:
-                    throw new NotImplementedException();
+                throw new ArgumentNullException(nameof(item));
             }
 
-            return node;
+            try
+            {
+                var car = item.GetCarSymbolName();
+                INode node;
+
+                switch (car)
+                {
+                    case "EXACT-TEXT":
+                        node = new ExactTextNode(
+                            item.GetSingleKeywordArgument<StringAtom>(":value").Value,
+                            this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
+                            _isCaseSensitive,
+                            null,
+                            this.NodeFamily,
+                            item.GetItemName());
+                        break;
+
+                    case "SOME-TEXT":
+                        node = new TextNode(
+                            this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
+                            null,
+                            this.NodeFamily,
+                            item.GetItemName());
+                        break;
+
+                    case "MULTI-TEXT":
+                        node = new MultiTextNode(
+                            item.GetAllKeywordArguments(":values").Cast<StringAtom>().Select(x => x.Value),
+                            this.ParseTextClasses(item.GetAllKeywordArguments(":classes")),
+                            _isCaseSensitive,
+                            null,
+                            this.NodeFamily,
+                            item.GetItemName());
+                        break;
+
+                    case "EXACT-PUNCTUATION":
+                        node = new ExactPunctuationNode(
+                            item.GetSingleKeywordArgument<StringAtom>(":value").Value.Single(),
+                            null,
+                            this.NodeFamily,
+                            item.GetItemName());
+                        break;
+
+                    case "SOME-INTEGER":
+                        node = new IntegerNode(
+                            null,
+                            this.NodeFamily,
+                            item.GetItemName());
+                        break;
+
+                    default:
+                        return null;
+                }
+
+                return node;
+            }
+            catch (Exception ex)
+            {
+                throw new BuildingException($"Could not build a node from item {item}.", ex);
+            }
         }
 
         private IEnumerable<ITextClass> ParseTextClasses(PseudoList arguments)
@@ -114,10 +125,15 @@ namespace TauCode.Parsing.Building
 
         protected virtual ITextClass ResolveTextClass(string tag)
         {
+            if (tag == null)
+            {
+                throw new ArgumentNullException(nameof(tag));
+            }
+
             var textClass = _textClasses.GetOrDefault(tag.ToLowerInvariant());
             if (textClass == null)
             {
-                throw new NotImplementedException(); // cannot resolve
+                throw new BuildingException($"Could not resolve text class with tag'{tag}'.");
             }
 
             return textClass;

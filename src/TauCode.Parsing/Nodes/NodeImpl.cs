@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
 
-// todo  clean up
 namespace TauCode.Parsing.Nodes
 {
     public abstract class NodeImpl : INode
@@ -20,22 +19,10 @@ namespace TauCode.Parsing.Nodes
 
         protected NodeImpl(INodeFamily family, string name)
         {
-            //if (family != null)
-            //{
-            //    if (!(family is OldNodeFamily))
-            //    {
-            //        throw new ArgumentException(
-            //            $"'{nameof(family)}' must be of type '{typeof(OldNodeFamily).FullName}'.",
-            //            nameof(family));
-            //    }
-            //}
-
-            //var familyImpl = (OldNodeFamily)family;
-
             this.Family = family;
             this.Name = name;
 
-            /*familyImpl*/family?.RegisterNode(this);
+            family?.RegisterNode(this);
 
             _establishedLinks = new HashSet<INode>();
             _claimedLinkNames = new HashSet<string>();

@@ -2,7 +2,6 @@
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
-// todo clean
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     public class TinyLispPunctuationExtractor : TokenExtractorBase<LispPunctuationToken>
@@ -50,8 +49,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                     return CharAcceptanceResult.Fail;
                 }
             }
-
-            // todo: check localIndex == 1?
 
             return CharAcceptanceResult.Stop;
         }
