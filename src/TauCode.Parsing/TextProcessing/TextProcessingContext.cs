@@ -16,18 +16,18 @@ namespace TauCode.Parsing.TextProcessing
             {
                 _holder = holder;
 
-                this.StartingIndex = holder.GetAbsoluteIndex();
+                this.StartIndex = holder.GetAbsoluteIndex();
                 this.LocalIndex = 0;
                 this.CurrentLine = holder.GetCurrentLine();
                 this.CurrentColumn = holder.GetCurrentColumn();
             }
 
-            public int StartingIndex { get; private set; }
+            public int StartIndex { get; private set; }
             public int LocalIndex { get; private set; }
             public int CurrentLine { get; private set; }
             public int CurrentColumn { get; private set; }
 
-            public int GetAbsoluteIndex() => this.StartingIndex + this.LocalIndex;
+            public int GetAbsoluteIndex() => this.StartIndex + this.LocalIndex;
 
             public void Advance(int indexShift, int lineShift, int currentColumn)
             {
@@ -114,7 +114,7 @@ namespace TauCode.Parsing.TextProcessing
 
         public int GetCurrentColumn() => this.GetLastGeneration()?.CurrentColumn ?? 0;
 
-        public int GetStartingIndex() => this.GetLastGeneration()?.StartingIndex ?? 0;
+        public int GetStartIndex() => this.GetLastGeneration()?.StartIndex ?? 0;
 
         public int GetLocalIndex()
         {
@@ -127,7 +127,7 @@ namespace TauCode.Parsing.TextProcessing
         public bool IsEnd()
         {
             var lastGeneration = _generations.Peek();
-            var absoluteIndex = lastGeneration.StartingIndex + lastGeneration.LocalIndex;
+            var absoluteIndex = lastGeneration.StartIndex + lastGeneration.LocalIndex;
             if (absoluteIndex > this.Text.Length)
             {
                 throw LexingHelper.CreateInternalErrorLexingException(
@@ -170,7 +170,7 @@ namespace TauCode.Parsing.TextProcessing
         {
             // todo checks
             // todo should be extension
-            var absoluteIndex = this.GetStartingIndex() + localIndex;
+            var absoluteIndex = this.GetStartIndex() + localIndex;
             return this.Text[absoluteIndex];
         }
 

@@ -21,7 +21,7 @@
 
         int GetCurrentColumn();
 
-        int GetStartingIndex();
+        int GetStartIndex();
 
         int GetLocalIndex();
 

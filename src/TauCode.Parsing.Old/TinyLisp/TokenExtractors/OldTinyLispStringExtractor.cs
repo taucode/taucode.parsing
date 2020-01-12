@@ -61,7 +61,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 
         protected override OldCharChallengeResult ChallengeEnd()
         {
-            throw new LexingException("Unclosed string.", this.GetStartingAbsolutePosition());
+            throw new LexingException("Unclosed string.", this.GetStartAbsolutePosition());
         }
     }
 }
