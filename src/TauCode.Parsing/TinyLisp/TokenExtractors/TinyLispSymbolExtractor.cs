@@ -3,7 +3,7 @@ using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispSymbolExtractorLab : GammaTokenExtractorBase<LispSymbolToken>
+    public class TinyLispSymbolExtractor : GammaTokenExtractorBase<LispSymbolToken>
     {
         // todo: wtf! change places for <int consumedLength> and <Position position>
         public override LispSymbolToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)

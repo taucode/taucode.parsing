@@ -6,12 +6,12 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardExtractors
 {
-    public class IntegerExtractorLab : GammaTokenExtractorBase<IntegerToken>
+    public class IntegerExtractor : GammaTokenExtractorBase<IntegerToken>
     {
         private char? _sign;
         private readonly List<Type> _acceptablePreviousTokenTypes;
 
-        public IntegerExtractorLab(IList<Type> acceptablePreviousTokenTypes)
+        public IntegerExtractor(IList<Type> acceptablePreviousTokenTypes)
         {
             _acceptablePreviousTokenTypes = acceptablePreviousTokenTypes.ToList();
         }

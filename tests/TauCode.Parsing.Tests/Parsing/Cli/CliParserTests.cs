@@ -23,7 +23,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         [SetUp]
         public void SetUp()
         {
-            _tinyLispLexer = new TinyLispLexerLab();
+            _tinyLispLexer = new TinyLispLexer();
             _cliLexer = new CliLexer();
         }
 

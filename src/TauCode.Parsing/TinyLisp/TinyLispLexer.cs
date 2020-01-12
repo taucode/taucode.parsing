@@ -6,18 +6,18 @@ using TauCode.Parsing.TinyLisp.TokenExtractors;
 
 namespace TauCode.Parsing.TinyLisp
 {
-    public class TinyLispLexerLab : LexerBaseLab
+    public class TinyLispLexer : LexerBase
     {
         protected override IList<IGammaTokenExtractor> CreateTokenExtractors()
         {
             return new IGammaTokenExtractor[]
             {
-                new TinyLispCommentExtractorLab(),
-                new TinyLispSymbolExtractorLab(),
-                new TinyLispPunctuationExtractorLab(),
-                new IntegerExtractorLab(new Type[]
+                new TinyLispCommentExtractor(),
+                new TinyLispSymbolExtractor(),
+                new TinyLispPunctuationExtractor(),
+                new IntegerExtractor(new Type[]
                 {
-                    typeof(TinyLispPunctuationExtractorLab),
+                    typeof(TinyLispPunctuationExtractor),
                 }),
                 new TinyLispKeywordExtractor(),
                 new TinyLispStringExtractor(), 

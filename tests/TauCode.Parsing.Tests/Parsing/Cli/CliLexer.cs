@@ -6,16 +6,16 @@ using TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
-    public class CliLexer : LexerBaseLab
+    public class CliLexer : LexerBase
     {
         protected override IList<IGammaTokenExtractor> CreateTokenExtractors()
         {
             return new List<IGammaTokenExtractor>
             {
-                new IntegerExtractorLab(new List<Type>()),
+                new IntegerExtractor(new List<Type>()),
                 new TermExtractor(),
                 new KeyExtractor(),
-                new StringExtractorLab(),
+                new StringExtractor(),
                 new PathExtractor(),
                 new EqualsExtractor(),
             };

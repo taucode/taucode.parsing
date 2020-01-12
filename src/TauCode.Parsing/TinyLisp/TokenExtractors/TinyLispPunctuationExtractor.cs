@@ -6,7 +6,7 @@ using TauCode.Parsing.Tokens;
 // todo clean
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispPunctuationExtractorLab : GammaTokenExtractorBase<LispPunctuationToken>
+    public class TinyLispPunctuationExtractor : GammaTokenExtractorBase<LispPunctuationToken>
     {
         public override LispPunctuationToken ProduceToken(string text, int absoluteIndex, int consumedLength,
             Position position)

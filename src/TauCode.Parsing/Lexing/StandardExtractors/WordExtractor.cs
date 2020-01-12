@@ -5,7 +5,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardExtractors
 {
-    public class WordExtractorLab : GammaTokenExtractorBase<TextToken>
+    public class WordExtractor : GammaTokenExtractorBase<TextToken>
     {
         public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {

@@ -7,7 +7,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardExtractors
 {
-    public class StringExtractorLab : GammaTokenExtractorBase<TextToken>
+    public class StringExtractor : GammaTokenExtractorBase<TextToken>
     {
         private char _openingDelimiter;
 

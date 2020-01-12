@@ -7,15 +7,15 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql
 {
-    public class SqlLexer : LexerBaseLab
+    public class SqlLexer : LexerBase
     {
         protected override IList<IGammaTokenExtractor> CreateTokenExtractors()
         {
             return new List<IGammaTokenExtractor>
             {
-                new WordExtractorLab(),
+                new WordExtractor(),
                 new SqlPunctuationExtractor(),
-                new IntegerExtractorLab(new List<Type>
+                new IntegerExtractor(new List<Type>
                 {
                     typeof(PunctuationToken),
                 }),

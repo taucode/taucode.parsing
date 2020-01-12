@@ -21,7 +21,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
         [SetUp]
         public void SetUp()
         {
-            _tinyLispLexer = new TinyLispLexerLab();
+            _tinyLispLexer = new TinyLispLexer();
             _sqlLexer = new SqlLexer();
         }
 

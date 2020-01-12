@@ -7,7 +7,7 @@ using TauCode.Parsing.TextProcessing.Processors;
 namespace TauCode.Parsing.Lexing
 {
     // todo clean up
-    public abstract class LexerBaseLab : ILexer
+    public abstract class LexerBase : ILexer
     {
         private LexingContext _context;
 
