@@ -6,5 +6,6 @@ namespace TauCode.Parsing.Lexing
     public interface ILexingContext : ITextProcessingContext
     {
         IReadOnlyList<IToken> Tokens { get; }
+        IToken GetLastToken();
     }
 }

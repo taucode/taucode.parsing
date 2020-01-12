@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using TauCode.Parsing.TextProcessing;
-using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Lexing
 {
@@ -31,6 +30,16 @@ namespace TauCode.Parsing.Lexing
         #region ILexingContext Members
 
         public IReadOnlyList<IToken> Tokens => _tokens;
+
+        public IToken GetLastToken()
+        {
+            if (_tokens.Count == 0)
+            {
+                return null;
+            }
+
+            return _tokens[_tokens.Count - 1];
+        }
 
         #endregion
     }

@@ -133,7 +133,7 @@ namespace TauCode.Parsing.Lexing
             var previousChar = lexingContext.TryGetPreviousLocalChar();
             if (previousChar.HasValue && !LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar.Value))
             {
-                var previousToken = lexingContext.Tokens.LastOrDefault(); // todo: DO optimize.
+                var previousToken = lexingContext.GetLastToken();
                 if (previousToken != null)
                 {
                     var acceptsPreviousToken = this.AcceptsPreviousTokenImpl(previousToken);
@@ -149,8 +149,8 @@ namespace TauCode.Parsing.Lexing
             this.StartPosition = this.Context.GetCurrentAbsolutePosition();
             this.Context.RequestGeneration();
 
-            this.Context
-                .AdvanceByChar(); // since 'Process' has been called, it means that 'First' (i.e. 0th) char was accepted by Lexer.
+            // since 'Process' has been called, it means that 'First' (i.e. 0th) char was accepted by Lexer.
+            this.Context.AdvanceByChar();
 
             this.OnBeforeProcess();
             this.IsBusy = true;
@@ -175,6 +175,7 @@ namespace TauCode.Parsing.Lexing
                         {
                             this.Context.ReleaseGeneration();
                             this.IsBusy = false;
+                            this.Context = null;
                             return TextProcessingResult.Failure;
                         }
                     }
@@ -192,10 +193,12 @@ namespace TauCode.Parsing.Lexing
                     var indexShift = myAbsoluteIndex - oldAbsoluteIndex;
                     var lineShift = myLine - oldLine;
 
-                    this.IsBusy = false;
 
                     var position = new Position(oldLine, oldColumn);
                     var token = this.DeliverToken(this.Context.Text, oldAbsoluteIndex, position, indexShift);
+
+                    this.IsBusy = false;
+                    this.Context = null;
 
                     return token == null
                         ? TextProcessingResult.Failure
@@ -245,6 +248,7 @@ namespace TauCode.Parsing.Lexing
                     case CharAcceptanceResult.Fail:
                         this.Context.ReleaseGeneration();
                         this.IsBusy = false;
+                        this.Context = null;
                         return TextProcessingResult.Failure;
 
                     default:
