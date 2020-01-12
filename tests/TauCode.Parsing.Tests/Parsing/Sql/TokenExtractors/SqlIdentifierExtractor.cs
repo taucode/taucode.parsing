@@ -8,7 +8,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
-    public class SqlIdentifierExtractor : GammaTokenExtractorBase<TextToken>
+    public class SqlIdentifierExtractor : TokenExtractorBase<TextToken>
     {
         private static Dictionary<char, char> Delimiters { get; }
         private static HashSet<char> OpeningDelimiters { get; }

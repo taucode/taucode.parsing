@@ -7,7 +7,7 @@ using TauCode.Parsing.Tokens;
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     // todo clean
-    public class TinyLispCommentExtractor : GammaTokenExtractorBase<CommentToken>
+    public class TinyLispCommentExtractor : TokenExtractorBase<CommentToken>
     {
         private readonly SkipLineBreaksProcessor _skipLineBreaksProcessor;
 

@@ -8,9 +8,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 {
     public class CliLexer : LexerBase
     {
-        protected override IList<IGammaTokenExtractor> CreateTokenExtractors()
+        protected override IList<ITokenExtractor> CreateTokenExtractors()
         {
-            return new List<IGammaTokenExtractor>
+            return new List<ITokenExtractor>
             {
                 new IntegerExtractor(new List<Type>()),
                 new TermExtractor(),

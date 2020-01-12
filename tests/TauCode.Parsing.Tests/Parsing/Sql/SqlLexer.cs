@@ -9,9 +9,9 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
 {
     public class SqlLexer : LexerBase
     {
-        protected override IList<IGammaTokenExtractor> CreateTokenExtractors()
+        protected override IList<ITokenExtractor> CreateTokenExtractors()
         {
-            return new List<IGammaTokenExtractor>
+            return new List<ITokenExtractor>
             {
                 new WordExtractor(),
                 new SqlPunctuationExtractor(),

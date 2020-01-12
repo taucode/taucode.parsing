@@ -4,7 +4,7 @@ using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispKeywordExtractor : GammaTokenExtractorBase<KeywordToken>
+    public class TinyLispKeywordExtractor : TokenExtractorBase<KeywordToken>
     {
         public override KeywordToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {

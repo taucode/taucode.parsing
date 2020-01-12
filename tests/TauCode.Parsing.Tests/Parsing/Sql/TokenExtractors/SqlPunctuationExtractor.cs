@@ -5,7 +5,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 {
-    public class SqlPunctuationExtractor : GammaTokenExtractorBase<PunctuationToken>
+    public class SqlPunctuationExtractor : TokenExtractorBase<PunctuationToken>
     {
         public override PunctuationToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {

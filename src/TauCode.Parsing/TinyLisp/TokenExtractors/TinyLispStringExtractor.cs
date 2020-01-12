@@ -7,7 +7,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispStringExtractor : GammaTokenExtractorBase<TextToken>
+    public class TinyLispStringExtractor : TokenExtractorBase<TextToken>
     {
         private char _openingDelimiter;
 

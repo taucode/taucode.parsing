@@ -7,7 +7,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class PathExtractor : GammaTokenExtractorBase<TextToken>
+    public class PathExtractor : TokenExtractorBase<TextToken>
     {
         public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {

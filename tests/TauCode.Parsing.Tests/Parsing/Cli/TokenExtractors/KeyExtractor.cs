@@ -6,7 +6,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class KeyExtractor : GammaTokenExtractorBase<TextToken>
+    public class KeyExtractor : TokenExtractorBase<TextToken>
     {
         private int _hyphenCountInARow;
 

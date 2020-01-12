@@ -4,7 +4,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class EqualsExtractor : GammaTokenExtractorBase<PunctuationToken>
+    public class EqualsExtractor : TokenExtractorBase<PunctuationToken>
     {
         public override PunctuationToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {

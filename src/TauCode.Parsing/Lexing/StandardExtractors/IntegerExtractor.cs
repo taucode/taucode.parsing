@@ -6,7 +6,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardExtractors
 {
-    public class IntegerExtractor : GammaTokenExtractorBase<IntegerToken>
+    public class IntegerExtractor : TokenExtractorBase<IntegerToken>
     {
         private char? _sign;
         private readonly List<Type> _acceptablePreviousTokenTypes;

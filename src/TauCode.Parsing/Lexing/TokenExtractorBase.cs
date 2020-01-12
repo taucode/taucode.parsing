@@ -7,7 +7,7 @@ using TauCode.Parsing.TinyLisp;
 namespace TauCode.Parsing.Lexing
 {
     // todo clean up
-    public abstract class GammaTokenExtractorBase<TToken> : IGammaTokenExtractor<TToken>
+    public abstract class TokenExtractorBase<TToken> : ITokenExtractor<TToken>
         where TToken : IToken
     {
         protected enum CharAcceptanceResult

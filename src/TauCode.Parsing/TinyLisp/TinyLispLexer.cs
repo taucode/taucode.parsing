@@ -8,9 +8,9 @@ namespace TauCode.Parsing.TinyLisp
 {
     public class TinyLispLexer : LexerBase
     {
-        protected override IList<IGammaTokenExtractor> CreateTokenExtractors()
+        protected override IList<ITokenExtractor> CreateTokenExtractors()
         {
-            return new IGammaTokenExtractor[]
+            return new ITokenExtractor[]
             {
                 new TinyLispCommentExtractor(),
                 new TinyLispSymbolExtractor(),

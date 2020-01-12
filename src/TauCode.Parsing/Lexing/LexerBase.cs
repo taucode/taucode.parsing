@@ -11,10 +11,10 @@ namespace TauCode.Parsing.Lexing
     {
         private LexingContext _context;
 
-        private IList<IGammaTokenExtractor> _tokenExtractors;
+        private IList<ITokenExtractor> _tokenExtractors;
         private IList<ITextProcessor<string>> _skippers;
 
-        protected IList<IGammaTokenExtractor> TokenExtractors =>
+        protected IList<ITokenExtractor> TokenExtractors =>
             _tokenExtractors ?? (_tokenExtractors = this.CreateTokenExtractors());
 
         protected IList<ITextProcessor<string>> Skippers => _skippers ?? (_skippers = this.CreateSkippers());
@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Lexing
             };
         }
 
-        protected abstract IList<IGammaTokenExtractor> CreateTokenExtractors();
+        protected abstract IList<ITokenExtractor> CreateTokenExtractors();
 
         public IList<IToken> Lexize(string input)
         {

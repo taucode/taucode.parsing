@@ -6,7 +6,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class TermExtractor : GammaTokenExtractorBase<TextToken>
+    public class TermExtractor : TokenExtractorBase<TextToken>
     {
         public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
