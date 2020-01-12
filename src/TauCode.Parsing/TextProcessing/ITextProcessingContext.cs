@@ -1,5 +1,6 @@
 ﻿namespace TauCode.Parsing.TextProcessing
 {
+    // todo clean
     public interface ITextProcessingContext
     {
         string Text { get; }
@@ -32,7 +33,7 @@
 
         char GetLocalChar(int localIndex);
 
-        void AdvanceByChar();
+        //void AdvanceByChar();
 
         char? TryGetNextLocalChar();
 

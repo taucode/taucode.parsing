@@ -32,6 +32,11 @@ namespace TauCode.Parsing.TextProcessing
                    throw new LexingException("Cannot get previous local char when local index is 0", context.GetCurrentAbsolutePosition());
         }
 
+        public static void AdvanceByChar(this ITextProcessingContext context)
+        {
+            context.Advance(1, 0, context.GetCurrentColumn() + 1);
+        }
+
         public static void AdvanceByResult(this ITextProcessingContext context, TextProcessingResult result)
         {
             context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());

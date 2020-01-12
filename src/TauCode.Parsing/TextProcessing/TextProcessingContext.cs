@@ -103,6 +103,7 @@ namespace TauCode.Parsing.TextProcessing
         }
 
         public int Depth => _generations.Count;
+
         public int Version => _version;
 
         public int GetCurrentLine() => this.GetLastGeneration()?.CurrentLine ?? 0;
@@ -171,13 +172,6 @@ namespace TauCode.Parsing.TextProcessing
             // todo should be extension
             var absoluteIndex = this.GetStartingIndex() + localIndex;
             return this.Text[absoluteIndex];
-        }
-
-        public void AdvanceByChar()
-        {
-            // todo checks
-            // todo should be extension
-            this.Advance(1, 0, this.GetCurrentColumn() + 1);
         }
 
         public char? TryGetNextLocalChar()
