@@ -5,7 +5,7 @@ using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lab.CommonLab
+namespace TauCode.Parsing.Lexing.StandardExtractors
 {
     public class StringExtractorLab : GammaTokenExtractorBase<TextToken>
     {

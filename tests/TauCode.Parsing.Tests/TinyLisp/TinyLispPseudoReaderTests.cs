@@ -5,6 +5,7 @@ using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.TinyLisp

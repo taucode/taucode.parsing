@@ -6,6 +6,7 @@ using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
 {

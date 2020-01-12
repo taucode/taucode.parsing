@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.Lab;
-using TauCode.Parsing.Lab.CommonLab;
+using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Lexing.StandardExtractors;
 using TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli

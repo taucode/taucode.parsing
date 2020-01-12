@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.TextProcessing;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing.TextProcessing
 {
     public class TextProcessingContext : ITextProcessingContext
     {

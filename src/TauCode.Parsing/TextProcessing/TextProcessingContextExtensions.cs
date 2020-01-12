@@ -1,6 +1,4 @@
-﻿using TauCode.Parsing.TextProcessing;
-
-namespace TauCode.Parsing.Lab
+﻿namespace TauCode.Parsing.TextProcessing
 {
     public static class TextProcessingContextExtensions
     {

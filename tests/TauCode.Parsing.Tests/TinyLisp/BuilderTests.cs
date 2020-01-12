@@ -4,6 +4,7 @@ using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lab;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Sql;
+using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Tests.TinyLisp
 {

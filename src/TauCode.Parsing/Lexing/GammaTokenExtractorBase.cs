@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
 using TauCode.Extensions;
-using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.TinyLisp;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing.Lexing
 {
     // todo clean up
     public abstract class GammaTokenExtractorBase<TToken> : IGammaTokenExtractor<TToken>

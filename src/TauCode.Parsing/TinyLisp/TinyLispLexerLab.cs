@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using TauCode.Parsing.Lab.CommonLab;
-using TauCode.Parsing.Lab.TinyLispLab;
+using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Lexing.StandardExtractors;
+using TauCode.Parsing.TinyLisp.TokenExtractors;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing.TinyLisp
 {
     public class TinyLispLexerLab : LexerBaseLab
     {

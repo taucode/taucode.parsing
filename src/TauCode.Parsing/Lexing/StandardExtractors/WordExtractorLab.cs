@@ -1,22 +1,19 @@
 ﻿using System;
-using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lab.TinyLispLab
+namespace TauCode.Parsing.Lexing.StandardExtractors
 {
-    public class TinyLispStringExtractor : GammaTokenExtractorBase<TextToken>
+    public class WordExtractorLab : GammaTokenExtractorBase<TextToken>
     {
-        private char _openingDelimiter;
-
         public override TextToken ProduceToken(string text, int absoluteIndex, int consumedLength, Position position)
         {
-            var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
+            var str = this.Context.Text.Substring(absoluteIndex, consumedLength);
+
             return new TextToken(
-                StringTextClass.Instance,
-                DoubleQuoteTextDecoration.Instance,
+                WordTextClass.Instance,
+                NoneTextDecoration.Instance,
                 str,
                 position,
                 consumedLength);
@@ -36,38 +33,36 @@ namespace TauCode.Parsing.Lab.TinyLispLab
                 throw new NotImplementedException();
             }
 
-            _openingDelimiter = this.Context.GetLocalChar(0);
+            // idle
         }
 
         protected override bool AcceptsPreviousTokenImpl(IToken previousToken)
         {
-            throw new NotImplementedException();
+            return
+                previousToken is PunctuationToken; // todo make it tunable (use list of acceptable token types in ctor).
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
             if (localIndex == 0)
             {
-                return ContinueOrFail(c == '"');
+                return this.ContinueOrFail(c == '_' || LexingHelper.IsLatinLetter(c));
             }
 
-            if (c == '"')
+            if (
+                LexingHelper.IsInlineWhiteSpaceOrCaretControl(c) ||
+                LexingHelper.IsStandardPunctuationChar(c))
             {
-                this.Context.AdvanceByChar();
                 return CharAcceptanceResult.Stop;
             }
 
-            if (LexingHelper.IsCaretControl(c))
+            if (c == '_' || LexingHelper.IsLatinLetter(c) || LexingHelper.IsDigit(c))
             {
-                throw new LexingException("Newline in string.", this.Context.GetCurrentAbsolutePosition());
+                return CharAcceptanceResult.Continue;
             }
 
-            return CharAcceptanceResult.Continue;
-        }
-
-        protected override bool ProcessEnd()
-        {
-            throw new LexingException("Unclosed string.", this.StartPosition);
+            // I don't want this char inside my word.
+            return CharAcceptanceResult.Fail;
         }
     }
 }

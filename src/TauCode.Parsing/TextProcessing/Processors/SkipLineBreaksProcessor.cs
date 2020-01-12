@@ -1,8 +1,7 @@
 ﻿using System;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextProcessing;
 
-namespace TauCode.Parsing.Lab.TextProcessors
+namespace TauCode.Parsing.TextProcessing.Processors
 {
     // todo clean up
     public class SkipLineBreaksProcessor : ITextProcessor<string>

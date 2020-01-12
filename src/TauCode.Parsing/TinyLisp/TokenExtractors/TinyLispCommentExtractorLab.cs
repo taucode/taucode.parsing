@@ -1,10 +1,10 @@
 ﻿using System;
-using TauCode.Parsing.Lab.TextProcessors;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
+using TauCode.Parsing.TextProcessing.Processors;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lab.TinyLispLab
+namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     // todo clean
     public class TinyLispCommentExtractorLab : GammaTokenExtractorBase<CommentToken>

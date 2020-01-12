@@ -1,6 +1,6 @@
 ﻿using System;
 using TauCode.Extensions;
-using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors

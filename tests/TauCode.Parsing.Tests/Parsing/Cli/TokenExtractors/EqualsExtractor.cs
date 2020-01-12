@@ -1,5 +1,5 @@
 ﻿using System;
-using TauCode.Parsing.Lab;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors

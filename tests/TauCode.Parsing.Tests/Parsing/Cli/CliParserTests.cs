@@ -9,6 +9,7 @@ using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
+using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli

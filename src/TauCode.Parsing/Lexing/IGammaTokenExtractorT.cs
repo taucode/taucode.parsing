@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Lab
+﻿namespace TauCode.Parsing.Lexing
 {
     public interface IGammaTokenExtractor<out TToken> : IGammaTokenExtractor
         where TToken : IToken

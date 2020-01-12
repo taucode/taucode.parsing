@@ -1,10 +1,10 @@
 ﻿using System;
-using TauCode.Parsing.TinyLisp;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
 // todo clean
-namespace TauCode.Parsing.Lab.TinyLispLab
+namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     public class TinyLispPunctuationExtractorLab : GammaTokenExtractorBase<LispPunctuationToken>
     {

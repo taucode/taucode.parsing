@@ -1,8 +1,8 @@
 ﻿using System;
-using TauCode.Parsing.TinyLisp;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
-namespace TauCode.Parsing.Lab.TinyLispLab
+namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
     public class TinyLispKeywordExtractor : GammaTokenExtractorBase<KeywordToken>
     {

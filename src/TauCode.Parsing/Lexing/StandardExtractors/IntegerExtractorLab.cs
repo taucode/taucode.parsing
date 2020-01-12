@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Extensions;
-using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lab.CommonLab
+namespace TauCode.Parsing.Lexing.StandardExtractors
 {
     public class IntegerExtractorLab : GammaTokenExtractorBase<IntegerToken>
     {

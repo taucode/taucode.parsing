@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lab.TextProcessors;
-using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
+using TauCode.Parsing.TextProcessing.Processors;
 
-namespace TauCode.Parsing.Lab
+namespace TauCode.Parsing.Lexing
 {
     // todo clean up
     public abstract class LexerBaseLab : ILexer
