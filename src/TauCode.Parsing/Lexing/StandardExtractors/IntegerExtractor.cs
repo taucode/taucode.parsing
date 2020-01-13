@@ -9,7 +9,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
     {
         private char? _sign;
 
-        public IntegerExtractor(params Type[] acceptablePreviousTokenTypes)
+        public IntegerExtractor(params Type[] acceptablePreviousTokenTypes) // todo: why params?
             : base(acceptablePreviousTokenTypes)
         {
 
