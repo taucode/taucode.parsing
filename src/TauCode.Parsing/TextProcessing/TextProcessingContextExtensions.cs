@@ -38,6 +38,7 @@ namespace TauCode.Parsing.TextProcessing
             return context.StartIndex + context.IndexOffset;
         }
 
+// todo: IsEndIfAdvance(int advance)
         public static bool IsEndAtOffset(this ITextProcessingContext context, int offset)
         {
             if (context == null)
@@ -231,6 +232,7 @@ namespace TauCode.Parsing.TextProcessing
             return context.Text.Substring(absoluteIndex, length);
         }
 
+// todo: GetCurrentRemainder. also add GetRemainderAtOffset
         public static string GetRemainder(this ITextProcessingContext context)
         {
             if (context == null)
