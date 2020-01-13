@@ -19,7 +19,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
         {
             this.AlphaCheckOnBeforeProcess();
 
-            var possibleSign = this.Context.GetLocalChar(0);
+            var possibleSign = this.Context.GetCharAtOffset(0);
             if (possibleSign.IsIn('+', '-'))
             {
                 _sign = possibleSign;

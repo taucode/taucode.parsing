@@ -23,7 +23,7 @@ namespace TauCode.Parsing.Lexing
 
         private bool SkipWhiteSpace()
         {
-            var startIndex = _context.GetAbsoluteIndex();
+            var begin = _context.GetIndex();
 
             while (true)
             {
@@ -63,9 +63,9 @@ namespace TauCode.Parsing.Lexing
                 }
             }
 
-            var endIndex = _context.GetAbsoluteIndex();
+            var end = _context.GetIndex();
 
-            return endIndex - startIndex > 0;
+            return end - begin > 0;
         }
 
         #endregion
@@ -180,7 +180,7 @@ namespace TauCode.Parsing.Lexing
                 if (!whiteSpaceSkipped && !gotSuccess)
                 {
                     var c = _context.GetCurrentChar();
-                    throw new LexingException($"Unexpected char: '{c}'.", _context.GetCurrentAbsolutePosition());
+                    throw new LexingException($"Unexpected char: '{c}'.", _context.GetCurrentPosition());
                 }
             }
 

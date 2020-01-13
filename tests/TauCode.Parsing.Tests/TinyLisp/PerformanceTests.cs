@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
             var start = DateTime.UtcNow;
 
             //var num = 10 * 1000;
-            var num = 1 * 1000;
+            var num = 10 * 1000;
             for (var i = 0; i < num; i++)
             {
                 tinyLispLexer.Lexize(grammar);

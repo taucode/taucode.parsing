@@ -36,12 +36,12 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
         {
             this.AlphaCheckOnBeforeProcess();
 
-            _openingDelimiter = this.Context.GetLocalChar(0);
+            _openingDelimiter = this.Context.GetCharAtOffset(0);
         }
 
         protected override bool ProcessEnd()
         {
-            throw new LexingException("Unclosed string.", this.Context.GetCurrentAbsolutePosition());
+            throw new LexingException("Unclosed string.", this.Context.GetCurrentPosition());
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)

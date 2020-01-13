@@ -49,7 +49,7 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
 
             if (LexingHelper.IsCaretControl(c))
             {
-                throw new LexingException("Newline in string.", this.Context.GetCurrentAbsolutePosition());
+                throw new LexingException("Newline in string.", this.Context.GetCurrentPosition());
             }
 
             return CharAcceptanceResult.Continue;

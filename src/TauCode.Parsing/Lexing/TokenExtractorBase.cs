@@ -57,6 +57,11 @@ namespace TauCode.Parsing.Lexing
 
         #region Protected
 
+        protected virtual void ConsumeSubPayload(IPayload subPayload)
+        {
+            throw new LexingException("Override if you consume sub-payloads", null);
+        }
+
         protected virtual bool AcceptsPreviousTokenImpl(IToken previousToken) =>
             _acceptablePreviousTokenTypes.Contains(previousToken.GetType());
 
@@ -90,7 +95,7 @@ namespace TauCode.Parsing.Lexing
         {
             var bad1 = this.IsBusy;
             //var bad2 = this.Context.GetLocalIndex() != 1;
-            var bad2 = this.Context.LocalIndex != 1;
+            var bad2 = this.Context.IndexOffset != 1;
             var good = !(bad1 || bad2);
 
             ParsingHelper.AlphaAssert(good);
@@ -132,7 +137,7 @@ namespace TauCode.Parsing.Lexing
 
             var lexingContext = (ILexingContext)context;
 
-            var previousChar = lexingContext.TryGetPreviousLocalChar();
+            var previousChar = lexingContext.TryGetPreviousChar();
             if (previousChar.HasValue && !LexingHelper.IsInlineWhiteSpaceOrCaretControl(previousChar.Value))
             {
                 var previousToken = lexingContext.GetLastToken();
@@ -148,7 +153,7 @@ namespace TauCode.Parsing.Lexing
             }
 
             this.Context = lexingContext;
-            this.StartPosition = this.Context.GetCurrentAbsolutePosition();
+            this.StartPosition = this.Context.GetCurrentPosition();
             this.Context.RequestGeneration();
 
             // since 'Process' has been called, it means that 'First' (i.e. 0th) char was accepted by Lexer.
@@ -165,7 +170,7 @@ namespace TauCode.Parsing.Lexing
 
                 if (isEnd || gotStop)
                 {
-                    if (this.Context.GetLocalIndex() == 0)
+                    if (this.Context.IndexOffset == 0)
                     {
                         throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
                     }
@@ -182,24 +187,24 @@ namespace TauCode.Parsing.Lexing
                         }
                     }
 
-                    var myAbsoluteIndex = this.Context.GetAbsoluteIndex();
+                    var myAbsoluteIndex = this.Context.GetIndex();
 
                     //var myLine = this.Context.GetCurrentLine();
-                    var myLine = this.Context.CurrentLine;
+                    var myLine = this.Context.Line;
 
                     //var currentColumn = this.Context.GetCurrentColumn();
-                    var currentColumn = this.Context.CurrentColumn;
+                    var currentColumn = this.Context.Column;
 
                     this.Context.ReleaseGeneration();
 
-                    var oldAbsoluteIndex = this.Context.GetAbsoluteIndex();
+                    var oldAbsoluteIndex = this.Context.GetIndex();
 
                     //var oldLine = this.Context.GetCurrentLine();
-                    var oldLine = this.Context.CurrentLine;
+                    var oldLine = this.Context.Line;
 
 
                     //var oldColumn = this.Context.GetCurrentColumn();
-                    var oldColumn = this.Context.CurrentColumn;
+                    var oldColumn = this.Context.Column;
 
                     var indexShift = myAbsoluteIndex - oldAbsoluteIndex;
                     var lineShift = myLine - oldLine;
@@ -219,17 +224,18 @@ namespace TauCode.Parsing.Lexing
                 var subProcessResult = this.SubProcess();
                 if (subProcessResult.IsSuccessful())
                 {
-                    throw new AlphaException("todo!");
+                    this.ConsumeSubPayload(subProcessResult.Payload);
+                    this.Context.AdvanceByResult(subProcessResult);
                 }
 
                 var c = this.Context.GetCurrentChar();
-                var localIndex = this.Context.GetLocalIndex();
+                var localIndex = this.Context.IndexOffset;
 
                 var oldContextVersion = this.Context.Version;
                 var acceptanceResult = this.AcceptCharImpl(c, localIndex);
 
                 // check.
-                if (this.Context.GetLocalIndex() == 0 &&
+                if (this.Context.IndexOffset == 0 &&
                     !acceptanceResult.IsIn(CharAcceptanceResult.Continue, CharAcceptanceResult.Fail))
                 {
                     throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");

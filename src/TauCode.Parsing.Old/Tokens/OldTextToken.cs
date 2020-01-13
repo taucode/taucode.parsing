@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Old.Tokens
