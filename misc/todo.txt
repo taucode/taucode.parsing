@@ -46,3 +46,4 @@ todo3. TinyLisp: ratios and doubles.
     2. Lexize C# verbatim string
     3. Lexize C# $ string.
     4. Remove all 'alpha' which is a 'todo' actually.
++   5. Remove all 'gamma' which is a 'todo' actually.
