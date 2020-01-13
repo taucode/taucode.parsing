@@ -42,12 +42,7 @@ namespace TauCode.Parsing.Lexing
                         continue;
                     }
 
-                    whiteSpaceSkipper.AlphaCheckNotBusyAndContextIsNull();
-
                     var result = whiteSpaceSkipper.Process(_context);
-
-                    whiteSpaceSkipper.AlphaCheckNotBusyAndContextIsNull();
-                    _context.AlphaCheckDepthOne();
 
                     if (result.IsSuccessful())
                     {
@@ -159,8 +154,6 @@ namespace TauCode.Parsing.Lexing
                     {
                         continue;
                     }
-
-                    tokenExtractor.AlphaCheckNotBusyAndContextIsNull();
 
                     var result = tokenExtractor.Process(_context);
 

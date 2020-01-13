@@ -23,7 +23,6 @@ namespace TauCode.Parsing.Tokens
 
         #region IToken Members
 
-        public virtual bool HasPayload => true;
         public Position Position { get; }
         public int ConsumedLength { get; }
 

@@ -1,18 +1,19 @@
 ﻿using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Lexing.StandardExtractors
+namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 {
-    public class StringExtractor : TokenExtractorBase<TextToken>
+    public class CliStringExtractor : TokenExtractorBase<TextToken>
     {
         private char _openingDelimiter;
 
-        public StringExtractor(params Type[] acceptablePreviousTokenTypes)
+        public CliStringExtractor(params Type[] acceptablePreviousTokenTypes)
             : base(acceptablePreviousTokenTypes)
         {
         }
@@ -34,21 +35,18 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
         protected override void OnBeforeProcess()
         {
-            this.AlphaCheckOnBeforeProcess();
-
             _openingDelimiter = this.Context.GetCharAtOffset(0);
         }
 
         protected override bool ProcessEnd()
         {
-            throw new LexingException("Unclosed string.", this.Context.GetCurrentPosition());
+            throw new LexingException("Non-closed string.", this.Context.GetCurrentPosition());
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
         {
             if (localIndex == 0)
             {
-                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(c.IsIn('\'', '"'));
             }
 

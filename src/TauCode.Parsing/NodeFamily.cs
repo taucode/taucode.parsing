@@ -30,8 +30,6 @@ namespace TauCode.Parsing
 
         public void RegisterNode(INode node)
         {
-            // todo: did I ever try to create two nodes with the same name? I believe not.
-
             if (node == null)
             {
                 throw new ArgumentNullException(nameof(node));
@@ -39,6 +37,11 @@ namespace TauCode.Parsing
 
             if (node.Name != null)
             {
+                if (_namedNodes.ContainsKey(node.Name))
+                {
+                    throw new InvalidOperationException($"Node with name '{node.Name}' already exists in this family.");
+                }
+
                 _namedNodes.Add(node.Name, node);
             }
 

@@ -253,7 +253,7 @@ namespace TauCode.Parsing.Old.Tests.TinyLisp
             var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Unclosed string."));
+            Assert.That(ex.Message, Is.EqualTo("Non-closed string."));
             Assert.That(ex.Position, Is.EqualTo(new Position(line, column)));
         }
 

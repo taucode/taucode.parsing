@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 new IntegerExtractor(null),
                 new TermExtractor(),
                 new KeyExtractor(),
-                new StringExtractor(null),
+                new CliStringExtractor(null),
                 new PathExtractor(),
                 new EqualsExtractor(),
             };

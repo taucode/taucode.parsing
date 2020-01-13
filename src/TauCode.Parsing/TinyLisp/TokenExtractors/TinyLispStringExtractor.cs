@@ -1,58 +1,33 @@
-﻿using TauCode.Parsing.Exceptions;
+﻿using System;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextClasses;
+using TauCode.Parsing.Lexing.StandardEscapeProcessors;
+using TauCode.Parsing.Lexing.StandardExtractors;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TextProcessing;
+using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.TokenExtractors
 {
-    public class TinyLispStringExtractor : TokenExtractorBase<TextToken>
+    public class TinyLispStringExtractor : StringExtractorBase
     {
         public TinyLispStringExtractor()
-            : base(null) // todo: actually, accepts any.
-        {
-
-        }
-
-        protected override void OnBeforeProcess()
-        {
-            this.AlphaCheckOnBeforeProcess();
-
-            // idle
-        }
-
-        protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)
-        {
-            var str = text.Substring(absoluteIndex + 1, consumedLength - 2);
-            return new TextToken(
-                StringTextClass.Instance,
+            : base(
+                '"',
+                '"',
+                true,
                 DoubleQuoteTextDecoration.Instance,
-                str,
-                position,
-                consumedLength);
-        }
-
-        protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
+                new EscapeProcessorBase[]
+                {
+                    new CrEscapeProcessor(),
+                    new LfEscapeProcessor(),
+                },
+                new Type[]
+                {
+                    typeof(PunctuationToken),
+                    typeof(LispSymbolToken),
+                    typeof(KeywordToken)
+                })
         {
-            if (localIndex == 0)
-            {
-                this.AlphaCheckNotBusyAndContextIsNull();
-                return ContinueOrFail(c == '"');
-            }
-
-            if (c == '"')
-            {
-                this.Context.AdvanceByChar();
-                return CharAcceptanceResult.Stop;
-            }
-
-            return CharAcceptanceResult.Continue;
-        }
-
-        protected override bool ProcessEnd()
-        {
-            throw new LexingException("Unclosed string.", this.StartPosition);
         }
     }
 }

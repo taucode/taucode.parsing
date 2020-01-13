@@ -12,7 +12,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TextClasses
         {
         }
 
-        // todo: integer is a valid path, too.
         protected override string TryConvertFromImpl(string text, ITextClass anotherClass)
         {
             if (anotherClass.IsIn(

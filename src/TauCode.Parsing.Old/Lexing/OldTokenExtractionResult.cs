@@ -15,7 +15,7 @@ namespace TauCode.Parsing.Old.Lexing
 
                 if (!argsAreValid)
                 {
-                    throw new ArgumentException("Inconsistent arguments."); // todo: arg name?
+                    throw new ArgumentException("Inconsistent arguments.", nameof(token));
                 }
             }
             else
@@ -28,7 +28,7 @@ namespace TauCode.Parsing.Old.Lexing
 
                 if (!argsAreValid)
                 {
-                    throw new ArgumentException("Inconsistent arguments."); // todo: arg name?
+                    throw new ArgumentException("Inconsistent arguments.", nameof(token));
                 }
             }
 

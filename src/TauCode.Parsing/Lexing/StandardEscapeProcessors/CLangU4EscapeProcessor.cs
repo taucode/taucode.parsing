@@ -6,7 +6,7 @@ namespace TauCode.Parsing.Lexing.StandardEscapeProcessors
     public class CLangU4EscapeProcessor : EscapeProcessorBase
     {
         public CLangU4EscapeProcessor()
-            : base('\\')
+            : base('\\', false)
         {
         }
 

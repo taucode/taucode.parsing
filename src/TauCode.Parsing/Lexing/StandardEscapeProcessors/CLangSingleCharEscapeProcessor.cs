@@ -41,7 +41,7 @@ namespace TauCode.Parsing.Lexing.StandardEscapeProcessors
         }
 
         public CLangSingleCharEscapeProcessor()
-            : base('\\')
+            : base('\\', false)
         {
         }
 

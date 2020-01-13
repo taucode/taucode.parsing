@@ -17,8 +17,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
         protected override void OnBeforeProcess()
         {
-            this.AlphaCheckOnBeforeProcess();
-
             var possibleSign = this.Context.GetCharAtOffset(0);
             if (possibleSign.IsIn('+', '-'))
             {
@@ -34,7 +32,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
         {
             if (localIndex == 0)
             {
-                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(LexingHelper.IsIntegerFirstChar(c));
             }
 
@@ -51,7 +48,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             }
 
             // other punctuation marks like Comma, (, ), others might delimit though...
-            // todo: this code sucks. e.g "-1-2" is a symbol with name "-1-2" in Lisp, but it is an expression " -1 -2  " ( == -3) in C#. check it later.
             if (char.IsPunctuation(c))
             {
                 if (_sign.HasValue)

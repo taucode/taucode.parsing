@@ -5,9 +5,5 @@
         bool AcceptsFirstChar(char c);
 
         TextProcessingResult Process(ITextProcessingContext context);
-
-        bool IsBusy { get; }
-
-        ITextProcessingContext AlphaGetContext();
     }
 }

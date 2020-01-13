@@ -101,7 +101,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
         protected override bool ProcessEnd()
         {
-            throw new LexingException("Unclosed string.", this.Context.GetCurrentPosition());
+            throw LexingHelper.CreateUnclosedStringLexingException(this.Context.GetCurrentPosition());
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)

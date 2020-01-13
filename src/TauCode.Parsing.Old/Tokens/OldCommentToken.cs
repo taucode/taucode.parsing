@@ -15,7 +15,5 @@ namespace TauCode.Parsing.Old.Tokens
         }
 
         public string Comment { get; }
-
-        public override bool HasPayload => false;
     }
 }
