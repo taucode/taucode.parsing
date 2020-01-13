@@ -38,15 +38,50 @@ namespace TauCode.Parsing.TextProcessing
             return context.StartIndex + context.IndexOffset;
         }
 
-        public static bool IsEnd(this ITextProcessingContext context)
+        public static bool IsEndAtOffset(this ITextProcessingContext context, int offset)
         {
             if (context == null)
             {
                 throw new ArgumentNullException(nameof(context));
             }
 
-            return context.StartIndex + context.IndexOffset == context.Text.Length;
+            var len = context.Text.Length;
+
+            var indexToTest = context.StartIndex + context.IndexOffset + offset;
+            if (indexToTest > len)
+            {
+                throw new InvalidOperationException();
+            }
+            else if (indexToTest == len)
+            {
+                return true;
+            }
+
+            return false;
+
         }
+
+        public static bool IsEnd(this ITextProcessingContext context) => context.IsEndAtOffset(0);
+        //{
+        //    if (context == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(context));
+        //    }
+
+        //    var len = context.Text.Length;
+
+        //    var indexToTest = context.StartIndex + context.IndexOffset;
+        //    if (indexToTest > len)
+        //    {
+        //        throw new InvalidOperationException();
+        //    }
+        //    else if (indexToTest == len)
+        //    {
+        //        return true;
+        //    }
+
+        //    return false;
+        //}
 
         public static char GetCurrentChar(this ITextProcessingContext context)
         {
@@ -147,6 +182,16 @@ namespace TauCode.Parsing.TextProcessing
             context.Advance(1, 0, context.Column + 1);
         }
 
+        public static void AdvanceByChars(this ITextProcessingContext context, int shift)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            context.Advance(shift, 0, context.Column + shift);
+        }
+
         public static void AdvanceByResult(this ITextProcessingContext context, TextProcessingResult result)
         {
             if (context == null)
@@ -155,6 +200,55 @@ namespace TauCode.Parsing.TextProcessing
             }
 
             context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
+        }
+
+        public static bool RequestChars(this ITextProcessingContext context, int count)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (count <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            var startIndex = context.StartIndex;
+            var indexOffset = context.IndexOffset;
+            var len = context.Text.Length;
+            var absoluteIndex = startIndex + indexOffset;
+
+            if (absoluteIndex >= len)
+            {
+                throw new InvalidOperationException();
+            }
+
+            var remaining = len - absoluteIndex;
+            return remaining >= count;
+        }
+
+        public static string GetSubstring(this ITextProcessingContext context, int length)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            var absoluteIndex = context.StartIndex + context.IndexOffset;
+            var totalLength = context.Text.Length;
+
+            if (absoluteIndex >= totalLength)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return context.Text.Substring(absoluteIndex, length);
         }
     }
 }

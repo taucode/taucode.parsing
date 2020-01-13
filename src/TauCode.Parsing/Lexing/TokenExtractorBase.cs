@@ -7,21 +7,9 @@ using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lexing
 {
-    // todo clean
     public abstract class TokenExtractorBase<TToken> : TextProcessorBase, ITokenExtractor
         where TToken : IToken
     {
-        #region Nested
-
-        protected enum CharAcceptanceResult
-        {
-            Continue = 1,
-            Stop,
-            Fail,
-        }
-
-        #endregion
-
         #region Fields
 
         private readonly HashSet<Type> _acceptablePreviousTokenTypes;
@@ -188,22 +176,13 @@ namespace TauCode.Parsing.Lexing
                     }
 
                     var myAbsoluteIndex = this.Context.GetIndex();
-
-                    //var myLine = this.Context.GetCurrentLine();
                     var myLine = this.Context.Line;
-
-                    //var currentColumn = this.Context.GetCurrentColumn();
                     var currentColumn = this.Context.Column;
 
                     this.Context.ReleaseGeneration();
 
                     var oldAbsoluteIndex = this.Context.GetIndex();
-
-                    //var oldLine = this.Context.GetCurrentLine();
                     var oldLine = this.Context.Line;
-
-
-                    //var oldColumn = this.Context.GetCurrentColumn();
                     var oldColumn = this.Context.Column;
 
                     var indexShift = myAbsoluteIndex - oldAbsoluteIndex;
@@ -221,13 +200,22 @@ namespace TauCode.Parsing.Lexing
                         : new TextProcessingResult(indexShift, lineShift, currentColumn, token);
                 }
 
-                var subProcessResult = this.SubProcess();
-                if (subProcessResult.IsSuccessful())
+                // dealing with sub-process
+                while (true)
                 {
-                    this.ConsumeSubPayload(subProcessResult.Payload);
-                    this.Context.AdvanceByResult(subProcessResult);
+                    var subProcessResult = this.SubProcess();
+                    if (subProcessResult.IsSuccessful())
+                    {
+                        this.ConsumeSubPayload(subProcessResult.Payload);
+                        this.Context.AdvanceByResult(subProcessResult);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
 
+                // deal with char by my own.
                 var c = this.Context.GetCurrentChar();
                 var localIndex = this.Context.IndexOffset;
 

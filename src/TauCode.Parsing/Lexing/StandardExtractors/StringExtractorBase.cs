@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextProcessing;
@@ -7,11 +8,11 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardExtractors
 {
-    public class GammaStringExtractorBase : TokenExtractorBase<TextToken>
+    public class StringExtractorBase : TokenExtractorBase<TextToken>
     {
-        private IList<ITextProcessor> _escapeProcessors;
+        private IList<EscapeProcessorBase> _escapeProcessors;
 
-        public GammaStringExtractorBase(
+        public StringExtractorBase(
             char openingDelimiter,
             char closingDelimiter,
             bool acceptsNewLine,
@@ -25,22 +26,62 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
             this.TextDecoration = textDecoration ?? throw new ArgumentNullException(nameof(textDecoration));
         }
 
+        public StringExtractorBase(
+            char openingDelimiter,
+            char closingDelimiter,
+            bool acceptsNewLine,
+            ITextDecoration textDecoration,
+            EscapeProcessorBase[] escapeProcessors,
+            Type[] acceptablePreviousTokenTypes)
+            : this(
+                openingDelimiter,
+                closingDelimiter,
+                acceptsNewLine,
+                textDecoration,
+                acceptablePreviousTokenTypes)
+        {
+            _escapeProcessors = CheckEscapeProcessors(escapeProcessors);
+        }
+
         protected char OpeningDelimiter { get; }
         protected char ClosingDelimiter { get; }
         protected bool AcceptsNewLine { get; }
         protected ITextDecoration TextDecoration { get; }
 
-        protected IList<ITextProcessor> EscapeProcessors =>
-            _escapeProcessors ?? (_escapeProcessors = this.CreateEscapeProcessors());
+        private static IList<EscapeProcessorBase> CheckEscapeProcessors(IList<EscapeProcessorBase> escapeProcessors)
+        {
+            if (escapeProcessors == null)
+            {
+                throw new ArgumentNullException(nameof(escapeProcessors));
+            }
+
+            if (escapeProcessors.Any(x => x == null))
+            {
+                throw new ArgumentException($"'{nameof(escapeProcessors)}' cannot contain nulls.");
+            }
+
+            return escapeProcessors;
+        }
+
+        protected IList<EscapeProcessorBase> EscapeProcessors =>
+            _escapeProcessors ?? (_escapeProcessors = CheckEscapeProcessors(this.CreateEscapeProcessors()));
 
         protected StringBuilder StringBuilder { get; private set; }
 
+        protected virtual IList<EscapeProcessorBase> CreateEscapeProcessors()
+        {
+            return new List<EscapeProcessorBase>();
+        }
+
         protected override TextProcessingResult SubProcess()
         {
+            var gotEscape = false;
+
             foreach (var escapeProcessor in this.EscapeProcessors)
             {
                 if (escapeProcessor.AcceptsFirstChar(this.Context.GetCurrentChar()))
                 {
+                    gotEscape = true;
                     var subResult = escapeProcessor.Process(this.Context);
                     if (subResult.IsSuccessful())
                     {
@@ -49,17 +90,17 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
                 }
             }
 
+            if (gotEscape)
+            {
+                throw new NotImplementedException("Got bad escape. todo.");
+            }
+
             return TextProcessingResult.Failure;
         }
 
         protected override bool ProcessEnd()
         {
             throw new NotImplementedException(); // unclosed string!
-        }
-
-        protected virtual IList<ITextProcessor> CreateEscapeProcessors()
-        {
-            return new List<ITextProcessor>();
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
@@ -90,11 +131,18 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
             this.StringBuilder.Append(c);
             return CharAcceptanceResult.Continue;
+
+        }
+
+        protected override void ConsumeSubPayload(IPayload subPayload)
+        {
+            var escapePayload = (EscapePayload)subPayload;
+            this.StringBuilder.Append(escapePayload);
         }
 
         protected override void OnBeforeProcess()
         {
-            StringBuilder = new StringBuilder();
+            this.StringBuilder = new StringBuilder();
         }
 
         protected override TextToken DeliverToken(string text, int absoluteIndex, Position position, int consumedLength)

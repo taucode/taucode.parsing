@@ -9,14 +9,25 @@ namespace TauCode.Parsing.Tests.Lexing
     public class StringLexingTests
     {
         [Test]
-        public void WatTodo()
+        public void EscapeString_SingleCharEscape_EscapesCorrectly()
         {
-            var input = "\"\\n\"";
+            var input = "\"\\n\\v\\t\\r\\a\\b\\0\\t\\f\\\\\\\"\"";
             ILexer lexer = new MyStringLexer();
             var tokens = lexer.Lexize(input);
 
             var textToken = (TextToken)tokens.Single();
-            Assert.That(textToken.Text, Is.EqualTo("\n"));
+            Assert.That(textToken.Text, Is.EqualTo("\n\v\t\r\a\b\0\t\f\\\""));
+        }
+
+        [Test]
+        public void EscapeString_MixedEscapes_EscapesCorrectly()
+        {
+            var input = "\"\\n\\v\\t\\r\\a\\b\\0\\t\\f\\\\\\u1488\"";
+            ILexer lexer = new MyStringLexer();
+            var tokens = lexer.Lexize(input);
+
+            var textToken = (TextToken)tokens.Single();
+            Assert.That(textToken.Text, Is.EqualTo("\n\v\t\r\a\b\0\t\f\\\u1488"));
         }
     }
 }

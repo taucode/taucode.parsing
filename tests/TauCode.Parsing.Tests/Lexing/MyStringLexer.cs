@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Lexing.StandardEscapeProcessors;
+using TauCode.Parsing.Lexing.StandardExtractors;
+using TauCode.Parsing.TextDecorations;
 
 namespace TauCode.Parsing.Tests.Lexing
 {
@@ -9,7 +12,17 @@ namespace TauCode.Parsing.Tests.Lexing
         {
             return new List<ITokenExtractor>
             {
-                new MyStringExtractor(),
+                new StringExtractorBase(
+                    '"',
+                    '"',
+                    false,
+                    DoubleQuoteTextDecoration.Instance,
+                    new EscapeProcessorBase[]
+                    {
+                        new CLangSingleCharEscapeProcessor(),
+                        new CLangU4EscapeProcessor(),
+                    },
+                    null)
             };
         }
     }
