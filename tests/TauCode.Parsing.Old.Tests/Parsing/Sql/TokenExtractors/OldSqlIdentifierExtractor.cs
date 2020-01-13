@@ -66,7 +66,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql.TokenExtractors
                 }
             }
 
-            throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
+            throw new LexingException("Non-closed identifier.", this.GetCurrentAbsolutePosition());
         }
 
         private char GetClosingDelimiter(char openingDelimiter)
@@ -89,7 +89,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql.TokenExtractors
 
         protected override OldCharChallengeResult ChallengeEnd()
         {
-            throw new LexingException("Unclosed identifier.", this.GetCurrentAbsolutePosition());
+            throw new LexingException("Non-closed identifier.", this.GetCurrentAbsolutePosition());
         }
     }
 }

@@ -79,24 +79,12 @@ namespace TauCode.Parsing.Lexing
 
         protected virtual TextProcessingResult SubProcess() => TextProcessingResult.Failure;
 
-        protected void AlphaCheckOnBeforeProcess()
-        {
-            var bad1 = this.IsBusy;
-            //var bad2 = this.Context.GetLocalIndex() != 1;
-            var bad2 = this.Context.IndexOffset != 1;
-            var good = !(bad1 || bad2);
-
-            ParsingHelper.AlphaAssert(good);
-        }
-
         #endregion
 
         #region Overridden
 
         public override bool AcceptsFirstChar(char c)
         {
-            this.AlphaCheckNotBusyAndContextIsNull();
-
             var charAcceptanceResult = this.AcceptCharImpl(c, 0);
             switch (charAcceptanceResult)
             {
@@ -104,13 +92,13 @@ namespace TauCode.Parsing.Lexing
                     return true;
 
                 case CharAcceptanceResult.Stop:
-                    throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
+                    throw LexingHelper.CreateErrorInLogicLexingException();
 
                 case CharAcceptanceResult.Fail:
                     return false;
 
                 default:
-                    throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
+                    throw LexingHelper.CreateErrorInLogicLexingException();
             }
         }
 
@@ -120,8 +108,6 @@ namespace TauCode.Parsing.Lexing
             {
                 throw new ArgumentNullException(nameof(context));
             }
-
-            this.AlphaCheckNotBusyAndContextIsNull();
 
             var lexingContext = (ILexingContext)context;
 
@@ -148,7 +134,6 @@ namespace TauCode.Parsing.Lexing
             this.Context.AdvanceByChar();
 
             this.OnBeforeProcess();
-            this.IsBusy = true;
 
             var gotStop = false;
 
@@ -160,7 +145,7 @@ namespace TauCode.Parsing.Lexing
                 {
                     if (this.Context.IndexOffset == 0)
                     {
-                        throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
+                        throw LexingHelper.CreateErrorInLogicLexingException();
                     }
 
                     if (isEnd && !gotStop)
@@ -169,7 +154,6 @@ namespace TauCode.Parsing.Lexing
                         if (!acceptsEnd)
                         {
                             this.Context.ReleaseGeneration();
-                            this.IsBusy = false;
                             this.Context = null;
                             return TextProcessingResult.Failure;
                         }
@@ -192,7 +176,6 @@ namespace TauCode.Parsing.Lexing
                     var position = new Position(oldLine, oldColumn);
                     var token = this.DeliverToken(this.Context.Text, oldAbsoluteIndex, position, indexShift);
 
-                    this.IsBusy = false;
                     this.Context = null;
 
                     return token == null
@@ -226,7 +209,7 @@ namespace TauCode.Parsing.Lexing
                 if (this.Context.IndexOffset == 0 &&
                     !acceptanceResult.IsIn(CharAcceptanceResult.Continue, CharAcceptanceResult.Fail))
                 {
-                    throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
+                    throw LexingHelper.CreateErrorInLogicLexingException();
                 }
 
                 // check: only 'Stop' allows altering of context's version.
@@ -235,7 +218,7 @@ namespace TauCode.Parsing.Lexing
                     var newContextVersion = this.Context.Version;
                     if (oldContextVersion != newContextVersion)
                     {
-                        throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic."); // todo: copy/pasted.
+                        throw LexingHelper.CreateErrorInLogicLexingException();
                     }
                 }
 
@@ -252,18 +235,15 @@ namespace TauCode.Parsing.Lexing
 
                     case CharAcceptanceResult.Fail:
                         this.Context.ReleaseGeneration();
-                        this.IsBusy = false;
                         this.Context = null;
                         return TextProcessingResult.Failure;
 
                     default:
-                        throw LexingHelper.CreateInternalErrorLexingException(null, "Error in token extractor logic.");
+                        throw LexingHelper.CreateErrorInLogicLexingException();
                 }
             }
         }
 
         #endregion
-
-        public override ITextProcessingContext AlphaGetContext() => this.Context;
     }
 }

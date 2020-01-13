@@ -74,7 +74,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 
         protected override OldCharChallengeResult ChallengeEnd()
         {
-            throw new LexingException("Unclosed string.", this.GetCurrentAbsolutePosition());
+            throw new LexingException("Non-closed string.", this.GetCurrentAbsolutePosition());
         }
     }
 }

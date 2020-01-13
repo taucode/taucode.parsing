@@ -17,8 +17,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override void OnBeforeProcess()
         {
-            this.AlphaCheckOnBeforeProcess();
-
             _hyphenCountInARow = 1; // guaranteed to start with '-'.
         }
 
@@ -37,7 +35,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
             if (localIndex == 0)
             {
-                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(c == '-');
             }
 

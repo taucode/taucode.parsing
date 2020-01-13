@@ -137,13 +137,5 @@ namespace TauCode.Parsing
 
             return all;
         }
-
-        public static void AlphaAssert(bool b)
-        {
-            if (!b)
-            {
-                throw new Exception("Assertion failed.");
-            }
-        }
     }
 }

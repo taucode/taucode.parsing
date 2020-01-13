@@ -15,8 +15,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override void OnBeforeProcess()
         {
-            this.AlphaCheckOnBeforeProcess();
-
             // idle
         }
 
@@ -35,7 +33,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
         {
             if (localIndex == 0)
             {
-                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(
                     LexingHelper.IsDigit(c) ||
                     LexingHelper.IsLatinLetter(c));

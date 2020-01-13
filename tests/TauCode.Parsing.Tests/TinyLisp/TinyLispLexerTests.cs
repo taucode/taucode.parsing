@@ -242,7 +242,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         }
 
         [Test]
-        [TestCase("\r \n \r\n \n\r   \"not close", 5, 3, Description = "Not closed string 'not close'")]
+        [TestCase("\r \n \r\n \n\r   \"not close", 5, 13, Description = "Not closed string 'not close'")]
         public void Lexize_UnexpectedEnd_ThrowsLexerException(string notClosedString, int line, int column)
         {
             // Arrange
@@ -257,20 +257,24 @@ namespace TauCode.Parsing.Tests.TinyLisp
         }
 
         [Test]
-        [TestCase("\n \r\"broken\n", 2, 7, Description = "Not closed string 'not close' interrupted with \\n")]
-        [TestCase("\n \r \"broken\r", 2, 8, Description = "Not closed string 'not close' interrupted with \\r")]
-        [TestCase("\n \r  \"broken\r\n", 2, 9, Description = "Not closed string 'not close' interrupted with \\r\\n")]
-        public void Lexize_NewLineInString_ThrowsLexerException(string notClosedString, int line, int column)
+        [TestCase("\n \r\"broken\ncontinue on new line\"", "broken\ncontinue on new line")]
+        [TestCase("\n \r \"broken\rcontinue on new line\"", "broken\rcontinue on new line")]
+        [TestCase("\n \r  \"broken\r\ncontinue on new line\"", "broken\r\ncontinue on new line")]
+        public void Lexize_NewLineInString_LexizesCorrectly(
+            string notClosedString,
+            string expectedExtractedString)
         {
             // Arrange
             var input = notClosedString;
 
             // Act
-            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
+            var tokens = _lexer.Lexize(input);
+            var token = (TextToken)tokens.Single();
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Newline in string."));
-            Assert.That(ex.Position, Is.EqualTo(new Position(line, column)));
+            Assert.That(token.Class, Is.SameAs(StringTextClass.Instance));
+            Assert.That(token.Decoration, Is.SameAs(DoubleQuoteTextDecoration.Instance));
+            Assert.That(token.Text, Is.EqualTo(expectedExtractedString));
         }
 
         [Test]
@@ -357,5 +361,49 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(tokens, Is.Empty);
         }
 
+        [Test]
+        [TestCase("\r\n\"abc\n def\" \"mno \r\n \"  \"lek\r guk\" \"zz\"")]
+        public void Lexize_NewLineInString_PositionIsCorrect(string input)
+        {
+            // Arrange
+            ILexer lexer = new TinyLispLexer();
+
+            // Act
+            var tokens = lexer.Lexize(input);
+
+            // Assert
+            Assert.That(tokens.Count, Is.EqualTo(4));
+            Assert.That(tokens.All(x => x is TextToken), Is.True);
+
+            var textTokens = tokens.Select(x => (TextToken)x).ToList();
+
+            var textToken = textTokens[0];
+            Assert.That(textToken.Class, Is.SameAs(StringTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.SameAs(DoubleQuoteTextDecoration.Instance));
+            Assert.That(textToken.Text, Is.EqualTo("abc\n def"));
+            Assert.That(textToken.Position, Is.EqualTo(new Position(1, 0)));
+            Assert.That(textToken.ConsumedLength, Is.EqualTo(10));
+
+            textToken = textTokens[1];
+            Assert.That(textToken.Class, Is.SameAs(StringTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.SameAs(DoubleQuoteTextDecoration.Instance));
+            Assert.That(textToken.Text, Is.EqualTo("mno \r\n "));
+            Assert.That(textToken.Position, Is.EqualTo(new Position(2, 6)));
+            Assert.That(textToken.ConsumedLength, Is.EqualTo(9));
+
+            textToken = textTokens[2];
+            Assert.That(textToken.Class, Is.SameAs(StringTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.SameAs(DoubleQuoteTextDecoration.Instance));
+            Assert.That(textToken.Text, Is.EqualTo("lek\r guk"));
+            Assert.That(textToken.Position, Is.EqualTo(new Position(3, 4)));
+            Assert.That(textToken.ConsumedLength, Is.EqualTo(10));
+
+            textToken = textTokens[3];
+            Assert.That(textToken.Class, Is.SameAs(StringTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.SameAs(DoubleQuoteTextDecoration.Instance));
+            Assert.That(textToken.Text, Is.EqualTo("zz"));
+            Assert.That(textToken.Position, Is.EqualTo(new Position(4, 6)));
+            Assert.That(textToken.ConsumedLength, Is.EqualTo(4));
+        }
     }
 }

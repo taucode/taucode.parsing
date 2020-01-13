@@ -94,6 +94,16 @@ namespace TauCode.Parsing.Lexing
             return new LexingException(sb.ToString(), position);
         }
 
+        public static LexingException CreateErrorInLogicLexingException()
+        {
+            return CreateInternalErrorLexingException(null, "Error in token extractor logic.");
+        }
+
+        internal static LexingException CreateUnclosedStringLexingException(Position position)
+        {
+            throw new LexingException("Unclosed string.", position);
+        }
+
         public static bool IsInlineWhiteSpace(char c) => c.IsIn(' ', '\t');
 
         public static bool IsCaretControl(char c) => c.IsIn('\r', '\n');

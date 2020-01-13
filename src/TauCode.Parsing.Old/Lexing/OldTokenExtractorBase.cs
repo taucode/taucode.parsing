@@ -61,8 +61,7 @@ namespace TauCode.Parsing.Old.Lexing
         {
             if (localIndex < 0)
             {
-                // you shouldn't run such a code. there's some error in your token extractor logic.
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetStartAbsolutePosition());
+                throw LexingHelper.CreateErrorInLogicLexingException();
             }
 
             return _input[this.StartAbsoluteCharIndex + localIndex];

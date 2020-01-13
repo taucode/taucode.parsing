@@ -1,6 +1,5 @@
 ﻿using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardExtractors
@@ -17,8 +16,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
         protected override void OnBeforeProcess()
         {
-            this.AlphaCheckOnBeforeProcess();
-
             // idle
         }
 
@@ -38,7 +35,6 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
         {
             if (localIndex == 0)
             {
-                this.AlphaCheckNotBusyAndContextIsNull();
                 return this.ContinueOrFail(c == '_' || LexingHelper.IsLatinLetter(c));
             }
 

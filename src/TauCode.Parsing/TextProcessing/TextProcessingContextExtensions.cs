@@ -62,26 +62,6 @@ namespace TauCode.Parsing.TextProcessing
         }
 
         public static bool IsEnd(this ITextProcessingContext context) => context.IsEndAtOffset(0);
-        //{
-        //    if (context == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(context));
-        //    }
-
-        //    var len = context.Text.Length;
-
-        //    var indexToTest = context.StartIndex + context.IndexOffset;
-        //    if (indexToTest > len)
-        //    {
-        //        throw new InvalidOperationException();
-        //    }
-        //    else if (indexToTest == len)
-        //    {
-        //        return true;
-        //    }
-
-        //    return false;
-        //}
 
         public static char GetCurrentChar(this ITextProcessingContext context)
         {
@@ -249,6 +229,23 @@ namespace TauCode.Parsing.TextProcessing
             }
 
             return context.Text.Substring(absoluteIndex, length);
+        }
+
+        public static string GetRemainder(this ITextProcessingContext context)
+        {
+            if (context == null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            var index = context.StartIndex + context.IndexOffset;
+            var textLength = context.Text.Length;
+            if (index > textLength)
+            {
+                throw new InvalidOperationException();
+            }
+
+            return context.Text.Substring(index);
         }
     }
 }
