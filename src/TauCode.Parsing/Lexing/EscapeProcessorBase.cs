@@ -1,4 +1,5 @@
 ﻿using System;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lexing
@@ -25,7 +26,7 @@ namespace TauCode.Parsing.Lexing
 
             if (this.Context.IsEnd())
             {
-                throw new NotImplementedException(); // unclosed escape
+                throw new LexingException("Unclosed string.", this.Context.GetCurrentPosition()); // todo copy-paste
             }
 
             var payload = this.DeliverPayloadImpl();

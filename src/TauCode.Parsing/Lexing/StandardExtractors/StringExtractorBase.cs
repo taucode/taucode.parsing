@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
@@ -92,7 +93,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
             if (gotEscape)
             {
-                throw new NotImplementedException("Got bad escape. todo.");
+                throw new LexingException("Wrong string escaping", this.Context.GetCurrentPosition());
             }
 
             return TextProcessingResult.Failure;
@@ -100,7 +101,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
 
         protected override bool ProcessEnd()
         {
-            throw new NotImplementedException(); // unclosed string!
+            throw new LexingException("Unclosed string.", this.Context.GetCurrentPosition());
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
@@ -125,7 +126,7 @@ namespace TauCode.Parsing.Lexing.StandardExtractors
                 }
                 else
                 {
-                    throw new NotImplementedException(); // new line in string constant.
+                    throw new LexingException("Newline in string constant", this.Context.GetCurrentPosition());
                 }
             }
 
