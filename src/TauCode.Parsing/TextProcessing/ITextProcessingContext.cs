@@ -13,30 +13,39 @@
 
         int Version { get; }
 
-        int GetCurrentLine();
+        int AbsoluteStartIndex { get; }
 
-        int GetAbsoluteIndex();
+        // todo: CurrentLocalIndex
+        int LocalIndex { get; }
 
-        Position GetCurrentAbsolutePosition();
+        int CurrentLine { get; }
 
-        int GetCurrentColumn();
-
-        int GetStartIndex();
-
-        int GetLocalIndex();
-
-        bool IsEnd();
+        int CurrentColumn { get; }
 
         void Advance(int indexShift, int lineShift, int currentColumn);
 
-        char GetCurrentChar();
+        //int GetCurrentLine();
 
-        char GetLocalChar(int localIndex);
+        //int GetAbsoluteIndex();
 
-        //void AdvanceByChar();
+        //Position GetCurrentAbsolutePosition();
 
-        char? TryGetNextLocalChar();
+        //int GetCurrentColumn();
 
-        char? TryGetPreviousLocalChar();
+        //int GetStartIndex();
+
+        //int GetLocalIndex();
+
+        //bool IsEnd();
+
+        //void Advance(int indexShift, int lineShift, int currentColumn);
+
+        //char GetCurrentChar();
+
+        //char GetLocalChar(int localIndex);
+
+        //char? TryGetNextLocalChar();
+
+        //char? TryGetPreviousLocalChar();
     }
 }

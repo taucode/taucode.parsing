@@ -7,6 +7,7 @@ using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lexing
 {
+    // todo clean
     public abstract class TokenExtractorBase<TToken> : TextProcessorBase, ITokenExtractor
         where TToken : IToken
     {
@@ -88,7 +89,8 @@ namespace TauCode.Parsing.Lexing
         protected void AlphaCheckOnBeforeProcess()
         {
             var bad1 = this.IsBusy;
-            var bad2 = this.Context.GetLocalIndex() != 1;
+            //var bad2 = this.Context.GetLocalIndex() != 1;
+            var bad2 = this.Context.LocalIndex != 1;
             var good = !(bad1 || bad2);
 
             ParsingHelper.AlphaAssert(good);
@@ -181,14 +183,23 @@ namespace TauCode.Parsing.Lexing
                     }
 
                     var myAbsoluteIndex = this.Context.GetAbsoluteIndex();
-                    var myLine = this.Context.GetCurrentLine();
-                    var currentColumn = this.Context.GetCurrentColumn();
+
+                    //var myLine = this.Context.GetCurrentLine();
+                    var myLine = this.Context.CurrentLine;
+
+                    //var currentColumn = this.Context.GetCurrentColumn();
+                    var currentColumn = this.Context.CurrentColumn;
 
                     this.Context.ReleaseGeneration();
 
                     var oldAbsoluteIndex = this.Context.GetAbsoluteIndex();
-                    var oldLine = this.Context.GetCurrentLine();
-                    var oldColumn = this.Context.GetCurrentColumn();
+
+                    //var oldLine = this.Context.GetCurrentLine();
+                    var oldLine = this.Context.CurrentLine;
+
+
+                    //var oldColumn = this.Context.GetCurrentColumn();
+                    var oldColumn = this.Context.CurrentColumn;
 
                     var indexShift = myAbsoluteIndex - oldAbsoluteIndex;
                     var lineShift = myLine - oldLine;

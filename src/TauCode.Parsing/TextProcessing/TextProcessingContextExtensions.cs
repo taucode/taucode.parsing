@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Exceptions;
+﻿using System;
+using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.TextProcessing
 {
@@ -10,19 +11,28 @@ namespace TauCode.Parsing.TextProcessing
             out int lineShift,
             out int currentColumn)
         {
-            // todo checks on context's generations.
+            throw new NotImplementedException();
+            //if (context == null)
+            //{
+            //    throw new ArgumentNullException(nameof(context));
+            //}
 
-            var newIndex = context.GetAbsoluteIndex();
-            var newLine = context.GetCurrentLine();
-            currentColumn = context.GetCurrentColumn();
+            //var newIndex = context.GetAbsoluteIndex();
+            //var newLine = context.GetCurrentLine();
+            //currentColumn = context.GetCurrentColumn();
 
-            context.ReleaseGeneration();
+            //context.ReleaseGeneration();
 
-            var oldIndex = context.GetAbsoluteIndex();
-            var oldLine = context.GetCurrentLine();
+            //var oldIndex = context.GetAbsoluteIndex();
+            //var oldLine = context.GetCurrentLine();
 
-            indexShift = newIndex - oldIndex;
-            lineShift = newLine - oldLine;
+            //indexShift = newIndex - oldIndex;
+            //lineShift = newLine - oldLine;
+        }
+
+        public static int GetCurrentAbsoluteIndex(this ITextProcessingContext context)
+        {
+            return context.AbsoluteStartIndex + context.LocalIndex;
         }
 
         public static char GetPreviousLocalChar(this ITextProcessingContext context)
@@ -34,7 +44,7 @@ namespace TauCode.Parsing.TextProcessing
 
         public static void AdvanceByChar(this ITextProcessingContext context)
         {
-            context.Advance(1, 0, context.GetCurrentColumn() + 1);
+            context.Advance(1, 0, context.CurrentColumn + 1);
         }
 
         public static void AdvanceByResult(this ITextProcessingContext context, TextProcessingResult result)
