@@ -47,11 +47,6 @@ namespace TauCode.Parsing.TinyLisp.TokenExtractors
                 return CharAcceptanceResult.Stop;
             }
 
-            if (LexingHelper.IsCaretControl(c))
-            {
-                throw new LexingException("Newline in string.", this.Context.GetCurrentPosition());
-            }
-
             return CharAcceptanceResult.Continue;
         }
 

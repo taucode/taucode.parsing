@@ -257,20 +257,24 @@ namespace TauCode.Parsing.Tests.TinyLisp
         }
 
         [Test]
-        [TestCase("\n \r\"broken\n", 2, 7, Description = "Not closed string 'not close' interrupted with \\n")]
-        [TestCase("\n \r \"broken\r", 2, 8, Description = "Not closed string 'not close' interrupted with \\r")]
-        [TestCase("\n \r  \"broken\r\n", 2, 9, Description = "Not closed string 'not close' interrupted with \\r\\n")]
-        public void Lexize_NewLineInString_ThrowsLexerException(string notClosedString, int line, int column)
+        [TestCase("\n \r\"broken\ncontinue on new line\"", "broken\ncontinue on new line")]
+        [TestCase("\n \r \"broken\rcontinue on new line\"", "broken\rcontinue on new line")]
+        [TestCase("\n \r  \"broken\r\ncontinue on new line\"", "broken\r\ncontinue on new line")]
+        public void Lexize_NewLineInString_LexizesCorrectly(
+            string notClosedString,
+            string expectedExtractedString)
         {
             // Arrange
             var input = notClosedString;
 
             // Act
-            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
+            var tokens = _lexer.Lexize(input);
+            var token = (TextToken)tokens.Single();
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo("Newline in string."));
-            Assert.That(ex.Position, Is.EqualTo(new Position(line, column)));
+            Assert.That(token.Class, Is.SameAs(StringTextClass.Instance));
+            Assert.That(token.Decoration, Is.SameAs(DoubleQuoteTextDecoration.Instance));
+            Assert.That(token.Text, Is.EqualTo(expectedExtractedString));
         }
 
         [Test]
