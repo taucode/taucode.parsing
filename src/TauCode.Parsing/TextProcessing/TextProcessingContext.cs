@@ -10,37 +10,27 @@ namespace TauCode.Parsing.TextProcessing
 
         private class Generation
         {
-            private readonly TextProcessingContext _holder;
-
-            public Generation(TextProcessingContext holder)
+            public Generation(
+                int startIndex,
+                int line,
+                int column)
             {
-                _holder = holder;
-
-                this.StartingIndex = holder.GetAbsoluteIndex();
-                this.LocalIndex = 0;
-                this.CurrentLine = holder.GetCurrentLine();
-                this.CurrentColumn = holder.GetCurrentColumn();
+                this.StartIndex = startIndex;
+                this.IndexOffset = 0;
+                this.Line = line;
+                this.Column = column;
             }
 
-            public int StartingIndex { get; private set; }
-            public int LocalIndex { get; private set; }
-            public int CurrentLine { get; private set; }
-            public int CurrentColumn { get; private set; }
+            public int StartIndex { get; }
+            public int IndexOffset { get; private set; }
+            public int Line { get; private set; }
+            public int Column { get; private set; }
 
-            public int GetAbsoluteIndex() => this.StartingIndex + this.LocalIndex;
-
-            public void Advance(int indexShift, int lineShift, int currentColumn)
+            public void Advance(int indexShift, int lineShift, int column)
             {
-                this.LocalIndex += indexShift;
-                this.CurrentLine += lineShift;
-                this.CurrentColumn = currentColumn;
-
-                _holder._version++;
-            }
-
-            public Position GetCurrentAbsolutePosition()
-            {
-                return new Position(this.CurrentLine, this.CurrentColumn);
+                this.IndexOffset += indexShift;
+                this.Line += lineShift;
+                this.Column = column;
             }
         }
 
@@ -59,23 +49,12 @@ namespace TauCode.Parsing.TextProcessing
         {
             this.Text = text ?? throw new ArgumentNullException(nameof(text));
             _generations = new Stack<Generation>();
-            var rootGeneration = new Generation(this);
+            var rootGeneration = new Generation(
+                0,
+                0,
+                0);
             _generations.Push(rootGeneration);
             _version = 1;
-        }
-
-        #endregion
-
-        #region Private
-
-        private Generation GetLastGeneration()
-        {
-            if (_generations.Count == 0)
-            {
-                return null;
-            }
-
-            return _generations.Peek();
         }
 
         #endregion
@@ -86,7 +65,32 @@ namespace TauCode.Parsing.TextProcessing
 
         public void RequestGeneration()
         {
-            var generation = new Generation(this);
+            int startIndex;
+            int line;
+            int column;
+
+            if (_generations.Count == 0)
+            {
+                startIndex = 0;
+                line = 0;
+                column = 0;
+            }
+            else
+            {
+                var lastGeneration = _generations.Peek();
+
+                startIndex =
+                    lastGeneration.StartIndex +
+                    lastGeneration.IndexOffset;
+                line = lastGeneration.Line;
+                column = lastGeneration.Column;
+            }
+
+            var generation = new Generation(
+                startIndex,
+                line,
+                column);
+
             _generations.Push(generation);
         }
 
@@ -106,37 +110,13 @@ namespace TauCode.Parsing.TextProcessing
 
         public int Version => _version;
 
-        public int GetCurrentLine() => this.GetLastGeneration()?.CurrentLine ?? 0;
+        public int StartIndex => _generations.Peek().StartIndex;
 
-        public int GetAbsoluteIndex() => this.GetLastGeneration()?.GetAbsoluteIndex() ?? 0;
+        public int IndexOffset => _generations.Peek().IndexOffset;
 
-        public Position GetCurrentAbsolutePosition() => this.GetLastGeneration()?.GetCurrentAbsolutePosition() ?? Position.Zero;
+        public int Line => _generations.Peek().Line;
 
-        public int GetCurrentColumn() => this.GetLastGeneration()?.CurrentColumn ?? 0;
-
-        public int GetStartingIndex() => this.GetLastGeneration()?.StartingIndex ?? 0;
-
-        public int GetLocalIndex()
-        {
-            var lastGeneration = _generations.Peek();
-            var localIndex = lastGeneration.LocalIndex;
-
-            return localIndex;
-        }
-
-        public bool IsEnd()
-        {
-            var lastGeneration = _generations.Peek();
-            var absoluteIndex = lastGeneration.StartingIndex + lastGeneration.LocalIndex;
-            if (absoluteIndex > this.Text.Length)
-            {
-                throw LexingHelper.CreateInternalErrorLexingException(
-                    null,
-                    $"{nameof(ITextProcessingContext)} is in an invalid state.");
-            }
-
-            return absoluteIndex == this.Text.Length;
-        }
+        public int Column => _generations.Peek().Column;
 
         public void Advance(int indexShift, int lineShift, int currentColumn)
         {
@@ -155,55 +135,15 @@ namespace TauCode.Parsing.TextProcessing
                 throw new ArgumentOutOfRangeException(nameof(currentColumn));
             }
 
-            this.GetLastGeneration().Advance(indexShift, lineShift, currentColumn);
-        }
-
-        public char GetCurrentChar()
-        {
-            // todo checks
-            // todo should be extension
-            var absoluteIndex = this.GetAbsoluteIndex();
-            return this.Text[absoluteIndex];
-        }
-
-        public char GetLocalChar(int localIndex)
-        {
-            // todo checks
-            // todo should be extension
-            var absoluteIndex = this.GetStartingIndex() + localIndex;
-            return this.Text[absoluteIndex];
-        }
-
-        public char? TryGetNextLocalChar()
-        {
-            if (this.IsEnd())
+            var desiredAbsoluteIndex = this.GetIndex() + indexShift;
+            if (desiredAbsoluteIndex > this.Text.Length)
             {
-                // todo copy/pasted
-                throw LexingHelper.CreateInternalErrorLexingException(
-                    null,
-                    $"{nameof(ITextProcessingContext)} is in an invalid state.");
-
+                throw new IndexOutOfRangeException("Cannot advance beyond end of text.");
             }
 
-            var wantedIndex = this.GetAbsoluteIndex() + 1;
-            if (wantedIndex == this.Text.Length)
-            {
-                return null;
-            }
-
-            return this.Text[wantedIndex];
-        }
-
-        public char? TryGetPreviousLocalChar()
-        {
-            if (this.GetLocalIndex() == 0)
-            {
-                return null;
-            }
-
-            var absoluteIndex = this.GetAbsoluteIndex();
-            var wantedIndex = absoluteIndex - 1;
-            return this.Text[wantedIndex];
+            var generation = _generations.Peek();
+            generation.Advance(indexShift, lineShift, currentColumn);
+            _version++;
         }
 
         #endregion

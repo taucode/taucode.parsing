@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
@@ -21,5 +20,7 @@ namespace TauCode.Parsing.Tokens
         public ITextClass Class { get; }
         public ITextDecoration Decoration { get; }
         public string Text { get; }
+
+        public override string ToString() => this.Text;
     }
 }

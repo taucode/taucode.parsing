@@ -39,7 +39,7 @@ namespace TauCode.Parsing.TextProcessing.Processors
                             goOn = false;
                         }
 
-                        var nextChar = context.TryGetNextLocalChar();
+                        var nextChar = context.TryGetNextChar();
                         if (nextChar.HasValue)
                         {
                             if (nextChar.Value == LexingHelper.LF)

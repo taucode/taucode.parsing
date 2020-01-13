@@ -45,7 +45,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
         {
             this.AlphaCheckOnBeforeProcess();
 
-            var c = this.Context.GetLocalChar(0);
+            var c = this.Context.GetCharAtOffset(0);
             if (OpeningDelimiters.Contains(c))
             {
                 _openingDelimiter = c;
@@ -92,7 +92,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
             {
                 if (_openingDelimiter.HasValue)
                 {
-                    throw new LexingException("Unclosed identifier.", this.Context.GetCurrentAbsolutePosition());
+                    throw new LexingException("Unclosed identifier.", this.Context.GetCurrentPosition());
                 }
             }
 
@@ -110,7 +110,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
                         }
                         else
                         {
-                            throw new LexingException("Unclosed identifier.", this.Context.GetCurrentAbsolutePosition());
+                            throw new LexingException("Unclosed identifier.", this.Context.GetCurrentPosition());
                         }
                     }
                     else
@@ -126,7 +126,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors
 
             if (_openingDelimiter.HasValue)
             {
-                throw new LexingException("Unclosed identifier.", this.Context.GetCurrentAbsolutePosition());
+                throw new LexingException("Unclosed identifier.", this.Context.GetCurrentPosition());
             }
 
             return CharAcceptanceResult.Fail;

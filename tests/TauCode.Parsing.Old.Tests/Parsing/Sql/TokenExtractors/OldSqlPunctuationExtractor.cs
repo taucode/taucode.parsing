@@ -26,7 +26,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Sql.TokenExtractors
         {
             var str = this.ExtractResultString();
 
-            var position = new Position(this.StartingLine, this.StartColumn);
+            var position = new Position(this.StartLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new PunctuationToken(str.Single(), position, consumedLength);

@@ -39,7 +39,7 @@ namespace TauCode.Parsing.Old.Lexing.StandardTokenExtractors
         {
             var str = this.ExtractResultString();
 
-            var position = new Position(this.StartingLine, this.StartColumn);
+            var position = new Position(this.StartLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new OldTextToken(

@@ -31,7 +31,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             var punctuation = TinyLispHelper.CharToPunctuation(c);
 
             var position = new Position(
-                this.StartingLine,
+                this.StartLine,
                 this.StartColumn);
 
             return new LispPunctuationToken(punctuation, position, this.LocalCharIndex);

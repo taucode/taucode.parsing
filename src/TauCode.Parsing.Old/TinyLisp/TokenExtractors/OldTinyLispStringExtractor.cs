@@ -24,7 +24,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
 
-            var position = new Position(this.StartingLine, this.StartColumn);
+            var position = new Position(this.StartLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new OldTextToken(
@@ -61,7 +61,7 @@ namespace TauCode.Parsing.Old.TinyLisp.TokenExtractors
 
         protected override OldCharChallengeResult ChallengeEnd()
         {
-            throw new LexingException("Unclosed string.", this.GetStartingAbsolutePosition());
+            throw new LexingException("Unclosed string.", this.GetStartAbsolutePosition());
         }
     }
 }

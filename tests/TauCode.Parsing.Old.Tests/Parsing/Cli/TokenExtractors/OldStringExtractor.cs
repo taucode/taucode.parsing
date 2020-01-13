@@ -10,7 +10,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 {
     public class OldStringExtractor : OldTokenExtractorBase
     {
-        private char? _startingDelimiter;
+        private char? _openingDelimiter;
 
         public OldStringExtractor()
             : base(c => c.IsIn('\'', '"'))
@@ -19,7 +19,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 
         protected override void ResetState()
         {
-            _startingDelimiter = null;
+            _openingDelimiter = null;
         }
 
         protected override IToken ProduceResult()
@@ -27,12 +27,12 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
             var str = this.ExtractResultString();
             var value = str.Substring(1, str.Length - 2);
 
-            var position = new Position(this.StartingLine, this.StartColumn);
+            var position = new Position(this.StartLine, this.StartColumn);
             var consumedLength = this.LocalCharIndex;
 
             return new OldTextToken(
                 OldStringTextClass.Instance,
-                _startingDelimiter.Value == '"'
+                _openingDelimiter.Value == '"'
                     ? (IOldTextDecoration)OldDoubleQuoteTextDecoration.Instance
                     : (IOldTextDecoration)OldSingleQuoteTextDecoration.Instance,
                 value,
@@ -49,7 +49,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 
             if (index == 0)
             {
-                _startingDelimiter = c;
+                _openingDelimiter = c;
                 return OldCharChallengeResult.Continue; // 0th char MUST have been accepted.
             }
 
@@ -60,7 +60,7 @@ namespace TauCode.Parsing.Old.Tests.Parsing.Cli.TokenExtractors
 
             if (c == '\'' || c == '"')
             {
-                if (c == _startingDelimiter.Value)
+                if (c == _openingDelimiter.Value)
                 {
                     this.Advance();
                     return OldCharChallengeResult.Finish;

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.Tokens
@@ -21,5 +20,7 @@ namespace TauCode.Parsing.Tokens
         }
 
         public char Value { get; }
+
+        public override string ToString() => this.Value.ToString();
     }
 }

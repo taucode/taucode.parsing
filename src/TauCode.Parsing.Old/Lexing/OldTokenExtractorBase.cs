@@ -39,9 +39,9 @@ namespace TauCode.Parsing.Old.Lexing
 
         #region Protected
 
-        protected int StartingAbsoluteCharIndex { get; private set; }
+        protected int StartAbsoluteCharIndex { get; private set; }
 
-        protected int StartingLine { get; private set; }
+        protected int StartLine { get; private set; }
 
         protected int LineShift { get; private set; }
 
@@ -53,19 +53,19 @@ namespace TauCode.Parsing.Old.Lexing
 
         protected Func<char, bool> FirstCharPredicate { get; }
 
-        protected bool IsEnd() => this.StartingAbsoluteCharIndex + this.LocalCharIndex == _input.Length;
+        protected bool IsEnd() => this.StartAbsoluteCharIndex + this.LocalCharIndex == _input.Length;
 
-        protected int GetAbsoluteCharIndex() => this.StartingAbsoluteCharIndex + this.LocalCharIndex;
+        protected int GetAbsoluteCharIndex() => this.StartAbsoluteCharIndex + this.LocalCharIndex;
 
         protected char GetLocalChar(int localIndex)
         {
             if (localIndex < 0)
             {
                 // you shouldn't run such a code. there's some error in your token extractor logic.
-                throw LexingHelper.CreateInternalErrorLexingException(this.GetStartingAbsolutePosition());
+                throw LexingHelper.CreateInternalErrorLexingException(this.GetStartAbsolutePosition());
             }
 
-            return _input[this.StartingAbsoluteCharIndex + localIndex];
+            return _input[this.StartAbsoluteCharIndex + localIndex];
         }
 
         protected virtual bool AllowsCharAfterProduction(char c)
@@ -83,7 +83,7 @@ namespace TauCode.Parsing.Old.Lexing
 
         protected string ExtractResultString()
         {
-            var str = _input.Substring(this.StartingAbsoluteCharIndex, this.LocalCharIndex);
+            var str = _input.Substring(this.StartAbsoluteCharIndex, this.LocalCharIndex);
             return str;
         }
 
@@ -152,7 +152,7 @@ namespace TauCode.Parsing.Old.Lexing
                 throw LexingHelper.CreateInternalErrorLexingException(this.GetCurrentAbsolutePosition());
             }
 
-            var absIndex = this.StartingAbsoluteCharIndex + this.LocalCharIndex + 1;
+            var absIndex = this.StartAbsoluteCharIndex + this.LocalCharIndex + 1;
             if (absIndex == _input.Length)
             {
                 return null;
@@ -172,16 +172,16 @@ namespace TauCode.Parsing.Old.Lexing
             return this.GetLocalChar(this.LocalCharIndex - 1);
         }
 
-        protected Position GetStartingAbsolutePosition()
+        protected Position GetStartAbsolutePosition()
         {
-            var line = this.StartingLine;
+            var line = this.StartLine;
             var column = this.StartColumn;
             return new Position(line, column);
         }
 
         protected Position GetCurrentAbsolutePosition()
         {
-            var line = this.StartingLine + this.LineShift;
+            var line = this.StartLine + this.LineShift;
             var column = this.CurrentColumn;
 
             return new Position(line, column);
@@ -206,9 +206,9 @@ namespace TauCode.Parsing.Old.Lexing
                 throw new ArgumentOutOfRangeException(nameof(charIndex));
             }
 
-            this.StartingAbsoluteCharIndex = charIndex;
+            this.StartAbsoluteCharIndex = charIndex;
 
-            this.StartingLine = line;
+            this.StartLine = line;
             this.LineShift = 0;
 
             this.StartColumn = column;

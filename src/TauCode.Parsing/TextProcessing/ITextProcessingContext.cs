@@ -1,6 +1,5 @@
 ﻿namespace TauCode.Parsing.TextProcessing
 {
-    // todo clean
     public interface ITextProcessingContext
     {
         string Text { get; }
@@ -13,30 +12,14 @@
 
         int Version { get; }
 
-        int GetCurrentLine();
+        int StartIndex { get; }
 
-        int GetAbsoluteIndex();
+        int IndexOffset { get; }
 
-        Position GetCurrentAbsolutePosition();
+        int Line { get; }
 
-        int GetCurrentColumn();
+        int Column { get; }
 
-        int GetStartingIndex();
-
-        int GetLocalIndex();
-
-        bool IsEnd();
-
-        void Advance(int indexShift, int lineShift, int currentColumn);
-
-        char GetCurrentChar();
-
-        char GetLocalChar(int localIndex);
-
-        //void AdvanceByChar();
-
-        char? TryGetNextLocalChar();
-
-        char? TryGetPreviousLocalChar();
+        void Advance(int indexShift, int lineShift, int column);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
@@ -21,6 +20,12 @@ namespace TauCode.Parsing.Tokens
         #region Public
 
         public string Value { get; }
+
+        #endregion
+
+        #region Overridden
+
+        public override string ToString() => this.Value;
 
         #endregion
     }

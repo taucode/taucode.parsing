@@ -30,7 +30,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
 
         protected override bool ProcessEnd()
         {
-            return this.Context.GetPreviousLocalChar() != '-';
+            return this.Context.GetPreviousChar() != '-';
         }
 
         protected override CharAcceptanceResult AcceptCharImpl(char c, int localIndex)
@@ -48,7 +48,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.TokenExtractors
                 return CharAcceptanceResult.Continue;
             }
 
-            var previousChar = this.Context.GetPreviousLocalChar();
+            var previousChar = this.Context.GetPreviousChar();
 
             if (c == '-')
             {
