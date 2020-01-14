@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Omicron.Producers
@@ -29,6 +28,7 @@ namespace TauCode.Parsing.Omicron.Producers
                 var c = text[currentIndex];
                 switch (c)
                 {
+                    case '\t':
                     case ' ':
                         currentIndex++;
                         column++;
@@ -45,10 +45,6 @@ namespace TauCode.Parsing.Omicron.Producers
                             if (nextChar == LexingHelper.LF)
                             {
                                 currentIndex++;
-                            }
-                            else
-                            {
-                                throw new NotImplementedException();
                             }
                         }
 

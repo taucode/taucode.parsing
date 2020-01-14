@@ -1,4 +1,5 @@
 ﻿using System;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
@@ -23,28 +24,56 @@ namespace TauCode.Parsing.Omicron.Producers
                 var initialIndex = context.GetIndex();
                 var initialLine = context.Line;
 
-
                 var index = initialIndex + 1; // skip '"'
-                var line = initialLine;
+                var lineShift = 0;
                 var column = context.Column + 1; // skip '"'
 
                 while (true)
                 {
                     if (index == length)
                     {
-                        throw new NotImplementedException(); // unclosed string.
+                        throw new LexingException("Unclosed string.", new Position(initialLine + lineShift, column));
                     }
 
                     c = text[index];
 
                     if (LexingHelper.IsCaretControl(c))
                     {
-                        throw new NotImplementedException();
+                        switch (c)
+                        {
+                            case LexingHelper.CR:
+                                index++;
+                                lineShift++;
+                                column = 0;
+
+                                if (index < length)
+                                {
+                                    var nextChar = text[index];
+                                    if (nextChar == LexingHelper.LF)
+                                    {
+                                        index++;
+                                    }
+                                }
+                                else
+                                {
+                                    throw new LexingException("Unclosed string.", new Position(initialLine + lineShift, column));
+                                }
+
+                                break;
+
+                            case LexingHelper.LF:
+                                index++;
+                                lineShift++;
+                                column = 0;
+                                break;
+
+                            default:
+                                throw new NotImplementedException(); // actually, cannot be.
+                        }
                     }
 
                     index++;
                     column++;
-
 
                     if (c == '"')
                     {
@@ -62,7 +91,7 @@ namespace TauCode.Parsing.Omicron.Producers
                     context.GetCurrentPosition(),
                     delta);
 
-                context.Advance(delta, line - initialLine, column);
+                context.Advance(delta, lineShift, column);
                 return token;
             }
             else
