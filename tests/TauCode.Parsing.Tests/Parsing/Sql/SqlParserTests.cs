@@ -22,7 +22,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql
         public void SetUp()
         {
             _tinyLispLexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
-            _sqlLexer = new SqlLexer();
+            _sqlLexer = new /*Sql-Lexer()*/ SqlOmicronLexer();
         }
 
         [Test]
@@ -379,7 +379,7 @@ CREATE INDEX IX_id ON [my_tab](id)
 CREATE INDEX [IX_Salary] ON my_tab([salary])
 
 ";
-            ILexer sqlLexer = new SqlLexer();
+            ILexer sqlLexer = new  /*Sql-Lexer()*/ SqlOmicronLexer();
             var sqlTokens = sqlLexer.Lexize(sql);
 
             // Act
