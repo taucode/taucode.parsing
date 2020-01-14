@@ -4,9 +4,9 @@ using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Omicron;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [SetUp]
         public void SetUp()
         {
-            _lexer = new TinyLispLexer();
+            _lexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
         }
 
         [Test]
@@ -54,24 +54,24 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(tokens, Has.Count.EqualTo(4));
 
             var punctuationToken = (LispPunctuationToken)tokens[0];
+            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.LeftParenthesis));
             Assert.That(punctuationToken.Position, Is.EqualTo(new Position(0, 0)));
             Assert.That(punctuationToken.ConsumedLength, Is.EqualTo(1));
-            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.LeftParenthesis));
 
             punctuationToken = (LispPunctuationToken)tokens[1];
+            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.RightParenthesis));
             Assert.That(punctuationToken.Position, Is.EqualTo(new Position(0, 1)));
             Assert.That(punctuationToken.ConsumedLength, Is.EqualTo(1));
-            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.RightParenthesis));
 
             var integerToken = (IntegerToken)tokens[2];
+            Assert.That(integerToken.Value, Is.EqualTo("-1599"));
             Assert.That(integerToken.Position, Is.EqualTo(new Position(1, 0)));
             Assert.That(integerToken.ConsumedLength, Is.EqualTo(5));
-            Assert.That(integerToken.Value, Is.EqualTo("-1599"));
 
             var symbolToken = (LispSymbolToken)tokens[3];
+            Assert.That(symbolToken.SymbolName, Is.EqualTo("-1599-"));
             Assert.That(symbolToken.Position, Is.EqualTo(new Position(1, 6)));
             Assert.That(symbolToken.ConsumedLength, Is.EqualTo(6));
-            Assert.That(symbolToken.SymbolName, Is.EqualTo("-1599-"));
         }
 
         [Test]
@@ -330,10 +330,13 @@ namespace TauCode.Parsing.Tests.TinyLisp
         }
 
         [Test]
-        public void Lexize_CrAtInputEnd_LexizedCorrectly()
+        [TestCase("a\r")]
+        [TestCase("a\r\n")]
+        [TestCase("a\n")]
+        [TestCase("a\n\r")]
+        public void Lexize_CrAtInputEnd_LexizedCorrectly(string input)
         {
             // Arrange
-            var input = "a\r";
 
             // Act
             var tokens = _lexer.Lexize(input);
@@ -366,7 +369,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void Lexize_NewLineInString_PositionIsCorrect(string input)
         {
             // Arrange
-            ILexer lexer = new TinyLispLexer();
+            ILexer lexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
 
             // Act
             var tokens = lexer.Lexize(input);

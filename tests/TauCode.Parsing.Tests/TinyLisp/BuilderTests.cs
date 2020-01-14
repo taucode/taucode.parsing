@@ -2,6 +2,7 @@
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Omicron;
 using TauCode.Parsing.Tests.Parsing.Sql;
 using TauCode.Parsing.TinyLisp;
 
@@ -15,7 +16,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [SetUp]
         public void SetUp()
         {
-            _lexer = new TinyLispLexer();
+            _lexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
         }
 
         [Test]

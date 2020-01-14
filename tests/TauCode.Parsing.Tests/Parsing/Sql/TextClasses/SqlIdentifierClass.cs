@@ -4,6 +4,7 @@ using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Omicron;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TinyLisp;
 
@@ -33,7 +34,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
 
     public static class SqlTestsHelper
     {
-        private static readonly ILexer TinyLispLexer = new TinyLispLexer();
+        private static readonly ILexer TheLexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
         private static readonly HashSet<string> ReservedWordsHashSet;
 
         public static HashSet<string> ReservedWords = ReservedWordsHashSet ?? (ReservedWordsHashSet = CreateReservedWords());
@@ -41,7 +42,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
         private static HashSet<string> CreateReservedWords()
         {
             var grammar = typeof(SqlTestsHelper).Assembly.GetResourceText("sql-grammar.lisp", true);
-            var tokens = TinyLispLexer.Lexize(grammar);
+            var tokens = TheLexer.Lexize(grammar);
 
             var reader = new TinyLispPseudoReader();
             var form = reader.Read(tokens);

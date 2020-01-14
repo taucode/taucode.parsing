@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\TauCode.Parsing.Omicron\TauCode.Parsing.Omicron.csproj" />
     <ProjectReference Include="..\..\src\TauCode.Parsing\TauCode.Parsing.csproj" />
   </ItemGroup>
 

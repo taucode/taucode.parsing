@@ -6,6 +6,7 @@ using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
+using TauCode.Parsing.Omicron;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
 using TauCode.Parsing.TinyLisp;
@@ -22,7 +23,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         [SetUp]
         public void SetUp()
         {
-            _tinyLispLexer = new TinyLispLexer();
+            //_tinyLispLexer = new Tiny-LispLexer();
+            _tinyLispLexer = new OmicronTinyLispLexer();
             _cliLexer = new CliLexer();
         }
 
