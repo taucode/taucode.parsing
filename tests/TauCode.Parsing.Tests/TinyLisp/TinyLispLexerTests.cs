@@ -4,9 +4,9 @@ using System.Linq;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Omicron;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 using TauCode.Parsing.Tokens;
 
@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [SetUp]
         public void SetUp()
         {
-            _lexer = new TinyLispLexer();
+            _lexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
         }
 
         [Test]
@@ -366,7 +366,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void Lexize_NewLineInString_PositionIsCorrect(string input)
         {
             // Arrange
-            ILexer lexer = new TinyLispLexer();
+            ILexer lexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
 
             // Act
             var tokens = lexer.Lexize(input);
