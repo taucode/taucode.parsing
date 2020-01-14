@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Omicron.Producers
@@ -24,7 +23,8 @@ namespace TauCode.Parsing.Omicron.Producers
                 {
                     if (index == length)
                     {
-                        throw new NotImplementedException();
+                        this.Context.Advance(index - initialIndex, 0, column);
+                        return null;
                     }
 
                     c = text[index];

@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using System;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
@@ -15,8 +16,16 @@ namespace TauCode.Parsing.Omicron.Producers
 
             if (c.IsAcceptableSymbolNameChar())
             {
-                var couldBeInt = LexingHelper.IsIntegerFirstChar(c);
+                var gotSign = c == '+' || c == '-';
+                var pureDigits = 0;
+                if (!gotSign)
+                {
+                    pureDigits = LexingHelper.IsDigit(c) ? 1 : 0;
+                }
 
+                var gotNonDigits = false;
+                
+                
                 var context = this.Context;
 
                 var initialIndex = context.GetIndex();
@@ -36,23 +45,33 @@ namespace TauCode.Parsing.Omicron.Producers
 
                     c = text[index];
 
-                    if (!c.IsAcceptableSymbolNameChar())
+                    if (!c.IsAcceptableSymbolNameChar()) // todo: test bad input "my-symbol:my-key"
                     {
                         break;
                     }
 
-                    if (!LexingHelper.IsDigit(c))
+                    if (LexingHelper.IsDigit(c))
                     {
-                        couldBeInt = false;
+                        if (!gotNonDigits)
+                        {
+                            pureDigits++;
+                        }
+                    }
+                    else
+                    {
+                        gotNonDigits = true;
+                        pureDigits = 0;
                     }
 
                     index++;
                     column++;
                 }
 
+                var couldBeInt = pureDigits > 0;
+
                 if (couldBeInt)
                 {
-                    return null;
+                    throw new NotImplementedException(); // todo
                 }
 
                 var delta = index - initialIndex;

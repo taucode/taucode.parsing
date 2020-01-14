@@ -35,6 +35,8 @@ namespace TauCode.Parsing.Omicron.Producers
                     digitsCount = 0;
                 }
 
+                var gotPlusSign = c == '+';
+
                 var index = initialIndex + 1;
                 var column = this.Context.Column + 1;
 
@@ -71,7 +73,8 @@ namespace TauCode.Parsing.Omicron.Producers
                 }
 
                 var delta = index - initialIndex;
-                var intString = text.Substring(initialIndex, delta);
+                var defect = gotPlusSign ? 1 : 0;
+                var intString = text.Substring(initialIndex + defect, delta - defect);
                 if (int.TryParse(intString, out var dummy))
                 {
                     this.Context.Advance(delta, 0, column);
