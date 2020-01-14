@@ -1,6 +1,6 @@
 ﻿using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.TinyLisp;
-using TauCode.Parsing.Tokens;
+using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.Omicron.Producers
 {
@@ -13,8 +13,12 @@ namespace TauCode.Parsing.Omicron.Producers
             var c = this.Context.GetCurrentChar();
             if (TinyLispHelper.IsPunctuation(c)) // todo: can optimize; two checks will be performed
             {
+                var position = this.Context.GetCurrentPosition();
                 this.Context.AdvanceByChar();
-                return new PunctuationToken(c, this.Context.GetCurrentPosition(), 1);
+                return new LispPunctuationToken(
+                    TinyLispHelper.CharToPunctuation(c),
+                    position,
+                    1);
             }
             else
             {

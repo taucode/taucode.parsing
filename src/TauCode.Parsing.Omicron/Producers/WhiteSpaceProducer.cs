@@ -30,7 +30,8 @@ namespace TauCode.Parsing.Omicron.Producers
                 switch (c)
                 {
                     case ' ':
-                        throw new NotImplementedException();
+                        currentIndex++;
+                        column++;
                         break;
 
                     case LexingHelper.CR:
@@ -54,7 +55,9 @@ namespace TauCode.Parsing.Omicron.Producers
                         break;
 
                     case LexingHelper.LF:
-                        throw new NotImplementedException();
+                        currentIndex++;
+                        lineShift++;
+                        column = 0;
                         break;
 
                     default:

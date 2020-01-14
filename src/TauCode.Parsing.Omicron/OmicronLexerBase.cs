@@ -22,25 +22,30 @@ namespace TauCode.Parsing.Omicron
             {
                 producer.Context = context;
             }
-            
 
             while (!context.IsEnd())
             {
                 var indexBeforeProducing = context.GetIndex();
 
-                foreach (var consumer in this.Producers)
+                foreach (var producer in this.Producers)
                 {
-                    var token = consumer.Produce();
+                    var version = context.Version;
+                    var token = producer.Produce();
                     if (token != null)
                     {
                         tokens.Add(token);
+                        break;
+                    }
+
+                    if (context.Version > version)
+                    {
                         break;
                     }
                 }
 
                 if (context.GetIndex() == indexBeforeProducing)
                 {
-                    throw new NotImplementedException(); // could not advance => unrecognized char.
+                    throw new NotImplementedException(); // could not lexize.
                 }
             }
 

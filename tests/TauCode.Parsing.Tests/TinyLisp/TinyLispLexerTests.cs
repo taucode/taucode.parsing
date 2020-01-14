@@ -54,24 +54,24 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(tokens, Has.Count.EqualTo(4));
 
             var punctuationToken = (LispPunctuationToken)tokens[0];
+            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.LeftParenthesis));
             Assert.That(punctuationToken.Position, Is.EqualTo(new Position(0, 0)));
             Assert.That(punctuationToken.ConsumedLength, Is.EqualTo(1));
-            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.LeftParenthesis));
 
             punctuationToken = (LispPunctuationToken)tokens[1];
+            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.RightParenthesis));
             Assert.That(punctuationToken.Position, Is.EqualTo(new Position(0, 1)));
             Assert.That(punctuationToken.ConsumedLength, Is.EqualTo(1));
-            Assert.That(punctuationToken.Value, Is.EqualTo(Punctuation.RightParenthesis));
 
             var integerToken = (IntegerToken)tokens[2];
+            Assert.That(integerToken.Value, Is.EqualTo("-1599"));
             Assert.That(integerToken.Position, Is.EqualTo(new Position(1, 0)));
             Assert.That(integerToken.ConsumedLength, Is.EqualTo(5));
-            Assert.That(integerToken.Value, Is.EqualTo("-1599"));
 
             var symbolToken = (LispSymbolToken)tokens[3];
+            Assert.That(symbolToken.SymbolName, Is.EqualTo("-1599-"));
             Assert.That(symbolToken.Position, Is.EqualTo(new Position(1, 6)));
             Assert.That(symbolToken.ConsumedLength, Is.EqualTo(6));
-            Assert.That(symbolToken.SymbolName, Is.EqualTo("-1599-"));
         }
 
         [Test]
@@ -330,10 +330,13 @@ namespace TauCode.Parsing.Tests.TinyLisp
         }
 
         [Test]
-        public void Lexize_CrAtInputEnd_LexizedCorrectly()
+        [TestCase("a\r")]
+        [TestCase("a\r\n")]
+        [TestCase("a\n")]
+        [TestCase("a\n\r")]
+        public void Lexize_CrAtInputEnd_LexizedCorrectly(string input)
         {
             // Arrange
-            var input = "a\r";
 
             // Act
             var tokens = _lexer.Lexize(input);
