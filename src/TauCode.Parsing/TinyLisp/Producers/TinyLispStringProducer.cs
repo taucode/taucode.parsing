@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Exceptions;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
@@ -37,7 +36,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
                     c = text[index];
 
-                    if (LexingHelper.IsCaretControl(c))
+                    if (LexingHelper.IsCaretControl(c)) // todo: this check is redundant, since both CR and LF are checked in switch.
                     {
                         switch (c)
                         {
@@ -66,9 +65,6 @@ namespace TauCode.Parsing.TinyLisp.Producers
                                 lineShift++;
                                 column = 0;
                                 break;
-
-                            default:
-                                throw new NotImplementedException(); // actually, cannot be.
                         }
                     }
 

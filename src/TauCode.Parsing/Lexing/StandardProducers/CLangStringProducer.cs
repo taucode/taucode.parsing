@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
@@ -70,21 +69,24 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                     if (index == length)
                     {
                         var column = context.Column + (index - initialIndex);
-                        throw new LexingException("Unclosed string.", new Position(initialLine, column));
+                        throw LexingHelper.CreateUnclosedStringException(new Position(
+                            initialLine,
+                            column)); // todo ut
                     }
 
                     c = text[index];
 
                     if (LexingHelper.IsCaretControl(c))
                     {
-                        throw new NotImplementedException(); // newline i C lang string
+                        var column = context.Column + (index - initialIndex);
+                        throw LexingHelper.CreateNewLineInStringException(new Position(initialLine, column)); // todo ut
                     }
 
                     if (c == '\\')
                     {
                         if (index + 1 == length)
                         {
-                            throw new NotImplementedException(); // end after escape
+                            throw LexingHelper.CreateNewLineInStringException(new Position(initialLine, length)); // todo ut
                         }
 
                         var nextChar = text[index + 1];

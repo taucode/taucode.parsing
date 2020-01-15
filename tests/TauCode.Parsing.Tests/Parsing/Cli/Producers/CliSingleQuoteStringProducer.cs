@@ -1,5 +1,4 @@
-﻿using System;
-using TauCode.Parsing.Exceptions;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
@@ -7,6 +6,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
 {
+    // todo: ut along with 'CliDoubleQuoteStringProducer'
     public class CliSingleQuoteStringProducer : ITokenProducer
     {
         public LexingContext Context { get; set; }
@@ -24,26 +24,29 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
                 var initialIndex = context.Index;
                 var initialLine = context.Line;
 
-                var index = initialIndex + 1; // skip '\''
-                var lineShift = 0;
-                var column = context.Column + 1; // skip '\''
+                var index = initialIndex + 1; // skip '''
+
+                int delta;
 
                 while (true)
                 {
                     if (index == length)
                     {
-                        throw new LexingException("Unclosed string.", new Position(initialLine + lineShift, column));
+                        delta = index - initialIndex;
+                        var column = context.Column + delta;
+                        throw new LexingException("Unclosed string.", new Position(initialLine, column));
                     }
 
                     c = text[index];
 
                     if (LexingHelper.IsCaretControl(c))
                     {
-                        throw new NotImplementedException(); // newline in constant
+                        delta = index - initialIndex;
+                        var column = context.Column + delta;
+                        throw LexingHelper.CreateNewLineInStringException(new Position(initialLine, column));
                     }
 
                     index++;
-                    column++;
 
                     if (c == '\'')
                     {
@@ -51,17 +54,17 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
                     }
                 }
 
-                var delta = index - initialIndex;
+                delta = index - initialIndex;
                 var str = text.Substring(initialIndex + 1, delta - 2);
 
                 var token = new TextToken(
                     StringTextClass.Instance,
-                    SingleQuoteTextDecoration.Instance,
+                    DoubleQuoteTextDecoration.Instance,
                     str,
                     new Position(context.Line, context.Column),
                     delta);
 
-                context.Advance(delta, lineShift, column);
+                context.Advance(delta, 0, context.Column + delta);
                 return token;
             }
 
