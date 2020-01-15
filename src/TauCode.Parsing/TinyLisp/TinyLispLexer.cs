@@ -1,22 +1,22 @@
 ﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Omicron.Producers;
-using TauCode.Parsing.TinyLisp;
+using TauCode.Parsing.Lexing.StandardProducers;
+using TauCode.Parsing.TinyLisp.Producers;
 
-namespace TauCode.Parsing.Omicron
+namespace TauCode.Parsing.TinyLisp
 {
-    public class OmicronTinyLispLexer : OmicronLexerBase
+    public class TinyLispLexer : LexerBase
     {
-        protected override IOmicronTokenProducer[] CreateProducers()
+        protected override ITokenProducer[] CreateProducers()
         {
-            return new IOmicronTokenProducer[]
+            return new ITokenProducer[]
             {
                 new WhiteSpaceProducer(),
-                new PunctuationProducer(),
-                new StringProducer(),
+                new TinyLispPunctuationProducer(),
+                new TinyLispStringProducer(),
                 new IntegerProducer(IntegerTerminatorPredicate),
-                new SymbolProducer(),
-                new KeywordProducer(),
-                new CommentProducer(),
+                new TinyLispSymbolProducer(),
+                new TinyLispKeywordProducer(),
+                new TinyLispCommentProducer(),
             };
         }
 

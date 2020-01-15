@@ -1,12 +1,11 @@
 ﻿using System;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
-using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.TinyLisp.Tokens;
 
-namespace TauCode.Parsing.Omicron.Producers
+namespace TauCode.Parsing.TinyLisp.Producers
 {
-    public class SymbolProducer : IOmicronTokenProducer
+    public class TinyLispSymbolProducer : ITokenProducer
     {
         public TextProcessingContext Context { get; set; }
 

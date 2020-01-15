@@ -4,15 +4,14 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Omicron.Producers
+namespace TauCode.Parsing.Lexing.StandardProducers
 {
-    public class OmicronCLangStringProducer : IOmicronTokenProducer
+    public class CLangStringProducer : ITokenProducer
     {
         private static readonly string[] ReplacementStrings =
         {
@@ -40,7 +39,7 @@ namespace TauCode.Parsing.Omicron.Producers
             return null;
         }
 
-        static OmicronCLangStringProducer()
+        static CLangStringProducer()
         {
             Replacements = ReplacementStrings
                 .ToDictionary(

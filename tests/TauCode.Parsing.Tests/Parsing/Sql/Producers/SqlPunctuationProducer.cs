@@ -1,11 +1,11 @@
 ﻿using TauCode.Extensions;
-using TauCode.Parsing.Omicron;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
 {
-    public class SqlPunctuationProducer : IOmicronTokenProducer
+    public class SqlPunctuationProducer : ITokenProducer
     {
         public TextProcessingContext Context { get; set; }
 

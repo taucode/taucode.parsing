@@ -1,17 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 
-namespace TauCode.Parsing.Omicron
+namespace TauCode.Parsing.Lexing
 {
-    public abstract class OmicronLexerBase : ILexer
+    public abstract class LexerBase : ILexer
     {
-        private List<IOmicronTokenProducer> _producers;
+        private List<ITokenProducer> _producers;
 
-        protected abstract IOmicronTokenProducer[] CreateProducers();
-        protected List<IOmicronTokenProducer> Producers => _producers ?? (_producers = this.CreateProducers().ToList());
+        protected abstract ITokenProducer[] CreateProducers();
+        protected List<ITokenProducer> Producers => _producers ?? (_producers = this.CreateProducers().ToList());
 
         public IList<IToken> Lexize(string input)
         {

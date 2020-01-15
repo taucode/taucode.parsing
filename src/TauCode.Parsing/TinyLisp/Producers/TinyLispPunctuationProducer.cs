@@ -1,10 +1,10 @@
-﻿using TauCode.Parsing.TextProcessing;
-using TauCode.Parsing.TinyLisp;
+﻿using TauCode.Parsing.Lexing;
+using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
-namespace TauCode.Parsing.Omicron.Producers
+namespace TauCode.Parsing.TinyLisp.Producers
 {
-    public class PunctuationProducer : IOmicronTokenProducer
+    public class TinyLispPunctuationProducer : ITokenProducer
     {
         public TextProcessingContext Context { get; set; }
 

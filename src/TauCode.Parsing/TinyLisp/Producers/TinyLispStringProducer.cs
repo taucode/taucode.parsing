@@ -6,9 +6,9 @@ using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Omicron.Producers
+namespace TauCode.Parsing.TinyLisp.Producers
 {
-    public class StringProducer : IOmicronTokenProducer
+    public class TinyLispStringProducer : ITokenProducer
     {
         public TextProcessingContext Context { get; set; }
 
