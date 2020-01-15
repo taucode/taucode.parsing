@@ -59,7 +59,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
 
                 var token = new TextToken(
                     StringTextClass.Instance,
-                    DoubleQuoteTextDecoration.Instance,
+                    SingleQuoteTextDecoration.Instance,
                     str,
                     new Position(context.Line, context.Column),
                     delta);

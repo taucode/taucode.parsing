@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
@@ -62,6 +62,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
 
                 var index = initialIndex + 1; // skip '"'
 
+                int delta;
                 var sb = new StringBuilder();
 
                 while (true)
@@ -86,7 +87,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                     {
                         if (index + 1 == length)
                         {
-                            throw LexingHelper.CreateNewLineInStringException(new Position(initialLine, length)); // todo ut
+                            throw LexingHelper.CreateUnclosedStringException(new Position(initialLine, length)); // todo ut
                         }
 
                         var nextChar = text[index + 1];
@@ -95,7 +96,9 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                             var remaining = length - (index + 1);
                             if (remaining < 5)
                             {
-                                throw new NotImplementedException();
+                                delta = index - initialIndex;
+                                var column = context.Column + delta;
+                                this.ThrowBadEscapeException(initialLine, column); // todo ut
                             }
 
                             var hexNumString = text.Substring(index + 2, 4);
@@ -107,7 +110,9 @@ namespace TauCode.Parsing.Lexing.StandardProducers
 
                             if (!codeParsed)
                             {
-                                throw new NotImplementedException();
+                                delta = index - initialIndex;
+                                var column = context.Column + delta;
+                                this.ThrowBadEscapeException(initialLine, column); // todo ut
                             }
 
                             var unescapedChar = (char)code;
@@ -127,7 +132,9 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                             }
                             else
                             {
-                                throw new NotImplementedException();
+                                delta = index - initialIndex;
+                                var column = context.Column + delta;
+                                this.ThrowBadEscapeException(initialLine, column); // todo ut
                             }
                         }
                     }
@@ -142,7 +149,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                     sb.Append(c);
                 }
 
-                var delta = index - initialIndex;
+                delta = index - initialIndex;
                 var str = sb.ToString();
 
                 var token = new TextToken(
@@ -155,10 +162,13 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                 context.Advance(delta, 0, context.Column + delta);
                 return token;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
+        }
+
+        private void ThrowBadEscapeException(int line, int column)
+        {
+            throw new LexingException("Bad escape.", new Position(line, column));
         }
     }
 }

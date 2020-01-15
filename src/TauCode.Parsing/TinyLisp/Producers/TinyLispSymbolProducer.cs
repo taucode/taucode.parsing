@@ -1,4 +1,4 @@
-﻿using System;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
@@ -69,7 +69,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
                 if (couldBeInt)
                 {
-                    throw new NotImplementedException(); // todo
+                    throw new LexingException("Symbol producer delivered an integer.", new Position(context.Line, context.Column)); // todo ut this
                 }
 
                 var delta = index - initialIndex;

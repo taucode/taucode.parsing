@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
 using TauCode.Parsing.TextDecorations;
@@ -51,15 +51,17 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
 
                 var initialIndex = context.Index;
                 var index = initialIndex + 1;
-                var column = context.Column + 1;
-
+                
                 while (true)
                 {
                     if (index == length)
                     {
                         if (openingDelimiter.HasValue)
                         {
-                            throw new NotImplementedException(); // unclosed identifier
+                            var delta = index - initialIndex;
+                            var column = context.Column + delta;
+
+                            this.ThrowUnclosedIdentifierException(context.Line, column); // todo ut
                         }
                         break;
                     }
@@ -69,7 +71,6 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
                     if (c == '_' || LexingHelper.IsLatinLetter(c) || LexingHelper.IsDigit(c))
                     {
                         index++;
-                        column++; // todo: can calculate this via index.
                         continue;
                     }
 
@@ -82,9 +83,9 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
                                 if (openingDelimiter.Value == ReverseDelimiters[c])
                                 {
                                     index++;
-                                    column++;
 
                                     var delta = index - initialIndex;
+                                    var column = context.Column + delta;
 
                                     var str = text.Substring(initialIndex + 1, delta - 2);
                                     var position = new Position(context.Line, context.Column);
@@ -98,25 +99,36 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
                                 }
                                 else
                                 {
-                                    throw new NotImplementedException(); // unclosed identifier
+                                    var delta = index - initialIndex;
+                                    var column = context.Column + delta;
+
+                                    this.ThrowUnclosedIdentifierException(context.Line, column); // todo ut
                                 }
                             }
                             else
                             {
-                                throw new NotImplementedException(); // got closing delimiter without opening.
+                                var delta = index - initialIndex;
+                                var column = context.Column + delta;
+
+                                throw new LexingException($"Unexpected delimiter: '{c}'.", new Position(context.Line, column)); // todo ut
                             }
                         }
                         else
                         {
-                            return null; // got something like "[]" - delimited "empty" identifier
+                            var delta = index - initialIndex;
+                            var column = context.Column + delta;
+                            throw new LexingException($"Unexpected delimiter: '{c}'.", new Position(context.Line, column)); // todo ut
                         }
                     }
                 }
-
-                throw new NotImplementedException();
             }
 
             return null;
+        }
+
+        private LexingException ThrowUnclosedIdentifierException(int line, int column)
+        {
+            throw new LexingException("Unclosed identifier.", new Position(line, column));
         }
     }
 }
