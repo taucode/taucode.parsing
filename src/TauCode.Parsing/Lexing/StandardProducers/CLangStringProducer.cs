@@ -47,7 +47,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                     x => x.Skip(1).Single());
         }
 
-        public TextProcessingContext Context { get; set; }
+        public ITextProcessingContext Context { get; set; }
 
         public IToken Produce()
         {

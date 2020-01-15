@@ -13,7 +13,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
             _acceptableTerminatorPredicate = acceptableTerminatorPredicate;
         }
 
-        public TextProcessingContext Context { get; set; }
+        public ITextProcessingContext Context { get; set; }
 
         public IToken Produce()
         {

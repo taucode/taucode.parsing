@@ -7,7 +7,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 {
     public class TinyLispSymbolProducer : ITokenProducer
     {
-        public TextProcessingContext Context { get; set; }
+        public ITextProcessingContext Context { get; set; }
 
         public IToken Produce()
         {

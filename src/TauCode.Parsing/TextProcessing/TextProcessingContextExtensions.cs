@@ -173,15 +173,15 @@ namespace TauCode.Parsing.TextProcessing
             context.Advance(shift, 0, context.Column + shift);
         }
 
-        public static void AdvanceByResult(this ITextProcessingContext context, TextProcessingResult result)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+        //public static void AdvanceByResult(this ITextProcessingContext context, TextProcessingResult result)
+        //{
+        //    if (context == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(context));
+        //    }
 
-            context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
-        }
+        //    context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
+        //}
 
         public static bool RequestChars(this ITextProcessingContext context, int count)
         {
@@ -233,21 +233,21 @@ namespace TauCode.Parsing.TextProcessing
         }
 
 // todo: GetCurrentRemainder. also add GetRemainderAtOffset
-        public static string GetRemainder(this ITextProcessingContext context)
-        {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+        //public static string GetRemainder(this ITextProcessingContext context)
+        //{
+        //    if (context == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(context));
+        //    }
 
-            var index = context.StartIndex + context.IndexOffset;
-            var textLength = context.Text.Length;
-            if (index > textLength)
-            {
-                throw new InvalidOperationException();
-            }
+        //    var index = context.StartIndex + context.IndexOffset;
+        //    var textLength = context.Text.Length;
+        //    if (index > textLength)
+        //    {
+        //        throw new InvalidOperationException();
+        //    }
 
-            return context.Text.Substring(index);
-        }
+        //    return context.Text.Substring(index);
+        //}
     }
 }

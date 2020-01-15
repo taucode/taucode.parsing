@@ -1,8 +1,6 @@
-﻿using TauCode.Parsing.TextProcessing;
-
-namespace TauCode.Parsing
+﻿namespace TauCode.Parsing
 {
-    public interface IToken : IPayload
+    public interface IToken
     {
         /// <summary>
         /// Position within the original text.
