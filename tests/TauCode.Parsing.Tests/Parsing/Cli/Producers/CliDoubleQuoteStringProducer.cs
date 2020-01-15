@@ -1,5 +1,4 @@
-﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
@@ -33,8 +32,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
                     {
                         delta = index - initialIndex;
                         var column = context.Column + delta;
-                        // todo use 'CreateUnclosedStringException' and ut.
-                        throw new LexingException("Un-closed string.", new Position(initialLine, column));
+                        throw LexingHelper.CreateUnclosedStringException(new Position(initialLine, column));
                     }
 
                     c = text[index];

@@ -31,8 +31,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
                 {
                     if (index == length)
                     {
-                        // todo use 'CreateUnclosedStringException' and ut.
-                        throw new LexingException("Un-closed string.", new Position(initialLine + lineShift, column));
+                        throw LexingHelper.CreateUnclosedStringException(new Position(initialLine + lineShift, column));
                     }
 
                     c = text[index];
