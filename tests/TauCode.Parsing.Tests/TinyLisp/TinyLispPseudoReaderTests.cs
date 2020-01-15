@@ -71,7 +71,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void Read_UnclosedForm_ThrowsTinyLispException()
         {
             // Arrange
-            var form = "(unclosed (a (bit))";
+            var form = "(un-closed (a (bit))";
             
             var tokens = _lexer.Lexize(form);
             var reader = new TinyLispPseudoReader();

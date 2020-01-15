@@ -126,7 +126,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
             return null;
         }
 
-        private LexingException ThrowUnclosedIdentifierException(int line, int column)
+        private void ThrowUnclosedIdentifierException(int line, int column)
         {
             throw new LexingException("Unclosed identifier.", new Position(line, column));
         }

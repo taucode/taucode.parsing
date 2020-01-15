@@ -33,7 +33,8 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
                     {
                         delta = index - initialIndex;
                         var column = context.Column + delta;
-                        throw new LexingException("Unclosed string.", new Position(initialLine, column));
+                        // todo use 'CreateUnclosedStringException' and ut.
+                        throw new LexingException("Un-closed string.", new Position(initialLine, column));
                     }
 
                     c = text[index];

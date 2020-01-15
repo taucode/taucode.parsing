@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 
@@ -32,7 +31,7 @@ namespace TauCode.Parsing.Lexing
             Digits = new HashSet<char>(digits);
 
             var punctList = new List<char>();
-            punctList.AddRange(new []
+            punctList.AddRange(new[]
             {
                 '~',
                 '?',
@@ -87,11 +86,10 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsInlineWhiteSpaceOrCaretControl(char c) => IsInlineWhiteSpace(c) || IsCaretControl(c);
 
-        public static LexingException CreateNewLineInStringException(Position position) => new LexingException("Newline in string constant.", position);
+        public static LexingException CreateNewLineInStringException(Position position) =>
+            new LexingException("Newline in string constant.", position);
 
-        public static LexingException CreateUnclosedStringException(Position position)
-        {
-            throw new NotImplementedException();
-        }
+        public static LexingException CreateUnclosedStringException(Position position) =>
+            new LexingException("Unclosed string.", position);
     }
 }
