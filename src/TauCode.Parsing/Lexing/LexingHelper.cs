@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 
@@ -33,7 +31,7 @@ namespace TauCode.Parsing.Lexing
             Digits = new HashSet<char>(digits);
 
             var punctList = new List<char>();
-            punctList.AddRange(new []
+            punctList.AddRange(new[]
             {
                 '~',
                 '?',
@@ -82,32 +80,16 @@ namespace TauCode.Parsing.Lexing
 
         public static bool IsLatinLetter(char c) => LatinLetters.Contains(c);
 
-        public static LexingException CreateInternalErrorLexingException(Position? position = null, string additionalInfo = null)
-        {
-            var sb = new StringBuilder("Internal error.");
-            if (additionalInfo != null)
-            {
-                sb.Append(Environment.NewLine);
-                sb.Append($"Additional info: {additionalInfo}");
-            }
-
-            return new LexingException(sb.ToString(), position);
-        }
-
-        public static LexingException CreateErrorInLogicLexingException()
-        {
-            return CreateInternalErrorLexingException(null, "Error in token extractor logic.");
-        }
-
-        internal static LexingException CreateUnclosedStringLexingException(Position position)
-        {
-            throw new LexingException("Unclosed string.", position);
-        }
-
         public static bool IsInlineWhiteSpace(char c) => c.IsIn(' ', '\t');
 
         public static bool IsCaretControl(char c) => c.IsIn('\r', '\n');
 
         public static bool IsInlineWhiteSpaceOrCaretControl(char c) => IsInlineWhiteSpace(c) || IsCaretControl(c);
+
+        public static LexingException CreateNewLineInStringException(Position position) =>
+            new LexingException("Newline in string constant.", position);
+
+        public static LexingException CreateUnclosedStringException(Position position) =>
+            new LexingException("Unclosed string.", position);
     }
 }

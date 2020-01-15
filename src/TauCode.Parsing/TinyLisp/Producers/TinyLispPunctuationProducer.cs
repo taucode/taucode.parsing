@@ -1,19 +1,21 @@
 ﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Producers
 {
     public class TinyLispPunctuationProducer : ITokenProducer
     {
-        public TextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {
-            var c = this.Context.GetCurrentChar();
+            var context = this.Context;
+            var text = context.Text;
+
+            var c = text[context.Index];
             if (TinyLispHelper.IsPunctuation(c)) // todo: can optimize; two checks will be performed
             {
-                var position = this.Context.GetCurrentPosition();
+                var position = new Position(Context.Line, Context.Column);
                 this.Context.AdvanceByChar();
                 return new LispPunctuationToken(
                     TinyLispHelper.CharToPunctuation(c),

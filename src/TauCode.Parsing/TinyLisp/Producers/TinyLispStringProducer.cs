@@ -1,27 +1,26 @@
-﻿using System;
-using TauCode.Parsing.Exceptions;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Producers
 {
     public class TinyLispStringProducer : ITokenProducer
     {
-        public TextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {
             var context = this.Context;
-            var c = this.Context.GetCurrentChar();
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
+
             if (c == '"')
             {
-                var text = context.Text;
-                var length = text.Length;
-
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var initialLine = context.Line;
 
                 var index = initialIndex + 1; // skip '"'
@@ -32,12 +31,12 @@ namespace TauCode.Parsing.TinyLisp.Producers
                 {
                     if (index == length)
                     {
-                        throw new LexingException("Unclosed string.", new Position(initialLine + lineShift, column));
+                        throw LexingHelper.CreateUnclosedStringException(new Position(initialLine + lineShift, column));
                     }
 
                     c = text[index];
 
-                    if (LexingHelper.IsCaretControl(c))
+                    if (LexingHelper.IsCaretControl(c)) // todo: this check is redundant, since both CR and LF are checked in switch.
                     {
                         switch (c)
                         {
@@ -56,7 +55,8 @@ namespace TauCode.Parsing.TinyLisp.Producers
                                 }
                                 else
                                 {
-                                    throw new LexingException("Unclosed string.", new Position(initialLine + lineShift, column));
+                                    // todo use 'CreateUnclosedStringException' and ut.
+                                    throw new LexingException("Un-closed string.", new Position(initialLine + lineShift, column));
                                 }
 
                                 break;
@@ -66,9 +66,6 @@ namespace TauCode.Parsing.TinyLisp.Producers
                                 lineShift++;
                                 column = 0;
                                 break;
-
-                            default:
-                                throw new NotImplementedException(); // actually, cannot be.
                         }
                     }
 
@@ -88,7 +85,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
                     StringTextClass.Instance,
                     DoubleQuoteTextDecoration.Instance,
                     str,
-                    context.GetCurrentPosition(),
+                    new Position(context.Line, context.Column),
                     delta);
 
                 context.Advance(delta, lineShift, column);

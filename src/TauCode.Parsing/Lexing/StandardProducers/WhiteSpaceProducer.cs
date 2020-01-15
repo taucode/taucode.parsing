@@ -1,14 +1,12 @@
-﻿using TauCode.Parsing.TextProcessing;
-
-namespace TauCode.Parsing.Lexing.StandardProducers
+﻿namespace TauCode.Parsing.Lexing.StandardProducers
 {
     public class WhiteSpaceProducer : ITokenProducer
     {
-        public TextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {
-            var initialIndex = this.Context.GetIndex();
+            var initialIndex = this.Context.Index;
             var text = this.Context.Text;
             var length = text.Length;
             var currentIndex = initialIndex;

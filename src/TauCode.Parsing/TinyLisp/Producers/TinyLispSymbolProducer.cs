@@ -1,17 +1,20 @@
-﻿using System;
+﻿using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Producers
 {
     public class TinyLispSymbolProducer : ITokenProducer
     {
-        public TextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {
-            var c = this.Context.GetCurrentChar();
+            var context = this.Context;
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
 
             if (c.IsAcceptableSymbolNameChar())
             {
@@ -23,17 +26,13 @@ namespace TauCode.Parsing.TinyLisp.Producers
                 }
 
                 var gotNonDigits = false;
-                
-                
-                var context = this.Context;
 
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var initialColumn = context.Column;
 
                 var index = initialIndex + 1;
                 var column = context.Column + 1;
-                var text = context.Text;
-                var length = text.Length;
+                
 
                 while (true)
                 {
@@ -70,7 +69,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
                 if (couldBeInt)
                 {
-                    throw new NotImplementedException(); // todo
+                    throw new LexingException("Symbol producer delivered an integer.", new Position(context.Line, context.Column)); // todo ut this
                 }
 
                 var delta = index - initialIndex;
