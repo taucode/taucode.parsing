@@ -1,9 +1,9 @@
 ﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 
-namespace TauCode.Parsing.Omicron.Producers
+namespace TauCode.Parsing.TinyLisp.Producers
 {
-    public class CommentProducer : IOmicronTokenProducer
+    public class TinyLispCommentProducer : ITokenProducer
     {
         public TextProcessingContext Context { get; set; }
 

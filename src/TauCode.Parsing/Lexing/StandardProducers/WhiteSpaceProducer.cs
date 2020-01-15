@@ -1,9 +1,8 @@
-﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextProcessing;
+﻿using TauCode.Parsing.TextProcessing;
 
-namespace TauCode.Parsing.Omicron.Producers
+namespace TauCode.Parsing.Lexing.StandardProducers
 {
-    public class WhiteSpaceProducer : IOmicronTokenProducer
+    public class WhiteSpaceProducer : ITokenProducer
     {
         public TextProcessingContext Context { get; set; }
 

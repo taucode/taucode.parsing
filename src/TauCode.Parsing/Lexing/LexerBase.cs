@@ -1,185 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextProcessing;
-using TauCode.Parsing.TextProcessing.Processors;
-using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing
 {
     public abstract class LexerBase : ILexer
     {
-        #region Fields
+        private List<ITokenProducer> _producers;
 
-        private LexingContext _context;
-
-        private IList<ITextProcessor> _whiteSpaceSkippers;
-        private IList<ITokenExtractor> _tokenExtractors;
-
-        #endregion
-
-        #region Private
-
-        private bool SkipWhiteSpace()
-        {
-            var begin = _context.GetIndex();
-
-            while (true)
-            {
-                if (_context.IsEnd())
-                {
-                    break;
-                }
-
-                var shifted = false;
-
-                foreach (var whiteSpaceSkipper in this.WhiteSpaceSkippers)
-                {
-                    var c = _context.GetCurrentChar();
-                    if (!whiteSpaceSkipper.AcceptsFirstChar(c))
-                    {
-                        continue;
-                    }
-
-                    var result = whiteSpaceSkipper.Process(_context);
-
-                    if (result.IsSuccessful())
-                    {
-                        shifted = true;
-                        _context.AdvanceByResult(result);
-                        break;
-                    }
-                }
-
-                if (!shifted)
-                {
-                    break;
-                }
-            }
-
-            var end = _context.GetIndex();
-
-            return end - begin > 0;
-        }
-
-        #endregion
-
-        #region Abstract
-
-        protected abstract IList<ITokenExtractor> CreateTokenExtractors();
-
-        #endregion
-
-        #region Protected
-
-        protected virtual IList<ITextProcessor> CreateWhiteSpaceSkippers()
-        {
-            return new List<ITextProcessor>
-            {
-                new SpaceSkipper(),
-                new NewLineSkipper(false),
-            };
-        }
-
-        protected IList<ITextProcessor> WhiteSpaceSkippers
-        {
-            get
-            {
-                if (_whiteSpaceSkippers == null)
-                {
-                    _whiteSpaceSkippers = this.CreateWhiteSpaceSkippers();
-                    if (_whiteSpaceSkippers == null)
-                    {
-                        throw LexingHelper.CreateInternalErrorLexingException(additionalInfo: $"'{nameof(CreateWhiteSpaceSkippers)}' returned null.");
-                    }
-                }
-
-                return _whiteSpaceSkippers;
-            }
-        }
-
-        protected IList<ITokenExtractor> TokenExtractors
-        {
-            get
-            {
-                if (_tokenExtractors == null)
-                {
-                    _tokenExtractors = this.CreateTokenExtractors();
-                    if (_tokenExtractors == null || !_tokenExtractors.Any())
-                    {
-                        throw LexingHelper.CreateInternalErrorLexingException(additionalInfo: $"'{nameof(CreateTokenExtractors)}' returned null or empty collection.");
-                    }
-                }
-
-                return _tokenExtractors;
-            }
-        }
-
-        #endregion
-
-        #region ILexer Members
+        protected abstract ITokenProducer[] CreateProducers();
+        protected List<ITokenProducer> Producers => _producers ?? (_producers = this.CreateProducers().ToList());
 
         public IList<IToken> Lexize(string input)
         {
-            if (input == null)
+            var context = new TextProcessingContext(input);
+            var tokens = new List<IToken>();
+
+            foreach (var producer in this.Producers)
             {
-                throw new ArgumentNullException(nameof(input));
+                producer.Context = context;
             }
 
-            _context = new LexingContext(input);
-            var tokens = _context.GetTokenList();
-
-            while (true)
+            while (!context.IsEnd())
             {
-                // skippers begin to work
-                var whiteSpaceSkipped = this.SkipWhiteSpace();
-                if (_context.IsEnd())
-                {
-                    break;
-                }
+                var indexBeforeProducing = context.GetIndex();
 
-                // token extractors begin to work
-                var gotSuccess = false;
-
-                foreach (var tokenExtractor in this.TokenExtractors)
+                foreach (var producer in this.Producers)
                 {
-                    if (gotSuccess)
+                    var version = context.Version;
+                    var token = producer.Produce();
+                    if (token != null)
                     {
+                        tokens.Add(token);
                         break;
                     }
 
-                    var c = _context.GetCurrentChar();
-                    if (!tokenExtractor.AcceptsFirstChar(c))
+                    if (context.Version > version)
                     {
-                        continue;
-                    }
-
-                    var result = tokenExtractor.Process(_context);
-
-                    if (result.IsSuccessful())
-                    {
-                        gotSuccess = true;
-                        _context.Advance(result.IndexShift, result.LineShift, result.GetCurrentColumn());
-                        var token = (IToken)result.Payload;
-
-                        if (!(token is NullToken))
-                        {
-                            tokens.Add(token);
-                        }
+                        break;
                     }
                 }
 
-                if (!whiteSpaceSkipped && !gotSuccess)
+                if (context.GetIndex() == indexBeforeProducing)
                 {
-                    var c = _context.GetCurrentChar();
-                    throw new LexingException($"Unexpected char: '{c}'.", _context.GetCurrentPosition());
+                    var position = context.GetCurrentPosition();
+                    var c = context.GetCurrentChar();
+                    throw new LexingException($"Unexpected char: '{c}'.", position);
                 }
             }
 
             return tokens;
         }
-
-        #endregion
     }
 }

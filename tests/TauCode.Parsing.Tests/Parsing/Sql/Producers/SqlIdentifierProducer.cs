@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Omicron;
 using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TextProcessing;
@@ -10,7 +9,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
 {
-    public class SqlIdentifierProducer : IOmicronTokenProducer
+    public class SqlIdentifierProducer : ITokenProducer
     {
         private static Dictionary<char, char> Delimiters { get; }
         private static HashSet<char> OpeningDelimiters { get; }

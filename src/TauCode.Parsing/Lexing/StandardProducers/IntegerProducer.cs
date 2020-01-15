@@ -1,11 +1,10 @@
 ﻿using System;
-using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Omicron.Producers
+namespace TauCode.Parsing.Lexing.StandardProducers
 {
-    public class IntegerProducer : IOmicronTokenProducer
+    public class IntegerProducer : ITokenProducer
     {
         private readonly Func<char, bool> _acceptableTerminatorPredicate;
 

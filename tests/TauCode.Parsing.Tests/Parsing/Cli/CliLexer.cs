@@ -1,15 +1,14 @@
 ﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Omicron;
-using TauCode.Parsing.Omicron.Producers;
+using TauCode.Parsing.Lexing.StandardProducers;
 using TauCode.Parsing.Tests.Parsing.Cli.Producers;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli
 {
-    public class CliLexer : OmicronLexerBase
+    public class CliLexer : LexerBase
     {
-        protected override IOmicronTokenProducer[] CreateProducers()
+        protected override ITokenProducer[] CreateProducers()
         {
-            return new IOmicronTokenProducer[]
+            return new ITokenProducer[]
             {
                 new WhiteSpaceProducer(),
                 new IntegerProducer(IsAcceptableIntegerTerminator), 

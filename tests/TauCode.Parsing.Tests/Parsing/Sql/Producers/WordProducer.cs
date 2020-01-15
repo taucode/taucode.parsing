@@ -1,5 +1,4 @@
 ﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Omicron;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.TextProcessing;
@@ -7,7 +6,7 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
 {
-    public class WordProducer : IOmicronTokenProducer
+    public class WordProducer : ITokenProducer
     {
         public TextProcessingContext Context { get; set; }
 

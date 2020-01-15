@@ -2,7 +2,7 @@
 using System;
 using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Omicron;
+using TauCode.Parsing.TinyLisp;
 
 namespace TauCode.Parsing.Tests.TinyLisp
 {
@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [Ignore("Performance test")]
         public void PerformanceTestForTinyLispLexer()
         {
-            ILexer tinyLispLexer = new OmicronTinyLispLexer();
+            ILexer tinyLispLexer = new TinyLispLexer();
             var grammar = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
 
             var start = DateTime.UtcNow;

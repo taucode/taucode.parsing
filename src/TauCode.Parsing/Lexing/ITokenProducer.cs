@@ -1,8 +1,8 @@
 ﻿using TauCode.Parsing.TextProcessing;
 
-namespace TauCode.Parsing.Omicron
+namespace TauCode.Parsing.Lexing
 {
-    public interface IOmicronTokenProducer
+    public interface ITokenProducer
     {
         TextProcessingContext Context { get; set; }
 
