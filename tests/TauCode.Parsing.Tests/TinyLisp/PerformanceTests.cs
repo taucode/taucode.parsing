@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [Ignore("Performance test")]
         public void PerformanceTestForTinyLispLexer()
         {
-            ILexer tinyLispLexer = new /*Tiny-LispLexer()*/OmicronTinyLispLexer();
+            ILexer tinyLispLexer = new OmicronTinyLispLexer();
             var grammar = this.GetType().Assembly.GetResourceText("sql-grammar.lisp", true);
 
             var start = DateTime.UtcNow;

@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextProcessing;
 
@@ -45,7 +45,9 @@ namespace TauCode.Parsing.Omicron
 
                 if (context.GetIndex() == indexBeforeProducing)
                 {
-                    throw new NotImplementedException(); // could not lexize.
+                    var position = context.GetCurrentPosition();
+                    var c = context.GetCurrentChar();
+                    throw new LexingException($"Unexpected char: '{c}'.", position);
                 }
             }
 
