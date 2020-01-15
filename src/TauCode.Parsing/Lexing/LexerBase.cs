@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.Lexing
 {
@@ -25,7 +24,7 @@ namespace TauCode.Parsing.Lexing
             var length = input.Length;
             while (context.Index < length)
             {
-                var indexBeforeProducing = context.GetIndex();
+                var indexBeforeProducing = context.Index;
 
                 foreach (var producer in this.Producers)
                 {
@@ -43,10 +42,10 @@ namespace TauCode.Parsing.Lexing
                     }
                 }
 
-                if (context.GetIndex() == indexBeforeProducing)
+                if (context.Index == indexBeforeProducing)
                 {
-                    var position = context.GetCurrentPosition();
-                    var c = context.GetCurrentChar();
+                    var position = new Position(context.Line, context.Column);
+                    var c = input[context.Index];
                     throw new LexingException($"Unexpected char: '{c}'.", position);
                 }
             }

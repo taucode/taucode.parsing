@@ -1,6 +1,5 @@
 ﻿using System;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Producers
@@ -11,7 +10,11 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
         public IToken Produce()
         {
-            var c = this.Context.GetCurrentChar();
+            var context = this.Context;
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
 
             if (c.IsAcceptableSymbolNameChar())
             {
@@ -23,17 +26,13 @@ namespace TauCode.Parsing.TinyLisp.Producers
                 }
 
                 var gotNonDigits = false;
-                
-                
-                var context = this.Context;
 
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var initialColumn = context.Column;
 
                 var index = initialIndex + 1;
                 var column = context.Column + 1;
-                var text = context.Text;
-                var length = text.Length;
+                
 
                 while (true)
                 {

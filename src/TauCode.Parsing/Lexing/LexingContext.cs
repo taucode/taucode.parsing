@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TauCode.Parsing.TextProcessing
+namespace TauCode.Parsing.Lexing
 {
     public class LexingContext
     {

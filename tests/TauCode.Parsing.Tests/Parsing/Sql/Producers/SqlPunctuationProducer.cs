@@ -1,6 +1,5 @@
 ﻿using TauCode.Extensions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
@@ -12,12 +11,14 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
         public IToken Produce()
         {
             var context = this.Context;
-            var c = context.GetCurrentChar();
+            var text = context.Text;
+
+            var c = text[context.Index];
 
             if (c.IsIn('(', ')', ','))
             {
-                var index = context.GetIndex();
-                var position = context.GetCurrentPosition();
+                var index = context.Index;
+                var position = new Position(context.Line, context.Column);
                 context.AdvanceByChar();
                 return new PunctuationToken(this.Context.Text[index], position, 1);
             }

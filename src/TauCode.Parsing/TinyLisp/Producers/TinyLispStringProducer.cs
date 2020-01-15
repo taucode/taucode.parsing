@@ -3,7 +3,6 @@ using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Producers
@@ -15,13 +14,14 @@ namespace TauCode.Parsing.TinyLisp.Producers
         public IToken Produce()
         {
             var context = this.Context;
-            var c = this.Context.GetCurrentChar();
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
+
             if (c == '"')
             {
-                var text = context.Text;
-                var length = text.Length;
-
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var initialLine = context.Line;
 
                 var index = initialIndex + 1; // skip '"'
@@ -88,7 +88,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
                     StringTextClass.Instance,
                     DoubleQuoteTextDecoration.Instance,
                     str,
-                    context.GetCurrentPosition(),
+                    new Position(context.Line, context.Column),
                     delta);
 
                 context.Advance(delta, lineShift, column);

@@ -1,7 +1,6 @@
 ﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
@@ -13,14 +12,14 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
         public IToken Produce()
         {
             var context = this.Context;
-            var c = context.GetCurrentChar();
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
 
             if (LexingHelper.IsLatinLetter(c) || c == '_')
             {
-                var text = context.Text;
-                var length = text.Length;
-
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var index = initialIndex + 1;
                 var column = context.Column + 1;
 

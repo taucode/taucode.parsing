@@ -1,7 +1,6 @@
 ﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
@@ -12,15 +11,15 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
         public IToken Produce()
         {
             var context = this.Context;
-            var c = context.GetCurrentChar();
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
 
             if (LexingHelper.IsDigit(c) ||
                 LexingHelper.IsLatinLetter(c))
             {
-                var text = context.Text;
-                var length = text.Length;
-
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var index = initialIndex + 1;
 
                 while (true)
@@ -73,7 +72,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
                 var delta = index - initialIndex;
                 var str = text.Substring(initialIndex, delta);
 
-                var position = context.GetCurrentPosition();
+                var position = new Position(context.Line, context.Column);
                 context.Advance(delta, 0, context.Column + delta);
 
                 var token = new TextToken(

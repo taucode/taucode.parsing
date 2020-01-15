@@ -4,7 +4,6 @@ using System.Linq;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tests.Parsing.Sql.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
@@ -39,7 +38,10 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
         public IToken Produce()
         {
             var context = this.Context;
-            var c = context.GetCurrentChar();
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
 
             if (OpeningDelimiters.Contains(c) ||
                 c == '_' ||
@@ -47,12 +49,9 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
             {
                 char? openingDelimiter = OpeningDelimiters.Contains(c) ? c : (char?)null;
 
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var index = initialIndex + 1;
                 var column = context.Column + 1;
-
-                var text = context.Text;
-                var length = text.Length;
 
                 while (true)
                 {
@@ -88,7 +87,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
                                     var delta = index - initialIndex;
 
                                     var str = text.Substring(initialIndex + 1, delta - 2);
-                                    var position = context.GetCurrentPosition();
+                                    var position = new Position(context.Line, context.Column);
                                     context.Advance(delta, 0, column);
                                     return new TextToken(
                                         SqlIdentifierClass.Instance,

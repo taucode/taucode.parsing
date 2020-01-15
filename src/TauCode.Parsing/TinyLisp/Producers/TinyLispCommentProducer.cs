@@ -1,5 +1,4 @@
 ﻿using TauCode.Parsing.Lexing;
-using TauCode.Parsing.TextProcessing;
 
 namespace TauCode.Parsing.TinyLisp.Producers
 {
@@ -9,13 +8,15 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
         public IToken Produce()
         {
-            var c = this.Context.GetCurrentChar();
+            var context = this.Context;
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
 
             if (c == ';')
             {
-                var text = this.Context.Text;
-                var length = text.Length;
-                var initialIndex = this.Context.GetIndex();
+                var initialIndex = this.Context.Index;
                 var index = initialIndex + 1; // skip ';'
                 var column = this.Context.Column + 1; // skip ';'
 

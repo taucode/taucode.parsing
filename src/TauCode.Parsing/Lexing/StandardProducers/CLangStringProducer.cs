@@ -6,7 +6,6 @@ using System.Text;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardProducers
@@ -52,13 +51,14 @@ namespace TauCode.Parsing.Lexing.StandardProducers
         public IToken Produce()
         {
             var context = this.Context;
-            var c = this.Context.GetCurrentChar();
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
+
             if (c == '"')
             {
-                var text = context.Text;
-                var length = text.Length;
-
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var initialLine = context.Line;
 
                 var index = initialIndex + 1; // skip '"'
@@ -147,7 +147,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                     StringTextClass.Instance,
                     DoubleQuoteTextDecoration.Instance,
                     str,
-                    context.GetCurrentPosition(),
+                    new Position(context.Line, context.Column),
                     delta);
 
                 context.Advance(delta, 0, context.Column + delta);

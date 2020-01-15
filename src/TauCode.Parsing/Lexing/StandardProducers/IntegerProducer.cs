@@ -1,5 +1,4 @@
 ﻿using System;
-using TauCode.Parsing.TextProcessing;
 using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Lexing.StandardProducers
@@ -17,15 +16,15 @@ namespace TauCode.Parsing.Lexing.StandardProducers
 
         public IToken Produce()
         {
-            var c = this.Context.GetCurrentChar();
+            var context = this.Context;
+            var text = context.Text;
+            var length = text.Length;
+
+            var c = text[context.Index];
 
             if (LexingHelper.IsIntegerFirstChar(c))
             {
-                var context = this.Context;
-                var text = context.Text;
-                var length = text.Length;
-
-                var initialIndex = context.GetIndex();
+                var initialIndex = context.Index;
                 var initialColumn = context.Column;
 
                 var digitsCount = 1;
