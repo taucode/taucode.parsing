@@ -1,28 +1,16 @@
-﻿using System.Collections.Generic;
-using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Lexing.StandardEscapeProcessors;
-using TauCode.Parsing.Lexing.StandardExtractors;
-using TauCode.Parsing.TextDecorations;
+﻿using TauCode.Parsing.Omicron;
+using TauCode.Parsing.Omicron.Producers;
 
 namespace TauCode.Parsing.Tests.Lexing
 {
-    public class MyStringLexer : LexerBase
+    public class MyStringLexer : OmicronLexerBase
     {
-        protected override IList<ITokenExtractor> CreateTokenExtractors()
+        protected override IOmicronTokenProducer[] CreateProducers()
         {
-            return new List<ITokenExtractor>
+            return new IOmicronTokenProducer[]
             {
-                new StringExtractorBase(
-                    '"',
-                    '"',
-                    false,
-                    DoubleQuoteTextDecoration.Instance,
-                    new EscapeProcessorBase[]
-                    {
-                        new CLangSingleCharEscapeProcessor(),
-                        new CLangU4EscapeProcessor(),
-                    },
-                    null)
+                new WhiteSpaceProducer(),
+                new OmicronCLangStringProducer(),
             };
         }
     }
