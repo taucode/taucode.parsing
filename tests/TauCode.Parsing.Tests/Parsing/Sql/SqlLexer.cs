@@ -1,28 +1,38 @@
-﻿//using System.Collections.Generic;
-//using TauCode.Parsing.Lexing;
-//using TauCode.Parsing.Lexing.StandardExtractors;
-//using TauCode.Parsing.Tests.Parsing.Sql.TokenExtractors;
-//using TauCode.Parsing.Tokens;
+﻿using TauCode.Extensions;
+using TauCode.Parsing.Lexing;
+using TauCode.Parsing.Omicron;
+using TauCode.Parsing.Omicron.Producers;
+using TauCode.Parsing.Tests.Parsing.Sql.Producers;
 
-//namespace TauCode.Parsing.Tests.Parsing.Sql
-//{
-//    public class SqlLexer : LexerBase
-//    {
-//        protected override IList<ITokenExtractor> CreateTokenExtractors()
-//        {
-//            return new List<ITokenExtractor>
-//            {
-//                new WordExtractor(),
-//                new SqlPunctuationExtractor(),
-//                new IntegerExtractor(new[]
-//                {
-//                    typeof(PunctuationToken),
-//                }),
-//                new SqlIdentifierExtractor(),
-//            };
-//        }
-//    }
-//}
+namespace TauCode.Parsing.Tests.Parsing.Sql
+{
+    public class SqlLexer : OmicronLexerBase
+    {
+        protected override IOmicronTokenProducer[] CreateProducers()
+        {
+            return new IOmicronTokenProducer[]
+            {
+                new WhiteSpaceProducer(),
+                new WordProducer(),
+                new SqlPunctuationProducer(),
+                new IntegerProducer(IsAcceptableIntegerTerminator),
+                new SqlIdentifierProducer(),
+            };
+        }
 
+        private bool IsAcceptableIntegerTerminator(char c)
+        {
+            if (LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                return true;
+            }
 
-// todo clean up
+            if (c.IsIn('(', ')', ','))
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+}

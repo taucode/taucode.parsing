@@ -34,7 +34,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.TextClasses
 
     public static class SqlTestsHelper
     {
-        private static readonly ILexer TheLexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
+        private static readonly ILexer TheLexer = new OmicronTinyLispLexer();
         private static readonly HashSet<string> ReservedWordsHashSet;
 
         public static HashSet<string> ReservedWords = ReservedWordsHashSet ?? (ReservedWordsHashSet = CreateReservedWords());

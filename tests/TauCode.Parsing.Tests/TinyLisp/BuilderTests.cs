@@ -16,7 +16,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [SetUp]
         public void SetUp()
         {
-            _lexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
+            _lexer = new OmicronTinyLispLexer();
         }
 
         [Test]

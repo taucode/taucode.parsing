@@ -20,7 +20,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         [SetUp]
         public void SetUp()
         {
-            _lexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
+            _lexer = new OmicronTinyLispLexer();
         }
 
         [Test]
@@ -369,7 +369,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void Lexize_NewLineInString_PositionIsCorrect(string input)
         {
             // Arrange
-            ILexer lexer = new /*Tiny-LispLexer()*/ OmicronTinyLispLexer();
+            ILexer lexer = new OmicronTinyLispLexer();
 
             // Act
             var tokens = lexer.Lexize(input);
