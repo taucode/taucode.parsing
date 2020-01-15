@@ -460,5 +460,36 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(ex.Message, Is.EqualTo("Bad keyword."));
             Assert.That(ex.Position, Is.EqualTo(new Position(1, 1)));
         }
+
+        [Test]
+        public void Lexize_ColonInsideSymbol_ThrowsLexingException()
+        {
+            // Arrange
+            var input = "symbol:bad";
+
+            // Act
+            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Bad symbol name."));
+            Assert.That(ex.Position, Is.EqualTo(new Position(0, 0)));
+        }
+
+        [Test]
+        [TestCase("1111111111111111111111111111111111")]
+        [TestCase("+1111111111111111111111111111111111")]
+        [TestCase("-1111111111111111111111111111111111")]
+        public void Lexize_SymbolNameCouldBeInteger_ThrowsLexingException(string input)
+        {
+            // Arrange
+            
+            // Act
+            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Symbol producer delivered an integer."));
+            Assert.That(ex.Position, Is.EqualTo(new Position(0, 0)));
+        }
+
     }
 }

@@ -43,7 +43,12 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
                     c = text[index];
 
-                    if (!TinyLispHelper.IsAcceptableSymbolNameChar(c)) // todo: test bad input "my-symbol:my-key"
+                    if (c == ':')
+                    {
+                        throw new LexingException("Bad symbol name.", new Position(context.Line, context.Column));
+                    }
+
+                    if (!TinyLispHelper.IsAcceptableSymbolNameChar(c))
                     {
                         break;
                     }
@@ -69,7 +74,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
                 if (couldBeInt)
                 {
-                    throw new LexingException("Symbol producer delivered an integer.", new Position(context.Line, context.Column)); // todo ut this
+                    throw new LexingException("Symbol producer delivered an integer.", new Position(context.Line, context.Column));
                 }
 
                 var delta = index - initialIndex;
