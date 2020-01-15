@@ -25,7 +25,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         {
             //_tinyLispLexer = new Tiny-LispLexer();
             _tinyLispLexer = new OmicronTinyLispLexer();
-            _cliLexer = new CliLexer();
+            _cliLexer = new /*Cli-Lexer()*/ CliOmicronLexer();
         }
 
         [Test]

@@ -17,7 +17,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         [SetUp]
         public void SetUp()
         {
-            _lexer = new CliLexer();
+            _lexer = new /*Cli-Lexer()*/ CliOmicronLexer();
         }
 
         [Test]
