@@ -10,7 +10,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 {
     public class TinyLispStringProducer : ITokenProducer
     {
-        public ITextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {

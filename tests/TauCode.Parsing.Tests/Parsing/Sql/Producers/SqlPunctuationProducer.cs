@@ -7,7 +7,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
 {
     public class SqlPunctuationProducer : ITokenProducer
     {
-        public ITextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {

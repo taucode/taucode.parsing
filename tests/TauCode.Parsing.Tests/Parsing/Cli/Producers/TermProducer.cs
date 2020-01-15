@@ -8,7 +8,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Producers
 {
     public class TermProducer : ITokenProducer
     {
-        public ITextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
         public IToken Produce()
         {
             var context = this.Context;

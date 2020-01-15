@@ -4,7 +4,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
 {
     public class WhiteSpaceProducer : ITokenProducer
     {
-        public ITextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {

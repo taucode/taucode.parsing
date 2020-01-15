@@ -34,7 +34,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
 
         }
 
-        public ITextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {

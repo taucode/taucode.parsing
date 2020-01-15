@@ -4,7 +4,7 @@ namespace TauCode.Parsing.Lexing
 {
     public interface ITokenProducer
     {
-        ITextProcessingContext Context { get; set; }
+        LexingContext Context { get; set; }
 
         IToken Produce();
     }

@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Lexing
 
         public IList<IToken> Lexize(string input)
         {
-            var context = new TextProcessingContext(input);
+            var context = new LexingContext(input);
             var tokens = new List<IToken>();
 
             foreach (var producer in this.Producers)
@@ -22,7 +22,8 @@ namespace TauCode.Parsing.Lexing
                 producer.Context = context;
             }
 
-            while (!context.IsEnd())
+            var length = input.Length;
+            while (context.Index < length)
             {
                 var indexBeforeProducing = context.GetIndex();
 

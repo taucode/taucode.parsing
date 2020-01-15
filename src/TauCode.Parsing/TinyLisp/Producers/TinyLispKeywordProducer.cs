@@ -6,7 +6,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 {
     public class TinyLispKeywordProducer : ITokenProducer
     {
-        public ITextProcessingContext Context { get; set; }
+        public LexingContext Context { get; set; }
 
         public IToken Produce()
         {
