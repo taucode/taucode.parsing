@@ -72,7 +72,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                         var column = context.Column + (index - initialIndex);
                         throw LexingHelper.CreateUnclosedStringException(new Position(
                             initialLine,
-                            column)); // todo ut
+                            column));
                     }
 
                     c = text[index];
@@ -80,14 +80,16 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                     if (LexingHelper.IsCaretControl(c))
                     {
                         var column = context.Column + (index - initialIndex);
-                        throw LexingHelper.CreateNewLineInStringException(new Position(initialLine, column)); // todo ut
+                        throw LexingHelper.CreateNewLineInStringException(new Position(initialLine, column));
                     }
 
                     if (c == '\\')
                     {
                         if (index + 1 == length)
                         {
-                            throw LexingHelper.CreateUnclosedStringException(new Position(initialLine, length)); // todo ut
+                            throw LexingHelper.CreateUnclosedStringException(new Position(
+                                initialLine,
+                                length));
                         }
 
                         var nextChar = text[index + 1];
@@ -98,7 +100,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                             {
                                 delta = index - initialIndex;
                                 var column = context.Column + delta;
-                                this.ThrowBadEscapeException(initialLine, column); // todo ut
+                                this.ThrowBadEscapeException(initialLine, column);
                             }
 
                             var hexNumString = text.Substring(index + 2, 4);
@@ -112,7 +114,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                             {
                                 delta = index - initialIndex;
                                 var column = context.Column + delta;
-                                this.ThrowBadEscapeException(initialLine, column); // todo ut
+                                this.ThrowBadEscapeException(initialLine, column);
                             }
 
                             var unescapedChar = (char)code;
@@ -134,7 +136,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                             {
                                 delta = index - initialIndex;
                                 var column = context.Column + delta;
-                                this.ThrowBadEscapeException(initialLine, column); // todo ut
+                                this.ThrowBadEscapeException(initialLine, column);
                             }
                         }
                     }

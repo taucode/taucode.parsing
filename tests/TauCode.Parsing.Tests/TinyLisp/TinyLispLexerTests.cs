@@ -15,6 +15,11 @@ namespace TauCode.Parsing.Tests.TinyLisp
     [TestFixture]
     public class TinyLispLexerTests
     {
+        private const string CR = "\r";
+        private const string LF = "\n";
+        private const string CRLF = CR + LF;
+        private const string DQ = "\"";
+
         private ILexer _lexer;
 
         [SetUp]
@@ -369,10 +374,9 @@ namespace TauCode.Parsing.Tests.TinyLisp
         public void Lexize_NewLineInString_PositionIsCorrect(string input)
         {
             // Arrange
-            ILexer lexer = new TinyLispLexer();
 
             // Act
-            var tokens = lexer.Lexize(input);
+            var tokens = _lexer.Lexize(input);
 
             // Assert
             Assert.That(tokens.Count, Is.EqualTo(4));
@@ -407,6 +411,54 @@ namespace TauCode.Parsing.Tests.TinyLisp
             Assert.That(textToken.Text, Is.EqualTo("zz"));
             Assert.That(textToken.Position, Is.EqualTo(new Position(4, 6)));
             Assert.That(textToken.ConsumedLength, Is.EqualTo(4));
+        }
+
+        [Test]
+        public void Lexize_BrokenString_LexizesCorrectly()
+        {
+            // Arrange
+            var input = $"{DQ}line0{CR}line1{CRLF}line2{LF}{DQ}";
+
+            // Act
+            var tokens = _lexer.Lexize(input);
+
+            // Assert
+            Assert.That(tokens, Has.Count.EqualTo(1));
+            var textToken = (TextToken)tokens.Single();
+
+            Assert.That(textToken.Class, Is.EqualTo(StringTextClass.Instance));
+            Assert.That(textToken.Decoration, Is.EqualTo(DoubleQuoteTextDecoration.Instance));
+            Assert.That(textToken.Text, Is.EqualTo($"line0{CR}line1{CRLF}line2{LF}"));
+        }
+
+        [Test]
+        public void Lexize_StringEndsWithCr_ThrowsLexingException()
+        {
+            // Arrange
+            var input = $"{DQ}line0{CR}line1{CR}";
+            
+            // Act
+            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
+            
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Unclosed string."));
+            Assert.That(ex.Position, Is.EqualTo(new Position(2, 0)));
+        }
+
+        [Test]
+        [TestCase("\n(:)")]
+        [TestCase("\r\n(:part1:part2)")]
+        [TestCase("\r :)")]
+        public void Lexize_SingleColumn_ThrowsLexingException(string input)
+        {
+            // Arrange
+            
+            // Act
+            var ex = Assert.Throws<LexingException>(() => _lexer.Lexize(input));
+
+            // Assert
+            Assert.That(ex.Message, Is.EqualTo("Bad keyword."));
+            Assert.That(ex.Position, Is.EqualTo(new Position(1, 1)));
         }
     }
 }

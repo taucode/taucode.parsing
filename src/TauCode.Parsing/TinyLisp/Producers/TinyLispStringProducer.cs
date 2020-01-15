@@ -1,5 +1,4 @@
-﻿using TauCode.Parsing.Exceptions;
-using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TextClasses;
 using TauCode.Parsing.TextDecorations;
 using TauCode.Parsing.Tokens;
@@ -36,37 +35,35 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
                     c = text[index];
 
-                    if (LexingHelper.IsCaretControl(c)) // todo: this check is redundant, since both CR and LF are checked in switch.
+                    switch (c)
                     {
-                        switch (c)
-                        {
-                            case LexingHelper.CR:
-                                index++;
-                                lineShift++;
-                                column = 0;
+                        case LexingHelper.CR:
+                            index++;
+                            lineShift++;
+                            column = 0;
 
-                                if (index < length)
+                            if (index < length)
+                            {
+                                var nextChar = text[index];
+                                if (nextChar == LexingHelper.LF)
                                 {
-                                    var nextChar = text[index];
-                                    if (nextChar == LexingHelper.LF)
-                                    {
-                                        index++;
-                                    }
+                                    index++;
                                 }
-                                else
-                                {
-                                    // todo use 'CreateUnclosedStringException' and ut.
-                                    throw new LexingException("Un-closed string.", new Position(initialLine + lineShift, column));
-                                }
+                            }
+                            else
+                            {
+                                throw LexingHelper.CreateUnclosedStringException(new Position(
+                                    context.Line + lineShift,
+                                    column));
+                            }
 
-                                break;
+                            continue;
 
-                            case LexingHelper.LF:
-                                index++;
-                                lineShift++;
-                                column = 0;
-                                break;
-                        }
+                        case LexingHelper.LF:
+                            index++;
+                            lineShift++;
+                            column = 0;
+                            continue;
                     }
 
                     index++;
@@ -91,10 +88,8 @@ namespace TauCode.Parsing.TinyLisp.Producers
                 context.Advance(delta, lineShift, column);
                 return token;
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using TauCode.Parsing.Lexing;
+﻿using TauCode.Parsing.Exceptions;
+using TauCode.Parsing.Lexing;
 using TauCode.Parsing.TinyLisp.Tokens;
 
 namespace TauCode.Parsing.TinyLisp.Producers
@@ -15,7 +16,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
             var c = text[context.Index];
 
-            if (c == ':') // todo: test input ":"
+            if (c == ':')
             {
                 var nameCharsCount = 0;
                 var initialIndex = context.Index;
@@ -30,7 +31,13 @@ namespace TauCode.Parsing.TinyLisp.Producers
                     }
 
                     c = text[index];
-                    if (!TinyLispHelper.IsAcceptableSymbolNameChar(c)) // todo: test bad input ":key1:key2"
+
+                    if (c == ':')
+                    {
+                        ThrowBadKeywordException(context.Line, context.Column);
+                    }
+
+                    if (!TinyLispHelper.IsAcceptableSymbolNameChar(c))
                     {
                         break;
                     }
@@ -42,7 +49,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
                 if (nameCharsCount == 0)
                 {
-                    return null; // todo: actually, throw.
+                    ThrowBadKeywordException(context.Line, context.Column);
                 }
 
                 var delta = index - initialIndex;
@@ -58,6 +65,11 @@ namespace TauCode.Parsing.TinyLisp.Producers
             {
                 return null;
             }
+        }
+
+        private static void ThrowBadKeywordException(int line, int column)
+        {
+            throw new LexingException("Bad keyword.", new Position(line, column));
         }
     }
 }

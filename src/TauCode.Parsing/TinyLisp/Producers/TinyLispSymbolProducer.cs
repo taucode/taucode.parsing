@@ -16,7 +16,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
             var c = text[context.Index];
 
-            if (c.IsAcceptableSymbolNameChar())
+            if (TinyLispHelper.IsAcceptableSymbolNameChar(c))
             {
                 var gotSign = c == '+' || c == '-';
                 var pureDigits = 0;
@@ -43,7 +43,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
 
                     c = text[index];
 
-                    if (!c.IsAcceptableSymbolNameChar()) // todo: test bad input "my-symbol:my-key"
+                    if (!TinyLispHelper.IsAcceptableSymbolNameChar(c)) // todo: test bad input "my-symbol:my-key"
                     {
                         break;
                     }

@@ -13,19 +13,19 @@ namespace TauCode.Parsing.TinyLisp.Producers
             var text = context.Text;
 
             var c = text[context.Index];
-            if (TinyLispHelper.IsPunctuation(c)) // todo: can optimize; two checks will be performed
+            var punctuation = TinyLispHelper.TryCharToPunctuation(c);
+
+            if (punctuation.HasValue)
             {
                 var position = new Position(Context.Line, Context.Column);
                 this.Context.AdvanceByChar();
                 return new LispPunctuationToken(
-                    TinyLispHelper.CharToPunctuation(c),
+                    punctuation.Value,
                     position,
                     1);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
     }
 }

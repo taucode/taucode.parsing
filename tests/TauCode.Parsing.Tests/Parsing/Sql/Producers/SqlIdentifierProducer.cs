@@ -61,7 +61,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
                             var delta = index - initialIndex;
                             var column = context.Column + delta;
 
-                            this.ThrowUnclosedIdentifierException(context.Line, column); // todo ut
+                            this.ThrowUnclosedIdentifierException(context.Line, column);
                         }
                         break;
                     }
@@ -102,7 +102,7 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
                                     var delta = index - initialIndex;
                                     var column = context.Column + delta;
 
-                                    this.ThrowUnclosedIdentifierException(context.Line, column); // todo ut
+                                    this.ThrowUnclosedIdentifierException(context.Line, column);
                                 }
                             }
                             else
@@ -110,14 +110,14 @@ namespace TauCode.Parsing.Tests.Parsing.Sql.Producers
                                 var delta = index - initialIndex;
                                 var column = context.Column + delta;
 
-                                throw new LexingException($"Unexpected delimiter: '{c}'.", new Position(context.Line, column)); // todo ut
+                                throw new LexingException($"Unexpected delimiter: '{c}'.", new Position(context.Line, column));
                             }
                         }
                         else
                         {
                             var delta = index - initialIndex;
                             var column = context.Column + delta;
-                            throw new LexingException($"Unexpected delimiter: '{c}'.", new Position(context.Line, column)); // todo ut
+                            throw new LexingException($"Unexpected delimiter: '{c}'.", new Position(context.Line, column));
                         }
                     }
                 }
