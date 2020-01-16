@@ -2,11 +2,12 @@
 
 namespace TauCode.Parsing
 {
+    // todo clean
     public interface INode
     {
         INodeFamily Family { get; }
         string Name { get; }
-        InquireResult Inquire(IToken token, IResultAccumulator resultAccumulator);
+        /*InquireResult*/ bool Inquire(IToken token, IResultAccumulator resultAccumulator); // todo: rename to AcceptsToken
         void Act(IToken token, IResultAccumulator resultAccumulator);
         void EstablishLink(INode node);
         void ClaimLink(string nodeName);

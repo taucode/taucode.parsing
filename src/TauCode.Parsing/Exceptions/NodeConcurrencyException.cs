@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace TauCode.Parsing.Exceptions
 {
@@ -7,12 +9,13 @@ namespace TauCode.Parsing.Exceptions
     {
         public NodeConcurrencyException(
             IToken token,
-            INode[] concurrentNodes,
+            IEnumerable<INode> concurrentNodes,
             object[] partialParsingResults)
             : base("More than one node accepted the token.", partialParsingResults)
         {
+            // todo checks
             this.Token = token;
-            this.ConcurrentNodes = concurrentNodes;
+            this.ConcurrentNodes = concurrentNodes.ToArray();
         }
 
         public IToken Token { get; }

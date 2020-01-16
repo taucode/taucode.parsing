@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Extensions;
 
 namespace TauCode.Parsing.Nodes
 {
+    // todo clean
     public abstract class NodeImpl : INode
     {
         #region Fields
@@ -48,7 +48,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Polymorph
 
-        protected abstract InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator);
+        protected abstract /*InquireResult*/ bool InquireImpl(IToken token, IResultAccumulator resultAccumulator); // todo rename to AcceptsTokenImpl
 
         protected abstract void ActImpl(IToken token, IResultAccumulator resultAccumulator);
 
@@ -66,7 +66,7 @@ namespace TauCode.Parsing.Nodes
 
         public string Name { get; }
 
-        public InquireResult Inquire(IToken token, IResultAccumulator resultAccumulator)
+        public /*InquireResult*/ bool Inquire(IToken token, IResultAccumulator resultAccumulator) // todo rename.
         {
             if (token == null)
             {
@@ -79,14 +79,19 @@ namespace TauCode.Parsing.Nodes
             }
 
             var basicInquireResult = this.InquireImpl(token, resultAccumulator);
-
-            if (basicInquireResult.IsIn(InquireResult.Reject, InquireResult.End))
+            if (!basicInquireResult)
             {
-                return basicInquireResult;
+                return false;
             }
 
+            //if (basicInquireResult.IsIn(InquireResult.Reject, InquireResult.End))
+            //{
+            //    return basicInquireResult;
+            //}
+
             var additionalCheck = this.AdditionalChecker?.Invoke(token, resultAccumulator) ?? true;
-            return additionalCheck ? basicInquireResult : InquireResult.Reject;
+            return additionalCheck;
+            //return additionalCheck ? basicInquireResult : InquireResult.Reject;
         }
 
         public void Act(IToken token, IResultAccumulator resultAccumulator)

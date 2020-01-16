@@ -2,6 +2,7 @@
 
 namespace TauCode.Parsing.Nodes
 {
+    // todo clean
     public sealed class IdleNode : NodeImpl
     {
         #region Constructor
@@ -15,14 +16,14 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override /*InquireResult*/ bool InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new InvalidOperationException("'Inquire' should not be called for 'IdleNode'.");
+            throw new InvalidOperationException($"'{nameof(Inquire)}' should not be called for '{typeof(IdleNode).Name}'.");
         }
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new InvalidOperationException("'Act' should not be called for 'IdleNode'.");
+            throw new InvalidOperationException($"'{nameof(Act)}' should not be called for '{typeof(IdleNode).Name}'.");
         }
 
         #endregion
