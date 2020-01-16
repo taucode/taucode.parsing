@@ -5,7 +5,6 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
 {
-    // todo clean
     public class MultiTextNode : ActionNode
     {
         private readonly HashSet<string> _texts;
@@ -68,7 +67,7 @@ namespace TauCode.Parsing.Nodes
             this.Texts = _texts.ToList();
         }
 
-        protected override /*InquireResult*/ bool InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool InquireImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             if (token is TextToken textToken)
             {
@@ -87,12 +86,10 @@ namespace TauCode.Parsing.Nodes
                     )
                     {
                         return true;
-                        //return this.Action == null ? InquireResult.Skip : InquireResult.Act;
                     }
                 }
             }
 
-            //return InquireResult.Reject;
             return false;
         }
 

@@ -66,7 +66,7 @@ namespace TauCode.Parsing.Nodes
 
         public string Name { get; }
 
-        public /*InquireResult*/ bool Inquire(IToken token, IResultAccumulator resultAccumulator) // todo rename.
+        public /*InquireResult*/ bool AcceptsToken(IToken token, IResultAccumulator resultAccumulator) // todo rename.
         {
             if (token == null)
             {

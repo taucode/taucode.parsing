@@ -73,7 +73,7 @@ namespace TauCode.Parsing
                         continue;
                     }
 
-                    var inquireResult = node.Inquire(token, context.ResultAccumulator); // todo: rename to 'var acceptsToken'
+                    var inquireResult = node.AcceptsToken(token, context.ResultAccumulator); // todo: rename to 'var acceptsToken'
 
                     if (inquireResult)
                     {

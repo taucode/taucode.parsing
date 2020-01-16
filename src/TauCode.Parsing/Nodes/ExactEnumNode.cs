@@ -3,7 +3,6 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
 {
-    // todo claen
     public class ExactEnumNode<TEnum> : ActionNode where TEnum : struct
     {
         #region Constructor
@@ -22,22 +21,13 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override /*InquireResult*/ bool InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool InquireImpl(IToken token, IResultAccumulator resultAccumulator) // get rid of inquire todo
         {
             var result =
                 token is EnumToken<TEnum> enumToken &&
                 enumToken.Value.Equals(this.Value);
 
             return result;
-
-            //if (token is EnumToken<TEnum> enumToken && enumToken.Value.Equals(this.Value))
-            //{
-            //    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            //}
-            //else
-            //{
-            //    return InquireResult.Reject;
-            //}
         }
 
         #endregion
