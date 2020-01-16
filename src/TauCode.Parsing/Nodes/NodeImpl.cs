@@ -65,7 +65,7 @@ namespace TauCode.Parsing.Nodes
 
         public string Name { get; }
 
-        public bool AcceptsToken(IToken token, IResultAccumulator resultAccumulator) // todo rename.
+        public bool AcceptsToken(IToken token, IResultAccumulator resultAccumulator)
         {
             if (token == null)
             {
@@ -77,8 +77,8 @@ namespace TauCode.Parsing.Nodes
                 throw new ArgumentNullException(nameof(resultAccumulator));
             }
 
-            var basicInquireResult = this.AcceptsTokenImpl(token, resultAccumulator);
-            if (!basicInquireResult)
+            var basicResult = this.AcceptsTokenImpl(token, resultAccumulator);
+            if (!basicResult)
             {
                 return false;
             }

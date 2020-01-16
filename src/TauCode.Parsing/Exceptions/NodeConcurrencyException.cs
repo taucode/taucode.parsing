@@ -9,12 +9,22 @@ namespace TauCode.Parsing.Exceptions
     {
         public NodeConcurrencyException(
             IToken token,
-            IEnumerable<INode> concurrentNodes,
+            IList<INode> concurrentNodes,
             object[] partialParsingResults)
             : base("More than one node accepted the token.", partialParsingResults)
         {
-            // todo checks
-            this.Token = token;
+            this.Token = token ?? throw new ArgumentNullException(nameof(token));
+
+            if (concurrentNodes == null)
+            {
+                throw new ArgumentNullException(nameof(concurrentNodes));
+            }
+
+            if (!concurrentNodes.Any())
+            {
+                throw new ArgumentException($"'{concurrentNodes}' cannot be empty.");
+            }
+
             this.ConcurrentNodes = concurrentNodes.ToArray();
         }
 

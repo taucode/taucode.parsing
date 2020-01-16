@@ -18,7 +18,7 @@ namespace TauCode.Parsing.Building
 
             if (node is FallbackNode && _links.Any())
             {
-                throw new NotImplementedException(); // an error - can't add links to fallback node (todo)
+                throw new ArgumentException("Fallback node cannot have links.", nameof(node));
             }
         }
 

@@ -2,7 +2,6 @@
 
 namespace TauCode.Parsing.Nodes
 {
-    // todo clean
     public abstract class ActionNode : NodeImpl
     {
         #region Constructor
@@ -22,11 +21,6 @@ namespace TauCode.Parsing.Nodes
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            //if (this.Action == null)
-            //{
-            //    throw new NullReferenceException("'Act' should not be called if 'Action' is null.");
-            //}
-
             this.Action?.Invoke(this, token, resultAccumulator);
             resultAccumulator.Modify();
         }

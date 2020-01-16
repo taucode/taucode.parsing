@@ -40,7 +40,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 var workerName = item.GetSingleKeywordArgument<Symbol>(":worker-name", true)?.Name;
                 if (workerName == null)
                 {
-                    throw new NotImplementedException();
+                    throw new CliException("Worker name is null.");
                 }
                 else
                 {
@@ -73,7 +73,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
             if (!(node is ActionNode ))
             {
-                throw new NotImplementedException(); // todo error
+                throw new CliException("ActionNode was expected to be created.");
             }
 
             var actionNode = (ActionNode)base.CreateNode(item);
@@ -172,7 +172,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
         private void OptionAction(ActionNode node, IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException(); // will implement in real CLI.
         }
 
         private void ArgumentAction(ActionNode node, IToken token, IResultAccumulator resultAccumulator)

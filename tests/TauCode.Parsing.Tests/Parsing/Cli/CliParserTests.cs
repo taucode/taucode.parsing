@@ -5,7 +5,6 @@ using TauCode.Extensions;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
-using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
@@ -47,17 +46,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var commandText =
                 "sd --connection \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
             var cliTokens = _cliLexer.Lexize(commandText);
-
-            // todo clean
-            //var allNodes = root.FetchTree();
-
-            //var mm = (ActionNode)allNodes.Single(x =>
-            //   string.Equals(x.Name, "node-serialize-data", StringComparison.InvariantCultureIgnoreCase));
-            //mm.Action = (node, token, accumulator) =>
-            //{
-            //    var command = new CliCommand();
-            //    accumulator.AddResult(command);
-            //};
 
             // Act
             parser.Root = root;
@@ -110,17 +98,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var commandText = $"{singleCommand} {singleCommand}";
             var cliTokens = _cliLexer.Lexize(commandText);
 
-            // todo clean
-            //var allNodes = root.FetchTree();
-
-            //var mm = (ActionNode)allNodes.Single(x =>
-            //   string.Equals(x.Name, "node-serialize-data", StringComparison.InvariantCultureIgnoreCase));
-            //mm.Action = (node, token, accumulator) =>
-            //{
-            //    var command = new CliCommand();
-            //    accumulator.AddResult(command);
-            //};
-
             // Act
             parser.Root = root;
             var ex = Assert.Throws<UnexpectedTokenException>(() => parser.Parse(cliTokens));
@@ -161,6 +138,5 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var textToken = (TextToken)ex.Token;
             Assert.That(textToken.Text, Is.EqualTo("-bad-key"));
         }
-
     }
 }
