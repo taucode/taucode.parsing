@@ -21,12 +21,14 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator) => 
-            throw new NotImplementedException(); // todo should not be called
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
+        {
+            throw new InvalidOperationException($"Cannot call '{nameof(AcceptsToken)}' for end node.");
+        }
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new InvalidOperationException("Cannot call 'Act' for end node.");
+            throw new InvalidOperationException($"Cannot call '{nameof(Act)}' for end node.");
         }
 
         public override void EstablishLink(INode node)
@@ -42,7 +44,7 @@ namespace TauCode.Parsing.Nodes
         public override Func<IToken, IResultAccumulator, bool> AdditionalChecker
         {
             get => null;
-            set => throw new InvalidOperationException("Cannot set 'AdditionalChecker' for end node.");
+            set => throw new InvalidOperationException($"Cannot set '{nameof(AdditionalChecker)}' for end node.");
         }
 
         #endregion

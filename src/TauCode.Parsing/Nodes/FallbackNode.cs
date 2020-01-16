@@ -14,7 +14,7 @@ namespace TauCode.Parsing.Nodes
             this.FallbackPredicate = fallbackPredicate ?? throw new ArgumentNullException(nameof(fallbackPredicate));
         }
 
-        public Func<FallbackNode, IToken, IResultAccumulator, bool> FallbackPredicate { get; private set; }
+        public Func<FallbackNode, IToken, IResultAccumulator, bool> FallbackPredicate { get; }
 
         protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
@@ -28,33 +28,12 @@ namespace TauCode.Parsing.Nodes
 
         public override void ClaimLink(string nodeName)
         {
-            throw new NotImplementedException(); // todo error. fallback won't accept links
+            throw new InvalidOperationException($"Cannot call '{nameof(ClaimLink)}' for fallback node.");
         }
 
         public override void EstablishLink(INode node)
         {
-            throw new NotImplementedException(); // todo error. fallback won't accept links
+            throw new InvalidOperationException($"Cannot call '{nameof(EstablishLink)}' for fallback node.");
         }
-    }
-
-    // todo separate file
-    public class FallbackNodeAcceptedTokenException : ParsingExceptionBase
-    {
-        public FallbackNodeAcceptedTokenException(
-            FallbackNode fallbackNode,
-            IToken token,
-            IResultAccumulator resultAccumulator)
-            : base("Fallback node accepted token.")
-        {
-            this.FallbackNode = fallbackNode;
-            this.Token = token;
-            this.ResultAccumulator = resultAccumulator;
-        }
-
-        public FallbackNode FallbackNode { get; }
-
-        public IToken Token { get; }
-
-        public IResultAccumulator ResultAccumulator { get; }
     }
 }
