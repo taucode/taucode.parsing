@@ -6,6 +6,6 @@ namespace TauCode.Parsing.Tests.Parsing.Cli.Data
     {
         public string AddInName { get; set; }
         public string WorkerName { get; set; }
-        public IList<ICliCommandEntry> Entries { get; set; } = new List<ICliCommandEntry>();
+        public IList<CliCommandEntry> Entries { get; set; } = new List<CliCommandEntry>();
     }
 }

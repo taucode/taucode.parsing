@@ -31,7 +31,6 @@ namespace TauCode.Parsing
             var initialNodes = ParsingHelper.GetNonIdleNodes(new[] { root });
 
             context.SetNodes(initialNodes);
-            var winners = new List<INode>();
 
             while (true)
             {
@@ -51,56 +50,50 @@ namespace TauCode.Parsing
 
                 var token = stream.CurrentToken;
 
-                winners.Clear();
-                var gotActor = false;
+                INode winner = null;
+                FallbackNode fallbackNode = null;
                 var gotEnd = false;
-                var gotSkippers = false;
 
                 foreach (var node in nodes)
                 {
-                    var inquireResult = node.Inquire(token, context.ResultAccumulator);
-
-                    switch (inquireResult)
+                    if (node is EndNode)
                     {
-                        case InquireResult.Reject:
-                            // bye baby
-                            break;
+                        gotEnd = true;
+                        continue;
+                    }
 
-                        case InquireResult.Skip:
-                            if (gotActor)
+                    var acceptsToken = node.AcceptsToken(token, context.ResultAccumulator);
+
+                    if (acceptsToken)
+                    {
+                        if (node is FallbackNode anotherFallbackNode)
+                        {
+                            if (fallbackNode != null)
                             {
                                 throw new NodeConcurrencyException(
                                     token,
-                                    BuildConcurrentNodes(winners, node),
+                                    new[] { fallbackNode, anotherFallbackNode },
                                     context.ResultAccumulator.ToArray());
                             }
-                            gotSkippers = true;
-                            winners.Add(node);
-                            break;
 
-                        case InquireResult.Act:
-                            if (gotActor)
+                            fallbackNode = anotherFallbackNode;
+                        }
+                        else
+                        {
+                            if (winner != null)
                             {
                                 throw new NodeConcurrencyException(
                                     token,
-                                    BuildConcurrentNodes(winners, node),
+                                    new []{winner, node},
                                     context.ResultAccumulator.ToArray());
                             }
-                            gotActor = true;
-                            winners.Add(node);
-                            break;
 
-                        case InquireResult.End:
-                            gotEnd = true;
-                            // don't add to winners
-                            break;
-
-                        default:
-                            throw new ArgumentOutOfRangeException();
+                            winner = node;
+                        }
                     }
                 }
 
-                if (winners.Count == 0)
+                if (winner == null)
                 {
                     if (gotEnd)
                     {
@@ -113,6 +106,10 @@ namespace TauCode.Parsing
                         // fine, got to end, start over.
                         context.SetNodes(initialNodes);
                     }
+                    else if (fallbackNode != null)
+                    {
+                        fallbackNode.Act(token, context.ResultAccumulator); // will throw, and that's what we want.
+                    }
                     else
                     {
                         throw new UnexpectedTokenException(token, context.ResultAccumulator.ToArray());
@@ -120,51 +117,22 @@ namespace TauCode.Parsing
                 }
                 else
                 {
-                    if (gotActor)
+                    var oldVersion = context.ResultAccumulator.Version;
+                    winner.Act(token, context.ResultAccumulator);
+                    if (oldVersion + 1 != context.ResultAccumulator.Version)
                     {
-                        if (winners.Count > 1)
-                        {
-                            throw new NodeConcurrencyException(
-                                token,
-                                winners.ToArray(),
-                                context.ResultAccumulator.ToArray());
-                        }
-
-                        var actor = winners.Single();
-                        var oldVersion = context.ResultAccumulator.Version;
-                        actor.Act(token, context.ResultAccumulator);
-                        if (oldVersion + 1 != context.ResultAccumulator.Version)
-                        {
-                            throw new InternalParsingLogicException("Internal error. Non sequential result accumulator versions.");
-                        }
-                    }
-                    else
-                    {
-                        // 'gotSkippers' must be true
-                        if (!gotSkippers)
-                        {
-                            throw new InternalParsingLogicException("Internal parser error.");
-                        }
+                        throw new InternalParsingLogicException("Internal error. Non sequential result accumulator versions.");
                     }
 
                     // skip
                     context.TokenStream.AdvanceStreamPosition();
-                    var successors = winners.SelectMany(x => x.ResolveLinks()).ToList();
-
+                    var successors = winner.ResolveLinks();
                     var nonIdleSuccessors = ParsingHelper.GetNonIdleNodes(successors);
 
                     // next nodes
                     context.SetNodes(nonIdleSuccessors);
                 }
             }
-        }
-
-        private INode[] BuildConcurrentNodes(List<INode> concurrentNodes, INode oneMoreConcurrentNode)
-        {
-            var allConcurrentNodes = new List<INode>();
-            allConcurrentNodes.AddRange(concurrentNodes);
-            allConcurrentNodes.Add(oneMoreConcurrentNode);
-            return allConcurrentNodes.ToArray();
         }
     }
 }

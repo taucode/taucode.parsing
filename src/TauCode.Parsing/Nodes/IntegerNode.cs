@@ -19,16 +19,9 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is IntegerToken)
-            {
-                return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            }
-            else
-            {
-                return InquireResult.Reject;
-            }
+            return token is IntegerToken;
         }
 
         #endregion

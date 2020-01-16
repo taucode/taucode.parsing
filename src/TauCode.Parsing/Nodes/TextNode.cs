@@ -45,7 +45,7 @@ namespace TauCode.Parsing.Nodes
         {
         }
 
-        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             if (token is TextToken textToken)
             {
@@ -57,11 +57,11 @@ namespace TauCode.Parsing.Nodes
                     _textClasses.Any(x => x.TryConvertFrom(text, textTokenClass) != null)
                 )
                 {
-                    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
+                    return true;
                 }
             }
 
-            return InquireResult.Reject;
+            return false;
         }
     }
 }

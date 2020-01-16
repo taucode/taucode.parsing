@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Parsing.Nodes;
 
 namespace TauCode.Parsing.Building
 {
@@ -14,6 +15,11 @@ namespace TauCode.Parsing.Building
         {
             _node = node ?? throw new ArgumentNullException(nameof(node));
             _links = (links ?? new List<string>()).ToList();
+
+            if (node is FallbackNode && _links.Any())
+            {
+                throw new ArgumentException("Fallback node cannot have links.", nameof(node));
+            }
         }
 
         public INode GetNode() => _node;
@@ -21,6 +27,11 @@ namespace TauCode.Parsing.Building
 
         public void RequestLink(NodeBox to)
         {
+            if (_node is FallbackNode)
+            {
+                return; // won't add any links to fallback node.
+            }
+
             if (to == null)
             {
                 throw new ArgumentNullException(nameof(to));

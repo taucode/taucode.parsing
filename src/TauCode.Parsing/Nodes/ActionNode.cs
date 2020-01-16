@@ -21,12 +21,7 @@ namespace TauCode.Parsing.Nodes
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (this.Action == null)
-            {
-                throw new NullReferenceException("'Act' should not be called if 'Action' is null.");
-            }
-
-            this.Action(this, token, resultAccumulator);
+            this.Action?.Invoke(this, token, resultAccumulator);
             resultAccumulator.Modify();
         }
 
