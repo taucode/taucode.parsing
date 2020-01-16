@@ -7,7 +7,6 @@ using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
-using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
 using TauCode.Parsing.TinyLisp;
 using TauCode.Parsing.Tokens;
 
@@ -30,9 +29,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         public void CliParser_ValidInput_Parses()
         {
             // Arrange
-            var nodeFactory = new CliNodeFactory();
+            var nodeFactory = new CliNodeFactory("CLI node family");
             var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
-            
+
             var tokens = _tinyLispLexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
@@ -46,39 +45,40 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             };
 
             var commandText =
-                "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
+                "sd --connection \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
             var cliTokens = _cliLexer.Lexize(commandText);
 
-            var allNodes = root.FetchTree();
+            // todo clean
+            //var allNodes = root.FetchTree();
 
-            var mm = (ActionNode) allNodes.Single(x =>
-                string.Equals(x.Name, "node-serialize-data", StringComparison.InvariantCultureIgnoreCase));
-            mm.Action = (node, token, accumulator) =>
-            {
-                var command = new CliCommand();
-                accumulator.AddResult(command);
-            };
+            //var mm = (ActionNode)allNodes.Single(x =>
+            //   string.Equals(x.Name, "node-serialize-data", StringComparison.InvariantCultureIgnoreCase));
+            //mm.Action = (node, token, accumulator) =>
+            //{
+            //    var command = new CliCommand();
+            //    accumulator.AddResult(command);
+            //};
 
             // Act
             parser.Root = root;
             var cliResults = parser.Parse(cliTokens);
 
             // Assert
-            var cliCommand = (CliCommand) cliResults.Single();
+            var cliCommand = (CliCommand)cliResults.Single();
 
-            var commandEntry = (KeyValueCliCommandEntry)cliCommand.Entries.Single(x =>
+            var commandEntry = cliCommand.Entries.Single(x =>
                 string.Equals(x.Alias, "connection", StringComparison.InvariantCultureIgnoreCase));
             Assert.That(
                 commandEntry.Value,
                 Is.EqualTo("Server=.;Database=econera.diet.tracking;Trusted_Connection=True;"));
 
-            commandEntry = (KeyValueCliCommandEntry)cliCommand.Entries.Single(x =>
+            commandEntry = cliCommand.Entries.Single(x =>
                 string.Equals(x.Alias, "provider", StringComparison.InvariantCultureIgnoreCase));
             Assert.That(
                 commandEntry.Value,
                 Is.EqualTo("sqlserver"));
 
-            commandEntry = (KeyValueCliCommandEntry)cliCommand.Entries.Single(x =>
+            commandEntry = cliCommand.Entries.Single(x =>
                 string.Equals(x.Alias, "file", StringComparison.InvariantCultureIgnoreCase));
             Assert.That(
                 commandEntry.Value,
@@ -89,9 +89,9 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
         public void CliParser_TooManyResults_ThrowsUnexpectedTokenException()
         {
             // Arrange
-            var nodeFactory = new CliNodeFactory();
+            var nodeFactory = new CliNodeFactory("CLI node family");
             var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
-            
+
             var tokens = _tinyLispLexer.Lexize(input);
 
             var reader = new TinyLispPseudoReader();
@@ -104,21 +104,22 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
                 WantsOnlyOneResult = true,
                 Root = root,
             };
-            
 
-            var singleCommand = "sd --conn \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
+
+            var singleCommand = "sd --connection \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
             var commandText = $"{singleCommand} {singleCommand}";
             var cliTokens = _cliLexer.Lexize(commandText);
 
-            var allNodes = root.FetchTree();
+            // todo clean
+            //var allNodes = root.FetchTree();
 
-            var mm = (ActionNode)allNodes.Single(x =>
-               string.Equals(x.Name, "node-serialize-data", StringComparison.InvariantCultureIgnoreCase));
-            mm.Action = (node, token, accumulator) =>
-            {
-                var command = new CliCommand();
-                accumulator.AddResult(command);
-            };
+            //var mm = (ActionNode)allNodes.Single(x =>
+            //   string.Equals(x.Name, "node-serialize-data", StringComparison.InvariantCultureIgnoreCase));
+            //mm.Action = (node, token, accumulator) =>
+            //{
+            //    var command = new CliCommand();
+            //    accumulator.AddResult(command);
+            //};
 
             // Act
             parser.Root = root;
@@ -127,5 +128,39 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             var textToken = (TextToken)ex.Token;
             Assert.That(textToken.Text, Is.EqualTo("sd"));
         }
+
+        [Test]
+        public void CliParser_BadKey_ThrowsFallbackNodeAcceptedTokenException()
+        {
+            // Arrange
+            var nodeFactory = new CliNodeFactory("CLI node family");
+            var input = this.GetType().Assembly.GetResourceText("cli-grammar.lisp", true);
+
+            var tokens = _tinyLispLexer.Lexize(input);
+
+            var reader = new TinyLispPseudoReader();
+            var list = reader.Read(tokens);
+            ITreeBuilder builder = new TreeBuilder();
+            var root = builder.Build(nodeFactory, list);
+
+            IParser parser = new Parser
+            {
+                WantsOnlyOneResult = true,
+                Root = root,
+            };
+
+
+            var singleCommand = "sd -bad-key \"Server=.;Database=econera.diet.tracking;Trusted_Connection=True;\" --provider sqlserver -f c:/temp/mysqlite.json";
+            var commandText = $"{singleCommand} {singleCommand}";
+            var cliTokens = _cliLexer.Lexize(commandText);
+
+            // Act
+            parser.Root = root;
+            var ex = Assert.Throws<FallbackNodeAcceptedTokenException>(() => parser.Parse(cliTokens));
+
+            var textToken = (TextToken)ex.Token;
+            Assert.That(textToken.Text, Is.EqualTo("-bad-key"));
+        }
+
     }
 }

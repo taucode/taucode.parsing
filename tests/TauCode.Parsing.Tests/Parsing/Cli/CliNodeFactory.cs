@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using TauCode.Parsing.Building;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.Tests.Parsing.Cli.Data;
-using TauCode.Parsing.Tests.Parsing.Cli.Data.Entries;
 using TauCode.Parsing.Tests.Parsing.Cli.Exceptions;
 using TauCode.Parsing.Tests.Parsing.Cli.TextClasses;
 using TauCode.Parsing.TextClasses;
@@ -14,258 +15,169 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 {
     public class CliNodeFactory : NodeFactoryBase
     {
-        #region Constructor
-
-        public CliNodeFactory()
-            : base("Test-CLI", null, true)
+        public CliNodeFactory(
+            string nodeFamilyName)
+            : base(
+                nodeFamilyName,
+                new List<ITextClass>
+                {
+                    KeyTextClass.Instance,
+                    PathTextClass.Instance,
+                    TermTextClass.Instance,
+                    StringTextClass.Instance,
+                },
+                true)
         {
         }
-
-        #endregion
-
-        #region Overridden
 
         public override INode CreateNode(PseudoList item)
         {
-            var car = item.GetCarSymbolName();
-            INode node;
-
-            switch (car)
+            var car = item.GetCarSymbolName().ToLowerInvariant();
+            if (car == "worker")
             {
-                case "WORKER":
-                    node = this.CreateWorkerNode(item);
+                INode workerNode;
+
+                var workerName = item.GetSingleKeywordArgument<Symbol>(":worker-name", true)?.Name;
+                if (workerName == null)
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    workerNode = new MultiTextNode(
+                        item
+                            .GetAllKeywordArguments(":verbs")
+                            .Cast<StringAtom>()
+                            .Select(x => x.Value)
+                            .ToList(),
+                        new ITextClass[]
+                        {
+                            TermTextClass.Instance,
+                        },
+                        true,
+                        WorkerAction,
+                        this.NodeFamily,
+                        $"Worker Node. Name: [{workerName}]");
+
+                    workerNode.Properties["worker-name"] = workerName;
+                }
+
+                return workerNode;
+            }
+
+            var node = base.CreateNode(item);
+            if (node is FallbackNode)
+            {
+                return node;
+            }
+
+            if (!(node is ActionNode ))
+            {
+                throw new NotImplementedException(); // todo error
+            }
+
+            var actionNode = (ActionNode)base.CreateNode(item);
+
+            if (actionNode == null)
+            {
+                throw new CliException($"Could not build node for item '{car}'.");
+            }
+
+            var action = item.GetSingleKeywordArgument<Symbol>(":action", true)?.Name?.ToLowerInvariant();
+            string alias;
+
+            switch (action)
+            {
+                case "key":
+                    actionNode.Action = KeyAction;
+                    alias = item.GetSingleKeywordArgument<Symbol>(":alias").Name;
+                    actionNode.Properties["alias"] = alias;
                     break;
 
-                case "KEY-WITH-VALUE":
-                    node = this.CreateKeyEqualsValueNode(item);
+                case "value":
+                    actionNode.Action = ValueAction;
                     break;
 
-                case "KEY-VALUE-PAIR":
-                    node = this.CreateKeyValuePairNode(item);
+                case "option":
+                    actionNode.Action = OptionAction;
                     break;
 
-                case "KEY":
-                    node = this.CreateKeyNode(item);
+                case "argument":
+                    actionNode.Action = ArgumentAction;
+                    alias = item.GetSingleKeywordArgument<Symbol>(":alias").Name;
+                    actionNode.Properties["alias"] = alias;
                     break;
 
                 default:
-                    throw new CliException($"Unexpected symbol: '{car}'");
+                    throw new CliException($"Keyword ':action' is missing for item '{car}'.");
             }
 
-            return node;
+            return actionNode;
         }
 
-        #endregion
-
-        #region Node Creators
-
-        private INode CreateWorkerNode(PseudoList item)
+        protected override Func<FallbackNode, IToken, IResultAccumulator, bool> CreateFallbackPredicate(string nodeName)
         {
-            var verbs = item
-                .GetAllKeywordArguments(":verbs")
-                .Select(x => ((StringAtom)x).Value)
-                .ToList();
-
-            INode node = new MultiTextNode(
-                verbs,
-                new ITextClass[] { TermTextClass.Instance },
-                true,
-                this.ProcessAlias,
-                this.NodeFamily,
-                item.GetItemName());
-
-            var alias = item.GetSingleKeywordArgument<Symbol>(":worker-name").Name;
-            node.Properties["worker-name"] = alias;
-
-            return node;
-        }
-
-        private INode CreateKeyNode(PseudoList item)
-        {
-            var alias = item.GetSingleKeywordArgument<Symbol>(":alias").Name;
-
-            var keyNames = item
-                .GetAllKeywordArguments(":key-names")
-                .Select(x => ((StringAtom)x).Value)
-                .ToList();
-
-            var node = new MultiTextNode(
-                keyNames,
-                new ITextClass[] { KeyTextClass.Instance, },
-                true,
-                this.ProcessKey,
-                this.NodeFamily,
-                item.GetItemName());
-            node.Properties["alias"] = alias;
-
-            return node;
-        }
-
-        private INode CreateKeyEqualsValueNode(PseudoList item)
-        {
-            var alias = item.GetSingleKeywordArgument<Symbol>(":alias").Name;
-
-            var keyNames = item
-                .GetAllKeywordArguments(":key-names")
-                .Select(x => ((StringAtom)x).Value)
-                .ToList();
-
-            ActionNode keyNameNode = new MultiTextNode(
-                keyNames,
-                new ITextClass[] { KeyTextClass.Instance },
-                true,
-                this.ProcessKeySucceededByValue,
-                this.NodeFamily,
-                item.GetItemName());
-            keyNameNode.Properties["alias"] = alias;
-
-            INode equalsNode = new ExactPunctuationNode('=', null, this.NodeFamily, null);
-            INode choiceNode = this.CreateKeyChoiceNode(item);
-
-            keyNameNode.EstablishLink(equalsNode);
-            equalsNode.EstablishLink(choiceNode);
-
-            return keyNameNode;
-        }
-
-        private INode CreateKeyValuePairNode(PseudoList item)
-        {
-            var alias = item.GetSingleKeywordArgument<Symbol>(":alias").Name;
-
-            var keyNames = item
-                .GetAllKeywordArguments(":key-names")
-                .Select(x => ((StringAtom)x).Value)
-                .ToList();
-
-            ActionNode keyNameNode = new MultiTextNode(
-                keyNames,
-                new ITextClass[] { KeyTextClass.Instance },
-                true,
-                this.ProcessKeySucceededByValue,
-                this.NodeFamily,
-                item.GetItemName());
-            keyNameNode.Properties["alias"] = alias;
-
-            INode choiceNode = this.CreateKeyChoiceNode(item);
-
-            keyNameNode.EstablishLink(choiceNode);
-
-            return keyNameNode;
-        }
-
-        private INode CreateKeyChoiceNode(PseudoList item)
-        {
-            var keyValuesSubform = item.GetSingleKeywordArgument(":key-values");
-            if (keyValuesSubform.GetCarSymbolName() != "CHOICE")
+            if (nodeName.ToLowerInvariant() == "bad-key-fallback")
             {
-                throw new CliException("'CHOICE' symbol expected.");
+                return BadKeyPredicate;
             }
 
-            var classes = keyValuesSubform.GetAllKeywordArguments(":classes").ToList();
-            var values = keyValuesSubform.GetAllKeywordArguments(":values").ToList();
+            throw new ArgumentException($"Unknown fallback name: '{nodeName}'.", nameof(nodeName));
 
-            var anyText = values.Count == 1 && values.Single().Equals(Symbol.Create("*"));
-            string[] textValues;
+        }
 
-            if (anyText)
+        private static bool BadKeyPredicate(FallbackNode node, IToken token, IResultAccumulator resultAccumulator)
+        {
+            return
+                node.Name?.ToLowerInvariant() == "bad-key-fallback" &&
+                token is TextToken textToken &&
+                textToken.Text.StartsWith("-");
+        }
+
+        private void WorkerAction(ActionNode node, IToken token, IResultAccumulator resultAccumulator)
+        {
+            if (resultAccumulator.Count == 0)
             {
-                textValues = null;
+                var command = new CliCommand
+                {
+                    WorkerName = node.Properties["worker-name"],
+                };
+
+                resultAccumulator.AddResult(command);
             }
             else
             {
-                textValues = values.Select(x => ((StringAtom)x).Value).ToArray();
+                var command = resultAccumulator.GetLastResult<CliCommand>();
+                command.WorkerName = node.Properties["worker-name"];
             }
-
-            var textClasses = classes.Select(x => this.ParseTextClass(((Symbol)x).Name));
-
-            INode choiceNode;
-
-            if (textValues == null)
-            {
-                choiceNode = new TextNode(
-                    textClasses,
-                    ProcessKeyChoice,
-                    this.NodeFamily,
-                    null);
-            }
-            else
-            {
-                choiceNode = new MultiTextNode(
-                    textValues,
-                    textClasses,
-                    true,
-                    ProcessKeyChoice,
-                    this.NodeFamily,
-                    null);
-            }
-
-            return choiceNode;
         }
 
-        #endregion
-
-        #region Node Actions
-
-        private void ProcessAlias(ActionNode actionNode, IToken token, IResultAccumulator resultAccumulator)
+        private void KeyAction(ActionNode node, IToken token, IResultAccumulator resultAccumulator)
         {
             var command = resultAccumulator.GetLastResult<CliCommand>();
-            command.WorkerName = actionNode.Properties["worker-name"];
-        }
-
-        private void ProcessKey(ActionNode actionNode, IToken token, IResultAccumulator resultAccumulator)
-        {
-            var subCommand = resultAccumulator.GetLastResult<CliCommand>();
-            var entry = new KeyCliCommandEntry
+            var entry = new CliCommandEntry
             {
-                Alias = actionNode.Properties["alias"],
-                Key = ((TextToken)token).Text,
+                Alias = node.Properties["alias"],
             };
-            subCommand.Entries.Add(entry);
+            command.Entries.Add(entry);
         }
 
-        private void ProcessKeySucceededByValue(ActionNode actionNode, IToken token, IResultAccumulator resultAccumulator)
+        private void ValueAction(ActionNode node, IToken token, IResultAccumulator resultAccumulator)
         {
-            var subCommand = resultAccumulator.GetLastResult<CliCommand>();
-            var entry = new KeyValueCliCommandEntry
-            {
-                Alias = actionNode.Properties["alias"],
-                Key = ((TextToken)token).Text,
-            };
-            subCommand.Entries.Add(entry);
+            var command = resultAccumulator.GetLastResult<CliCommand>();
+            var entry = command.Entries.Last();
+            var textToken = (TextToken)token;
+            entry.Value = textToken.Text;
         }
 
-        private void ProcessKeyChoice(ActionNode actionNode, IToken token, IResultAccumulator resultAccumulator)
+        private void OptionAction(ActionNode node, IToken token, IResultAccumulator resultAccumulator)
         {
-            var subCommand = resultAccumulator.GetLastResult<CliCommand>();
-            var entry = (KeyValueCliCommandEntry)subCommand.Entries.Last();
-            entry.Value = ((TextToken)token).Text;
+            throw new NotImplementedException();
         }
 
-        #endregion
-
-        #region Misc
-
-        private ITextClass ParseTextClass(string textClassSymbolName)
+        private void ArgumentAction(ActionNode node, IToken token, IResultAccumulator resultAccumulator)
         {
-            switch (textClassSymbolName)
-            {
-                case "STRING":
-                    return StringTextClass.Instance;
-
-                case "TERM":
-                    return TermTextClass.Instance;
-
-                case "KEY":
-                    return KeyTextClass.Instance;
-
-                case "PATH":
-                    return PathTextClass.Instance;
-
-                default:
-                    throw new CliException($"Unexpected text class designating symbol: '{textClassSymbolName}'.");
-            }
+            throw new NotImplementedException();
         }
-
-        #endregion
     }
 }

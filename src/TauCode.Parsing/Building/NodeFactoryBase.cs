@@ -97,6 +97,20 @@ namespace TauCode.Parsing.Building
                             item.GetItemName());
                         break;
 
+                    case "FALLBACK":
+                        var name = item.GetItemName();
+                        if (name == null)
+                        {
+                            throw new BuildingException("Fallback node must have a name.");
+                        }
+
+                        node = new FallbackNode(
+                            this.CreateFallbackPredicate(name),
+                            this.NodeFamily,
+                            name);
+
+                        break;
+
                     default:
                         return null;
                 }
@@ -107,6 +121,11 @@ namespace TauCode.Parsing.Building
             {
                 throw new BuildingException($"Could not build a node from item {item}.", ex);
             }
+        }
+
+        protected virtual Func<FallbackNode, IToken, IResultAccumulator, bool> CreateFallbackPredicate(string nodeName)
+        {
+            throw new NotSupportedException($"Override '{nameof(CreateFallbackPredicate)}' if you need support of fallback nodes.");
         }
 
         private IEnumerable<ITextClass> ParseTextClasses(PseudoList arguments)
