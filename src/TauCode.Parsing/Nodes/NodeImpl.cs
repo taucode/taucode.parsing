@@ -4,7 +4,6 @@ using System.Linq;
 
 namespace TauCode.Parsing.Nodes
 {
-    // todo clean
     public abstract class NodeImpl : INode
     {
         #region Fields
@@ -48,7 +47,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Polymorph
 
-        protected abstract /*InquireResult*/ bool InquireImpl(IToken token, IResultAccumulator resultAccumulator); // todo rename to AcceptsTokenImpl
+        protected abstract bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator);
 
         protected abstract void ActImpl(IToken token, IResultAccumulator resultAccumulator);
 
@@ -66,7 +65,7 @@ namespace TauCode.Parsing.Nodes
 
         public string Name { get; }
 
-        public /*InquireResult*/ bool AcceptsToken(IToken token, IResultAccumulator resultAccumulator) // todo rename.
+        public bool AcceptsToken(IToken token, IResultAccumulator resultAccumulator) // todo rename.
         {
             if (token == null)
             {
@@ -78,20 +77,14 @@ namespace TauCode.Parsing.Nodes
                 throw new ArgumentNullException(nameof(resultAccumulator));
             }
 
-            var basicInquireResult = this.InquireImpl(token, resultAccumulator);
+            var basicInquireResult = this.AcceptsTokenImpl(token, resultAccumulator);
             if (!basicInquireResult)
             {
                 return false;
             }
 
-            //if (basicInquireResult.IsIn(InquireResult.Reject, InquireResult.End))
-            //{
-            //    return basicInquireResult;
-            //}
-
             var additionalCheck = this.AdditionalChecker?.Invoke(token, resultAccumulator) ?? true;
             return additionalCheck;
-            //return additionalCheck ? basicInquireResult : InquireResult.Reject;
         }
 
         public void Act(IToken token, IResultAccumulator resultAccumulator)

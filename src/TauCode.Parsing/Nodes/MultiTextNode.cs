@@ -67,7 +67,7 @@ namespace TauCode.Parsing.Nodes
             this.Texts = _texts.ToList();
         }
 
-        protected override bool InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             if (token is TextToken textToken)
             {

@@ -2,8 +2,7 @@
 
 namespace TauCode.Parsing.Nodes
 {
-    // todo clean
-    public class EndNode : NodeImpl
+    public sealed class EndNode : NodeImpl
     {
         #region Static
 
@@ -22,8 +21,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override /*InquireResult*/ bool InquireImpl(IToken token, IResultAccumulator resultAccumulator) => 
-            //InquireResult.End;
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator) => 
             throw new NotImplementedException(); // todo should not be called
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)

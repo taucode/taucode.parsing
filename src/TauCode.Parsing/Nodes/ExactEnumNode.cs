@@ -21,7 +21,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override bool InquireImpl(IToken token, IResultAccumulator resultAccumulator) // get rid of inquire todo
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             var result =
                 token is EnumToken<TEnum> enumToken &&

@@ -16,7 +16,7 @@ namespace TauCode.Parsing.Nodes
 
         public Func<FallbackNode, IToken, IResultAccumulator, bool> FallbackPredicate { get; private set; }
 
-        protected override /*InquireResult*/ bool InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             return this.FallbackPredicate(this, token, resultAccumulator);
         }

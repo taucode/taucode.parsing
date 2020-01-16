@@ -15,7 +15,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override bool InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             throw new InvalidOperationException($"'{nameof(AcceptsToken)}' should not be called for '{typeof(IdleNode).Name}'.");
         }

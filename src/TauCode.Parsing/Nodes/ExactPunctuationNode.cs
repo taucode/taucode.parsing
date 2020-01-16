@@ -2,7 +2,6 @@
 using TauCode.Parsing.Lexing;
 using TauCode.Parsing.Tokens;
 
-// todo clean
 namespace TauCode.Parsing.Nodes
 {
     public class ExactPunctuationNode : ActionNode
@@ -24,22 +23,13 @@ namespace TauCode.Parsing.Nodes
 
         public char Value { get; }
 
-        protected override /*InquireResult*/ bool InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
             var result =
                 token is PunctuationToken punctuationToken &&
                 punctuationToken.Value.Equals(this.Value);
 
             return result;
-
-            //if (token is PunctuationToken punctuationToken && punctuationToken.Value.Equals(this.Value))
-            //{
-            //    return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            //}
-            //else
-            //{
-            //    return InquireResult.Reject;
-            //}
         }
     }
 }
