@@ -177,7 +177,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
 
         private void ArgumentAction(ActionNode node, IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException(); // will implement in real CLI.
         }
     }
 }
