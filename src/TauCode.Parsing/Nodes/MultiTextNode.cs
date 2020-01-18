@@ -5,10 +5,9 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
 {
-    public class MultiTextNode : ActionNode
+    public class MultiTextNode : TextNodeBase
     {
         private readonly HashSet<string> _texts;
-        private readonly HashSet<ITextClass> _textClasses;
 
         public MultiTextNode(
             IEnumerable<string> texts,
@@ -17,7 +16,11 @@ namespace TauCode.Parsing.Nodes
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
-            : base(action, family, name)
+            : base(
+                textClasses,
+                action,
+                family,
+                name)
         {
             if (texts == null)
             {
@@ -43,28 +46,25 @@ namespace TauCode.Parsing.Nodes
 
             _texts = new HashSet<string>(textList);
 
-            if (textClasses == null)
-            {
-                throw new ArgumentNullException(nameof(textClasses));
-            }
-
-            var textClassesList = textClasses.ToList(); // to avoid multiple enumerating.
-
-            if (textClassesList.Count == 0)
-            {
-                throw new ArgumentException($"'{nameof(textClasses)}' cannot be empty.");
-            }
-
-            if (textClassesList.Any(x => x == null))
-            {
-                throw new ArgumentException($"'{nameof(textClasses)}' cannot contain nulls.");
-            }
-
-            _textClasses = new HashSet<ITextClass>(textClassesList);
-
             this.IsCaseSensitive = isCaseSensitive;
-
             this.Texts = _texts.ToList();
+        }
+
+        public MultiTextNode(
+            IEnumerable<string> texts,
+            ITextClass textClass,
+            bool isCaseSensitive,
+            Action<ActionNode, IToken, IResultAccumulator> action,
+            INodeFamily family,
+            string name)
+            : this(
+                texts,
+                new[] { textClass },
+                isCaseSensitive,
+                action,
+                family,
+                name)
+        {
         }
 
         protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
@@ -81,8 +81,8 @@ namespace TauCode.Parsing.Nodes
                 {
                     var textTokenClass = textToken.Class;
                     if (
-                        _textClasses.Contains(textTokenClass) ||
-                        _textClasses.Any(x => string.Equals(text, x.TryConvertFrom(text, textTokenClass)))
+                        this.TextClassesImpl.Contains(textTokenClass) ||
+                        this.TextClassesImpl.Any(x => string.Equals(text, x.TryConvertFrom(text, textTokenClass)))
                     )
                     {
                         return true;

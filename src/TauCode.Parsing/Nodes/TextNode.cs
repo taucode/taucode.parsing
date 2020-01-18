@@ -5,35 +5,19 @@ using TauCode.Parsing.Tokens;
 
 namespace TauCode.Parsing.Nodes
 {
-    public class TextNode : ActionNode
+    public class TextNode : TextNodeBase
     {
-        private readonly HashSet<ITextClass> _textClasses;
-
         public TextNode(
             IEnumerable<ITextClass> textClasses,
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
-            : base(action, family, name)
+            : base(
+                textClasses,
+                action,
+                family,
+                name)
         {
-            if (textClasses == null)
-            {
-                throw new ArgumentNullException(nameof(textClasses));
-            }
-
-            var textClassesList = textClasses.ToList(); // to avoid multiple enumerating.
-
-            if (textClassesList.Count == 0)
-            {
-                throw new ArgumentException($"'{nameof(textClasses)}' cannot be empty.");
-            }
-
-            if (textClassesList.Any(x => x == null))
-            {
-                throw new ArgumentException($"'{nameof(textClasses)}' cannot contain nulls.");
-            }
-
-            _textClasses = new HashSet<ITextClass>(textClassesList);
         }
 
         public TextNode(
@@ -41,7 +25,11 @@ namespace TauCode.Parsing.Nodes
             Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
-            : this(new[] { textClass }, action, family, name)
+            : base(
+                textClass,
+                action,
+                family,
+                name)
         {
         }
 
@@ -53,8 +41,8 @@ namespace TauCode.Parsing.Nodes
 
                 var textTokenClass = textToken.Class;
                 if (
-                    _textClasses.Contains(textTokenClass) ||
-                    _textClasses.Any(x => x.TryConvertFrom(text, textTokenClass) != null)
+                    this.TextClassesImpl.Contains(textTokenClass) ||
+                    this.TextClassesImpl.Any(x => x.TryConvertFrom(text, textTokenClass) != null)
                 )
                 {
                     return true;
