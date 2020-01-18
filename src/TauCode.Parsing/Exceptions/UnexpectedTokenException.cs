@@ -13,7 +13,7 @@ namespace TauCode.Parsing.Exceptions
 
         private static string BuildMessage(IToken token)
         {
-            return $"Unexpected token: {token}";
+            return $"Unexpected token: {token}.";
         }
 
         public IToken Token { get; }

@@ -32,11 +32,12 @@ namespace TauCode.Parsing
             tokenStream.Position++;
         }
 
-        public static IReadOnlyCollection<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
+        public static HashSet<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
         {
             if (nodes.Any(x => x is IdleNode))
             {
-                var list = new List<INode>();
+                var result = new HashSet<INode>();
+                var idleNodes = new HashSet<IdleNode>();
 
                 foreach (var node in nodes)
                 {
@@ -45,25 +46,33 @@ namespace TauCode.Parsing
                         throw new ArgumentException($"'{nameof(nodes)}' must not contain nulls.");
                     }
 
-                    WriteNonIdleNodes(node, list);
+                    WriteNonIdleNodes(node, result, idleNodes);
                 }
 
-                return list;
+                return result;
             }
             else
             {
-                return nodes;
+                return new HashSet<INode>(nodes);
             }
         }
 
-        private static void WriteNonIdleNodes(INode node, List<INode> destination)
+        private static void WriteNonIdleNodes(INode node, HashSet<INode> destination, HashSet<IdleNode> idleNodes)
         {
-            if (node is IdleNode)
+            if (node is IdleNode idleNode)
             {
-                var links = node.ResolveLinks();
-                foreach (var link in links)
+                if (idleNodes.Contains(idleNode))
                 {
-                    WriteNonIdleNodes(link, destination);
+                    // won't do anything.
+                }
+                else
+                {
+                    idleNodes.Add(idleNode);
+                    var links = node.ResolveLinks();
+                    foreach (var link in links)
+                    {
+                        WriteNonIdleNodes(link, destination, idleNodes);
+                    }
                 }
             }
             else
