@@ -72,7 +72,7 @@ namespace TauCode.Parsing
                             {
                                 throw new NodeConcurrencyException(
                                     token,
-                                    new[] { fallbackNode, anotherFallbackNode },
+                                    new INode[] { fallbackNode, anotherFallbackNode },
                                     context.ResultAccumulator.ToArray());
                             }
 
@@ -84,7 +84,7 @@ namespace TauCode.Parsing
                             {
                                 throw new NodeConcurrencyException(
                                     token,
-                                    new []{winner, node},
+                                    new[] { winner, node },
                                     context.ResultAccumulator.ToArray());
                             }
 
