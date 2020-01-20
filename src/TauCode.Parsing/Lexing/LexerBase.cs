@@ -8,7 +8,15 @@ namespace TauCode.Parsing.Lexing
     {
         private List<ITokenProducer> _producers;
 
+        protected LexerBase(bool ignoreEmptyTokens = true)
+        {
+            this.IgnoreEmptyTokens = ignoreEmptyTokens;
+        }
+
         protected abstract ITokenProducer[] CreateProducers();
+
+        protected bool IgnoreEmptyTokens { get; }
+
         protected List<ITokenProducer> Producers => _producers ?? (_producers = this.CreateProducers().ToList());
 
         public IList<IToken> Lexize(string input)
@@ -28,15 +36,47 @@ namespace TauCode.Parsing.Lexing
 
                 foreach (var producer in this.Producers)
                 {
-                    var version = context.Version;
+                    var oldVersion = context.Version;
+                    var oldIndex = context.Index;
+                    var oldLine = context.Line;
+
                     var token = producer.Produce();
                     if (token != null)
                     {
-                        tokens.Add(token);
+                        if (context.Version <= oldVersion)
+                        {
+                            throw new LexingException(
+                                $"Producer '{producer.GetType().FullName}' has produced a token of type '{token.GetType().FullName}' ('{token}'), but context version has not increased.",
+                                new Position(context.Length, context.Column));
+                        }
+
+                        if (context.Index <= oldIndex)
+                        {
+                            throw new LexingException(
+                                $"Producer '{producer.GetType().FullName}' has produced a token of type '{token.GetType().FullName}' ('{token}'), but context index has not increased.",
+                                new Position(context.Length, context.Column));
+                        }
+
+                        if (context.Line < oldLine)
+                        {
+                            throw new LexingException(
+                                $"Producer '{producer.GetType().FullName}' has produced a token of type '{token.GetType().FullName}' ('{token}'), but context line has decreased.",
+                                new Position(context.Length, context.Column));
+                        }
+
+                        if (token is IEmptyToken && this.IgnoreEmptyTokens)
+                        {
+                            // do nothing
+                        }
+                        else
+                        {
+                            tokens.Add(token);
+                        }
+
                         break;
                     }
 
-                    if (context.Version > version)
+                    if (context.Version > oldVersion)
                     {
                         break;
                     }
@@ -46,7 +86,7 @@ namespace TauCode.Parsing.Lexing
                 {
                     var position = new Position(context.Line, context.Column);
                     var c = input[context.Index];
-                    throw new LexingException($"Unexpected char: '{c}'.", position);
+                    throw new LexingException($"Could not lexize starting from char '{c}'. See '{nameof(LexingException.Position)}' property to get more information.", position);
                 }
             }
 

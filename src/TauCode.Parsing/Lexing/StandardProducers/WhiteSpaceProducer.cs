@@ -8,11 +8,20 @@
         {
             var initialIndex = this.Context.Index;
             var text = this.Context.Text;
+            var c = text[initialIndex];
+            if (!LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
+            {
+                return null;
+            }
+
             var length = text.Length;
             var currentIndex = initialIndex;
-
+            
+            var initialLine = this.Context.Line;
+            var initialColumn = this.Context.Column;
             var lineShift = 0;
             var column = this.Context.Column;
+
 
             while (true)
             {
@@ -22,7 +31,7 @@
                     return null;
                 }
 
-                var c = text[currentIndex];
+                c = text[currentIndex];
                 switch (c)
                 {
                     case '\t':
@@ -54,14 +63,22 @@
                         break;
 
                     default:
+                        var delta = currentIndex - initialIndex;
+
+                        var token = this.ProduceImpl(new Position(initialLine, initialColumn), delta);
                         if (currentIndex > initialIndex)
                         {
-                            this.Context.Advance(currentIndex - initialIndex, lineShift, column);
+                            this.Context.Advance(delta, lineShift, column);
                         }
 
-                        return null;
+                        return token;
                 }
             }
+        }
+
+        protected virtual IToken ProduceImpl(Position position, int delta)
+        {
+            return null;
         }
     }
 }

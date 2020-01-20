@@ -163,7 +163,7 @@ namespace TauCode.Parsing.Tests.Parsing.Cli
             
 
             // Assert
-            Assert.That(ex.Message, Is.EqualTo($"Unexpected char: '{input[0]}'."));
+            Assert.That(ex.Message, Is.EqualTo($"Could not lexize starting from char '{input[0]}'. See 'Position' property to get more information."));
             Assert.That(ex.Position, Is.EqualTo(Position.Zero));
         }
     }

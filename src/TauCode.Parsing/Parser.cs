@@ -49,6 +49,11 @@ namespace TauCode.Parsing
                 }
 
                 var token = stream.CurrentToken;
+                if (token is IEmptyToken)
+                {
+                    stream.AdvanceStreamPosition();
+                    continue;
+                }
 
                 INode winner = null;
                 FallbackNode fallbackNode = null;
