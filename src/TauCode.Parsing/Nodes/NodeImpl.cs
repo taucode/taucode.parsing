@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Exceptions;
-using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.Nodes
 {
@@ -12,7 +10,7 @@ namespace TauCode.Parsing.Nodes
 
         private readonly HashSet<INode> _establishedLinks;
         private readonly HashSet<string> _claimedLinkNames;
-        private Func<IToken, IResultAccumulator, bool> _additionalChecker;
+        private readonly IDictionary<string, string> _properties;
 
         #endregion
 
@@ -20,25 +18,14 @@ namespace TauCode.Parsing.Nodes
 
         protected NodeImpl(INodeFamily family, string name)
         {
-            if (family != null)
-            {
-                if (!(family is NodeFamily))
-                {
-                    throw new ArgumentException(
-                        $"'{nameof(family)}' must be of type '{typeof(NodeFamily).FullName}'.",
-                        nameof(family));
-                }
-            }
-
-            var familyImpl = (NodeFamily)family;
-
             this.Family = family;
             this.Name = name;
 
-            familyImpl?.RegisterNode(this);
+            family?.RegisterNode(this);
 
             _establishedLinks = new HashSet<INode>();
             _claimedLinkNames = new HashSet<string>();
+            _properties = new Dictionary<string, string>();
         }
 
         #endregion
@@ -60,7 +47,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Polymorph
 
-        protected abstract InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator);
+        protected abstract bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator);
 
         protected abstract void ActImpl(IToken token, IResultAccumulator resultAccumulator);
 
@@ -68,11 +55,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Public
 
-        public virtual Func<IToken, IResultAccumulator, bool> AdditionalChecker
-        {
-            get => _additionalChecker;
-            set => _additionalChecker = value;
-        }
+        public virtual Func<IToken, IResultAccumulator, bool> AdditionalChecker { get; set; }
 
         #endregion
 
@@ -82,7 +65,7 @@ namespace TauCode.Parsing.Nodes
 
         public string Name { get; }
 
-        public InquireResult Inquire(IToken token, IResultAccumulator resultAccumulator)
+        public bool AcceptsToken(IToken token, IResultAccumulator resultAccumulator)
         {
             if (token == null)
             {
@@ -94,15 +77,14 @@ namespace TauCode.Parsing.Nodes
                 throw new ArgumentNullException(nameof(resultAccumulator));
             }
 
-            var basicInquireResult = this.InquireImpl(token, resultAccumulator);
-
-            if (basicInquireResult.IsIn(InquireResult.Reject, InquireResult.End))
+            var basicResult = this.AcceptsTokenImpl(token, resultAccumulator);
+            if (!basicResult)
             {
-                return basicInquireResult;
+                return false;
             }
 
             var additionalCheck = this.AdditionalChecker?.Invoke(token, resultAccumulator) ?? true;
-            return additionalCheck ? basicInquireResult : InquireResult.Reject;
+            return additionalCheck;
         }
 
         public void Act(IToken token, IResultAccumulator resultAccumulator)
@@ -129,7 +111,7 @@ namespace TauCode.Parsing.Nodes
 
             if (_establishedLinks.Contains(node))
             {
-                throw new ParsingException("This node is already linked to.");
+                throw new InvalidOperationException("This node is already linked to.");
             }
 
             _establishedLinks.Add(node);
@@ -168,6 +150,8 @@ namespace TauCode.Parsing.Nodes
 
             return _establishedLinks;
         }
+
+        public IDictionary<string, string> Properties => _properties;
 
         #endregion
     }

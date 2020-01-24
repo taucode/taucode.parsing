@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace TauCode.Parsing.Tokens
 {
@@ -9,9 +8,9 @@ namespace TauCode.Parsing.Tokens
 
         public IntegerToken(
             string integerValue,
-            string name = null,
-            IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(name, properties)
+            Position position,
+            int consumedLength)
+            : base(position, consumedLength)
         {
             this.Value = integerValue ?? throw new ArgumentNullException(nameof(integerValue));
         }
@@ -21,6 +20,12 @@ namespace TauCode.Parsing.Tokens
         #region Public
 
         public string Value { get; }
+
+        #endregion
+
+        #region Overridden
+
+        public override string ToString() => this.Value;
 
         #endregion
     }

@@ -1,4 +1,4 @@
-﻿using TauCode.Parsing.Exceptions;
+﻿using System;
 
 namespace TauCode.Parsing.Nodes
 {
@@ -15,14 +15,14 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new ParsingException("'Inquire' should not be called for 'IdleNode'.");
+            throw new InvalidOperationException($"'{nameof(AcceptsToken)}' should not be called for '{typeof(IdleNode).Name}'.");
         }
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            throw new ParsingException("'Act' should not be called for 'IdleNode'.");
+            throw new InvalidOperationException($"'{nameof(Act)}' should not be called for '{typeof(IdleNode).Name}'.");
         }
 
         #endregion

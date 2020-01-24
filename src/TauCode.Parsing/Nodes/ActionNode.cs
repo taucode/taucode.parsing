@@ -1,5 +1,4 @@
 ﻿using System;
-using TauCode.Parsing.Exceptions;
 
 namespace TauCode.Parsing.Nodes
 {
@@ -8,7 +7,7 @@ namespace TauCode.Parsing.Nodes
         #region Constructor
 
         protected ActionNode(
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(family, name)
@@ -16,19 +15,13 @@ namespace TauCode.Parsing.Nodes
             this.Action = action; // can be null
         }
 
-
         #endregion
 
         #region Overridden
 
         protected override void ActImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (this.Action == null)
-            {
-                throw new ParsingException("'Act' should not be called if 'Action' is null.");
-            }
-
-            this.Action(token, resultAccumulator);
+            this.Action?.Invoke(this, token, resultAccumulator);
             resultAccumulator.Modify();
         }
 
@@ -36,7 +29,7 @@ namespace TauCode.Parsing.Nodes
 
         #region Public
 
-        public Action<IToken, IResultAccumulator> Action { get; set; }
+        public Action<ActionNode, IToken, IResultAccumulator> Action { get; set; }
 
         #endregion
     }

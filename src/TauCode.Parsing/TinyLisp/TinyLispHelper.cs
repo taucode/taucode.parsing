@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TauCode.Extensions;
 using TauCode.Parsing.TinyLisp.Tokens;
-using TauCode.Utils.Extensions;
 
 namespace TauCode.Parsing.TinyLisp
 {
@@ -56,7 +56,8 @@ namespace TauCode.Parsing.TinyLisp
 
         internal static bool IsAcceptableSymbolNamePunctuationChar(this char c) => AcceptableSymbolNamePunctuationChars.Contains(c);
 
-        internal static bool IsAcceptableSymbolNameChar(this char c) =>
+        
+        public static bool IsAcceptableSymbolNameChar(char c) =>
             char.IsDigit(c) ||
             char.IsLetter(c) ||
             c == '_' ||
@@ -150,6 +151,17 @@ namespace TauCode.Parsing.TinyLisp
             }
 
             return c;
+        }
+
+        public static Punctuation? TryCharToPunctuation(char c)
+        {
+            var punctuation = PunctuationsByChar.GetOrDefault(c);
+            if (punctuation == default)
+            {
+                return null;
+            }
+
+            return punctuation;
         }
     }
 }

@@ -1,13 +1,15 @@
-﻿using System.Collections.Generic;
-
-namespace TauCode.Parsing
+﻿namespace TauCode.Parsing
 {
     public interface IToken
     {
-        string Name { get; }
+        /// <summary>
+        /// Position within the original text.
+        /// </summary>
+        Position Position { get; }
 
-        bool HasPayload { get; }
-
-        IReadOnlyDictionary<string, string> Properties { get; }
+        /// <summary>
+        /// Length of original text consumed by the given token.
+        /// </summary>
+        int ConsumedLength { get; }
     }
 }

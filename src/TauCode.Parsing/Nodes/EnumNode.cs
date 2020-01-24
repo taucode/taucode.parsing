@@ -8,7 +8,7 @@ namespace TauCode.Parsing.Nodes
         #region Constructor
 
         public EnumNode(
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)
@@ -19,16 +19,10 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is EnumToken<TEnum>)
-            {
-                return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            }
-            else
-            {
-                return InquireResult.Reject;
-            }
+            var result = token is EnumToken<TEnum>;
+            return result;
         }
 
         #endregion

@@ -10,9 +10,9 @@ namespace TauCode.Parsing.TinyLisp.Tokens
     {
         public LispSymbolToken(
             string symbolName,
-            string name = null,
-            IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(name, properties)
+            Position position,
+            int consumedLength)
+            : base(position, consumedLength)
         {
             this.SymbolName = symbolName ?? throw new ArgumentNullException(nameof(symbolName));
         }

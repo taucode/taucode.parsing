@@ -9,7 +9,7 @@ namespace TauCode.Parsing.Nodes
 
         public ExactEnumNode(
             TEnum value,
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
             string name)
             : base(action, family, name)
@@ -21,16 +21,13 @@ namespace TauCode.Parsing.Nodes
 
         #region Overridden
 
-        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is EnumToken<TEnum> enumToken && enumToken.Value.Equals(this.Value))
-            {
-                return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            }
-            else
-            {
-                return InquireResult.Reject;
-            }
+            var result =
+                token is EnumToken<TEnum> enumToken &&
+                enumToken.Value.Equals(this.Value);
+
+            return result;
         }
 
         #endregion

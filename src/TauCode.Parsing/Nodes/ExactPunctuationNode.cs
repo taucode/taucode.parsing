@@ -8,9 +8,10 @@ namespace TauCode.Parsing.Nodes
     {
         public ExactPunctuationNode(
             char c,
-            Action<IToken, IResultAccumulator> action,
+            Action<ActionNode, IToken, IResultAccumulator> action,
             INodeFamily family,
-            string name) : base(action, family, name)
+            string name)
+            : base(action, family, name)
         {
             if (!LexingHelper.IsStandardPunctuationChar(c))
             {
@@ -22,16 +23,13 @@ namespace TauCode.Parsing.Nodes
 
         public char Value { get; }
 
-        protected override InquireResult InquireImpl(IToken token, IResultAccumulator resultAccumulator)
+        protected override bool AcceptsTokenImpl(IToken token, IResultAccumulator resultAccumulator)
         {
-            if (token is PunctuationToken punctuationToken && punctuationToken.Value.Equals(this.Value))
-            {
-                return this.Action == null ? InquireResult.Skip : InquireResult.Act;
-            }
-            else
-            {
-                return InquireResult.Reject;
-            }
+            var result =
+                token is PunctuationToken punctuationToken &&
+                punctuationToken.Value.Equals(this.Value);
+
+            return result;
         }
     }
 }

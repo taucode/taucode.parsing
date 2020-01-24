@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes;
 
 namespace TauCode.Parsing
@@ -27,17 +26,18 @@ namespace TauCode.Parsing
 
             if (tokenStream.IsEndOfStream())
             {
-                throw new ParsingException($"'{nameof(tokenStream)}' is at the end. Cannot advance.");
+                throw new InvalidOperationException($"'{nameof(tokenStream)}' is at the end. Cannot advance.");
             }
 
             tokenStream.Position++;
         }
 
-        public static IReadOnlyCollection<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
+        public static HashSet<INode> GetNonIdleNodes(IReadOnlyCollection<INode> nodes)
         {
             if (nodes.Any(x => x is IdleNode))
             {
-                var list = new List<INode>();
+                var result = new HashSet<INode>();
+                var idleNodes = new HashSet<IdleNode>();
 
                 foreach (var node in nodes)
                 {
@@ -46,66 +46,38 @@ namespace TauCode.Parsing
                         throw new ArgumentException($"'{nameof(nodes)}' must not contain nulls.");
                     }
 
-                    WriteNonIdleNodes(node, list);
+                    WriteNonIdleNodes(node, result, idleNodes);
                 }
 
-                return list;
+                return result;
             }
             else
             {
-                return nodes;
+                return new HashSet<INode>(nodes);
             }
         }
 
-        private static void WriteNonIdleNodes(INode node, List<INode> destination)
+        private static void WriteNonIdleNodes(INode node, HashSet<INode> destination, HashSet<IdleNode> idleNodes)
         {
-            if (node is IdleNode)
+            if (node is IdleNode idleNode)
             {
-                var links = node.ResolveLinks();
-                foreach (var link in links)
+                if (idleNodes.Contains(idleNode))
                 {
-                    WriteNonIdleNodes(link, destination);
+                    // won't do anything.
+                }
+                else
+                {
+                    idleNodes.Add(idleNode);
+                    var links = node.ResolveLinks();
+                    foreach (var link in links)
+                    {
+                        WriteNonIdleNodes(link, destination, idleNodes);
+                    }
                 }
             }
             else
             {
                 destination.Add(node);
-            }
-        }
-
-        public static void AddLinksByNames(this INode node, params string[] names)
-        {
-            if (node == null)
-            {
-                throw new ArgumentNullException(nameof(node));
-            }
-
-            foreach (var name in names)
-            {
-                if (name == null)
-                {
-                    throw new ArgumentException($"'{nameof(names)}' must not contain nulls.");
-                }
-
-                node.ClaimLink(name);
-            }
-        }
-
-        public static void DrawLinkFromNodes(this INode node, params INode[] drawFromNodes)
-        {
-            if (node == null)
-            {
-                throw new ArgumentNullException(nameof(node));
-            }
-
-            foreach (var drawFromNode in drawFromNodes)
-            {
-                if (drawFromNode == null)
-                {
-                    throw new ArgumentException($"'{nameof(drawFromNode)}' must not contain nulls.");
-                }
-
-                drawFromNode.EstablishLink(node);
             }
         }
 
@@ -118,7 +90,7 @@ namespace TauCode.Parsing
 
             if (accumulator.Count == 0)
             {
-                throw new ParsingException("Result accumulator is empty.");
+                throw new InvalidOperationException("Result accumulator is empty.");
             }
 
             var index = accumulator.Count - 1;
@@ -126,19 +98,17 @@ namespace TauCode.Parsing
 
             if (result == null)
             {
-                throw new ParsingException($"Last result is null.");
+                throw new NullReferenceException($"Last result is null.");
             }
 
             if (result.GetType() != typeof(T))
             {
-                throw new ParsingException(
+                throw new InvalidCastException(
                     $"Last result expected to be of type '{typeof(T).FullName}', but is of type '{result.GetType().FullName}'.");
             }
 
             return (T)result;
         }
-
-        public static IReadOnlyCollection<INode> GetNonIdleLinks(this INode node) => GetNonIdleNodes(node.ResolveLinks());
 
         public static IReadOnlyCollection<INode> FetchTree(this INode root)
         {

@@ -1,1 +1,0 @@
-﻿mm --conn="Server=.;Database=econera.diet.tracking;Trusted_Connection=True;" --provider=sqlserver --to=sqlite

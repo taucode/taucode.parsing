@@ -3,7 +3,7 @@
 namespace TauCode.Parsing.Exceptions
 {
     [Serializable]
-    public class TinyLispException : Exception
+    public class TinyLispException : ParsingExceptionBase
     {
         public TinyLispException(string message)
             : base(message)

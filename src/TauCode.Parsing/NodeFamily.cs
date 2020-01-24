@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Parsing.Exceptions;
-using TauCode.Utils.Extensions;
+using TauCode.Extensions;
 
 namespace TauCode.Parsing
 {
@@ -29,7 +28,7 @@ namespace TauCode.Parsing
 
         #region Internal
 
-        internal void RegisterNode(INode node)
+        public void RegisterNode(INode node)
         {
             if (node == null)
             {
@@ -38,6 +37,11 @@ namespace TauCode.Parsing
 
             if (node.Name != null)
             {
+                if (_namedNodes.ContainsKey(node.Name))
+                {
+                    throw new InvalidOperationException($"Node with name '{node.Name}' already exists in this family.");
+                }
+
                 _namedNodes.Add(node.Name, node);
             }
 
@@ -57,8 +61,7 @@ namespace TauCode.Parsing
                 throw new ArgumentNullException(nameof(nodeName));
             }
 
-            //IDictionary<string, INode> nodeNames = _namedNodes;
-            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new ParsingException($"Node not found: '{nodeName}'.");
+            var node = _namedNodes.GetOrDefault(nodeName) ?? throw new KeyNotFoundException($"Node not found: '{nodeName}'.");
             return node;
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using TauCode.Parsing.Exceptions;
 
@@ -7,138 +6,91 @@ namespace TauCode.Parsing.Lexing
 {
     public abstract class LexerBase : ILexer
     {
-        #region Fields
+        private List<ITokenProducer> _producers;
 
-        private string _input;
-        private int _pos;
-
-        private readonly List<ITokenExtractor> _tokenExtractors;
-        private bool _tokenExtractorsInited;
-
-
-        #endregion
-
-        #region Constructor
-
-        protected LexerBase(ILexingEnvironment environment = null)
+        protected LexerBase(bool ignoreEmptyTokens = true)
         {
-            this.Environment = environment ?? StandardLexingEnvironment.Instance;
-            _tokenExtractors = new List<ITokenExtractor>();
+            this.IgnoreEmptyTokens = ignoreEmptyTokens;
         }
 
+        protected abstract ITokenProducer[] CreateProducers();
 
-        #endregion
+        protected bool IgnoreEmptyTokens { get; }
 
-        #region Abstract
+        protected List<ITokenProducer> Producers => _producers ?? (_producers = this.CreateProducers().ToList());
 
-        protected abstract void InitTokenExtractors();
-
-        #endregion
-
-        #region Protected
-
-        protected bool IsEnd() => _pos == _input.Length;
-
-        protected char GetCurrentChar()
+        public IList<IToken> Lexize(string input)
         {
-            if (this.IsEnd())
+            var context = new LexingContext(input);
+            var tokens = new List<IToken>();
+
+            foreach (var producer in this.Producers)
             {
-                throw LexingHelper.CreateUnexpectedEndOfInputException();
+                producer.Context = context;
             }
 
-            return _input[_pos];
-        }
-
-        protected int GetCurrentPosition() => _pos;
-
-        protected void Advance(int shift = 1)
-        {
-            if (shift < 0 || _pos + shift > _input.Length)
+            var length = input.Length;
+            while (context.Index < length)
             {
-                throw new ArgumentOutOfRangeException(nameof(shift));
-            }
+                var indexBeforeProducing = context.Index;
 
-            _pos += shift;
-        }
-
-        protected List<ITokenExtractor> GetSuitableTokenExtractors(char firstChar)
-        {
-            return _tokenExtractors.Where(x => x.AllowsFirstChar(firstChar)).ToList();
-        }
-
-        protected void AddTokenExtractor(ITokenExtractor tokenExtractor)
-        {
-            if (tokenExtractor == null)
-            {
-                throw new ArgumentNullException(nameof(tokenExtractor));
-            }
-
-            _tokenExtractors.Add(tokenExtractor);
-        }
-
-
-        #endregion
-
-        #region ILexer Members
-
-        public ILexingEnvironment Environment { get; }
-
-        public List<IToken> Lexize(string input)
-        {
-            if (!_tokenExtractorsInited)
-            {
-                this.InitTokenExtractors();
-                _tokenExtractorsInited = true;
-            }
-
-            _input = input ?? throw new ArgumentNullException(nameof(input));
-            _pos = 0;
-            var list = new List<IToken>();
-
-            while (true)
-            {
-                if (this.IsEnd())
+                foreach (var producer in this.Producers)
                 {
-                    return list;
-                }
+                    var oldVersion = context.Version;
+                    var oldIndex = context.Index;
+                    var oldLine = context.Line;
 
-                var c = this.GetCurrentChar();
-                var pos = this.GetCurrentPosition();
-
-                if (this.Environment.IsSpace(c))
-                {
-                    this.Advance();
-                    continue;
-                }
-
-                var tokenExtractors = this.GetSuitableTokenExtractors(c);
-                IToken nextToken = null;
-
-                foreach (var tokenExtractor in tokenExtractors)
-                {
-                    var result = tokenExtractor.Extract(_input, pos);
-                    nextToken = result.Token;
-
-                    if (nextToken != null)
+                    var token = producer.Produce();
+                    if (token != null)
                     {
-                        this.Advance(result.Shift);
-                        nextToken = result.Token;
+                        if (context.Version <= oldVersion)
+                        {
+                            throw new LexingException(
+                                $"Producer '{producer.GetType().FullName}' has produced a token of type '{token.GetType().FullName}' ('{token}'), but context version has not increased.",
+                                new Position(context.Length, context.Column));
+                        }
+
+                        if (context.Index <= oldIndex)
+                        {
+                            throw new LexingException(
+                                $"Producer '{producer.GetType().FullName}' has produced a token of type '{token.GetType().FullName}' ('{token}'), but context index has not increased.",
+                                new Position(context.Length, context.Column));
+                        }
+
+                        if (context.Line < oldLine)
+                        {
+                            throw new LexingException(
+                                $"Producer '{producer.GetType().FullName}' has produced a token of type '{token.GetType().FullName}' ('{token}'), but context line has decreased.",
+                                new Position(context.Length, context.Column));
+                        }
+
+                        if (token is IEmptyToken && this.IgnoreEmptyTokens)
+                        {
+                            // do nothing
+                        }
+                        else
+                        {
+                            tokens.Add(token);
+                        }
+
+                        break;
+                    }
+
+                    if (context.Version > oldVersion)
+                    {
                         break;
                     }
                 }
 
-                if (nextToken == null)
+                if (context.Index == indexBeforeProducing)
                 {
-                    throw new LexingException($"Unexpected char: '{c}'.");
-                }
-
-                if (nextToken.HasPayload)
-                {
-                    list.Add(nextToken);
+                    var position = new Position(context.Line, context.Column);
+                    var c = input[context.Index];
+                    throw new LexingException($"Could not lexize starting from char '{c}'. See '{nameof(LexingException.Position)}' property to get more information.", position);
                 }
             }
-        }
 
-        #endregion
+            return tokens;
+        }
     }
 }

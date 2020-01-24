@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using TauCode.Parsing.Lexing;
 
 namespace TauCode.Parsing.Tokens
@@ -8,9 +7,9 @@ namespace TauCode.Parsing.Tokens
     {
         public PunctuationToken(
             char c,
-            string name = null,
-            IEnumerable<KeyValuePair<string, string>> properties = null)
-            : base(name, properties)
+            Position position,
+            int consumedLength)
+            : base(position, consumedLength)
         {
             if (!LexingHelper.IsStandardPunctuationChar(c))
             {
@@ -21,5 +20,7 @@ namespace TauCode.Parsing.Tokens
         }
 
         public char Value { get; }
+
+        public override string ToString() => this.Value.ToString();
     }
 }
