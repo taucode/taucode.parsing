@@ -15,8 +15,6 @@
     <tags>taucode parsing</tags>
     <dependencies>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="Microsoft.CSharp" version="4.7.0" />
-        <dependency id="TauCode.Data" version="1.0.0-dev-2020-03-15-20-30" />
         <dependency id="TauCode.Extensions" version="1.0.0-dev-2020-03-15-20-12" />
       </group>
     </dependencies>
