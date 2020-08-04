@@ -5,9 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-    <PackageReference Include="TauCode.Data" Version="1.0.0-dev-2020-03-15-20-30" />
-    <PackageReference Include="TauCode.Extensions" Version="1.0.0-dev-2020-03-15-20-12" />
+    <PackageReference Include="TauCode.Extensions" Version="1.0.1" />
   </ItemGroup>
 
 </Project>
