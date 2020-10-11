@@ -146,5 +146,16 @@ namespace TauCode.Parsing
 
             return all;
         }
+
+        internal static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
+        {
+            if (dictionary == null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            dictionary.TryGetValue(key, out var value);
+            return value;
+        }
     }
 }
