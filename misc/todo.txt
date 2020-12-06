@@ -51,3 +51,7 @@ todo3. TinyLisp: ratios and doubles.
 2020-05-29
 ==========
     1. Get rid of TauCode.Data, Microsoft.CSharp in csproj.
+
+2020-12-06
+==========
+    1. Get rid of TauCode.Extensions?
