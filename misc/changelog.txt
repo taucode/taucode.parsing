@@ -19,3 +19,7 @@
     Version: 3.0.2.4
     1. Completely refactored with TinyLisp.
     2. Fixed bug in Builder.
+
+2020-11-14
+==========
+    1. Libraries arrangement.
