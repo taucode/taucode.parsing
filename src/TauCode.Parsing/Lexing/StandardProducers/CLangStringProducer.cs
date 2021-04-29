@@ -51,7 +51,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
         {
             var context = this.Context;
             var text = context.Text;
-            var length = text.Length;
+            var length = context.Length;
 
             var c = text[context.Index];
 

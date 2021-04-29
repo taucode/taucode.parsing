@@ -18,7 +18,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
         {
             var context = this.Context;
             var text = context.Text;
-            var length = text.Length;
+            var length = context.Length;
 
             var c = text[context.Index];
 
@@ -36,7 +36,7 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                 var gotPlusSign = c == '+';
 
                 var index = initialIndex + 1;
-                var column = this.Context.Column + 1;
+                var column = context.Column + 1;
 
                 while (true)
                 {
@@ -75,8 +75,8 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                 var intString = text.Substring(initialIndex + defect, delta - defect);
                 if (int.TryParse(intString, out var dummy))
                 {
-                    this.Context.Advance(delta, 0, column);
-                    return new IntegerToken(intString, new Position(this.Context.Line, initialColumn), delta);
+                    context.Advance(delta, 0, column);
+                    return new IntegerToken(intString, new Position(context.Line, initialColumn), delta);
                 }
                 else
                 {

@@ -18,7 +18,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
             if (punctuation.HasValue)
             {
                 var position = new Position(Context.Line, Context.Column);
-                this.Context.AdvanceByChar();
+                context.AdvanceByChar();
                 return new LispPunctuationToken(
                     punctuation.Value,
                     position,

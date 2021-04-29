@@ -1,4 +1,4 @@
-2019-11-13
+﻿2019-11-13
 ==========
 +   1. NodeWrapper -> NodeExtender
 +   2. Splitter -> IdleNode
@@ -50,8 +50,16 @@ todo3. TinyLisp: ratios and doubles.
 
 2020-05-29
 ==========
-    1. Get rid of TauCode.Data, Microsoft.CSharp in csproj.
++   1. Get rid of TauCode.Data, Microsoft.CSharp in csproj.
 
 2020-12-06
 ==========
-    1. Get rid of TauCode.Extensions?
+X   1. Get rid of TauCode.Extensions?
+
+2021-04-29
+==========
+    1. Producers must respect Context's Length, _not_ Context.Text's Length. UT it.
+
+    2. https://www.amazon.com/Pro-NET-Performance-Optimize-Applications/dp/1430244585
+    3. https://stackoverflow.com/questions/51864673/c-sharp-readonlyspanchar-vs-substring-for-string-dissection
+    4. https://www.stevejgordon.co.uk/an-introduction-to-optimising-code-using-span-t

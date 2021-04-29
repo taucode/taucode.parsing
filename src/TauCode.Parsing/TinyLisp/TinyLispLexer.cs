@@ -10,7 +10,7 @@ namespace TauCode.Parsing.TinyLisp
         {
             return new ITokenProducer[]
             {
-                new WhiteSpaceProducer(),
+                new WhiteSpaceProducer(), // NB: it is very important that this one goes first. it will skip white spaces without producing a real token.
                 new TinyLispPunctuationProducer(),
                 new TinyLispStringProducer(),
                 new IntegerProducer(IntegerTerminatorPredicate),

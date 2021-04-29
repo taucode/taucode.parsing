@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TauCode.Extensions;
 using TauCode.Parsing.Exceptions;
 using TauCode.Parsing.Nodes;
 using TauCode.Parsing.TinyLisp;
@@ -20,7 +19,7 @@ namespace TauCode.Parsing.Building
             bool isCaseSensitive)
         {
             this.NodeFamily = new NodeFamily(nodeFamilyName);
-            textClasses = textClasses ?? new List<ITextClass>();
+            textClasses ??= new List<ITextClass>();
 
             _textClasses = new Dictionary<string, ITextClass>();
 

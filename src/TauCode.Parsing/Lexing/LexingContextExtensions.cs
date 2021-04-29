@@ -51,7 +51,7 @@ namespace TauCode.Parsing.Lexing
 
         public static int GetRemainingCharCount(this LexingContext context)
         {
-            return context.Text.Length - context.Index;
+            return context.Length - context.Index;
         }
 
     }

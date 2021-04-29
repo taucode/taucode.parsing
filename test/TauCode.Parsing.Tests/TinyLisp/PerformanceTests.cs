@@ -11,7 +11,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
     {
 
         [Test]
-        [Ignore("Performance test")]
+        //[Ignore("Performance test")]
         public void PerformanceTestForTinyLispLexer()
         {
             ILexer tinyLispLexer = new TinyLispLexer();
@@ -31,6 +31,8 @@ namespace TauCode.Parsing.Tests.TinyLisp
 
             var perSecond = num / seconds;
             var msPerCall = seconds / num * 1000;
+
+            Assert.Pass($"Per second: {perSecond}; ms per call: {msPerCall}");
 
             //var k = 3;
         }

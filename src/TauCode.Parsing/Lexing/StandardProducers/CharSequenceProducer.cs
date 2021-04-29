@@ -22,7 +22,8 @@ namespace TauCode.Parsing.Lexing.StandardProducers
                 return null;
             }
 
-            var length = text.Length;
+            var length = context.Length;
+
             var initialIndex = context.Index;
             var index = initialIndex + 1;
 

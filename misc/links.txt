@@ -1,0 +1,30 @@
+﻿2021-04-29
+==========
+    1. https://ru.wikipedia.org/wiki/IPv6-адрес
+    2. https://www.ibm.com/docs/ru/i/7.2?topic=concepts-ipv6-address-formats
+    3. https://ru.wikipedia.org/wiki/IPv6
+    4. https://ciscoexam.online/CCNA/200-301/5461
+    5. https://seancfoley.github.io/IPAddress/
+    6. https://stackoverflow.com/questions/5963199/ipv6-validation
+    7. https://stackoverflow.com/questions/61001216/how-can-i-check-if-a-string-is-ipv4-ipv6-or-domain-name-java
+    8. https://codefool.tumblr.com/post/15288874550/list-of-valid-and-invalid-email-addresses
+    9. https://gist.github.com/cjaoude/fd9910626629b53c4d25
+    10. https://code.iamcal.com/php/rfc822/tests/
+    11. http://www.dominicsayers.com/isemail/
+    12. https://github.com/dominicsayers/isemail/blob/master/is_email.php
+    13. https://github.com/hibernate/hibernate-validator/blob/master/engine/src/test/java/org/hibernate/validator/test/internal/constraintvalidators/hv/EmailValidatorTest.java
+    14. https://codefool.tumblr.com/post/15288874550/list-of-valid-and-invalid-email-addresses
+    15. http://softwaretesterfriend.com/manual-testing/valid-invalid-email-address-format-validation/
+    16. https://stackoverflow.com/questions/2049502/what-characters-are-allowed-in-an-email-address
+    17. https://en.wikipedia.org/wiki/Email_address
+    18. https://www.helpsystems.com/intermapper/ipv6-test-address-validation - shitty form, but has reference to 
+
+    19. https://www.reddit.com/r/csharp/comments/mykk8i/psa_the_net_source_browser_is_super_super_useful/
+    
+    20. https://uk.wikipedia.org/wiki/%D0%87
+    21. https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.5/lrcon/n1pssjnz8qsiphn17wvwvqpfmwlz.htm
+    22. https://docs.microsoft.com/en-us/dotnet/api/system.globalization.idnmapping.getascii?view=netstandard-2.1
+    23. https://www.verisign.com/en_GB/channel-resources/domain-registry-products/idn/idn-conversion-tool/index.xhtml
+    24. https://verifalia.com/validate-email
+
+    25. http://www.devsanon.com/c/c-7-2-introducing-ref-struct/

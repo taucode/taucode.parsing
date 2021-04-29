@@ -6,28 +6,32 @@
 
         public IToken Produce()
         {
-            var initialIndex = this.Context.Index;
-            var text = this.Context.Text;
+            var context = this.Context;
+            var initialIndex = context.Index;
+            var text = context.Text;
+            var length = context.Length;
+
             var c = text[initialIndex];
             if (!LexingHelper.IsInlineWhiteSpaceOrCaretControl(c))
             {
                 return null;
             }
 
-            var length = text.Length;
+
+            
             var currentIndex = initialIndex;
             
-            var initialLine = this.Context.Line;
-            var initialColumn = this.Context.Column;
+            var initialLine = context.Line;
+            var initialColumn = context.Column;
             var lineShift = 0;
-            var column = this.Context.Column;
+            var column = context.Column;
 
 
             while (true)
             {
                 if (currentIndex == length)
                 {
-                    this.Context.Advance(currentIndex - initialIndex, lineShift, column);
+                    context.Advance(currentIndex - initialIndex, lineShift, column);
                     return null;
                 }
 
@@ -68,7 +72,7 @@
                         var token = this.ProduceImpl(new Position(initialLine, initialColumn), delta);
                         if (currentIndex > initialIndex)
                         {
-                            this.Context.Advance(delta, lineShift, column);
+                            context.Advance(delta, lineShift, column);
                         }
 
                         return token;
@@ -78,7 +82,7 @@
 
         protected virtual IToken ProduceImpl(Position position, int delta)
         {
-            return null;
+            return null; // returns null token, but Context advanced, i.e. white space was skipped.
         }
     }
 }

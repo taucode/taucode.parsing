@@ -12,7 +12,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
         {
             var context = this.Context;
             var text = context.Text;
-            var length = text.Length;
+            var length = context.Length;
 
             var c = text[context.Index];
 
@@ -78,7 +78,7 @@ namespace TauCode.Parsing.TinyLisp.Producers
                 }
 
                 var delta = index - initialIndex;
-                var str = text.Substring(initialIndex, delta);
+                var str = text.Substring(initialIndex, delta); // todo: use ReadOnlySpan<char> instead of Substring everywhere.
                 var symbolToken = new LispSymbolToken(str, new Position(context.Line, initialColumn), delta);
                 context.Advance(delta, 0, column);
                 return symbolToken;
