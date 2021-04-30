@@ -36,7 +36,7 @@ namespace TauCode.Parsing.Utility.Tests
 
 
             var k = 3;
-            
+
 
             if (input == null)
             {
@@ -49,6 +49,7 @@ namespace TauCode.Parsing.Utility.Tests
             }
 
             const int maxLen = 254;
+            const int localPartMaxLen = 64;
 
             if (input.Length > maxLen)
             {
@@ -60,8 +61,14 @@ namespace TauCode.Parsing.Utility.Tests
             var phase = Phase.Local;
 
             // 1. local part
+            char? prevChar = null;
             while (true)
             {
+                if (index == localPartMaxLen)
+                {
+                    return false;
+                }
+
                 if (index == length)
                 {
                     return false; // never got '@'
@@ -71,15 +78,54 @@ namespace TauCode.Parsing.Utility.Tests
                 if (char.IsLetterOrDigit(c))
                 {
                     // ok.
-
+                    prevChar = c;
                     index++;
                     continue;
                 }
 
                 if (c == '@')
                 {
+                    if (prevChar == '.' || index == 0)
+                    {
+                        return false; // local part must not end with '.'; local part cannot be empty.
+                    }
+
+                    // don't need to update prevChar
                     index++;
                     break;
+                }
+
+                if (c == '.')
+                {
+                    if (prevChar == '.' || index == 0)
+                    {
+                        return false; // cannot have two '.'s in a row; cannot start with '.'
+                    }
+
+                    prevChar = c;
+                    index++;
+                    continue;
+                }
+
+                if (
+                    c == '-' ||
+                    c == '+' ||
+                    c == '!' ||
+                    c == '%' ||
+                    c == '~' ||
+                    c == '$' ||
+                    false // todo: optimize with hashset?
+                )
+                {
+                    // accepted char
+                    prevChar = c;
+                    index++;
+                    continue;
+                }
+
+                if (char.IsWhiteSpace(c))
+                {
+                    return false; // no spaces in local part
                 }
 
                 throw new NotImplementedException();
@@ -87,19 +133,73 @@ namespace TauCode.Parsing.Utility.Tests
 
             // 2. host
             var hostStart = index;
+            prevChar = null;
+
             while (true)
             {
                 if (index == length)
                 {
+                    if (
+                        prevChar == '.' ||
+                        prevChar == '-'
+                        )
+                    {
+                        return false; // host cannot end with '.' or '-'
+                    }
+
                     break;
                 }
 
                 var c = input[index];
 
+                if (char.IsLetterOrDigit(c))
+                {
+                    index++;
+                    prevChar = c;
+                    continue;
+                }
+
+                if (c == '.')
+                {
+                    if (
+                        prevChar == '.' ||
+                        prevChar == '-' ||
+                        false
+                        )
+                    {
+                        return false; // host cannot contain substrings '-.' or '..'
+                    }
+
+                    index++;
+                    prevChar = c;
+                    continue;
+                }
+
+                if (c == '-')
+                {
+                    if (index == 0)
+                    {
+                        return false; // host cannot start with '-'
+                    }
+
+                    index++;
+                    prevChar = c;
+                    continue;
+                }
+
+
                 throw new NotImplementedException();
             }
 
-            throw new NotImplementedException();
+            var hostEnd = index;
+            //var hostSpan = input.AsSpan(hostStart);
+
+            var hostString = input.Substring(hostStart);
+            var res = Uri.CheckHostName(hostString);
+            return
+                res == UriHostNameType.Dns ||
+                res == UriHostNameType.IPv4 ||
+                res == UriHostNameType.IPv6;
         }
 
         [Test]
@@ -161,6 +261,7 @@ namespace TauCode.Parsing.Utility.Tests
         public void TestTodoHere(TestCaseDto testCase)
         {
             var isEmail = IsEmail(testCase.Email);
+
             Assert.That(isEmail, Is.EqualTo(testCase.ExpectedResult));
         }
 

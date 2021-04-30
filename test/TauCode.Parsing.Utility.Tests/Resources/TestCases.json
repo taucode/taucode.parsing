@@ -733,13 +733,13 @@
   },
   {
     "Name": "Test # 123",
-    "Email": "\"test\\\r;blah\"@iana.org",
+    "Email": "\"test\\\rblah\"@iana.org",
     "ExpectedResult": true,
     "Comment": "Comment: Quoted string specifically excludes carriage returns unless escaped"
   },
   {
     "Name": "Test # 124",
-    "Email": "\"test\r;blah\"@iana.org",
+    "Email": "\"test\rblah\"@iana.org",
     "ExpectedResult": false,
     "Comment": "Comment: Quoted string specifically excludes carriage returns"
   },
@@ -907,7 +907,7 @@
   },
   {
     "Name": "Test # 152",
-    "Email": "Test.\r;\n; Folding.\r;\n; Whitespace@iana.org",
+    "Email": "Test.\r\n Folding.\r\n Whitespace@iana.org",
     "ExpectedResult": true,
     "Comment": ""
   },
@@ -949,13 +949,13 @@
   },
   {
     "Name": "Test # 159",
-    "Email": "\"test\\\r;\n; blah\"@iana.org",
+    "Email": "\"test\\\r\n blah\"@iana.org",
     "ExpectedResult": false,
     "Comment": "Comment: Folding white space can't appear within a quoted pair"
   },
   {
     "Name": "Test # 160",
-    "Email": "\"test\r;\n; blah\"@iana.org",
+    "Email": "\"test\r\n blah\"@iana.org",
     "ExpectedResult": true,
     "Comment": "Comment: This is a valid quoted string with folding white space"
   },
@@ -1027,7 +1027,7 @@
   },
   {
     "Name": "Test # 172",
-    "Email": "first.(\r;\n; middle\r;\n; )last@iana.org",
+    "Email": "first.(\r\n middle\r\n )last@iana.org",
     "ExpectedResult": true,
     "Comment": "Comment: Comment with folding white space"
   },
@@ -1039,7 +1039,7 @@
   },
   {
     "Name": "Test # 174",
-    "Email": "first(Welcome to\r;\n; the (\"wonderful\" (!)) world\r;\n; of email)@iana.org",
+    "Email": "first(Welcome to\r\n the (\"wonderful\" (!)) world\r\n of email)@iana.org",
     "ExpectedResult": true,
     "Comment": "Comment: Silly example from my blog post"
   },
@@ -1303,7 +1303,7 @@
   },
   {
     "Name": "Test # 218",
-    "Email": "Invalid \\\n; Folding \\\n; Whitespace@iana.org",
+    "Email": "Invalid \\\n Folding \\\n Whitespace@iana.org",
     "ExpectedResult": false,
     "Comment": "Comment: This isn't FWS so Dominic Sayers says it's invalid"
   },
@@ -1327,7 +1327,7 @@
   },
   {
     "Name": "Test # 222",
-    "Email": " \r;\n; (\r;\n; x \r;\n; ) \r;\n; first\r;\n; ( \r;\n; x\r;\n; ) \r;\n; .\r;\n; ( \r;\n; x) \r;\n; last \r;\n; (  x \r;\n; ) \r;\n; @iana.org",
+    "Email": " \r\n (\r\n x \r\n ) \r\n first\r\n ( \r\n x\r\n ) \r\n .\r\n ( \r\n x) \r\n last \r\n (  x \r\n ) \r\n @iana.org",
     "ExpectedResult": true,
     "Comment": ""
   },
@@ -1339,13 +1339,13 @@
   },
   {
     "Name": "Test # 224",
-    "Email": "test. \r;\n; \r;\n; obs@syntax.com",
+    "Email": "test. \r\n \r\n obs@syntax.com",
     "ExpectedResult": true,
     "Comment": "Comment: obs-fws allows multiple lines (test 2: space before break)"
   },
   {
     "Name": "Test # 225",
-    "Email": "test.\r;\n;\r;\n; obs@syntax.com",
+    "Email": "test.\r\n\r\n obs@syntax.com",
     "ExpectedResult": false,
     "Comment": "Comment: obs-fws must have at least one WSP per line"
   },
@@ -1663,7 +1663,7 @@
   },
   {
     "Name": "Test # 278",
-    "Email": "test@example.com\n;",
+    "Email": "test@example.com\n",
     "ExpectedResult": false,
     "Comment": "Comment: Address has a newline at the end"
   },
