@@ -36,7 +36,7 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 var segment = this.ExtractLocalPartSegment(input, ref index, out var error);
                 if (segment == null)
                 {
-                    throw new NotImplementedException();
+                    return new EmailValidationResult(error, index);
                 }
 
                 var segmentValue = segment.Value;
@@ -64,6 +64,7 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
             var localPartSegmentCount = segmentCount;
             var gotIpDomain = false;
+            Segment? lastDomainNamePartSegment = null;
 
             while (true)
             {
@@ -84,11 +85,25 @@ namespace TauCode.Lab.Extensions.EmailValidation
                     throw new NotImplementedException();
                 }
 
+                bool mustStartWithPeriod = false;
+
+                if (lastDomainNamePartSegment.HasValue)
+                {
+                    var c = input[lastDomainNamePartSegment.Value.Start + lastDomainNamePartSegment.Value.Length];
+                    mustStartWithPeriod = c != '.';
+                }
+
                 // todo: TLD min length is 2.
-                var segment = this.ExtractDomainSegment(input, gotIpDomain, ref index, out var error);
+                var segment = this.ExtractDomainSegment(
+                    input,
+                    gotIpDomain,
+                    mustStartWithPeriod,
+                    ref index,
+                    out var error);
+
                 if (segment == null)
                 {
-                    throw new NotImplementedException();
+                    return new EmailValidationResult(error, index);
                 }
 
                 var segmentValue = segment.Value;
@@ -96,6 +111,10 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 if (segmentValue.Type == SegmentType.IPAddress)
                 {
                     gotIpDomain = true;
+                }
+                else if (segmentValue.Type == SegmentType.DomainNamePart)
+                {
+                    lastDomainNamePartSegment = segmentValue;
                 }
 
                 segments[segmentCount] = segmentValue;
@@ -111,6 +130,7 @@ namespace TauCode.Lab.Extensions.EmailValidation
         private Segment? ExtractDomainSegment(
             in ReadOnlySpan<char> input,
             bool gotIpDomain,
+            bool mustStartWithPeriod,
             ref byte index,
             out EmailValidationError error)
         {
@@ -118,6 +138,12 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
             if (char.IsLetterOrDigit(c))
             {
+                if (mustStartWithPeriod)
+                {
+                    error = EmailValidationError.InvalidDomainName;
+                    return null;
+                }
+
                 if (gotIpDomain)
                 {
                     error = EmailValidationError.InvalidDomainName;
@@ -126,6 +152,18 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 else
                 {
                     return this.ExtractDomainNamePartSegment(input, ref index, out error);
+                }
+            }
+            else if (c == '.')
+            {
+                if (mustStartWithPeriod)
+                {
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    error = EmailValidationError.InvalidDomainName;
+                    return null;
                 }
             }
             else
@@ -143,7 +181,7 @@ namespace TauCode.Lab.Extensions.EmailValidation
         {
             var start = index;
             var prevChar = input[start];
-            index++;
+            index++; // initial char is ok since we've got here
             var length = input.Length;
 
             while (true)
@@ -204,6 +242,24 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 error = EmailValidationError.NoError;
                 return new Segment(SegmentType.At, start, 1);
             }
+            else if (this.Settings.EffectiveAllowedSpecialCharacters.Contains(c))
+            {
+                return this.ExtractLocalPartSpecialCharacterSequenceSegment(input, ref index, out error);
+            }
+            else if (char.IsWhiteSpace(c))
+            {
+                error = EmailValidationError.SpacesOnlyAllowedAtEndOfLocalPart;
+                return null;
+            }
+            else if (c == '.')
+            {
+                error = EmailValidationError.LocalPartCannotStartWithPeriod;
+                return null;
+            }
+            else if (c == '"')
+            {
+                return this.ExtractLocalPartQuotedStringSegment(input, ref index, out error);
+            }
             else
             {
                 throw new NotImplementedException();
@@ -211,6 +267,78 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
 
             throw new NotImplementedException();
+        }
+
+        private Segment? ExtractLocalPartQuotedStringSegment(
+            in ReadOnlySpan<char> input,
+            ref byte index,
+            out EmailValidationError error)
+        {
+            var start = index;
+            index++; // input[start] is a proper special character since we've got here
+            var length = input.Length;
+
+            while (true)
+            {
+                if (index - start > EmailValidationExtensions.MaxLocalPartLength || index == length)
+                {
+                    error = EmailValidationError.UnclosedQuotedString;
+                    return null;
+                }
+
+                var c = input[index];
+                if (c == '"')
+                {
+                    index++;
+                    break;
+                }
+
+                index++;
+            }
+
+            error = EmailValidationError.NoError;
+            var delta = index - start;
+            return new Segment(SegmentType.LocalPartQuotedString, start, (byte)delta);
+        }
+
+        private Segment? ExtractLocalPartSpecialCharacterSequenceSegment(
+            in ReadOnlySpan<char> input,
+            ref byte index,
+            out EmailValidationError error)
+        {
+            var start = index;
+            index++; // input[start] is a proper special character since we've got here
+            var length = input.Length;
+
+            while (true)
+            {
+                if (index - start > EmailValidationExtensions.MaxLocalPartLength)
+                {
+                    error = EmailValidationError.LocalPartTooLong;
+                    return null;
+                }
+
+                if (index == length)
+                {
+                    // end of sequence.
+                    break;
+                }
+
+                var c = input[index];
+
+                if (this.Settings.EffectiveAllowedSpecialCharacters.Contains(c))
+                {
+                    index++;
+                    continue;
+                }
+
+                // end of word.
+                break;
+            }
+
+            error = EmailValidationError.NoError;
+            var delta = index - start;
+            return new Segment(SegmentType.LocalPartSpecialCharacterSequence, start, (byte)delta);
         }
 
         private Segment? ExtractLocalPartWordSegment(

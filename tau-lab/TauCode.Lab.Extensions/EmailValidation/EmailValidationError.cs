@@ -8,9 +8,11 @@
         LocalPartTooLong,
         UnexpectedEnd,
         SpacesOnlyAllowedAtEndOfLocalPart,
+        LocalPartCannotStartWithPeriod,
         LocalPartCannotEndWithPeriod,
         InvalidEscape,
         LocalPartCannotBeEmpty,
+        UnclosedQuotedString,
 
         DomainCannotBeEmpty,
         InvalidDomainName,

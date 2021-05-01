@@ -4,7 +4,7 @@
     {
         LocalPartWord = 1,
         LocalPartPeriod = 2,
-        LocalPartSymbolSequence = 3,
+        LocalPartSpecialCharacterSequence = 3,
         LocalPartQuotedString = 4,
 
         Comment = 5,

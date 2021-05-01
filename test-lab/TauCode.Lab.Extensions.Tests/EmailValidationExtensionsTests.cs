@@ -6,6 +6,7 @@ using TauCode.Lab.Extensions.EmailValidation;
 
 namespace TauCode.Lab.Extensions.Tests
 {
+    // todo clean
     [TestFixture]
     public class EmailValidationExtensionsTests
     {
