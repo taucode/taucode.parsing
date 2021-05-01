@@ -11,7 +11,7 @@ namespace TauCode.Parsing.Tests.TinyLisp
     {
 
         [Test]
-        //[Ignore("Performance test")]
+        [Ignore("Performance test")]
         public void PerformanceTestForTinyLispLexer()
         {
             ILexer tinyLispLexer = new TinyLispLexer();

@@ -624,12 +624,12 @@ namespace TauCode.Lab.Extensions.Tests
             throw new NotImplementedException();
         }
 
-        [TestCaseSource(nameof(TestCases))]
-        public void TestTodoHere(TestCaseDto testCase)
-        {
-            var isEmail = IsEmail(testCase.Email);
-            Assert.That(isEmail, Is.EqualTo(testCase.ExpectedResult));
-        }
+        //[TestCaseSource(nameof(TestCases))]
+        //public void TestTodoHere(TestCaseDto testCase)
+        //{
+        //    var isEmail = IsEmail(testCase.Email);
+        //    Assert.That(isEmail, Is.EqualTo(testCase.ExpectedResult));
+        //}
 
         private static string ReplaceHtmlEscapeCodes(string input)
         {

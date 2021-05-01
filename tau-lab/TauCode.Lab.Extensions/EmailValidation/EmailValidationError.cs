@@ -7,16 +7,18 @@
         EmailTooLong,
         LocalPartTooLong,
         UnexpectedEnd,
-        SpacesOnlyAllowedAtEndOfLocalPart,
-        LocalPartCannotStartWithPeriod,
-        LocalPartCannotEndWithPeriod,
+        UnexpectedSpace,
+        UnexpectedCharacter,
+        LocalPartStartsWithPeriod,
+        LocalPartEndsWithPeriod,
         InvalidEscape,
-        LocalPartCannotBeEmpty,
+        EmptyLocalPart,
         UnclosedQuotedString,
 
         DomainCannotBeEmpty,
         InvalidDomainName,
 
+        InvalidIPv6Prefix,
         InvalidIPv6Address,
     }
 }

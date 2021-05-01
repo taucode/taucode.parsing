@@ -2,8 +2,8 @@
 {
     public enum SegmentType : byte
     {
-        LocalPartWord = 1,
-        LocalPartPeriod = 2,
+        LocalPartPart = 1,
+        //LocalPartPeriod = 2,
         LocalPartSpecialCharacterSequence = 3,
         LocalPartQuotedString = 4,
 
