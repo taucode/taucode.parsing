@@ -1,7 +1,8 @@
 ﻿using System;
+using TauCode.Parsing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Utility
+namespace TauCode.Lab.Parsing.Utility
 {
     public class HostToken : TokenBase
     {

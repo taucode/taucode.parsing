@@ -1,11 +1,11 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TauCode.Parsing\TauCode.Parsing.csproj" />
+    <ProjectReference Include="..\..\src\TauCode.Parsing\TauCode.Parsing.csproj" />
   </ItemGroup>
 
 </Project>

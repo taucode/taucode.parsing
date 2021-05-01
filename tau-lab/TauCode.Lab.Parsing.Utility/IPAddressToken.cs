@@ -1,7 +1,8 @@
 ﻿using System.Net;
+using TauCode.Parsing;
 using TauCode.Parsing.Tokens;
 
-namespace TauCode.Parsing.Utility
+namespace TauCode.Lab.Parsing.Utility
 {
     public class IPAddressToken : TokenBase
 

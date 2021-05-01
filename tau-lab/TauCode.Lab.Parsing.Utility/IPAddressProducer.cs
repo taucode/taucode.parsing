@@ -1,21 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
 using TauCode.Extensions;
+using TauCode.Parsing;
 using TauCode.Parsing.Lexing;
 
-namespace TauCode.Parsing.Utility
+namespace TauCode.Lab.Parsing.Utility
 {
-    public class HostProducer : ITokenProducer
+    public class IPAddressProducer : ITokenProducer
     {
-        private const int MinLength = 1;
-        private const int MaxLength = 255;
+        private static readonly HashSet<char> AcceptableChars;
+
+        private static readonly int MinLength = "0.0.0.1".Length;
+        private static readonly int MaxLength = "2001:0db8:85a3:0000:0000:8a2e:0370:7334".Length;
 
         private readonly Func<char, bool> _terminatingCharPredicate;
 
-        public HostProducer(Func<char, bool> terminatingCharPredicate)
+        public IPAddressProducer(Func<char, bool> terminatingCharPredicate)
         {
-            _terminatingCharPredicate =
+            _terminatingCharPredicate = 
                 terminatingCharPredicate ??
                 throw new ArgumentNullException(nameof(terminatingCharPredicate));
+        }
+
+        static IPAddressProducer()
+        {
+            var list = new List<char>();
+            list.AddCharRange('a', 'f');
+            list.AddCharRange('A', 'F');
+            list.AddCharRange('0', '9');
+            list.Add('.');
+            list.Add(':');
+
+            AcceptableChars = list.ToHashSet();
         }
 
         public LexingContext Context { get; set; }
@@ -49,11 +67,7 @@ namespace TauCode.Parsing.Utility
                     break;
                 }
 
-                var isAcceptable =
-                    c == '.' ||
-                    c == '-' ||
-                    char.IsLetterOrDigit(c);
-
+                var isAcceptable = AcceptableChars.Contains(c);
                 if (isAcceptable)
                 {
                     index++;
@@ -69,16 +83,13 @@ namespace TauCode.Parsing.Utility
                 return null;
             }
 
-            var possibleHost = text.Substring(start, length);
-            var res = Uri.CheckHostName(possibleHost);
+            var span = text.AsSpan(start, delta);
 
-            if (res.IsIn(
-                UriHostNameType.Dns,
-                UriHostNameType.IPv4,
-                UriHostNameType.IPv6))
+            var parsed = IPAddress.TryParse(span, out var ipAddress);
+            if (parsed)
             {
                 var position = new Position(context.Line, start);
-                return new HostToken(possibleHost, res, position, delta);
+                return new IPAddressToken(ipAddress, position, delta);
             }
 
             return null;

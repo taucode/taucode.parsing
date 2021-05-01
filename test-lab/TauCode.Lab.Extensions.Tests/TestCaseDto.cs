@@ -1,4 +1,4 @@
-﻿namespace TauCode.Parsing.Utility.Tests
+﻿namespace TauCode.Lab.Extensions.Tests
 {
     public class TestCaseDto
     {
@@ -23,6 +23,15 @@
         public bool ExpectedResult { get; set; }
         public string Comment { get; set; }
 
-        public override string ToString() => this.Email;
+        public override string ToString()
+        {
+            // todo temp
+            if (this.Email == "TEST@iana.org")
+            {
+                return "********************************************************"; 
+            }
+
+            return this.Email.ToString();
+        }
     }
 }
