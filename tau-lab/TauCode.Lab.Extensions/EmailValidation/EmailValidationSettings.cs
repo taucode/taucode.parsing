@@ -8,7 +8,7 @@ namespace TauCode.Lab.Extensions.EmailValidation
     {
         #region Static
 
-        public static IList<char> GetDefaultAllowedSpecialCharacters()
+        public static IList<char> GetDefaultAllowedSymbols()
         {
             return new[]
             {
@@ -36,16 +36,15 @@ namespace TauCode.Lab.Extensions.EmailValidation
             return new EmailValidationSettings
             {
                 AllowComments = true,
-                AllowedSpecialCharacters = GetDefaultAllowedSpecialCharacters(),
+                AllowedSymbols = GetDefaultAllowedSymbols(),
             };
         }
-
 
         #endregion
 
         #region Fields
 
-        internal HashSet<char> EffectiveAllowedSpecialCharacters;
+        internal HashSet<char> EffectiveAllowedSymbols;
 
         #endregion
 
@@ -53,9 +52,9 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
         public bool AllowComments { get; set; }
 
-        public IList<char> AllowedSpecialCharacters
+        public IList<char> AllowedSymbols
         {
-            get => EffectiveAllowedSpecialCharacters.ToList();
+            get => EffectiveAllowedSymbols.ToList();
             set
             {
                 if (value == null)
@@ -64,15 +63,14 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 }
 
                 var hashSet = value.ToHashSet();
-                if (hashSet.Except(GetDefaultAllowedSpecialCharacters()).Any())
+                if (hashSet.Except(GetDefaultAllowedSymbols()).Any())
                 {
                     throw new ArgumentException($"Invalid acceptable characters.", nameof(value)); // todo.
                 }
 
-                this.EffectiveAllowedSpecialCharacters = hashSet;
+                this.EffectiveAllowedSymbols = hashSet;
             }
         }
-
 
         #endregion
     }

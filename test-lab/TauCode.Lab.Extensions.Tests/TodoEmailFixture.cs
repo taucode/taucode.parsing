@@ -8,7 +8,6 @@ using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Xml;
 using TauCode.Extensions;
-using TauCode.Lab.Extensions.EmailValidation;
 
 namespace TauCode.Lab.Extensions.Tests
 {
@@ -35,9 +34,7 @@ namespace TauCode.Lab.Extensions.Tests
 
         private static readonly int IPv4MinLength = "1.1.1.1".Length;
         private static readonly int IPv4MaxLength = "101.101.101.101".Length;
-
-        private EmailValidator d;
-
+        
         static TodoEmailFixture()
         {
             var list = new List<char>();

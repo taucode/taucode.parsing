@@ -6,6 +6,10 @@
         {
             this.Error = error;
             this.ErrorPosition = errorPosition;
+
+            if (!this.IsSuccessful())
+            {
+            }
         }
 
         public EmailValidationError Error { get; }

@@ -2,17 +2,16 @@
 {
     public enum SegmentType : byte
     {
-        LocalPartPart = 1,
-        //LocalPartPeriod = 2,
-        LocalPartSpecialCharacterSequence = 3,
-        LocalPartQuotedString = 4,
+        Period = 1,
+        Comment,
 
-        Comment = 5,
+        LocalPartWord,
+        LocalPartSymbolSequence,
+        LocalPartQuotedString,
 
-        At = 6, // '@' symbol
+        At, // '@' symbol
 
-        DomainNamePart = 7,
-        IPAddress = 8,
-
+        SubDomain,
+        IPAddress,
     }
 }

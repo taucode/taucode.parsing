@@ -4,9 +4,10 @@
     {
         NoError = 0,
 
+        UnexpectedEnd,
+
         EmailTooLong,
         LocalPartTooLong,
-        UnexpectedEnd,
         UnexpectedSpace,
         UnexpectedCharacter,
         LocalPartStartsWithPeriod,
@@ -15,10 +16,10 @@
         EmptyLocalPart,
         UnclosedQuotedString,
 
-        DomainCannotBeEmpty,
-        InvalidDomainName,
+        ValidationFailure,
 
-        InvalidIPv6Prefix,
+        InvalidDomainName,
+        InvalidIPv4Address,
         InvalidIPv6Address,
     }
 }
