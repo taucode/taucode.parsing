@@ -6,11 +6,9 @@ namespace TauCode.Lab.Extensions.EmailValidation
     {
         public const int MaxLocalPartLength = 64;
         public const int MaxEmailLength = 254;
+        public const int MaxSubDomainLength = 63;
 
-        internal const int MaxLocalPartSegmentCount = MaxLocalPartLength / 2;
-
-        //[ThreadStatic]
-        //private static EmailValidationSettings Settings = EmailValidationSettings.CreateDefault();
+        internal const int MaxLocalPartSegmentCount = MaxEmailLength / 2;
 
         [ThreadStatic]
         private static EmailValidator EmailValidator;

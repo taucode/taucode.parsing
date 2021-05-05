@@ -8,15 +8,14 @@
 
         EmailTooLong,
         LocalPartTooLong,
-        UnexpectedSpace,
         UnexpectedCharacter,
-        LocalPartStartsWithPeriod,
-        LocalPartEndsWithPeriod,
-        InvalidEscape,
         EmptyLocalPart,
-        UnclosedQuotedString,
 
-        ValidationFailure,
+        UnclosedQuotedString,
+        EmptyString,
+        NullCharacterMustBeEscaped,
+        QuotedStringContainsCr,
+        QuotedStringContainsFoldingWhiteSpace,
 
         InvalidDomainName,
         InvalidIPv4Address,

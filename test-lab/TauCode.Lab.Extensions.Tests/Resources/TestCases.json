@@ -907,7 +907,7 @@
   },
   {
     "Name": "Test # 152",
-    "Email": "Test.\r\n Folding.\r\n Whitespace@iana.org",
+    "Email": "Test.\r\n Folding.\r\n Whitespace@iana.org",
     "ExpectedResult": true,
     "Comment": ""
   },
@@ -949,7 +949,7 @@
   },
   {
     "Name": "Test # 159",
-    "Email": "\"test\\\r\n blah\"@iana.org",
+    "Email": "\"test\r\n blah\"@iana.org",
     "ExpectedResult": false,
     "Comment": "Comment: Folding white space can't appear within a quoted pair"
   },
@@ -980,8 +980,10 @@
   {
     "Name": "Test # 164",
     "Email": "\"foo\"(yay)@(hoopla)[1.2.3.4]",
-    "ExpectedResult": false,
-    "Comment": "Comment: Address literal can't be commented (RFC 5321)"
+    "ExpectedResult": true,
+    "OriginalExpectedResult": false,
+    "Comment": "Comment: Address literal can't be commented (RFC 5321)",
+    "MyComment": "Computer says 'yes'. (https://verifalia.com/validate-email)"
   },
   {
     "Name": "Test # 165",
@@ -1058,14 +1060,18 @@
   {
     "Name": "Test # 177",
     "Email": "jdoe@machine(comment).  example",
-    "ExpectedResult": true,
-    "Comment": "Comment: Canonical example from RFC 5322"
+    "ExpectedResult": false,
+    "OriginalExpectedResult": true,
+    "Comment": "Comment: Canonical example from RFC 5322",
+    "MyComment": "Computer says 'no'. (https://verifalia.com/validate-email)"
   },
   {
     "Name": "Test # 178",
     "Email": "1234   @   local(blah)  .machine .example",
-    "ExpectedResult": true,
-    "Comment": "Comment: Canonical example from RFC 5322"
+    "ExpectedResult": false,
+    "OriginalExpectedResult": true,
+    "Comment": "Comment: Canonical example from RFC 5322",
+    "MyComment": "Computer says 'no'. (https://verifalia.com/validate-email)"
   },
   {
     "Name": "Test # 179",
@@ -1327,25 +1333,25 @@
   },
   {
     "Name": "Test # 222",
-    "Email": " \r\n (\r\n x \r\n ) \r\n first\r\n ( \r\n x\r\n ) \r\n .\r\n ( \r\n x) \r\n last \r\n (  x \r\n ) \r\n @iana.org",
+    "Email": " \r\n (\r\n x \r\n ) \r\n first\r\n ( \r\n x\r\n ) \r\n .\r\n ( \r\n x) \r\n last \r\n (  x \r\n ) \r\n @iana.org",
     "ExpectedResult": true,
     "Comment": ""
   },
   {
     "Name": "Test # 223",
-    "Email": "first.last @iana.org",
+    "Email": "first.last @iana.org",
     "ExpectedResult": true,
     "Comment": "Comment: FWS is allowed after local part (this is similar to #152 but is the test proposed by John Kloor)"
   },
   {
     "Name": "Test # 224",
-    "Email": "test. \r\n \r\n obs@syntax.com",
+    "Email": "test. \r\n \r\n obs@syntax.com",
     "ExpectedResult": true,
     "Comment": "Comment: obs-fws allows multiple lines (test 2: space before break)"
   },
   {
     "Name": "Test # 225",
-    "Email": "test.\r\n\r\n obs@syntax.com",
+    "Email": "test.\r\n\r\n obs@syntax.com",
     "ExpectedResult": false,
     "Comment": "Comment: obs-fws must have at least one WSP per line"
   },

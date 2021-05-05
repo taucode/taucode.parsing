@@ -5,8 +5,9 @@
         Period = 1,
         Comment,
 
+        LocalPartSpace,
+        LocalPartFoldingWhiteSpace,
         LocalPartWord,
-        LocalPartSymbolSequence,
         LocalPartQuotedString,
 
         At, // '@' symbol

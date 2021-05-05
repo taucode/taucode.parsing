@@ -17,6 +17,8 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
         private static readonly HashSet<char> IPv6AcceptableChars;
 
+        private static readonly char[] FoldingWhiteSpaceChars = { '\r', '\n', ' ' };
+
         #endregion
 
         #region Static .ctor
@@ -50,10 +52,10 @@ namespace TauCode.Lab.Extensions.EmailValidation
         {
             Span<Segment> segments = stackalloc Segment[EmailValidationExtensions.MaxLocalPartSegmentCount];
             var segmentCount = 0;
-
             var length = input.Length;
-
             byte index = 0;
+
+            SegmentType? lastNonCommentSegmentType = null;
 
             #region extract local part
 
@@ -69,7 +71,12 @@ namespace TauCode.Lab.Extensions.EmailValidation
                     return new EmailValidationResult(EmailValidationError.EmailTooLong, index);
                 }
 
-                var segment = this.ExtractLocalPartSegment(input, ref index, out var error);
+                var segment = this.ExtractLocalPartSegment(
+                    input,
+                    lastNonCommentSegmentType,
+                    ref index,
+                    out var error);
+
                 if (segment == null)
                 {
                     return new EmailValidationResult(error, index);
@@ -80,6 +87,15 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 segments[segmentCount] = segmentValue;
                 segmentCount++;
 
+                if (
+                    segmentValue.Type != SegmentType.Comment &&
+                    segmentValue.Type != SegmentType.LocalPartSpace &&
+                    segmentValue.Type != SegmentType.LocalPartFoldingWhiteSpace &&
+                    true)
+                {
+                    lastNonCommentSegmentType = segmentValue.Type;
+                }
+
                 if (segmentValue.Type == SegmentType.At)
                 {
                     break;
@@ -89,13 +105,9 @@ namespace TauCode.Lab.Extensions.EmailValidation
             #endregion
 
             var localPartPlusAtSegmentCount = segmentCount;
-            SegmentType? lastNonCommentSegmentType = null;
+            lastNonCommentSegmentType = null;
 
             #region extract domain
-
-            // todo clean
-            //var gotIpDomain = false;
-
 
             while (true)
             {
@@ -105,11 +117,14 @@ namespace TauCode.Lab.Extensions.EmailValidation
                     {
                         return new EmailValidationResult(EmailValidationError.UnexpectedEnd, index);
                     }
-                    else
+
+                    // got to the end of the email, let's see what we're packing.
+                    if (lastNonCommentSegmentType == SegmentType.Period)
                     {
-                        // got to the end of the email, let's see what we're packing.
-                        throw new NotImplementedException();
+                        return new EmailValidationResult(EmailValidationError.InvalidDomainName, index);
                     }
+
+                    return new EmailValidationResult(EmailValidationError.NoError, null);
                 }
 
                 if (index == EmailValidationExtensions.MaxEmailLength)
@@ -128,156 +143,18 @@ namespace TauCode.Lab.Extensions.EmailValidation
                     return new EmailValidationResult(error, index);
                 }
 
-                segments[segmentCount] = segment.Value;
+                var segmentValue = segment.Value;
+
+                segments[segmentCount] = segmentValue;
                 segmentCount++;
 
-                lastNonCommentSegmentType = segment.Value.Type;
-
+                if (segmentValue.Type != SegmentType.Comment)
+                {
+                    lastNonCommentSegmentType = segmentValue.Type;
+                }
             }
 
             #endregion
-
-
-            throw new NotImplementedException();
-
-            //Segment? lastLocalPartSegment = null;
-
-            //#region extract local part
-
-            //while (true)
-            //{
-            //    if (index == length)
-            //    {
-            //        throw new NotImplementedException();
-            //    }
-
-            //    var segment = this.ExtractLocalPartSegment(input, ref index, out var error);
-            //    if (segment == null)
-            //    {
-            //        return new EmailValidationResult(error, index);
-            //    }
-
-            //    var segmentValue = segment.Value;
-
-            //    if (segmentValue.Type == SegmentType.Period)
-            //    {
-            //        if (input[segmentValue.Start] == '.' && segmentCount == 0)
-            //        {
-            //            return new EmailValidationResult(EmailValidationError.LocalPartStartsWithPeriod, 0);
-            //        }
-            //    }
-            //    else if (segmentValue.Type == SegmentType.LocalPartQuotedString)
-            //    {
-            //        if (this.QuotedStringSegmentIsEmpty(input, segmentValue))
-            //        {
-            //            return new EmailValidationResult(EmailValidationError.LocalPartStartsWithPeriod, 0);
-            //        }
-            //    }
-            //    else if (segmentValue.Type == SegmentType.At)
-            //    {
-            //        if (segmentCount == 0)
-            //        {
-            //            // something like "@host.com"
-            //            return new EmailValidationResult(EmailValidationError.EmptyLocalPart, 0);
-            //        }
-
-            //        // we're done with local part
-            //        segments[segmentCount] = segmentValue;
-            //        segmentCount++;
-            //        break;
-            //    }
-
-            //    segments[segmentCount] = segmentValue;
-            //    segmentCount++;
-
-            //    lastLocalPartSegment = segmentValue;
-            //}
-
-            //#endregion
-
-            //if (!lastLocalPartSegment.HasValue)
-            //{
-            //    // actually, shouldn't happen.
-            //    return new EmailValidationResult(EmailValidationError.ValidationFailure, index);
-            //}
-
-            //var lastLocalPartSegmentValue = lastLocalPartSegment.Value;
-
-            //if (lastLocalPartSegmentValue.Type == SegmentType.LocalPartWord)
-            //{
-            //    var idx = lastLocalPartSegmentValue.Start + lastLocalPartSegmentValue.Length - 1;
-            //    var c = input[idx];
-            //    if (c == '.')
-            //    {
-            //        return new EmailValidationResult(EmailValidationError.LocalPartEndsWithPeriod, (byte)idx);
-            //    }
-            //}
-
-            //#region extract domain
-
-            //var localPartSegmentCount = segmentCount;
-            //var gotIpDomain = false;
-            //Segment? lastDomainNamePartSegment = null;
-
-            //while (true)
-            //{
-            //    if (index == length)
-            //    {
-            //        if (segmentCount == localPartSegmentCount)
-            //        {
-            //            return new EmailValidationResult(EmailValidationError.DomainCannotBeEmpty, index);
-            //        }
-            //        else
-            //        {
-            //            break;
-            //        }
-            //    }
-
-            //    if (index > EmailValidationExtensions.MaxEmailLength)
-            //    {
-            //        throw new NotImplementedException();
-            //    }
-
-            //    var mustStartWithPeriod = false;
-
-            //    if (lastDomainNamePartSegment.HasValue)
-            //    {
-            //        var c = input[lastDomainNamePartSegment.Value.Start + lastDomainNamePartSegment.Value.Length - 1];
-            //        mustStartWithPeriod = c != '.';
-            //    }
-
-            //    // todo: TLD min length is 2.
-            //    var segment = this.ExtractDomainSegment(
-            //        input,
-            //        gotIpDomain,
-            //        mustStartWithPeriod,
-            //        ref index,
-            //        out var error);
-
-            //    if (segment == null)
-            //    {
-            //        return new EmailValidationResult(error, index);
-            //    }
-
-            //    var segmentValue = segment.Value;
-
-            //    if (segmentValue.Type == SegmentType.IPAddress)
-            //    {
-            //        gotIpDomain = true;
-            //    }
-            //    else if (segmentValue.Type == SegmentType.SubDomain)
-            //    {
-            //        lastDomainNamePartSegment = segmentValue;
-            //    }
-
-            //    segments[segmentCount] = segmentValue;
-            //    segmentCount++;
-            //}
-
-            //#endregion
-
-            //return new EmailValidationResult(EmailValidationError.NoError, null);
-
         }
 
         public EmailValidationSettings Settings { get; internal set; } // todo: public setter?
@@ -288,37 +165,70 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
         private Segment? ExtractLocalPartSegment(
             in ReadOnlySpan<char> input,
+            SegmentType? lastNonCommentSegmentType,
             ref byte index,
             out EmailValidationError error)
         {
             var c = input[index];
 
-            if (char.IsLetterOrDigit(c) || c == '_')
+            if (char.IsLetterOrDigit(c) || c == '_' || this.Settings.EffectiveAllowedSymbols.Contains(c))
             {
-                return this.ExtractLocalPartWordSegment(input, ref index, out error);
+                if (
+                    lastNonCommentSegmentType == null ||
+                    lastNonCommentSegmentType == SegmentType.Period ||
+                    false)
+                {
+                    return this.ExtractLocalPartWordSegment(input, ref index, out error);
+                }
+
+                error = EmailValidationError.UnexpectedCharacter;
+                return null;
             }
             else if (c == '.')
             {
-                byte start = index;
-                index++;
-                error = EmailValidationError.NoError;
-                return new Segment(SegmentType.Period, start, 1);
+                if (
+                    lastNonCommentSegmentType == SegmentType.LocalPartWord ||
+                    lastNonCommentSegmentType == SegmentType.LocalPartQuotedString ||
+                    false)
+                {
+                    var start = index;
+                    index++;
+                    error = EmailValidationError.NoError;
+                    return new Segment(SegmentType.Period, start, 1);
+                }
+
+                error = EmailValidationError.UnexpectedCharacter;
+                return null;
             }
             else if (c == '@')
             {
-                var start = index;
-                index++;
-                error = EmailValidationError.NoError;
-                return new Segment(SegmentType.At, start, 1);
-            }
-            else if (this.Settings.EffectiveAllowedSymbols.Contains(c))
-            {
-                return this.ExtractLocalPartSymbolSequenceSegment(input, ref index, out error);
-            }
-            else if (char.IsWhiteSpace(c))
-            {
-                error = EmailValidationError.UnexpectedSpace;
+                if (lastNonCommentSegmentType == null)
+                {
+                    error = EmailValidationError.EmptyLocalPart;
+                    return null;
+                }
+
+                if (
+                    lastNonCommentSegmentType == SegmentType.LocalPartWord ||
+                    lastNonCommentSegmentType == SegmentType.LocalPartQuotedString ||
+                    false)
+                {
+                    var start = index;
+                    index++;
+                    error = EmailValidationError.NoError;
+                    return new Segment(SegmentType.At, start, 1);
+                }
+
+                error = EmailValidationError.UnexpectedCharacter;
                 return null;
+            }
+            else if (c == ' ')
+            {
+                return this.ExtractLocalPartSpaceSegment(input, ref index, out error);
+            }
+            else if (c == '\r')
+            {
+                return this.ExtractLocalPartFoldingWhiteSpaceSegment(input, ref index, out error);
             }
             else if (c == '"')
             {
@@ -333,12 +243,9 @@ namespace TauCode.Lab.Extensions.EmailValidation
             return null;
         }
 
-        // todo clean
         private Segment? ExtractDomainSegment(
             in ReadOnlySpan<char> input,
             SegmentType? lastNonCommentSegmentType,
-            //bool gotIpDomain,
-            //bool mustStartWithPeriod,
             ref byte index,
             out EmailValidationError error)
         {
@@ -354,13 +261,12 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 {
                     return this.ExtractSubDomainSegment(input, ref index, out error);
                 }
-                else
-                {
-                    error = EmailValidationError.InvalidDomainName;
-                    return null;
-                }
+
+                error = EmailValidationError.InvalidDomainName;
+                return null;
             }
-            else if (c == '.')
+
+            if (c == '.')
             {
                 // we only want sub-domain before period segment
                 if (lastNonCommentSegmentType == SegmentType.SubDomain)
@@ -369,13 +275,12 @@ namespace TauCode.Lab.Extensions.EmailValidation
                     error = EmailValidationError.NoError;
                     return new Segment(SegmentType.Period, (byte)(index - 1), 1);
                 }
-                else
-                {
-                    error = EmailValidationError.InvalidDomainName;
-                    return null;
-                }
+
+                error = EmailValidationError.InvalidDomainName;
+                return null;
             }
-            else if (c == '[')
+
+            if (c == '[')
             {
                 // we only want nothing before ip address segment
                 if (lastNonCommentSegmentType == null)
@@ -397,52 +302,24 @@ namespace TauCode.Lab.Extensions.EmailValidation
                         error = EmailValidationError.UnexpectedCharacter;
                         return null;
                     }
-                    else
-                    {
-                        index++;
-                        error = EmailValidationError.UnexpectedEnd;
-                        return null;
-                    }
-                }
-                else
-                {
-                    error = EmailValidationError.UnexpectedCharacter;
+
+                    index++;
+                    error = EmailValidationError.UnexpectedEnd;
                     return null;
                 }
 
+                error = EmailValidationError.UnexpectedCharacter;
+                return null;
+
             }
-            else if (c == '(')
+            if (c == '(')
             {
                 return this.ExtractCommentSegment(input, ref index, out error);
             }
-            else
-            {
-                error = EmailValidationError.UnexpectedCharacter; // todo: terminating char predicate here
-                return null;
-            }
+
+            error = EmailValidationError.UnexpectedCharacter; // todo: terminating char predicate here
+            return null;
         }
-
-        private bool QuotedStringSegmentIsEmpty(in ReadOnlySpan<char> input, in Segment segment)
-        {
-            if (segment.Length == 2)
-            {
-                return true;
-            }
-
-            for (var i = 0; i < segment.Length; i++)
-            {
-                var index = segment.Start + i;
-                var c = input[index];
-
-                if (!char.IsWhiteSpace(c))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
 
         #endregion
 
@@ -469,7 +346,7 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
                 if (index == EmailValidationExtensions.MaxEmailLength)
                 {
-                    error = EmailValidationError.EmailTooLong; // todo: this will give wrong position. r&d this.
+                    error = EmailValidationError.EmailTooLong;
                     return null;
                 }
 
@@ -518,47 +395,6 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
         #region Local Part Extractors
 
-        private Segment? ExtractLocalPartSymbolSequenceSegment(
-            in ReadOnlySpan<char> input,
-            ref byte index,
-            out EmailValidationError error)
-        {
-            var start = index;
-            index++; // skip 0th symbol since we've got here
-            var length = input.Length;
-
-            while (true)
-            {
-                if (index - start > EmailValidationExtensions.MaxLocalPartLength)
-                {
-                    error = EmailValidationError.LocalPartTooLong;
-                    return null;
-                }
-
-                if (index == length)
-                {
-                    // end of sequence.
-                    error = EmailValidationError.UnexpectedEnd;
-                    return null;
-                }
-
-                var c = input[index];
-
-                if (this.Settings.EffectiveAllowedSymbols.Contains(c))
-                {
-                    index++;
-                    continue;
-                }
-
-                // end of word.
-                break;
-            }
-
-            error = EmailValidationError.NoError;
-            var delta = index - start;
-            return new Segment(SegmentType.LocalPartSymbolSequence, start, (byte)delta);
-        }
-
         private Segment? ExtractLocalPartWordSegment(
             in ReadOnlySpan<char> input,
             ref byte index,
@@ -584,7 +420,7 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
                 var c = input[index];
 
-                if (char.IsLetterOrDigit(c) || c == '_')
+                if (char.IsLetterOrDigit(c) || c == '_' || this.Settings.EffectiveAllowedSymbols.Contains(c))
                 {
                     index++;
                     continue;
@@ -628,6 +464,41 @@ namespace TauCode.Lab.Extensions.EmailValidation
                     break;
                 }
 
+                if (c == '\0')
+                {
+                    error = EmailValidationError.NullCharacterMustBeEscaped;
+                    return null;
+                }
+
+                if (c == '\r')
+                {
+                    if (index < length - 1)
+                    {
+                        // got more chars
+                        index++;
+                        c = input[index];
+                        if (c == '\n')
+                        {
+                            if (index < length - 1)
+                            {
+                                // got more chars
+                                index++;
+                                c = input[index];
+                                if (c == ' ')
+                                {
+                                    error = EmailValidationError.QuotedStringContainsFoldingWhiteSpace;
+                                    return null;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            error = EmailValidationError.QuotedStringContainsCr;
+                            return null;
+                        }
+                    }
+                }
+
                 if (c == '\\')
                 {
                     index++; // skip '\\'
@@ -654,7 +525,102 @@ namespace TauCode.Lab.Extensions.EmailValidation
 
             error = EmailValidationError.NoError;
             var delta = index - start;
+
+            if (delta == 2)
+            {
+                // empty string
+                error = EmailValidationError.EmptyString;
+                index = start;
+                return null;
+            }
+
             return new Segment(SegmentType.LocalPartQuotedString, start, (byte)delta);
+        }
+
+        private Segment? ExtractLocalPartSpaceSegment(
+            in ReadOnlySpan<char> input,
+            ref byte index,
+            out EmailValidationError error)
+        {
+            var start = index;
+            index++; // input[start] is a proper char since we've got here
+            var length = input.Length;
+
+            while (true)
+            {
+                if (index - start > EmailValidationExtensions.MaxLocalPartLength)
+                {
+                    error = EmailValidationError.LocalPartTooLong;
+                    return null;
+                }
+
+                if (index == length)
+                {
+                    error = EmailValidationError.UnexpectedEnd;
+                    return null;
+                }
+
+                var c = input[index];
+
+                if (c == ' ')
+                {
+                    index++;
+                    continue;
+                }
+
+                // end of white space.
+                break;
+            }
+
+            error = EmailValidationError.NoError;
+            var delta = index - start;
+            return new Segment(SegmentType.LocalPartSpace, start, (byte)delta);
+        }
+
+        private Segment? ExtractLocalPartFoldingWhiteSpaceSegment(
+            in ReadOnlySpan<char> input,
+            ref byte index,
+            out EmailValidationError error)
+        {
+            var start = index;
+            index++; // input[start] is a proper char since we've got here
+            var length = input.Length;
+
+            var fwsLength = FoldingWhiteSpaceChars.Length;
+
+            int delta;
+
+            while (true)
+            {
+                if (index == length)
+                {
+                    error = EmailValidationError.UnexpectedEnd;
+                    return null;
+                }
+
+                delta = index - start;
+
+                if (delta == fwsLength)
+                {
+                    break;
+                }
+
+                var c = input[index];
+                if (c == FoldingWhiteSpaceChars[delta])
+                {
+                    index++;
+                    continue;
+                }
+
+                error = EmailValidationError.UnexpectedCharacter;
+                return null;
+            }
+
+            error = EmailValidationError.NoError;
+            return new Segment(
+                SegmentType.LocalPartFoldingWhiteSpace,
+                start,
+                (byte)delta); // actually, delta MUST be 3.
         }
 
         #endregion
@@ -675,13 +641,19 @@ namespace TauCode.Lab.Extensions.EmailValidation
             {
                 if (index == length)
                 {
-                    if (prevChar == '-')
-                    {
-                        error = EmailValidationError.InvalidDomainName;
-                        return null;
-                    }
-
                     break;
+                }
+
+                if (index - start > EmailValidationExtensions.MaxSubDomainLength)
+                {
+                    error = EmailValidationError.InvalidDomainName;
+                    return null;
+                }
+
+                if (index == EmailValidationExtensions.MaxEmailLength)
+                {
+                    error = EmailValidationError.EmailTooLong;
+                    return null;
                 }
 
                 var c = input[index];
@@ -713,6 +685,20 @@ namespace TauCode.Lab.Extensions.EmailValidation
                     break;
                 }
 
+                if (c == '.')
+                {
+                    break;
+                }
+
+                error = EmailValidationError.InvalidDomainName;
+                return null;
+            }
+
+            if (prevChar == '-')
+            {
+                // sub-domain cannot end with '-'
+
+                index--;
                 error = EmailValidationError.InvalidDomainName;
                 return null;
             }
@@ -766,6 +752,12 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 if (index == input.Length)
                 {
                     error = EmailValidationError.UnexpectedEnd;
+                    return null;
+                }
+
+                if (index == EmailValidationExtensions.MaxEmailLength)
+                {
+                    error = EmailValidationError.EmailTooLong;
                     return null;
                 }
 
@@ -832,19 +824,6 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 return null;
             }
 
-            // todo clean file
-            //ReadOnlySpan<char> prefixSpan = prefix;
-            //if (input.Slice(index, prefixLength).Equals(prefixSpan, StringComparison.Ordinal))
-            //{
-            //    // good.
-            //}
-            //else
-            //{
-            //    error = EmailValidationError.InvalidIPv6Prefix;
-            //    return null;
-            //}
-
-            //index += prefixLength;
             var addressStart = index;
 
             while (true)
@@ -852,6 +831,12 @@ namespace TauCode.Lab.Extensions.EmailValidation
                 if (index == input.Length)
                 {
                     error = EmailValidationError.UnexpectedEnd;
+                    return null;
+                }
+
+                if (index == EmailValidationExtensions.MaxEmailLength)
+                {
+                    error = EmailValidationError.EmailTooLong;
                     return null;
                 }
 

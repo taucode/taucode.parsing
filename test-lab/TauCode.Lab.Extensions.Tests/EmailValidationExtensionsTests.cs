@@ -6,7 +6,6 @@ using TauCode.Lab.Extensions.EmailValidation;
 
 namespace TauCode.Lab.Extensions.Tests
 {
-    // todo clean
     [TestFixture]
     public class EmailValidationExtensionsTests
     {
@@ -14,27 +13,44 @@ namespace TauCode.Lab.Extensions.Tests
         public void IsValidEmail_InputProvided_ExpectedResult(TestCaseDto testCase)
         {
             // Arrange
-            
+            var email = testCase.Email.Replace('␀', '\0');
+
             // Act
-            var isEmail = testCase.Email.IsValidEmail();
+            var isEmail = email.IsValidEmail();
 
             // Assert
             Assert.That(isEmail, Is.EqualTo(testCase.ExpectedResult));
         }
 
-        // todo clean
-        //[TestCaseSource(nameof(TestCases))]
-        //public void TestTodoHere(TestCaseDto testCase)
-        //{
-        //    var isEmail = testCase.Email.IsValidEmail();
-        //    Assert.That(isEmail, Is.EqualTo(testCase.ExpectedResult));
-        //}
+        [TestCaseSource(nameof(ExtraTestCases))]
+        public void IsValidEmail_ExtraCases_ExpectedResult(TestCaseDto testCase)
+        {
+            // Arrange
+            var email = testCase.Email.Replace('␀', '\0');
+
+            // Act
+            var isEmail = email.IsValidEmail();
+
+            // Assert
+            Assert.That(isEmail, Is.EqualTo(testCase.ExpectedResult));
+        }
+
 
         public static IList<TestCaseDto> TestCases
         {
             get
             {
-                var json = typeof(TodoEmailFixture).Assembly.GetResourceText("TestCases.json", true);
+                var json = typeof(EmailValidationExtensionsTests).Assembly.GetResourceText("TestCases.json", true);
+                var list = JsonConvert.DeserializeObject<IList<TestCaseDto>>(json);
+                return list;
+            }
+        }
+
+        public static IList<TestCaseDto> ExtraTestCases
+        {
+            get
+            {
+                var json = typeof(EmailValidationExtensionsTests).Assembly.GetResourceText("TestCases.Extra.json", true);
                 var list = JsonConvert.DeserializeObject<IList<TestCaseDto>>(json);
                 return list;
             }
